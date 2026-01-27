@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('client_id')->nullable()->constrained('clients');
             $table->foreignId('agent_id')->nullable()->constrained('agents');
+            $table->foreignId('product_id')->nullable()->constrained('products');
             $table->string('name')->nullable();
             $table->string('username')->nullable();
             $table->integer('chat_id')->nullable();
