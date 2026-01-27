@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('username')->nullable();
             $table->integer('chat_id')->nullable();
             $table->string('state')->nullable();
+            $table->text('message')->nullable();
             $table->string('platform')->nullable();
             $table->string('product')->nullable();
             $table->string('specs')->nullable();

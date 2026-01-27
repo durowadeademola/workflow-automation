@@ -15,6 +15,7 @@ class Product extends Model
         'price',
         'quantity',
         'currency',
-        'is_available'
+        'is_available',
+        'image_path'
     ];
 }
