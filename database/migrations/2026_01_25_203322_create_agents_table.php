@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clients', function (Blueprint $table) {
+        Schema::create('agents', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('user_id')->nullable()->constrained('users');
+            $table->foreignId('client_id')->nullable()->constrained('clients');
             $table->string('name')->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('status')->default('active');
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clients');
+        Schema::dropIfExists('agents');
     }
 };
