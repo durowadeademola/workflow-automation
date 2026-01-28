@@ -23,4 +23,9 @@ class Product extends Model
         'is_available',
         'image_path'
     ];
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
 }

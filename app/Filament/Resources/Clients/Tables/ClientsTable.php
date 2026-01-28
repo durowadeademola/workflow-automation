@@ -3,8 +3,11 @@
 namespace App\Filament\Resources\Clients\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class ClientsTable
@@ -13,13 +16,26 @@ class ClientsTable
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                    ->searchable(),
+                TextColumn::make('email')
+                    ->searchable(),
+                TextColumn::make('telephone'),
+                BadgeColumn::make('status')
+                    ->colors([
+                        'success' => 'active',
+                        'danger' => 'inactive',
+                    ]),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

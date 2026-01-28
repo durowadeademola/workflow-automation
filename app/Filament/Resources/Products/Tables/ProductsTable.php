@@ -3,9 +3,11 @@
 namespace App\Filament\Resources\Products\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -15,13 +17,21 @@ class ProductsTable
     {
         return $table
             ->columns([
-                TextColumn::make('client_id')
-                    ->numeric()
+                ImageColumn::make('image_path')
+                    ->label('Image')
+                    ->disk('public')
+                    ->height(50)
+                    ->width(50)
+                    ->square(),
+                TextColumn::make('client.name')
+                    ->label('Client')
+                    ->placeholder('—')
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('price')
-                    ->money()
+                    ->money(fn ($record) => $record->currency)
                     ->sortable(),
                 TextColumn::make('quantity')
                     ->numeric()
@@ -29,21 +39,18 @@ class ProductsTable
                 TextColumn::make('currency')
                     ->searchable(),
                 IconColumn::make('is_available')
+                    ->label('Available')
                     ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

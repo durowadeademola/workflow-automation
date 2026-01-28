@@ -19,4 +19,14 @@ class Message extends Model
         'content',
         'from_customer'
     ];
+    
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 }

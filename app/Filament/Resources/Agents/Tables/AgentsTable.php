@@ -4,7 +4,9 @@ namespace App\Filament\Resources\Agents\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -14,30 +16,32 @@ class AgentsTable
     {
         return $table
             ->columns([
-                TextColumn::make('client_id')
-                    ->numeric()
+                TextColumn::make('client.name')
+                    ->label('Client')
+                    ->placeholder('—')
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
                     ->label('Email address')
                     ->searchable(),
-                TextColumn::make('status')
+                BadgeColumn::make('status')
+                    ->colors([
+                        'success' => 'active',
+                        'danger' => 'inactive',
+                    ])
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

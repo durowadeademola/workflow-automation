@@ -21,4 +21,9 @@ class Service extends Model
         'currency',
         'is_active'
     ];
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
 }

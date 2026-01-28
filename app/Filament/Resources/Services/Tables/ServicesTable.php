@@ -15,26 +15,28 @@ class ServicesTable
     {
         return $table
             ->columns([
-                TextColumn::make('client_id')
-                    ->numeric()
+                TextColumn::make('client.name')
+                    ->label('Client')
+                    ->placeholder('—')
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
+                TextColumn::make('description'),
                 TextColumn::make('price')
-                    ->money()
+                    ->money(fn ($record) => $record->currency)
+                    ->sortable(),
+                TextColumn::make('quantity')
+                    ->numeric()
                     ->sortable(),
                 TextColumn::make('currency')
                     ->searchable(),
                 IconColumn::make('is_active')
+                    ->label('active')
                     ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
                 //

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('client_id')->nullable()->constrained('clients');
             $table->string('name')->nullable();
-            $table->string('email')->unique()->nullable();
+            $table->string('email')->nullable();
             $table->string('telephone')->nullable();
             $table->string('status')->default('active');
             $table->timestamps();

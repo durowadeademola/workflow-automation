@@ -18,6 +18,11 @@ class Agent extends Model
         'name',
         'email',
         'telephone',
-        'status'
+        'status',
     ];
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
 }

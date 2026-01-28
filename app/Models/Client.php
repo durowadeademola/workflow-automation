@@ -20,4 +20,24 @@ class Client extends Model
         'type',
         'status'
     ];
+
+    public function users()     
+    { 
+        return $this->hasMany(User::class); 
+    }
+
+    public function agents()    
+    { 
+        return $this->hasMany(Agent::class); 
+    }
+
+    public function products()  
+    { 
+        return $this->hasMany(Product::class); 
+    }
+
+    public function customers() 
+    { 
+        return $this->hasMany(Customer::class); 
+    }
 }

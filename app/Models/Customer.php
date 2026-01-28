@@ -29,4 +29,19 @@ class Customer extends Model
         'agent_email',
         'status'
     ];
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function agent()
+    {
+        return $this->belongsTo(Agent::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }
