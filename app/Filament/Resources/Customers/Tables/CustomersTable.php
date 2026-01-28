@@ -26,7 +26,7 @@ class CustomersTable
                     ->placeholder('—')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('product.name')
+                TextColumn::make('item.name')
                     ->label('Product')
                     ->placeholder('—')
                     ->searchable()

@@ -22,9 +22,9 @@ class CustomerForm
                     ->relationship('agent', 'name')
                     ->preload()
                     ->required(),
-                Select::make('product_id')
+                Select::make('item_id')
                     ->label('Product')
-                    ->relationship('product', 'name')
+                    ->relationship('item', 'name')
                     ->preload()
                     ->required(),
                 TextInput::make('name')
@@ -35,15 +35,15 @@ class CustomerForm
                     ->placeholder('Enter customer chat id')
                     ->numeric(),
                 Select::make('state')->options([
+                    'DONE' => 'DONE',
                     'AWAITING_PRODUCT' => 'AWAITING PRODUCT',
                     'AWAITING_SPECS' => 'AWAITING SPECS'
-                ])
-                ->default('AWAITING_PRODUCT'),
+                ]),
                 TextInput::make('message')
                     ->placeholder('Enter customer message'),
                 Select::make('platform')->options([
-                    'telegram' => 'Telegram',
-                    'whatsapp' => 'WhatsApp'
+                    'Telegram' => 'Telegram',
+                    'WhatsApp' => 'WhatsApp'
                 ])
                 ->default('telegram'),
                 TextInput::make('product')

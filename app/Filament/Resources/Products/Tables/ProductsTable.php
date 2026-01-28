@@ -18,7 +18,7 @@ class ProductsTable
         return $table
             ->columns([
                 ImageColumn::make('image_path')
-                    ->label('Image')
+                    ->label('Logo')
                     ->disk('public')
                     ->height(50)
                     ->width(50)

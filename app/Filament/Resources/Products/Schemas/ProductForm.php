@@ -45,10 +45,9 @@ class ProductForm
                     ->required(),
                 FileUpload::make('image_path')
                     ->label('Logo')
-                    ->image()
                     ->disk('public')
                     ->directory('products')
-                    ->imagePreviewHeight('150')
+                    ->previewable(false)
                     ->required(),
             ]);
     }

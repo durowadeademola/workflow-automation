@@ -16,7 +16,7 @@ class Customer extends Model
     protected $fillable = [
         'client_id',
         'agent_id',
-        'product_id',
+        'item_id',
         'name',
         'username',
         'chat_id',
@@ -40,7 +40,7 @@ class Customer extends Model
         return $this->belongsTo(Agent::class);
     }
 
-    public function product()
+    public function item()
     {
         return $this->belongsTo(Product::class);
     }
