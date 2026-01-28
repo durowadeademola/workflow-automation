@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('content');
             $table->boolean('from_customer')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

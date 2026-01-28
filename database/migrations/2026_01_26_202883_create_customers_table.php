@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('agent_email')->nullable();
             $table->string('status')->nullable();        
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

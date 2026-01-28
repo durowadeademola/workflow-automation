@@ -16,8 +16,10 @@ return new class extends Migration
             $table->foreignId('client_id')->nullable()->constrained('clients');
             $table->string('name')->nullable();
             $table->string('email')->unique()->nullable();
+            $table->string('telephone')->nullable();
             $table->string('status')->default('active');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

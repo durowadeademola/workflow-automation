@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('is_available')->default(true);
             $table->string('image_path')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

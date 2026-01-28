@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('currency', 10)->default('NGN');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
