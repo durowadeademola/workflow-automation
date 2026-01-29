@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Clients\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class ClientForm
@@ -12,36 +13,41 @@ class ClientForm
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->required()
-                    ->placeholder('Enter client full name or business name')
-                    ->maxLength(255),
-                TextInput::make('email')
-                    ->email()
-                    ->placeholder('Enter client email')
-                    ->unique(ignoreRecord: true),
-                TextInput::make('telephone')
-                    ->placeholder('Enter client telephone number'),
-                Select::make('type')
-                    ->options([
-                        'bank' => 'Bank',
-                        'fintech' => 'Fintech',
-                        'hospital' => 'Hospital',
-                        'logistics' => 'Logistics',
-                        'microfinance' => 'Microfinance Bank',
-                        'online-store' => 'Online Store',
-                        'real-estate' => 'Real Estate',
-                        'school' => 'School',
-                        'sme' => 'SME',
-                        'others' => 'Others',
-                    ])
-                    ->searchable(),
-                Select::make('status')
-                    ->options([
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
-                    ])
-                    ->default('active'),
+                Section::make()
+                    ->schema([
+                        TextInput::make('name')
+                            ->required()
+                            ->placeholder('Enter client full name or business name')
+                            ->maxLength(255),
+                        TextInput::make('email')
+                            ->email()
+                            ->placeholder('Enter client email')
+                            ->unique(ignoreRecord: true),
+                        TextInput::make('telephone')
+                            ->placeholder('Enter client telephone number'),
+                        Select::make('type')
+                            ->options([
+                                'bank' => 'Bank',
+                                'ecommerce' => 'Ecommerce',
+                                'fintech' => 'Fintech',
+                                'hospital' => 'Hospital',
+                                'logistics' => 'Logistics',
+                                'microfinance' => 'Microfinance Bank',
+                                'online-store' => 'Online Store',
+                                'real-estate' => 'Real Estate',
+                                'school' => 'School',
+                                'sme' => 'SME',
+                                'others' => 'Others',
+                            ])
+                            ->searchable(),
+                        Select::make('status')
+                            ->options([
+                                'active' => 'Active',
+                                'inactive' => 'Inactive',
+                            ])
+                            ->default('active'),
+                    ])->columns(2)
+                    ->columnSpan('full'),
             ]);
     }
 }

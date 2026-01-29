@@ -10,7 +10,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class AdminStats extends BaseWidget
 {
-    // protected bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     public static function canView(): bool
     {
@@ -22,24 +22,24 @@ class AdminStats extends BaseWidget
         return [
             Stat::make('Clients', Client::count())
                 ->description('Total registered clients')
-                ->icon('heroicon-o-building-office')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->chart([7, 2, 10, 3, 15, 4, 17])
-                ->color('success'),
+                ->icon('heroicon-o-building-office'),
+            // ->descriptionIcon('heroicon-m-arrow-trending-up')
+            // ->chart([7, 2, 10, 3, 15, 4, 17])
+            // ->color('success'),
 
             Stat::make('Customers', Customer::count())
                 ->description('All customers')
-                ->icon('heroicon-o-users')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->chart([7, 2, 10, 3, 15, 4, 17])
-                ->color('primary'),
+                ->icon('heroicon-o-users'),
+            // ->descriptionIcon('heroicon-m-arrow-trending-up')
+            // ->chart([7, 2, 10, 3, 15, 4, 17])
+            // ->color('primary'),
 
             Stat::make('Agents', Agent::count())
                 ->description('All agents')
-                ->icon('heroicon-o-user-group')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->chart([7, 2, 10, 3, 15, 4, 17])
-                ->color('danger'),
+                ->icon('heroicon-o-user-group'),
+            // ->descriptionIcon('heroicon-m-arrow-trending-up')
+            // ->chart([7, 2, 10, 3, 15, 4, 17])
+            // ->color('danger'),
 
             // Stat::make('Messages Today',
             //     Message::whereDate('created_at', today())->count()

@@ -8,9 +8,9 @@ use App\Models\Product;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class CustomerStats extends BaseWidget
+class ClientStats extends BaseWidget
 {
-    // protected bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     public static function canView(): bool
     {
