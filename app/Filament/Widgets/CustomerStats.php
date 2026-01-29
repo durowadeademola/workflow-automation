@@ -27,34 +27,34 @@ class CustomerStats extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Customers', Customer::where([
+            Stat::make('Leads & Customers', Customer::where([
                 'client_id' => auth()->user()?->client_id,
             ])->count())
-                ->description('All customers')
-                ->icon('heroicon-o-users')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->chart([7, 2, 10, 3, 15, 4, 17])
-                ->color('primary'),
+                ->description('Total leads and customers')
+                ->icon('heroicon-o-users'),
+                //->descriptionIcon('heroicon-m-arrow-trending-up')
+                //->chart([7, 2, 10, 3, 15, 4, 17])
+                //->color('primary'),
 
             Stat::make('Products', Product::where([
                 'client_id' => auth()->user()?->client_id,
                 'is_available' => true,
             ])->count())
                 ->description('Total available products')
-                ->icon('heroicon-o-shopping-bag')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->chart([7, 2, 10, 3, 15, 4, 17])
-                ->color('success'),
+                ->icon('heroicon-o-shopping-bag'),
+                //->descriptionIcon('heroicon-m-arrow-trending-up')
+                //->chart([7, 2, 10, 3, 15, 4, 17])
+                //->color('success'),
 
             Stat::make('Agents', Agent::where([
                 'client_id' => auth()->user()?->client_id,
                 'status' => 'active',
             ])->count())
                 ->description('Total active agents')
-                ->icon('heroicon-o-user-group')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->chart([7, 2, 10, 3, 15, 4, 17])
-                ->color('danger'),
+                ->icon('heroicon-o-user-group'),
+                //->descriptionIcon('heroicon-m-arrow-trending-up')
+                //->chart([7, 2, 10, 3, 15, 4, 17])
+                //->color('danger'),
 
             // Stat::make('Messages Today',
             //     Message::whereDate('created_at', today())->count()
