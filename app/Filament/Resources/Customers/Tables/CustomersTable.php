@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Customers\Tables;
 
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -16,21 +16,11 @@ class CustomersTable
     {
         return $table
             ->columns([
-                TextColumn::make('client.name')
-                    ->label('Client')
-                    ->placeholder('—')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('agent.name')
-                    ->label('Agent')
-                    ->placeholder('—')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('item.name')
-                    ->label('Product')
-                    ->placeholder('—')
-                    ->searchable()
-                    ->sortable(),
+                // TextColumn::make('client.name')
+                //     ->label('Client')
+                //     ->placeholder('—')
+                //     ->searchable()
+                //     ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('username')
@@ -45,6 +35,16 @@ class CustomersTable
                         'success' => 'DONE',
                     ])
                     ->searchable(),
+                TextColumn::make('agent.name')
+                    ->label('Agent')
+                    ->placeholder('—')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('item.name')
+                    ->label('Product')
+                    ->placeholder('—')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('message'),
                 TextColumn::make('platform'),
                 TextColumn::make('product')

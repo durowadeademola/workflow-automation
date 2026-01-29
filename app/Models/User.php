@@ -22,6 +22,7 @@ class User extends Authenticatable
     
     protected $fillable = [
         'client_id',
+        'agent_id',
         'name',
         'email',
         'password',
@@ -56,6 +57,11 @@ class User extends Authenticatable
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function agent()
+    {
+        return $this->belongsTo(Agent::class);
     }
 
     public function canAccessPanel(\Filament\Panel $panel): bool

@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Agents\Tables;
 
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -26,6 +26,8 @@ class AgentsTable
                 TextColumn::make('email')
                     ->label('Email address')
                     ->searchable(),
+                TextColumn::make('telephone')
+                    ->label('Telephone number'),
                 BadgeColumn::make('status')
                     ->colors([
                         'success' => 'active',

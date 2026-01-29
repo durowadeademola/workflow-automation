@@ -17,8 +17,11 @@ class UserForm
                 Select::make('client_id')
                     ->label('Client')
                     ->relationship('client', 'name')
-                    ->preload()
-                    ->required(),
+                    ->preload(),
+                Select::make('agent_id')
+                    ->label('Agent')
+                    ->relationship('agent', 'name')
+                    ->preload(),
                 TextInput::make('name')
                     ->placeholder('Enter user full name or business name')
                     ->required(),

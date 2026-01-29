@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Customers\Schemas;
 
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -12,11 +13,8 @@ class CustomerForm
     {
         return $schema
             ->components([
-                Select::make('client_id')
-                    ->label('Client')
-                    ->relationship('client', 'name')
-                    ->preload()
-                    ->required(),
+                Hidden::make('client_id')
+                    ->default(auth()->user()->client_id),
                 Select::make('agent_id')
                     ->label('Agent')
                     ->relationship('agent', 'name')
@@ -37,15 +35,15 @@ class CustomerForm
                 Select::make('state')->options([
                     'DONE' => 'DONE',
                     'AWAITING_PRODUCT' => 'AWAITING PRODUCT',
-                    'AWAITING_SPECS' => 'AWAITING SPECS'
+                    'AWAITING_SPECS' => 'AWAITING SPECS',
                 ]),
                 TextInput::make('message')
                     ->placeholder('Enter customer message'),
                 Select::make('platform')->options([
                     'Telegram' => 'Telegram',
-                    'WhatsApp' => 'WhatsApp'
+                    'WhatsApp' => 'WhatsApp',
                 ])
-                ->default('telegram'),
+                    ->default('telegram'),
                 TextInput::make('product')
                     ->placeholder('Enter customer product'),
                 TextInput::make('specs')
@@ -59,7 +57,7 @@ class CustomerForm
                     'ASSIGNED' => 'ASSIGNED',
                     'CLOSED' => 'CLOSED',
                 ])
-                ->default('OPEN'),
+                    ->default('OPEN'),
             ]);
     }
 }

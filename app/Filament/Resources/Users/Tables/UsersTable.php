@@ -21,18 +21,23 @@ class UsersTable
                     ->placeholder('—')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('agent.name')
+                    ->label('Agent')
+                    ->placeholder('—')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
                     ->label('Email address')
                     ->searchable(),
-                    IconColumn::make('is_admin')
+                IconColumn::make('is_admin')
                     ->label('Admin')
                     ->boolean(),
-                    IconColumn::make('is_client')
+                IconColumn::make('is_client')
                     ->label('Client')
                     ->boolean(),
-                    IconColumn::make('is_agent')
+                IconColumn::make('is_agent')
                     ->label('Agent')
                     ->boolean(),
                 TextColumn::make('created_at')
@@ -44,7 +49,7 @@ class UsersTable
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make()
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

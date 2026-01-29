@@ -20,6 +20,18 @@ class ProductResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+
+        /** * We check if the user exists, is a client, and if their
+         * associated customer profile has the right type.
+         */
+        return $user
+            && $user->is_client
+            && $user->client?->type === 'online-store';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ProductForm::configure($schema);
@@ -44,5 +56,11 @@ class ProductResource extends Resource
             'create' => CreateProduct::route('/create'),
             'edit' => EditProduct::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('client_id', auth()->user()->client_id);
     }
 }

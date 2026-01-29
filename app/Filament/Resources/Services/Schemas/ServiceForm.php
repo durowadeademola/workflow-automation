@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Services\Schemas;
 
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -14,11 +15,8 @@ class ServiceForm
     {
         return $schema
             ->components([
-                Select::make('client_id')
-                    ->label('Client')
-                    ->relationship('client', 'name')
-                    ->preload()
-                    ->required(),
+                Hidden::make('client_id')
+                    ->default(auth()->user()->client_id),
                 TextInput::make('name')
                     ->placeholder('Enter service name'),
                 Textarea::make('description')

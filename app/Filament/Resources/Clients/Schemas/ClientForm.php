@@ -34,7 +34,8 @@ class ClientForm
                         'school' => 'School',
                         'sme' => 'SME',
                         'others' => 'Others',
-                    ]),
+                    ])
+                    ->searchable(),
                 Select::make('status')
                     ->options([
                         'active' => 'Active',

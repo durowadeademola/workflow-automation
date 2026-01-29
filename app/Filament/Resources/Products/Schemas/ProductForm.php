@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -15,13 +16,11 @@ class ProductForm
     {
         return $schema
             ->components([
-                Select::make('client_id')
-                    ->label('Client')
-                    ->relationship('client', 'name')
-                    ->preload()
-                    ->required(),
+                Hidden::make('client_id')
+                    ->default(auth()->user()->client_id),
                 TextInput::make('name')
-                    ->placeholder('Enter product name'),
+                    ->placeholder('Enter product name')
+                    ->required(),
                 Textarea::make('description')
                     ->placeholder('Enter product description')
                     ->columnSpanFull(),
@@ -41,14 +40,12 @@ class ProductForm
                     ])
                     ->default('NGN'),
                 Toggle::make('is_available')
-                    ->label('Available')
-                    ->required(),
+                    ->label('Available'),
                 FileUpload::make('image_path')
                     ->label('Logo')
                     ->disk('public')
                     ->directory('products')
-                    ->previewable(false)
-                    ->required(),
+                    ->image(),
             ]);
     }
 }
