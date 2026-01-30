@@ -16,8 +16,8 @@ class Dashboard extends BaseDashboard
     {
         return [
             AdminStats::class,
-            CustomersGrowthChart::class,
-            MessagesChart::class,
+            CustomersChart::class,
+            OrdersChart::class,
             RecentMessages::class
         ];
     }

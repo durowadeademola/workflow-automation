@@ -38,13 +38,17 @@ class OrdersTable
                 //     ->placeholder('—')
                 //     ->searchable()
                 //     ->sortable(),
-                TextColumn::make('customer_name')
-                    ->searchable(),
-                TextColumn::make('customer_phone')
-                    ->searchable(),
-                TextColumn::make('customer_email')
-                    ->searchable(),
+                // TextColumn::make('customer_name')
+                //     ->searchable(),
+                // TextColumn::make('customer_phone')
+                //     ->searchable(),
+                // TextColumn::make('customer_email')
+                //     ->searchable(),
                 TextColumn::make('order_reference')
+                    ->label('Ref id')
+                    ->searchable(),
+                TextColumn::make('notes')
+                    ->label('Description')
                     ->searchable(),
                 TextColumn::make('price')
                     ->money(fn ($record) => $record->currency)
@@ -60,7 +64,7 @@ class OrdersTable
                     ->sortable(),
             ])
             ->filters([
-                //TrashedFilter::make(),
+                // TrashedFilter::make(),
             ])
             ->recordActions([
                 EditAction::make(),

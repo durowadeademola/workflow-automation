@@ -26,7 +26,7 @@ class OrderResource extends Resource
         $user = auth()->user();
 
         /** * We check if the user exists, is a client, and if their
-         * associated customer profile has the right type.
+         * associated client profile has the right type.
          */
         return $user
             && $user->is_client

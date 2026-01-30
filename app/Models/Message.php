@@ -17,6 +17,7 @@ class Message extends Model
         'client_id',
         'customer_id',
         'content',
+        'source',
         'from_customer'
     ];
     

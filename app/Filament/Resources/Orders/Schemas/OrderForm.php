@@ -64,6 +64,7 @@ class OrderForm
                         TextInput::make('source'),
                         // TextInput::make('items'),
                         Textarea::make('notes')
+                            ->label("Description")
                             ->columnSpanFull(),
                     ])->columns(2)
                     ->columnSpan('full'),

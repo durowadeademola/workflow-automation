@@ -40,4 +40,9 @@ class Client extends Model
     { 
         return $this->hasMany(Customer::class); 
     }
+
+    public function services()  
+    { 
+        return $this->hasMany(Product::class); 
+    }
 }

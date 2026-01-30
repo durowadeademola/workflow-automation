@@ -15,13 +15,19 @@ class Order extends Model
 
     protected $fillable = [
         'client_id',
-        'name',
-        'description',
-        'price',
-        'quantity',
+        'customer_id',
+        'agent_id',
+        'product_id',
+        'service_id',
+        'customer_name',
+        'customer_phone',
+        'customer_email',
+        'order_reference',
+        'amount',
         'currency',
-        'is_available',
-        'image_path'
+        'status',
+        'source',
+        'notes'
     ];
 
     public function customer()

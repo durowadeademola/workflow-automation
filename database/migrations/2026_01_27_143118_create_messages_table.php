@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('customer_id')->nullable()->constrained('customers');
             $table->text('content');
             $table->boolean('from_customer')->default(true);
+            $table->string('source')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
