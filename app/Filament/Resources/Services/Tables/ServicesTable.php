@@ -15,11 +15,11 @@ class ServicesTable
     {
         return $table
             ->columns([
-                TextColumn::make('client.name')
-                    ->label('Client')
-                    ->placeholder('—')
-                    ->searchable()
-                    ->sortable(),
+                // TextColumn::make('client.name')
+                //     ->label('Client')
+                //     ->placeholder('—')
+                //     ->searchable()
+                //     ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('description'),

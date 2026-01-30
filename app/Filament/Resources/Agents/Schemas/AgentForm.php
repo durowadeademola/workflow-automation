@@ -14,7 +14,8 @@ class AgentForm
     {
         return $schema
             ->components([
-                Section::make()
+                Section::make('Agent Management')
+                    ->description('Manage order agents')
                     ->schema([
                         Hidden::make('client_id')
                             ->default(auth()->user()->client_id),
@@ -25,7 +26,11 @@ class AgentForm
                             ->label('Email address')
                             ->placeholder('Enter agent email')
                             ->email()
-                            ->required(),
+                            ->required()
+                            ->unique(ignoreRecord: true)
+                            ->validationMessages([
+                                'unique' => 'This email is already registered to another agent.',
+                            ]),
                         TextInput::make('telephone')
                             ->placeholder('Enter agent telephone')
                             ->numeric(),

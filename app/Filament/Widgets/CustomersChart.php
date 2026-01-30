@@ -19,14 +19,20 @@ class CustomersChart extends ChartWidget
          * associated customer profile has the right type.
          */
         return $user
-            && $user->is_client
-            && $user->client?->type === 'online-store';
+            && $user->is_client || $user->is_agent
+            && in_array(strtolower($user->client?->type), [
+                'online-store',
+                'real-estate',
+                'logistics',
+                'sme',
+                'ecommerce',
+            ]);
     }
 
     protected function getData(): array
     {
         $data = Customer::query()
-            ->selectRaw('MONTHNAME(created_at) as label, COUNT(*) as total')
+            ->selectRaw("DATE_FORMAT(created_at, '%b') as label, COUNT(*) as total")
             ->where('client_id', auth()->user()?->client_id)
             ->whereYear('created_at', now()->year)
             ->groupBy('label')
@@ -36,8 +42,10 @@ class CustomersChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Total Customers in in '.now()->year,
+                    'label' => 'Total Customers in '.now()->year,
                     'data' => $data->values(),
+                    // 'backgroundColor' => '#10B981',
+                    'borderColor' => '#22C55E',
                     'fill' => 'start',
                 ],
             ],

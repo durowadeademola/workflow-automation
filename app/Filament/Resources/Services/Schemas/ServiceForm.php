@@ -16,7 +16,8 @@ class ServiceForm
     {
         return $schema
             ->components([
-                Section::make()
+                Section::make('Service Management')
+                    ->description('Manage available services')
                     ->schema([
                         Hidden::make('client_id')
                             ->default(auth()->user()->client_id),

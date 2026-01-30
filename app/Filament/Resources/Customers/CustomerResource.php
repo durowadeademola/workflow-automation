@@ -27,8 +27,13 @@ class CustomerResource extends Resource
          * associated client profile has the right type.
          */
         return $user
-            && $user->is_client
-            && $user->client?->type === 'online-store';
+            && $user->is_client || $user->is_agent
+            && in_array(strtolower($user->client?->type), ['online-store',
+                'real-estate',
+                'logistics',
+                'sme',
+                'ecommerce',
+            ]);
     }
 
     public static function form(Schema $schema): Schema
@@ -53,13 +58,13 @@ class CustomerResource extends Resource
         return [
             'index' => ListCustomers::route('/'),
             'create' => CreateCustomer::route('/create'),
-            'edit' => EditCustomer::route('/{record}/edit'),
+            //'edit' => EditCustomer::route('/{record}/edit'),
         ];
     }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()
-            ->where('client_id', auth()->user()->client_id);
+            ->where('client_id', auth()->user()?->client_id);
     }
 }

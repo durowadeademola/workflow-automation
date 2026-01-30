@@ -4,11 +4,11 @@ namespace App\Filament\Resources\Products\Schemas;
 
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class ProductForm
@@ -17,7 +17,8 @@ class ProductForm
     {
         return $schema
             ->components([
-                Section::make()
+                Section::make('Product Management')
+                    ->description('Manage available products')
                     ->schema([
                         Hidden::make('client_id')
                             ->default(auth()->user()->client_id),
@@ -38,12 +39,12 @@ class ProductForm
                             ->options([
                                 'NGN' => 'NGN',
                                 'USD' => 'USD',
-                                'GBP' => 'GBP',
                                 'EUR' => 'EUR',
+                                'GBP' => 'GBP',
                             ])
                             ->default('NGN'),
                         Toggle::make('is_available')
-                            ->label('Available'),
+                            ->label('Publish'),
                         FileUpload::make('image_path')
                             ->label('Logo')
                             ->disk('public')

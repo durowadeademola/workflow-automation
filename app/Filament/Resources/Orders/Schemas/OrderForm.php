@@ -15,17 +15,20 @@ class OrderForm
     {
         return $schema
             ->components([
-                Section::make()
+                Section::make('Order Management')
+                    ->description('Manage customer orders')
                     ->schema([
                         Hidden::make('client_id')
                             ->default(auth()->user()->client_id),
                         Select::make('customer_id')
                             ->label('Customer')
                             ->relationship('customer', 'username')
+                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->username ?? "Customer #{$record->id}")
                             ->preload(),
                         Select::make('product_id')
                             ->label('Product')
                             ->relationship('product', 'name')
+                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->name ?? "Product #{$record->id}")
                             ->preload(),
                         // Select::make('service_id')
                         //     ->label('Service')
@@ -64,7 +67,7 @@ class OrderForm
                         TextInput::make('source'),
                         // TextInput::make('items'),
                         Textarea::make('notes')
-                            ->label("Description")
+                            ->label('Description')
                             ->columnSpanFull(),
                     ])->columns(2)
                     ->columnSpan('full'),

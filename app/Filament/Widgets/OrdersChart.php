@@ -9,6 +9,8 @@ class OrdersChart extends ChartWidget
 {
     protected ?string $heading = 'Orders Growth';
 
+    protected string $color = 'primary';
+
     public static function canView(): bool
     {
         $user = auth()->user();
@@ -17,26 +19,32 @@ class OrdersChart extends ChartWidget
          * associated customer profile has the right type.
          */
         return $user
-            && $user->is_client
-            && $user->client?->type === 'online-store';
+            && $user->is_client || $user->is_agent
+            && in_array(strtolower($user->client?->type), [
+                'online-store',
+                'real-estate',
+                'logistics',
+                'sme',
+                'ecommerce',
+            ]);
     }
 
     protected function getData(): array
     {
         $data = Order::query()
-            ->selectRaw('MONTHNAME(created_at) as month, COUNT(*) as total')
+            ->selectRaw("DATE_FORMAT(created_at, '%b') as label, COUNT(*) as total")
             ->where('client_id', auth()->user()?->client_id)
             ->whereYear('created_at', now()->year)
-            ->groupBy('month')
+            ->groupBy('label')
             ->orderByRaw('MIN(created_at)')
-            ->pluck('total', 'month');
+            ->pluck('total', 'label');
 
         return [
             'datasets' => [
                 [
                     'label' => 'Total Orders in '.now()->year,
                     'data' => $data->values(),
-                    'backgroundColor' => '#3b82f6',
+                    // 'backgroundColor' => '#3b82f6',
                     'borderColor' => '#3b82f6',
                     'fill' => 'start',
                     'tension' => 0.3,

@@ -11,7 +11,6 @@ use App\Models\Service;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class ServiceResource extends Resource
@@ -28,8 +27,13 @@ class ServiceResource extends Resource
          * associated client profile has the right type.
          */
         return $user
-            && $user->is_client
-            && $user->client?->type !== 'online-store';
+            && $user->is_client || $user->is_agent
+            && ! in_array(strtolower($user->client?->type), ['online-store',
+                'real-estate',
+                'logistics',
+                'sme',
+                'ecommerce',
+            ]);
     }
 
     public static function form(Schema $schema): Schema

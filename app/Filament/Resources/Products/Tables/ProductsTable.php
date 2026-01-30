@@ -23,11 +23,11 @@ class ProductsTable
                     ->height(50)
                     ->width(50)
                     ->square(),
-                TextColumn::make('client.name')
-                    ->label('Client')
-                    ->placeholder('—')
-                    ->searchable()
-                    ->sortable(),
+                // TextColumn::make('client.name')
+                //     ->label('Client')
+                //     ->placeholder('—')
+                //     ->searchable()
+                //     ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('price')
@@ -39,7 +39,7 @@ class ProductsTable
                 TextColumn::make('currency')
                     ->searchable(),
                 IconColumn::make('is_available')
-                    ->label('Available')
+                    ->label('Publish')
                     ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime('M j, Y h:i A')

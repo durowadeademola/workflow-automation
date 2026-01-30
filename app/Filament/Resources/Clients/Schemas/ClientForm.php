@@ -30,7 +30,7 @@ class ClientForm
                                 'bank' => 'Bank',
                                 'ecommerce' => 'Ecommerce',
                                 'fintech' => 'Fintech',
-                                'hospital' => 'Hospital',
+                                'hospital-clinics' => 'Hospital/Clinics',
                                 'logistics' => 'Logistics',
                                 'microfinance' => 'Microfinance Bank',
                                 'online-store' => 'Online Store',

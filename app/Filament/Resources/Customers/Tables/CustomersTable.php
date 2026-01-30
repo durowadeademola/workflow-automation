@@ -8,6 +8,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Table;
 
 class CustomersTable
@@ -45,7 +46,7 @@ class CustomersTable
                 //     ->placeholder('—')
                 //     ->searchable()
                 //     ->sortable(),
-                //TextColumn::make('message'),
+                // TextColumn::make('message'),
                 TextColumn::make('platform'),
                 // TextColumn::make('product')
                 //     ->searchable(),
@@ -70,8 +71,26 @@ class CustomersTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()
+                    ->modalHeading('Edit order')
+                    ->modalWidth('lg') // Keeps the modal small and clean
+                    ->form([
+                       Select::make('status')
+                            ->options([
+                                'OPEN' => 'OPEN',
+                                'ASSIGNED' => 'ASSIGNED',
+                                'CLOSED' => 'CLOSED',
+                            ])
+                            ->required()
+                            ->native(false),
+
+                        Select::make('platform')->options([
+                            'Telegram' => 'Telegram',
+                            'WhatsApp' => 'WhatsApp',
+                        ])
+                            ->default('telegram'),
+                    ]),
+                // DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

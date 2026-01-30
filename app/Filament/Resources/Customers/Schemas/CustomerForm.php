@@ -14,7 +14,8 @@ class CustomerForm
     {
         return $schema
             ->components([
-                Section::make()
+                Section::make('Customer Management')
+                    ->description('Manage leads and customers')
                     ->schema([
                         Hidden::make('client_id')
                             ->default(auth()->user()->client_id),

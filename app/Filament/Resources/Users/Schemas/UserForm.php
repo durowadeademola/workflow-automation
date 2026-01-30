@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -15,36 +14,87 @@ class UserForm
     {
         return $schema
             ->components([
-                Section::make()
+                Section::make('User Management')
+                    ->description('Manage user credentials and access levels')
                     ->schema([
+                        // 1. CLIENT SELECTION
+                        // Only Admin can pick a client. Clients are locked to their own ID.
                         Select::make('client_id')
                             ->label('Client')
                             ->relationship('client', 'name')
                             ->preload(),
-                        Select::make('agent_id')
-                            ->label('Agent')
-                            ->relationship('agent', 'name')
-                            ->preload(),
+                            //->required(),
+                           // ->visible(fn () => auth()->user()->is_admin) // Only Admin sees this
+                           // ->default(auth()->user()->client_id),
+
+                        // Hidden field for non-admins to ensure client_id is saved
+                        // Hidden::make('client_id')
+                        //     ->default(auth()->user()->client_id)
+                        //     ->disabled(fn () => auth()->user()->is_admin),
+
+                        // 2. USER DETAILS
                         TextInput::make('name')
-                            ->placeholder('Enter user full name or business name')
+                            ->placeholder('Enter full name')
                             ->required(),
+
                         TextInput::make('email')
                             ->label('Email address')
-                            ->placeholder('Enter user personal or business email')
                             ->email()
-                            ->required(),
-                        // DateTimePicker::make('email_verified_at'),
+                            ->required()
+                            ->unique(ignoreRecord: true),
+
                         TextInput::make('password')
                             ->password()
-                            ->required(fn ($record) => $record === null)
-                            ->dehydrateStateUsing(fn ($state) => bcrypt($state)),
+                            ->required()
+                            ->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null),
 
-                        Toggle::make('is_admin')
-                            ->label('Admin'),
-                        Toggle::make('is_client')
-                            ->label('Client'),
-                        Toggle::make('is_agent')
-                            ->label('Agent'),
+                        // 3. ROLE LOGIC (Replaces the 3 Toggles)
+                        // We use a Select or segmented button to ensure ONLY ONE role is picked
+                        Select::make('role_type')
+                            ->label('Account Type')
+                        // We don't save this to DB, so we must manually fetch the value for existing records
+                            ->formatStateUsing(function ($record) {
+                                // if (! $record) {
+                                //     return 'is_agent';
+                                // }
+                                if ($record?->is_admin) {
+                                    return 'is_admin';
+                                }
+                                if ($record?->is_client) {
+                                    return 'is_client';
+                                }
+
+                                //return 'is_agent';
+                            })
+                            ->options(function () {
+                                if (auth()->user()->is_admin) {
+                                    return [
+                                        'is_admin' => 'Admin',
+                                        'is_client' => 'Client',
+                                        //'is_agent' => 'Agent',
+                                    ];
+                                }
+
+                               return [];
+                            })
+                            ->required()
+                            ->live()
+                            ->dehydrated(false) // CRITICAL: This prevents the "column not found" error
+                            ->afterStateUpdated(function ($state, $set) {
+                                // Reset all database toggles
+                                $set('is_admin', false);
+                                $set('is_client', false);
+                                $set('is_agent', false);
+
+                                // Set the correct one based on the selection
+                                $set($state, true);
+                            }),
+
+                        // Add these Hidden fields so Filament actually saves the data to your columns
+                        Hidden::make('is_admin'),
+                        Hidden::make('is_client'),
+                        //Hidden::make('is_agent'),
+
                     ])->columns(2)
                     ->columnSpan('full'),
             ]);

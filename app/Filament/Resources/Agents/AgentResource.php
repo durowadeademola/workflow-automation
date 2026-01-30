@@ -8,7 +8,6 @@ use App\Filament\Resources\Agents\Pages\ListAgents;
 use App\Filament\Resources\Agents\Schemas\AgentForm;
 use App\Filament\Resources\Agents\Tables\AgentsTable;
 use App\Models\Agent;
-use App\Models\Customer;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -29,7 +28,12 @@ class AgentResource extends Resource
          */
         return $user
             && $user->is_client
-            && $user->client?->type === 'online-store';
+            && in_array(strtolower($user->client?->type), ['online-store',
+                'real-estate',
+                'logistics',
+                'sme',
+                'ecommerce',
+            ]);
     }
 
     public static function form(Schema $schema): Schema
@@ -61,6 +65,6 @@ class AgentResource extends Resource
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()
-            ->where('client_id', auth()->user()->client_id);
+            ->where('client_id', auth()->user()?->client_id);
     }
 }

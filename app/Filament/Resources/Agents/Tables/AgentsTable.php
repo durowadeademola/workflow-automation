@@ -16,18 +16,18 @@ class AgentsTable
     {
         return $table
             ->columns([
-                TextColumn::make('client.name')
-                    ->label('Client')
-                    ->placeholder('—')
-                    ->searchable()
-                    ->sortable(),
+                // TextColumn::make('client.name')
+                //     ->label('Client')
+                //     ->placeholder('—')
+                //     ->searchable()
+                //     ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
+                    ->label('Email')
                     ->searchable(),
                 TextColumn::make('telephone')
-                    ->label('Telephone number'),
+                    ->label('Telephone'),
                 BadgeColumn::make('status')
                     ->colors([
                         'success' => 'active',

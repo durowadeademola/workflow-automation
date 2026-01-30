@@ -20,6 +20,7 @@ class UsersTable
                     ->label('Client')
                     ->placeholder('—')
                     ->searchable()
+                    //->visible(fn () => auth()->user()->is_admin) // Only Admin sees this
                     ->sortable(),
                 TextColumn::make('agent.name')
                     ->label('Agent')
@@ -34,6 +35,7 @@ class UsersTable
                 IconColumn::make('is_admin')
                     ->label('Admin')
                     ->boolean(),
+                    //->visible(fn () => auth()->user()->is_admin),// Only Admin sees this
                 IconColumn::make('is_client')
                     ->label('Client')
                     ->boolean(),

@@ -24,7 +24,13 @@ class RecentMessages extends TableWidget
          */
         return $user
             && $user->is_client
-            && $user->client?->type === 'online-store';
+            && in_array(strtolower($user->client?->type), [
+                'online-store',
+                'real-estate',
+                'logistics',
+                'sme',
+                'ecommerce',
+            ]);
     }
 
     public function table(Table $table): Table
@@ -35,7 +41,7 @@ class RecentMessages extends TableWidget
                 ->latest()
                 ->limit(20))
             ->columns([
-                TextColumn::make('customer.name')
+                TextColumn::make('customer.username')
                     ->label('Customer')
                     ->searchable(),
 
@@ -46,7 +52,8 @@ class RecentMessages extends TableWidget
 
                 TextColumn::make('source')
                     ->badge()
-                    ->color('primary'),
+                    ->color('primary')
+                    ->searchable(),
 
                 TextColumn::make('created_at')
                     ->label('Sent At')
