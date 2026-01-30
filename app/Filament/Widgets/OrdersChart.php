@@ -42,7 +42,7 @@ class OrdersChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Total Orders in '.now()->year,
+                    'label' => 'Total Orders for '.now()->year,
                     'data' => $data->values(),
                     // 'backgroundColor' => '#3b82f6',
                     'borderColor' => '#3b82f6',

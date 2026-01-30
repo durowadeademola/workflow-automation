@@ -27,10 +27,10 @@ class ProductResource extends Resource
          * associated client profile has the right type.
          */
         return $user
-            && $user->is_client || $user->is_agent
-            && in_array(strtolower($user->client?->type), ['online-store',
+            && ($user->is_client || $user->is_agent)
+            && in_array(strtolower($user->client?->type), [
+                'online-store',
                 'real-estate',
-                'logistics',
                 'sme',
                 'ecommerce',
             ]);

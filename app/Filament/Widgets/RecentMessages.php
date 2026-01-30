@@ -38,17 +38,26 @@ class RecentMessages extends TableWidget
         return $table
             ->query(fn (): Builder => Message::query()
                 ->where('client_id', auth()->user()?->client_id)
-                ->latest()
-                ->limit(20))
+            // Use select to get the latest message per customer
+                ->select('messages.*')
+                ->whereIn('id', function ($query) {
+                    $query->selectRaw('MAX(id)')
+                        ->from('messages')
+                        ->groupBy('customer_id'); // Groups the list by user
+                })
+                ->latest())
             ->columns([
+                TextColumn::make('customer.name')
+                    ->label('Name')
+                    ->searchable(),
                 TextColumn::make('customer.username')
-                    ->label('Customer')
+                    ->label('Username')
                     ->searchable(),
 
-                TextColumn::make('content')
-                    ->label('Message')
-                    ->limit(50)
-                    ->searchable(),
+                // TextColumn::make('content')
+                //     ->label('Message')
+                //     ->limit(50)
+                //     ->searchable(),
 
                 TextColumn::make('source')
                     ->badge()
@@ -64,6 +73,25 @@ class RecentMessages extends TableWidget
                 //
             ])
             ->actions([
+                \Filament\Actions\Action::make('viewHistory')
+                    ->label('View Chat')
+                    ->icon('heroicon-m-chat-bubble-left-right')
+                    ->modalHeading(fn (Message $record) => 'Chat with '.($record->customer?->username ?? 'User'))
+                    ->modalSubmitAction(false) // Hide the save button since it's read-only
+                    ->modalWidth('xl')
+                    ->form(function (Message $record) {
+                        // Fetch all messages between this customer and this client
+                        $history = Message::where('customer_id', $record->customer_id)
+                            ->where('client_id', $record->client_id)
+                            ->oldest()
+                            ->get();
+
+                        return [
+                            \Filament\Forms\Components\Placeholder::make('history')
+                                ->label('')
+                                ->content(view('filament.components.chat-history', ['messages' => $history])),
+                        ];
+                    }),
                 DeleteAction::make(),
             ])
             ->bulkActions([

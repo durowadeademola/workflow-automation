@@ -27,12 +27,15 @@ class ServiceResource extends Resource
          * associated client profile has the right type.
          */
         return $user
-            && $user->is_client || $user->is_agent
-            && ! in_array(strtolower($user->client?->type), ['online-store',
-                'real-estate',
+            && ($user->is_client || $user->is_agent)
+            && in_array(strtolower($user->client?->type), [
+                'bank',
+                'fintech',
+                'school',
                 'logistics',
                 'sme',
-                'ecommerce',
+                'microfinance',
+                'hospital-clinics',
             ]);
     }
 

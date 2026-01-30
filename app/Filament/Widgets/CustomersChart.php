@@ -42,7 +42,7 @@ class CustomersChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Total Customers in '.now()->year,
+                    'label' => 'Total Customers for '.now()->year,
                     'data' => $data->values(),
                     // 'backgroundColor' => '#10B981',
                     'borderColor' => '#22C55E',
