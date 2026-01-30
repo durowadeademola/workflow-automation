@@ -35,7 +35,7 @@ class AgentsTable
                     ])
                     ->searchable(),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->dateTime('M j, Y h:i A')
                     ->sortable(),
             ])
             ->filters([

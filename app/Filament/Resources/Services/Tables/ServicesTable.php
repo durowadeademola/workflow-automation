@@ -35,7 +35,7 @@ class ServicesTable
                     ->label('active')
                     ->boolean(),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->dateTime('M j, Y h:i A')
                     ->sortable(),
             ])
             ->filters([

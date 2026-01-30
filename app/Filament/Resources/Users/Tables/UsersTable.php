@@ -41,7 +41,7 @@ class UsersTable
                     ->label('Agent')
                     ->boolean(),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->dateTime('M j, Y h:i A')
                     ->sortable(),
             ])
             ->filters([

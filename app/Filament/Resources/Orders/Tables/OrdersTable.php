@@ -47,20 +47,22 @@ class OrdersTable
                 TextColumn::make('order_reference')
                     ->label('Ref id')
                     ->searchable(),
+                TextColumn::make('source')
+                    ->badge()
+                    ->color('primary'),
                 TextColumn::make('notes')
                     ->label('Description')
                     ->searchable(),
-                TextColumn::make('price')
+                TextColumn::make('amount')
                     ->money(fn ($record) => $record->currency)
                     ->sortable(),
-                TextColumn::make('currency')
-                    ->searchable(),
+                // TextColumn::make('currency')
+                //     ->searchable(),
                 TextColumn::make('status')
-                    ->searchable(),
-                TextColumn::make('source')
-                    ->searchable(),
+                    ->badge()
+                    ->color('success'),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->dateTime('M j, Y h:i A')
                     ->sortable(),
             ])
             ->filters([

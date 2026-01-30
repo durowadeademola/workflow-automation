@@ -2,33 +2,27 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Customer;
+use App\Models\Client;
 use Filament\Widgets\ChartWidget;
 
-class CustomersChart extends ChartWidget
+class ClientsChart extends ChartWidget
 {
-    protected ?string $heading = 'Customers Growth';
+    protected ?string $heading = 'New Clients';
 
     protected string $color = 'success';
 
     public static function canView(): bool
     {
-        $user = auth()->user();
-
-        /** * We check if the user exists, is a client, and if their
-         * associated customer profile has the right type.
-         */
-        return $user
-            && $user->is_client
-            && $user->client?->type === 'online-store';
+       return auth()->check() && auth()->user()->is_admin;
     }
 
     protected function getData(): array
     {
-        $data = Customer::query()
+        $data = Client::query()
             ->selectRaw('MONTHNAME(created_at) as label, COUNT(*) as total')
-            ->where('client_id', auth()->user()?->client_id)
-            ->whereYear('created_at', now()->year)
+            ->where('status', 'active')
+            //->where('client_id', auth()->user()?->client_id)
+            //->whereYear('created_at', now()->year)
             ->groupBy('label')
             ->orderByRaw('MIN(created_at)')
             ->pluck('total', 'label');
@@ -36,7 +30,7 @@ class CustomersChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Total Customers in in '.now()->year,
+                    'label' => 'Active clients',
                     'data' => $data->values(),
                     'fill' => 'start',
                 ],

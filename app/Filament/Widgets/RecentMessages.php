@@ -15,6 +15,18 @@ class RecentMessages extends TableWidget
 {
     protected int|string|array $columnSpan = 'full';
 
+    public static function canView(): bool
+    {
+        $user = auth()->user();
+
+        /** * We check if the user exists, is a client, and if their
+         * associated customer profile has the right type.
+         */
+        return $user
+            && $user->is_client
+            && $user->client?->type === 'online-store';
+    }
+
     public function table(Table $table): Table
     {
         return $table
@@ -38,7 +50,7 @@ class RecentMessages extends TableWidget
 
                 TextColumn::make('created_at')
                     ->label('Sent At')
-                    ->dateTime()
+                    ->dateTime('M j, Y h:i A')
                     ->sortable(),
             ])
             ->filters([
