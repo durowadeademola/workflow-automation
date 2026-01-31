@@ -18,31 +18,26 @@ class Client extends Model
         'email',
         'telephone',
         'type',
-        'status'
+        'status',
     ];
 
-    public function users()     
-    { 
-        return $this->hasMany(User::class); 
+    public function agents()
+    {
+        return $this->belongsTo(Agent::class);
     }
 
-    public function agents()    
-    { 
-        return $this->hasMany(Agent::class); 
+    public function products()
+    {
+        return $this->belongsTo(Product::class);
     }
 
-    public function products()  
-    { 
-        return $this->hasMany(Product::class); 
+    public function customers()
+    {
+        return $this->belongsTo(Customer::class);
     }
 
-    public function customers() 
-    { 
-        return $this->hasMany(Customer::class); 
-    }
-
-    public function services()  
-    { 
-        return $this->hasMany(Product::class); 
+    public function services()
+    {
+        return $this->belongsTo(Product::class);
     }
 }

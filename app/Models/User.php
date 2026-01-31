@@ -66,8 +66,8 @@ class User extends Authenticatable
 
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
-        // return str_ends_with($this->email, '@bluestrike.com')
-        //     && $this->hasVerifiedEmail()
-        //     && $this->hasRole('admin');
+        return $this->is_admin
+            || $this->is_client
+            || $this->is_agent;
     }
 }
