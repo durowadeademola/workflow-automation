@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+//use Filament\Models\Contracts\HasDatabaseNotifications;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, SoftDeletes;
@@ -19,7 +21,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $dates = ['deleted_at'];
-    
+
     protected $fillable = [
         'client_id',
         'agent_id',
@@ -28,7 +30,7 @@ class User extends Authenticatable
         'password',
         'is_admin',
         'is_client',
-        'is_agent'
+        'is_agent',
     ];
 
     /**

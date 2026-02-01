@@ -14,7 +14,7 @@ class AdminStats extends BaseWidget
 
     public static function canView(): bool
     {
-        return auth()->check() && auth()->user()->is_admin;
+        return auth()->check() && auth()->user()?->is_admin;
     }
 
     protected function getStats(): array

@@ -2,13 +2,15 @@
 
 namespace App\Filament\Resources\Customers\Tables;
 
+use App\Filament\Exports\CustomerExporter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Table;
 
 class CustomersTable
@@ -16,6 +18,10 @@ class CustomersTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(CustomerExporter::class),
+            ])
             ->columns([
                 // TextColumn::make('client.name')
                 //     ->label('Client')
@@ -75,7 +81,7 @@ class CustomersTable
                     ->modalHeading('Edit order')
                     ->modalWidth('lg') // Keeps the modal small and clean
                     ->form([
-                       Select::make('status')
+                        Select::make('status')
                             ->options([
                                 'OPEN' => 'OPEN',
                                 'ASSIGNED' => 'ASSIGNED',

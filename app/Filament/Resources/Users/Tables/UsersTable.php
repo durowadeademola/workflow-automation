@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Filament\Exports\UserExporter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -15,12 +17,16 @@ class UsersTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(UserExporter::class),
+            ])
             ->columns([
                 TextColumn::make('client.name')
                     ->label('Client')
                     ->placeholder('—')
                     ->searchable()
-                    //->visible(fn () => auth()->user()->is_admin) // Only Admin sees this
+                    // ->visible(fn () => auth()->user()->is_admin) // Only Admin sees this
                     ->sortable(),
                 TextColumn::make('agent.name')
                     ->label('Agent')
@@ -35,7 +41,7 @@ class UsersTable
                 IconColumn::make('is_admin')
                     ->label('Admin')
                     ->boolean(),
-                    //->visible(fn () => auth()->user()->is_admin),// Only Admin sees this
+                // ->visible(fn () => auth()->user()->is_admin),// Only Admin sees this
                 IconColumn::make('is_client')
                     ->label('Client')
                     ->boolean(),

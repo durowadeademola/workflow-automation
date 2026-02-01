@@ -2,10 +2,12 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Exports\MessageExporter;
 use App\Models\Message;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
@@ -35,6 +37,10 @@ class RecentMessages extends TableWidget
     public function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(MessageExporter::class),
+            ])
             ->query(fn (): Builder => Message::query()
                 ->where('client_id', auth()->user()?->client_id)
             // Use select to get the latest message per customer

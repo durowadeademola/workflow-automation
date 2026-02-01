@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
+use App\Filament\Exports\ProductExporter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -16,6 +18,10 @@ class ProductsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(ProductExporter::class),
+            ])
             ->columns([
                 ImageColumn::make('image_path')
                     ->label('Logo')
@@ -29,6 +35,8 @@ class ProductsTable
                 //     ->searchable()
                 //     ->sortable(),
                 TextColumn::make('name')
+                    ->searchable(),
+                TextColumn::make('description')
                     ->searchable(),
                 TextColumn::make('price')
                     ->money(fn ($record) => $record->currency)

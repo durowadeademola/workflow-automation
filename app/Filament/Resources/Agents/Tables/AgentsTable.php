@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Agents\Tables;
 
+use App\Filament\Exports\AgentExporter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -15,6 +17,10 @@ class AgentsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(AgentExporter::class),
+            ])
             ->columns([
                 // TextColumn::make('client.name')
                 //     ->label('Client')

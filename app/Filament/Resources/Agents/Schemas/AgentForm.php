@@ -18,7 +18,7 @@ class AgentForm
                     ->description('Manage order agents')
                     ->schema([
                         Hidden::make('client_id')
-                            ->default(auth()->user()->client_id),
+                            ->default(auth()->user()?->client_id),
                         TextInput::make('name')
                             ->placeholder('Enter agent name')
                             ->required(),

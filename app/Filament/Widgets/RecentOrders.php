@@ -2,11 +2,13 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Exports\OrderExporter;
 use App\Models\Order;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
@@ -25,8 +27,7 @@ class RecentOrders extends TableWidget
         /** * We check if the user exists, is a client, and if their
          * associated customer profile has the right type.
          */
-        return $user
-            && $user->is_agent
+        return $user && $user->is_agent
             && in_array(strtolower($user->client?->type), [
                 'online-store',
                 'real-estate',
@@ -39,6 +40,10 @@ class RecentOrders extends TableWidget
     public function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(OrderExporter::class),
+            ])
             ->query(fn (): Builder => Order::query()
                 ->where('client_id', auth()->user()?->client_id)
                 ->where('agent_id', auth()->user()?->agent_id))
@@ -82,7 +87,7 @@ class RecentOrders extends TableWidget
                 // TextColumn::make('customer_email')
                 //     ->searchable(),
                 TextColumn::make('order_reference')
-                    ->label('Ref id')
+                    ->label('Order id')
                     ->searchable(),
                 TextColumn::make('source')
                     ->badge()
