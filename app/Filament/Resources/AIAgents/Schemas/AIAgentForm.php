@@ -62,7 +62,6 @@ class AIAgentForm
                         Textarea::make('response')
                             ->rows(5)
                             ->label('AI Insights')
-                            ->disabled()
                             ->columnSpan('full'),
                     ])
                     ->columns(2)
@@ -70,9 +69,11 @@ class AIAgentForm
 
                 Section::make('Performance & Metadata')
                     ->schema([
-                        Toggle::make('success'),
-                        TextInput::make('latency')->numeric()->suffix('ms')->disabled(),
                         KeyValue::make('metadata')->disabled(),
+                        TextInput::make('latency')->numeric()
+                            ->suffix('ms')
+                            ->disabled(),
+                        Toggle::make('success'),
                     ])
                     ->columns(3)
                     ->columnSpan('full'),

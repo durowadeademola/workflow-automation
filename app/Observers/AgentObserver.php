@@ -67,7 +67,7 @@ class AgentObserver
     public function deleted(Agent $agent): void
     {
         // Optional: Keep the user's name/email in sync if the agent is deleted
-        $user = \App\Models\User::where('email', $agent->getOriginal('email'))
+        $user = User::where('email', $agent->getOriginal('email'))
             ->orWhere('email', $agent->email)
             ->first();
         if ($user) {

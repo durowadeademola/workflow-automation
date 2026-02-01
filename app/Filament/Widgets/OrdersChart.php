@@ -18,8 +18,7 @@ class OrdersChart extends ChartWidget
         /** * We check if the user exists, is a client, and if their
          * associated customer profile has the right type.
          */
-        return $user
-            && $user->is_client || $user->is_agent
+        return $user && $user->is_client || $user->is_agent
             && in_array(strtolower($user->client?->type), [
                 'online-store',
                 'real-estate',
@@ -42,7 +41,7 @@ class OrdersChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Total Orders for '.now()->year,
+                    'label' => 'Total Orders for 2025',
                     'data' => $data->values(),
                     // 'backgroundColor' => '#3b82f6',
                     'borderColor' => '#3b82f6',

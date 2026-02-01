@@ -18,8 +18,7 @@ class CustomersChart extends ChartWidget
         /** * We check if the user exists, is a client, and if their
          * associated customer profile has the right type.
          */
-        return $user
-            && $user->is_client || $user->is_agent
+        return $user && $user->is_client || $user->is_agent
             && in_array(strtolower($user->client?->type), [
                 'online-store',
                 'real-estate',
@@ -42,7 +41,7 @@ class CustomersChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Total Customers for '.now()->year,
+                    'label' => 'Total Customers for 2025',
                     'data' => $data->values(),
                     // 'backgroundColor' => '#10B981',
                     'borderColor' => '#22C55E',

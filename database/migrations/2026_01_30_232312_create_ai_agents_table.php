@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('service_id')->nullable()->constrained('services');
             $table->string('source')->default('external'); // n8n, api, dashboard
             $table->string('model')->nullable(); // llama3 (optional but useful)
-            $table->longText('prompt');
+            $table->longText('prompt')->nullable();
             $table->longText('response')->nullable();
             $table->boolean('success')->default(true);
             $table->text('error')->nullable();

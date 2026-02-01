@@ -66,8 +66,6 @@ class User extends Authenticatable
 
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
-        return $this->is_admin
-            || $this->is_client
-            || $this->is_agent;
+        return $this->is_admin || $this->is_client || $this->is_agent;
     }
 }

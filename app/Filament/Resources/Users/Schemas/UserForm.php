@@ -67,7 +67,7 @@ class UserForm
                                 //return 'is_agent';
                             })
                             ->options(function () {
-                                if (auth()->user()->is_admin) {
+                                if (auth()->user()?->is_admin) {
                                     return [
                                         'is_admin' => 'Admin',
                                         'is_client' => 'Client',

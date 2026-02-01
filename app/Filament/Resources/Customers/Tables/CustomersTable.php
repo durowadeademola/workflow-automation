@@ -27,7 +27,7 @@ class CustomersTable
                 TextColumn::make('username')
                     ->searchable(),
                 TextColumn::make('chat_id')
-                    ->label('Ref id')
+                    ->label('Customer id')
                     ->searchable(),
                 // BadgeColumn::make('state')
                 //     ->colors([

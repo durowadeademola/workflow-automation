@@ -45,7 +45,7 @@ class OrdersTable
                 // TextColumn::make('customer_email')
                 //     ->searchable(),
                 TextColumn::make('order_reference')
-                    ->label('Ref id')
+                    ->label('Order id')
                     ->searchable(),
                 TextColumn::make('source')
                     ->badge()

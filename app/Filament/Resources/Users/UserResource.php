@@ -21,7 +21,7 @@ class UserResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->check() && auth()->user()->is_admin;
+        return auth()->check() && auth()->user()?->is_admin;
     }
 
     public static function form(Schema $schema): Schema
@@ -53,6 +53,6 @@ class UserResource extends Resource
     // public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     // {
     //     return parent::getEloquentQuery()
-    //         ->where('client_id', auth()->user()->client_id);
+    //         ->where('client_id', auth()->user()?->client_id);
     // }
 }

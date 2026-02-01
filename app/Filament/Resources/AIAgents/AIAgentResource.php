@@ -22,13 +22,29 @@ class AIAgentResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-sparkles';
 
-    protected static ?string $navigationLabel = 'Groq AI';
+    protected static ?string $navigationLabel = 'AI';
 
     protected static ?string $modelLabel = 'AI Insight';
 
-    protected static ?string $pluralModelLabel = 'AI Insights'; 
+    protected static ?string $pluralModelLabel = 'AI Insights';
 
     protected static ?int $navigationSort = 10;
+
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+
+        /** * We check if the user exists, is a client, and if their
+         * associated client profile has the right type.
+         */
+        return $user && ($user->is_client || $user->is_agent);
+            // && in_array(strtolower($user->client?->type), [
+            //     'online-store',
+            //     'real-estate',
+            //     'sme',
+            //     'ecommerce',
+            // ]);
+    }
 
     public static function canCreate(): bool
     {

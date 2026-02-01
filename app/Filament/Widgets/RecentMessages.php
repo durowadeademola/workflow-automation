@@ -22,8 +22,7 @@ class RecentMessages extends TableWidget
         /** * We check if the user exists, is a client, and if their
          * associated customer profile has the right type.
          */
-        return $user
-            && $user->is_client
+        return $user && $user->is_client
             && in_array(strtolower($user->client?->type), [
                 'online-store',
                 'real-estate',

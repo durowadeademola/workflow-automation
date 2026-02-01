@@ -28,8 +28,7 @@ class OrderResource extends Resource
         /** * We check if the user exists, is a client, and if their
          * associated client profile has the right type.
          */
-        return $user
-            && $user->is_client || $user->is_agent
+        return $user && $user->is_client || $user->is_agent
             && in_array(strtolower($user->client?->type), ['online-store',
                 'real-estate',
                 'logistics',
