@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Models\AIAgent;
 use Illuminate\Http\Request;
 
@@ -9,27 +10,27 @@ class AIAgentController extends Controller
 {
     public function insights(Request $request)
     {
+        // Log the request to storage/logs/laravel.log to see exactly what n8n is sending
+        \Log::info('AI Logs Data:', $request->all());
+
         $agent = AIAgent::create([
             'customer_id' => $request->customer_id,
-            'client_id' => $request->client_id,
-            'order_id' => $request->order_id,
-            'product_id' => $request->product_id,
-            'service_id' => $request->service_id,
             'source' => $request->source,
-            'model' => 'groq',
-            'prompt' => $request->prompt,
+            'model' => $request->model ?? 'Groq-Llama-3.3',
+            'prompt' => $request->prompt ?? $request->text,
             'response' => $request->response,
-            'success' => $request->success ?? true,
-            'latency' => $request->latency,
+            'success' => true,
             'metadata' => [
-                'workflow_id' => $request->workflow_id,
-                'execution_id' => $request->execution_id,
-                'node_name' => $request->node_name,
                 'score' => $request->score,
                 'priority' => $request->priority,
+                // 'workflow_id' => $request->workflow_id,
+                // 'node_name' => $request->node_name,
             ],
         ]);
 
-        return response()->json($agent);
+        return response()->json([
+            'status' => 'success',
+            'data' => $agent,
+        ]);
     }
 }

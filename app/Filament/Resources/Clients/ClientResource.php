@@ -21,7 +21,7 @@ class ClientResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->check() && auth()->user()->is_admin;
+        return auth()->check() && auth()->user()?->is_admin;
     }
 
     public static function form(Schema $schema): Schema
