@@ -38,12 +38,12 @@ class AIAgentResource extends Resource
          * associated client profile has the right type.
          */
         return $user && ($user->is_client || $user->is_agent);
-            // && in_array(strtolower($user->client?->type), [
-            //     'online-store',
-            //     'real-estate',
-            //     'sme',
-            //     'ecommerce',
-            // ]);
+        // && in_array(strtolower($user->client?->type), [
+        //     'online-store',
+        //     'real-estate',
+        //     'sme',
+        //     'ecommerce',
+        // ]);
     }
 
     public static function canCreate(): bool
@@ -76,6 +76,12 @@ class AIAgentResource extends Resource
             // 'create' => CreateAIAgent::route('/create'),
             // 'edit' => EditAIAgent::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('client_id', auth()->user()?->client_id);
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder

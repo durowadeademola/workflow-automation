@@ -15,6 +15,10 @@ class AIAgentController extends Controller
 
         $agent = AIAgent::create([
             'customer_id' => $request->customer_id,
+            'client_id' => $request->client_id,
+            'order_id' => $request->order_id,
+            'product_id' => $request->product_id,
+            'service_id' => $request->service_id,
             'source' => $request->source,
             'model' => $request->model ?? 'Groq-Llama-3.3',
             'prompt' => $request->prompt ?? $request->text,

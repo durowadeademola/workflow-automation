@@ -88,6 +88,7 @@ class OrdersTable
                                 'processing' => 'Processing',
                                 'delivered' => 'Delivered',
                                 'cancelled' => 'Cancelled',
+                                'completed' => 'Completed',
                             ])
                             ->required()
                             ->native(false),

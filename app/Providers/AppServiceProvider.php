@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Gate::policy(User::class, UserPolicy::class);
         \App\Models\Agent::observe(\App\Observers\AgentObserver::class);
-        \App\Models\Order::observe(\App\Observers\OrderObserver::class);
-        \App\Models\Customer::observe(\App\Observers\OrderObserver::class);
+        //\App\Models\Order::observe(\App\Observers\OrderObserver::class);
+        //\App\Models\Customer::observe(\App\Observers\OrderObserver::class);
     }
 }

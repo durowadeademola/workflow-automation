@@ -23,21 +23,21 @@ class Client extends Model
 
     public function agents()
     {
-        return $this->belongsTo(Agent::class);
+        return $this->hasMany(Agent::class);
     }
 
     public function products()
     {
-        return $this->belongsTo(Product::class);
+        return $this->hasMany(Product::class);
     }
 
     public function customers()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->hasMany(Customer::class);
     }
 
     public function services()
     {
-        return $this->belongsTo(Product::class);
+        return $this->hasMany(Product::class);
     }
 }

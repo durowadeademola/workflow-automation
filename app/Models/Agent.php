@@ -25,4 +25,9 @@ class Agent extends Model
     {
         return $this->belongsTo(Client::class);
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

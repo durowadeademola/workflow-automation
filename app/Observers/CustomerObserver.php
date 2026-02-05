@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Customer;
 use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 
 class CustomerObserver
@@ -24,7 +25,7 @@ class CustomerObserver
                 ->success()
                 ->body("Customer #{$customer->chat_id} is ready for processing.")
                 ->actions([
-                    \Filament\Notifications\Actions\Action::make('view')
+                    Action::make('view')
                         ->button()
                         ->url(fn () => "/admin/customers/{$customer->id}"),
                 ])

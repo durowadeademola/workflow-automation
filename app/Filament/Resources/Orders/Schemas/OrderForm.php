@@ -62,6 +62,7 @@ class OrderForm
                                 'processing' => 'Processing',
                                 'delivered' => 'Delivered',
                                 'cancelled' => 'Cancelled',
+                                'completed' => 'Completed',
                             ])
                             ->default('new'),
                         TextInput::make('source'),

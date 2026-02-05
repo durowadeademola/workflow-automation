@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Order;
 use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 
 class OrderObserver
@@ -24,7 +25,7 @@ class OrderObserver
                 ->success()
                 ->body("Order #{$order->order_reference} is ready for processing.")
                 ->actions([
-                    \Filament\Notifications\Actions\Action::make('view')
+                    Action::make('view')
                         ->button()
                         ->url(fn () => "/admin/orders/{$order->id}"),
                 ])

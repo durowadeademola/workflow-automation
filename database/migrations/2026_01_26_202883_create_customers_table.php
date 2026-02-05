@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('item_id')->nullable()->constrained('products');
             $table->string('name')->nullable();
             $table->string('username')->nullable();
-            $table->integer('chat_id')->nullable();
+            $table->string('chat_id')->nullable();
             $table->string('state')->nullable();
             $table->text('message')->nullable();
             $table->string('platform')->nullable();

@@ -57,13 +57,14 @@ class CustomerResource extends Resource
         return [
             'index' => ListCustomers::route('/'),
             'create' => CreateCustomer::route('/create'),
-            //'edit' => EditCustomer::route('/{record}/edit'),
+            // 'edit' => EditCustomer::route('/{record}/edit'),
         ];
     }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()
-            ->where('client_id', auth()->user()?->client_id);
+            ->where('client_id', auth()->user()?->client_id)
+            ->orderBy('created_at', 'asc');
     }
 }
