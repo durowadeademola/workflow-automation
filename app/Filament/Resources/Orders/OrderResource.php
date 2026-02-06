@@ -29,12 +29,13 @@ class OrderResource extends Resource
          * associated client profile has the right type.
          */
         return $user && $user->is_client || $user->is_agent
-            && in_array(strtolower($user->client?->type), ['online-store',
-                'real-estate',
-                'logistics',
-                'sme',
-                'ecommerce',
-            ]);
+            && in_array(strtolower($user->client?->type),
+                ['online-store',
+                    'real-estate',
+                    'logistics',
+                    'sme',
+                    'ecommerce',
+                ]);
     }
 
     public static function form(Schema $schema): Schema
@@ -59,7 +60,7 @@ class OrderResource extends Resource
         return [
             'index' => ListOrders::route('/'),
             'create' => CreateOrder::route('/create'),
-            //'edit' => EditOrder::route('/{record}/edit'),
+            // 'edit' => EditOrder::route('/{record}/edit'),
         ];
     }
 

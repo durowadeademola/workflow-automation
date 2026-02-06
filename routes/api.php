@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AIAgentController;
 use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\API\CustomerController;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;

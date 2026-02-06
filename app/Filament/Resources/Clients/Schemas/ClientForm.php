@@ -27,10 +27,11 @@ class ClientForm
                             ->placeholder('Enter client telephone number'),
                         Select::make('type')
                             ->options([
-                                'bank' => 'Bank',
+                                'commercial-bank' => 'Commercial Bank',
                                 'ecommerce' => 'Ecommerce',
                                 'fintech' => 'Fintech',
                                 'hospital-clinic' => 'Hospital/Clinic',
+                                'law-firm' => 'Law Firm',
                                 'logistics' => 'Logistics',
                                 'microfinance' => 'Microfinance Bank',
                                 'online-store' => 'Online Store',

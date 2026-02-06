@@ -2,12 +2,12 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Client;
+use App\Models\Vulnerability;
 use Filament\Widgets\ChartWidget;
 
-class ClientsChart extends ChartWidget
+class VulnerabilitiesChart extends ChartWidget
 {
-    protected ?string $heading = 'Clients Trend';
+    protected ?string $heading = 'Vulnerabilities Trend';
 
     protected string $color = 'success';
 
@@ -18,11 +18,11 @@ class ClientsChart extends ChartWidget
 
     protected function getData(): array
     {
-        $data = Client::query()
+        $data = Vulnerability::query()
             ->selectRaw('MONTHNAME(created_at) as label, COUNT(*) as total')
-            ->where('status', 'active')
+            //->where('status', 'active')
             //->where('client_id', auth()->user()?->client_id)
-            //->whereYear('created_at', now()->year)
+            ->whereYear('created_at', now()->year)
             ->groupBy('label')
             ->orderByRaw('MIN(created_at)')
             ->pluck('total', 'label');
@@ -30,7 +30,7 @@ class ClientsChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Active clients',
+                    'label' => 'Found Vulnerabilities',
                     'data' => $data->values(),
                     'fill' => 'start',
                 ],

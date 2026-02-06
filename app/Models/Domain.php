@@ -18,7 +18,7 @@ class Domain extends Model
         'program_id',
         'url',
         'status',
-        'is_sudomain',
+        'is_subdomain',
         'parent_id',
     ];
 
