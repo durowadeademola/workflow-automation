@@ -65,6 +65,6 @@ class CustomerResource extends Resource
     {
         return parent::getEloquentQuery()
             ->where('client_id', auth()->user()?->client_id)
-            ->orderBy('created_at', 'asc');
+            ->orderBy('created_at', 'desc');
     }
 }

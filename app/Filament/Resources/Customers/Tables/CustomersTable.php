@@ -7,8 +7,8 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\Select;
 use Filament\Actions\ExportAction;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -53,7 +53,14 @@ class CustomersTable
                 //     ->searchable()
                 //     ->sortable(),
                 // TextColumn::make('message'),
-                TextColumn::make('platform'),
+                TextColumn::make('platform')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Telegram' => 'primary',
+                        'WhatsApp' => 'success',
+                        default => 'gray',
+                    })
+                    ->searchable(),
                 // TextColumn::make('product')
                 //     ->searchable(),
                 // TextColumn::make('specs')

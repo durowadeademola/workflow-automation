@@ -31,7 +31,7 @@ class OrderController extends Controller
             //'currency' => $request->currency ?? 'NGN',
             'status' => 'new',
             'source' => $request->source ?? 'Telegram',
-            'notes' => $request->specs,
+            'notes' => $request->notes,
         ]);
 
         $agent = Agent::where('client_id', $request->client_id)

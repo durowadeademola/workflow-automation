@@ -1,4 +1,5 @@
-<div class="flex flex-col space-y-4 p-4 antialiased bg-slate-50 dark:bg-gray-900 rounded-xl max-h-[500px] overflow-y-auto border border-gray-100 dark:border-gray-800 shadow-inner">
+<div class="flex flex-col space-y-4 p-4 antialiased bg-slate-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 shadow-inner"
+style="max-height: 500px; overflow-y: auto;">
     @forelse($messages as $msg)
         @php
             // Logic to determine if message is from the customer or the business/agent
@@ -17,16 +18,12 @@
                     </span>
                 @endif --}}
 
-                <p class="text-sm text-danger leading-relaxed whitespace-pre-wrap">
-                    {{ $msg->content }}
-                </p>
-
                 <div @class([
                     'text-[9px] mt-1 flex justify-end items-center gap-1',
                     'text-gray-400' => $isCustomer,
                     'text-primary-100' => !$isCustomer,
                 ])>
-                    sent at: {{ $msg->created_at->format('d-m-y g:i A') }}
+                    {{ $msg->created_at->format('d-m-y g:i A') }}: <span class="text-sm text-danger leading-relaxed whitespace-pre-wrap"> {{ $msg->content }}</span> 
                     @if(!$isCustomer)
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     @endif

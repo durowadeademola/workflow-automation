@@ -7,9 +7,9 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\ExportAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -55,13 +55,18 @@ class OrdersTable
                     ->searchable(),
                 TextColumn::make('source')
                     ->badge()
-                    ->color('primary'),
+                    ->color(fn (string $state): string => match ($state) {
+                        'Telegram' => 'primary',
+                        'WhatsApp' => 'success',
+                        default => 'gray',
+                    })
+                    ->searchable(),
                 TextColumn::make('notes')
                     ->label('Description')
                     ->searchable(),
-                TextColumn::make('amount')
-                    ->money(fn ($record) => $record->currency)
-                    ->sortable(),
+                // TextColumn::make('amount')
+                //     ->money(fn ($record) => $record->currency)
+                //     ->sortable(),
                 // TextColumn::make('currency')
                 //     ->searchable(),
                 TextColumn::make('status')

@@ -66,7 +66,11 @@ class RecentMessages extends TableWidget
 
                 TextColumn::make('source')
                     ->badge()
-                    ->color('primary')
+                    ->color(fn (string $state): string => match ($state) {
+                        'Telegram' => 'primary',
+                        'WhatsApp' => 'success',
+                        default => 'gray',
+                    })
                     ->searchable(),
 
                 TextColumn::make('created_at')
@@ -79,7 +83,7 @@ class RecentMessages extends TableWidget
             ])
             ->actions([
                 \Filament\Actions\Action::make('viewHistory')
-                    ->label('View Chat')
+                    ->label('Chat history')
                     ->icon('heroicon-m-chat-bubble-left-right')
                     ->modalHeading(fn (Message $record) => 'Chat with '.($record->customer?->username ?? 'User'))
                     ->modalSubmitAction(false) // Hide the save button since it's read-only
@@ -88,7 +92,7 @@ class RecentMessages extends TableWidget
                         // Fetch all messages between this customer and this client
                         $history = Message::where('customer_id', $record->customer_id)
                             ->where('client_id', $record->client_id)
-                            ->oldest()
+                            ->orderBy('created_at', 'desc')
                             ->get();
 
                         return [
