@@ -1,18 +1,15 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import tailwindcss from '@tailwindcss/vite';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite'; // 1. Import it
 
 export default defineConfig({
     plugins: [
+        tailwindcss(), // 2. Add it here (usually before laravel plugin)
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: 'resources/js/app.jsx',
             refresh: true,
         }),
-        tailwindcss(),
+        react(),
     ],
-    server: {
-        watch: {
-            ignored: ['**/storage/framework/views/**'],
-        },
-    },
 });
