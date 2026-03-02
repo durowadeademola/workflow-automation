@@ -2,26 +2,24 @@
 
 namespace App\Models;
 
+use App\Http\Traits\GuidId;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends Model
+class Subscription extends Model
 {
-    use SoftDeletes;
+    use GuidId, SoftDeletes;
 
-    public $table = 'products';
+    public $table = 'subscriptions';
 
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
         'client_id',
         'name',
-        'description',
-        'price',
-        'quantity',
-        'currency',
-        'is_available',
-        'image_path',
+        'start_date',
+        'end_date',
+        'is_active'
     ];
 
     public function client()

@@ -2,9 +2,7 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Agent;
 use App\Models\Client;
-use App\Models\Customer;
 use App\Models\Domain;
 use App\Models\Vulnerability;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;

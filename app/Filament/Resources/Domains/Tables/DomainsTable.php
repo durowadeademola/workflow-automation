@@ -48,7 +48,7 @@ class DomainsTable
                     ->sortable(),
             ])
             ->filters([
-                //TrashedFilter::make(),
+                // TrashedFilter::make(),
             ])
             ->recordActions([
                 EditAction::make(),

@@ -15,7 +15,7 @@ class Program extends Model
 
     protected $fillable = [
         'client_id',
-        'name', 
+        'name',
         'description',
         'status',
     ];

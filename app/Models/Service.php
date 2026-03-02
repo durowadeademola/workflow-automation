@@ -19,7 +19,7 @@ class Service extends Model
         'description',
         'price',
         'currency',
-        'is_active'
+        'is_active',
     ];
 
     public function client()

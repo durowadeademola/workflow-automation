@@ -2,11 +2,9 @@
 
 namespace App\Filament\Pages;
 
-use Filament\Pages\Dashboard as BaseDashboard;
-use Filament\Support\Enums\IconPosition;
-use Filament\Support\Enums\IconSize;
-use Filament\Support\Icons\Heroicon;
 use BackedEnum;
+use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Support\Icons\Heroicon;
 
 class Dashboard extends BaseDashboard
 {

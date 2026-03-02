@@ -13,7 +13,7 @@ class ClientsChart extends ChartWidget
 
     public static function canView(): bool
     {
-       return auth()->check() && auth()->user()?->is_admin;
+        return auth()->check() && auth()->user()?->is_admin;
     }
 
     protected function getData(): array
@@ -21,8 +21,8 @@ class ClientsChart extends ChartWidget
         $data = Client::query()
             ->selectRaw('MONTHNAME(created_at) as label, COUNT(*) as total')
             ->where('status', 'active')
-            //->where('client_id', auth()->user()?->client_id)
-            //->whereYear('created_at', now()->year)
+            // ->where('client_id', auth()->user()?->client_id)
+            // ->whereYear('created_at', now()->year)
             ->groupBy('label')
             ->orderByRaw('MIN(created_at)')
             ->pluck('total', 'label');

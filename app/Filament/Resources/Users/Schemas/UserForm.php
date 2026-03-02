@@ -23,9 +23,9 @@ class UserForm
                             ->label('Client')
                             ->relationship('client', 'name')
                             ->preload(),
-                            //->required(),
-                           // ->visible(fn () => auth()->user()->is_admin) // Only Admin sees this
-                           // ->default(auth()->user()->client_id),
+                        // ->required(),
+                        // ->visible(fn () => auth()->user()->is_admin) // Only Admin sees this
+                        // ->default(auth()->user()->client_id),
 
                         // Hidden field for non-admins to ensure client_id is saved
                         // Hidden::make('client_id')
@@ -64,18 +64,18 @@ class UserForm
                                     return 'is_client';
                                 }
 
-                                //return 'is_agent';
+                                // return 'is_agent';
                             })
                             ->options(function () {
                                 if (auth()->user()?->is_admin) {
                                     return [
                                         'is_admin' => 'Admin',
                                         'is_client' => 'Client',
-                                        //'is_agent' => 'Agent',
+                                        // 'is_agent' => 'Agent',
                                     ];
                                 }
 
-                               return [];
+                                return [];
                             })
                             ->required()
                             ->live()
@@ -93,7 +93,7 @@ class UserForm
                         // Add these Hidden fields so Filament actually saves the data to your columns
                         Hidden::make('is_admin'),
                         Hidden::make('is_client'),
-                        //Hidden::make('is_agent'),
+                        // Hidden::make('is_agent'),
 
                     ])->columns(2)
                     ->columnSpan('full'),

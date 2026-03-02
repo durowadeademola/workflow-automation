@@ -18,9 +18,9 @@ class Message extends Model
         'customer_id',
         'content',
         'source',
-        'from_customer'
+        'from_customer',
     ];
-    
+
     public function client()
     {
         return $this->belongsTo(Client::class);

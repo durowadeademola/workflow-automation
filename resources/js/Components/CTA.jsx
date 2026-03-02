@@ -5,7 +5,7 @@ export default function CTA() {
                 Ready to Automate Your Business?
             </h2>
             <p className="mt-4 opacity-90">
-                Join businesses using BlueFlow to grow faster.
+                Join businesses using Blueflow to grow faster.
             </p>
             <button className="mt-8 bg-white text-blue-600 px-8 py-3 rounded-xl font-semibold">
                 Get Started Now

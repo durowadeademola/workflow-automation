@@ -27,7 +27,7 @@ class Customer extends Model
         'specs',
         'assigned_agent',
         'agent_email',
-        'status'
+        'status',
     ];
 
     public function client()

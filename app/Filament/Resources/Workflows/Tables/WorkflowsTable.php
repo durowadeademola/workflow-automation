@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Workflows\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\IconColumn;
@@ -37,7 +36,7 @@ class WorkflowsTable
                     ->sortable(),
             ])
             ->filters([
-                //TrashedFilter::make(),
+                // TrashedFilter::make(),
             ])
             ->recordActions([
                 EditAction::make(),

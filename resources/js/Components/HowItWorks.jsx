@@ -9,7 +9,7 @@ export default function HowItWorks() {
         <section id="how" className="py-24">
             <div className="max-w-5xl mx-auto px-6 text-center">
                 <h2 className="text-4xl font-bold">
-                    How BlueFlow Works
+                    How Blueflow Works
                 </h2>
 
                 <div className="mt-16 grid md:grid-cols-3 gap-8">

@@ -3,7 +3,7 @@ export default function Footer() {
         <footer className="bg-gray-900 text-gray-400 py-12">
             <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-8">
                 <div>
-                    <h3 className="text-white text-xl font-bold">BlueFlow</h3>
+                    <h3 className="text-white text-xl font-bold">Blueflow</h3>
                     <p className="mt-4">
                         Intelligent workflow automation for African businesses.
                     </p>
@@ -28,7 +28,7 @@ export default function Footer() {
             </div>
 
             <div className="text-center mt-12 text-sm">
-                © {new Date().getFullYear()} BlueFlow. All rights reserved.
+                © {new Date().getFullYear()} Blueflow. All rights reserved.
             </div>
         </footer>
     )

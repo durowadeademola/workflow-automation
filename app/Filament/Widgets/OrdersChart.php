@@ -34,7 +34,7 @@ class OrdersChart extends ChartWidget
             ->selectRaw("DATE_FORMAT(created_at, '%b') as label, COUNT(*) as total")
             ->where('client_id', auth()->user()?->client_id)
             ->whereYear('created_at', '2025')
-            //->whereYear('created_at', now()->year)
+            // ->whereYear('created_at', now()->year)
             ->groupBy('label')
             ->orderByRaw('MIN(created_at)')
             ->pluck('total', 'label');

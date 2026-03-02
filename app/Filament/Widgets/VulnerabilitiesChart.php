@@ -13,15 +13,15 @@ class VulnerabilitiesChart extends ChartWidget
 
     public static function canView(): bool
     {
-       return auth()->check() && auth()->user()?->is_admin;
+        return auth()->check() && auth()->user()?->is_admin;
     }
 
     protected function getData(): array
     {
         $data = Vulnerability::query()
             ->selectRaw('MONTHNAME(created_at) as label, COUNT(*) as total')
-            //->where('status', 'active')
-            //->where('client_id', auth()->user()?->client_id)
+            // ->where('status', 'active')
+            // ->where('client_id', auth()->user()?->client_id)
             ->whereYear('created_at', now()->year)
             ->groupBy('label')
             ->orderByRaw('MIN(created_at)')

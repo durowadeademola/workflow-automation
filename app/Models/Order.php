@@ -27,7 +27,7 @@ class Order extends Model
         'currency',
         'status',
         'source',
-        'notes'
+        'notes',
     ];
 
     public function customer()
