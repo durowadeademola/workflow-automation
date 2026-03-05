@@ -14,7 +14,7 @@ return new class extends Migration
          if (!Schema::hasTable('subscriptions')) {
              Schema::create('subscriptions', function (Blueprint $table) {
                 $table->id();
-                $table->foreignUuid('client_id')->constrained('clients');
+                $table->foreignId('client_id')->nullable()->constrained('clients');
                 $table->string('name')->nullable();
                 $table->date('start_date')->nullable();
                 $table->date('end_date')->nullable();
