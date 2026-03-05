@@ -1,5 +1,4 @@
 services:
-
   app:
     build:
       context: .
@@ -8,17 +7,24 @@ services:
     working_dir: /var/www
     volumes:
       - .:/var/www
+    networks:
+      - app-network
+    expose:
+      - "9000"  # only accessible to Nginx
 
   web:
     image: nginx:alpine
     container_name: laravel_nginx
     ports:
-      - "8080:80"
+      - "80:80"  # host port 80 → Nginx
     volumes:
       - .:/var/www
       - ./nginx:/etc/nginx/conf.d
     depends_on:
       - app
+      - n8n
+    networks:
+      - app-network
 
   db:
     image: mysql:8
@@ -33,6 +39,20 @@ services:
       - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
+    networks:
+      - app-network
+
+  n8n:
+    image: n8nio/n8n
+    container_name: n8n
+    networks:
+      - app-network
+    expose:
+      - "5678"  # only accessible to Nginx
 
 volumes:
   mysql_data:
+
+networks:
+  app-network:
+    driver: bridge
