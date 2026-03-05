@@ -11,19 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('client_id')->nullable()->constrained('clients');
-            $table->string('name')->nullable();
-            $table->text('description')->nullable();
-            $table->decimal('price', 12, 2)->nullable();
-            $table->integer('quantity')->nullable();
-            $table->string('currency', 10)->default('NGN');
-            $table->boolean('is_available')->default(true);
-            $table->string('image_path')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+          if (!Schema::hasTable('products')) {
+            Schema::create('products', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('client_id')->nullable()->constrained('clients');
+                $table->string('name')->nullable();
+                $table->text('description')->nullable();
+                $table->decimal('price', 12, 2)->nullable();
+                $table->integer('quantity')->nullable();
+                $table->string('currency', 10)->default('NGN');
+                $table->boolean('is_available')->default(true);
+                $table->string('image_path')->nullable();
+                $table->timestamps();
+                $table->softDeletes();
+            });
+          }
     }
 
     /**

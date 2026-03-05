@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('domains', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('client_id')->nullable()->constrained('clients');
-            $table->foreignId('parent_id')->nullable()->constrained('domains');
-            $table->string('program_id')->nullable()->constrained('programs');
-            $table->string('url')->nullable();
-            $table->string('status')->nullable();
-            $table->boolean('is_subdomain')->default(false);
-            $table->timestamps();
-            $table->softDeletes();
-        });
+         if (!Schema::hasTable('domains')) {
+             Schema::create('domains', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('client_id')->nullable()->constrained('clients');
+                $table->foreignId('parent_id')->nullable()->constrained('domains');
+                $table->string('program_id')->nullable()->constrained('programs');
+                $table->string('url')->nullable();
+                $table->string('status')->nullable();
+                $table->boolean('is_subdomain')->default(false);
+                $table->timestamps();
+                $table->softDeletes();
+            });
+         }
     }
 
     /**

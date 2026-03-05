@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subscriptions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignUuid('client_id')->constrained('clients');
-            $table->string('name')->nullable();
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
-            $table->boolean('is_active')->default(false);
-            $table->softDeletes();
-            $table->timestamps();
-        });
+         if (!Schema::hasTable('subscriptions')) {
+             Schema::create('subscriptions', function (Blueprint $table) {
+                $table->id();
+                $table->foreignUuid('client_id')->constrained('clients');
+                $table->string('name')->nullable();
+                $table->date('start_date')->nullable();
+                $table->date('end_date')->nullable();
+                $table->boolean('is_active')->default(false);
+                $table->softDeletes();
+                $table->timestamps();
+            });
+         }
     }
 
     /**

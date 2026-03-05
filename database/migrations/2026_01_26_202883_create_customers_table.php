@@ -11,25 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('client_id')->nullable()->constrained('clients');
-            $table->foreignId('agent_id')->nullable()->constrained('agents');
-            $table->foreignId('item_id')->nullable()->constrained('products');
-            $table->string('name')->nullable();
-            $table->string('username')->nullable();
-            $table->string('chat_id')->nullable();
-            $table->string('state')->nullable();
-            $table->text('message')->nullable();
-            $table->string('platform')->nullable();
-            $table->string('product')->nullable();
-            $table->string('specs')->nullable();
-            $table->string('assigned_agent')->nullable();
-            $table->string('agent_email')->nullable();
-            $table->string('status')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+         if (!Schema::hasTable('customers')) {
+            Schema::create('customers', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('client_id')->nullable()->constrained('clients');
+                $table->foreignId('agent_id')->nullable()->constrained('agents');
+                $table->foreignId('item_id')->nullable()->constrained('products');
+                $table->string('name')->nullable();
+                $table->string('username')->nullable();
+                $table->string('chat_id')->nullable();
+                $table->string('state')->nullable();
+                $table->text('message')->nullable();
+                $table->string('platform')->nullable();
+                $table->string('product')->nullable();
+                $table->string('specs')->nullable();
+                $table->string('assigned_agent')->nullable();
+                $table->string('agent_email')->nullable();
+                $table->string('status')->nullable();
+                $table->timestamps();
+                $table->softDeletes();
+            });
+         }
     }
 
     /**

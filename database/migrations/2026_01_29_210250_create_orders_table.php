@@ -11,26 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('customer_id')->nullable()->constrained('customers');
-            $table->foreignId('client_id')->nullable()->constrained('clients');
-            $table->foreignId('agent_id')->nullable()->constrained('agents');
-            $table->foreignId('product_id')->nullable()->constrained('products');
-            $table->foreignId('service_id')->nullable()->constrained('services');
-            $table->string('customer_name')->nullable();
-            $table->string('customer_phone')->nullable();
-            $table->string('customer_email')->nullable();
-            $table->string('order_reference')->nullable()->unique();
-            $table->decimal('amount', 12, 2)->default(0);
-            $table->string('currency')->default('NGN');
-            $table->string('status')->default('new');
-            $table->string('source')->nullable();
-            $table->json('items')->nullable();
-            $table->text('notes')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        if (!Schema::hasTable('orders')) {
+             Schema::create('orders', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('customer_id')->nullable()->constrained('customers');
+                $table->foreignId('client_id')->nullable()->constrained('clients');
+                $table->foreignId('agent_id')->nullable()->constrained('agents');
+                $table->foreignId('product_id')->nullable()->constrained('products');
+                $table->foreignId('service_id')->nullable()->constrained('services');
+                $table->string('customer_name')->nullable();
+                $table->string('customer_phone')->nullable();
+                $table->string('customer_email')->nullable();
+                $table->string('order_reference')->nullable()->unique();
+                $table->decimal('amount', 12, 2)->default(0);
+                $table->string('currency')->default('NGN');
+                $table->string('status')->default('new');
+                $table->string('source')->nullable();
+                $table->json('items')->nullable();
+                $table->text('notes')->nullable();
+                $table->timestamps();
+                $table->softDeletes();
+            });
+        }
     }
 
     /**

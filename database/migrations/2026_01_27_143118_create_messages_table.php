@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('messages', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('client_id')->nullable()->constrained('clients');
-            $table->foreignId('customer_id')->nullable()->constrained('customers');
-            $table->text('content');
-            $table->boolean('from_customer')->default(true);
-            $table->string('source')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        if (!Schema::hasTable('messages')) {
+            Schema::create('messages', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('client_id')->nullable()->constrained('clients');
+                $table->foreignId('customer_id')->nullable()->constrained('customers');
+                $table->text('content');
+                $table->boolean('from_customer')->default(true);
+                $table->string('source')->nullable();
+                $table->timestamps();
+                $table->softDeletes();
+            });
+        }
     }
 
     /**

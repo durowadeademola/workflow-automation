@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('workflows', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('client_id')->nullable()->constrained('clients');
-            $table->string('name')->nullable();
-            $table->text('description')->nullable();
-            $table->string('platform')->default('n8n');
-            $table->boolean('is_published')->default(true);
-            $table->timestamps();
-            $table->softDeletes();
-        });
+         if (!Schema::hasTable('workflows')) {
+            Schema::create('workflows', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('client_id')->nullable()->constrained('clients');
+                $table->string('name')->nullable();
+                $table->text('description')->nullable();
+                $table->string('platform')->default('n8n');
+                $table->boolean('is_published')->default(true);
+                $table->timestamps();
+                $table->softDeletes();
+            });
+         }
     }
 
     /**
