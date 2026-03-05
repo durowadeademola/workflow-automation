@@ -1,12 +1,13 @@
 services:
+
   app:
-    image: php:8.3-fpm
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: laravel_app
     working_dir: /var/www
     volumes:
       - .:/var/www
-    depends_on:
-      - db
 
   web:
     image: nginx:alpine
@@ -35,4 +36,3 @@ services:
 
 volumes:
   mysql_data:
-  db_data:
