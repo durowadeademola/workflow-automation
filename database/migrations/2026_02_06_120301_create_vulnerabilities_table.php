@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         if (!Schema::hasTable('vulnerabilities')) {
-        Schema::create('vulnerabilities', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('client_id')->nullable()->constrained('clients');
-            $table->foreignId('domain_id')->nullable()->constrained('domains');
-            $table->string('program_id')->nullable()->constrained('programs');
-            $table->string('name')->nullable();
-            $table->text('description')->nullable();
-            $table->string('category')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+            Schema::create('vulnerabilities', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('client_id')->nullable()->constrained('clients');
+                $table->foreignId('domain_id')->nullable()->constrained('domains');
+                $table->string('program_id')->nullable()->constrained('programs');
+                $table->string('name')->nullable();
+                $table->text('description')->nullable();
+                $table->string('category')->nullable();
+                $table->timestamps();
+                $table->softDeletes();
+            });
         }
     }
 

@@ -59,6 +59,11 @@ services:
       - app-network
     expose:
       - "5678"  # only accessible to Nginx
+    environment:
+      - N8N_HOST=n8n.blueflowautomation.com
+      - N8N_PROTOCOL=https
+      - WEBHOOK_URL=https://n8n.blueflowautomation.com/
+      - N8N_EDITOR_BASE_URL=https://n8n.blueflowautomation.com
 
 volumes:
   mysql_data:
