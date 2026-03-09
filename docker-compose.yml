@@ -62,6 +62,7 @@ services:
     volumes:
       - n8n_n8n_data:/home/node/.n8n
     environment:
+      - N8N_ENCRYPTION_KEY=nh77drfg737firh384y939hhhh8473762vfdddff3gtr
       - N8N_HOST=n8n.blueflowautomation.com
       - N8N_PROTOCOL=https
       - WEBHOOK_URL=https://n8n.blueflowautomation.com/
