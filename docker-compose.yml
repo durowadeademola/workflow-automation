@@ -59,14 +59,14 @@ services:
       - app-network
     expose:
       - "5678"
+    volumes:
+      - n8n_n8n_data:/home/node/.n8n
     environment:
       - N8N_HOST=n8n.blueflowautomation.com
       - N8N_PROTOCOL=https
       - WEBHOOK_URL=https://n8n.blueflowautomation.com/
       - N8N_EDITOR_BASE_URL=https://n8n.blueflowautomation.com
       - GENERIC_TIMEZONE=Africa/Lagos
-    volumes:
-      - n8n_n8n_data:/home/node/.n8n
 
 volumes:
   mysql_data:
