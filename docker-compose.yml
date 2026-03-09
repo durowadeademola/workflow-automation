@@ -64,12 +64,13 @@ services:
       - N8N_PROTOCOL=https
       - WEBHOOK_URL=https://n8n.blueflowautomation.com/
       - N8N_EDITOR_BASE_URL=https://n8n.blueflowautomation.com
+      - GENERIC_TIMEZONE=Africa/Lagos
     volumes:
-      - n8n_data:/home/node/.n8n
+      - n8n_n8n_data:/home/node/.n8n
 
 volumes:
   mysql_data:
-  n8n_data:
+  n8n_n8n_data:
 
 networks:
   app-network:
