@@ -8,7 +8,7 @@ export default function Hero() {
                 </h1>
 
                 <p className="mt-6 text-lg md:text-xl opacity-90 max-w-2xl mx-auto">
-                    Blueflow helps African businesses automate sales, CRM, 
+                    Blueflow Automation helps businesses automate sales, CRM, 
                     messaging, and operations — all from one dashboard.
                 </p>
 
