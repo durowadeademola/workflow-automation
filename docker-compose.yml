@@ -71,6 +71,7 @@ services:
 volumes:
   mysql_data:
   n8n_n8n_data:
+    external: true
 
 networks:
   app-network:
