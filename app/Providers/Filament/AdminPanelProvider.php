@@ -64,6 +64,22 @@ class AdminPanelProvider extends PanelProvider
                 fn (): string => Blade::render('
                 <style>
                 /* 1. DESKTOP & GENERAL CARD STYLE */
+                html {
+                    font-size: 16px !important; /* force consistent rems */
+                }
+
+                body {
+                    font-size: 1rem !important;
+                }
+
+                /* Fix 100vh issues */
+                :root {
+                    --vh: 1vh;
+                }
+
+                .filament-full-height {
+                    height: calc(var(--vh, 1vh) * 100);
+                }
                 .fi-sidebar-nav {
                     margin: 1rem !important;
                     border-radius: 1.5rem !important;

@@ -1,0 +1,17 @@
+/* Force root font-size for Filament admin panel */
+html {
+    font-size: 16px !important;
+}
+
+body {
+    font-size: 1rem !important;
+}
+
+/* Fix full-height for login/dashboard pages */
+:root {
+    --vh: 1vh;
+}
+
+.filament-full-height {
+    height: calc(var(--vh, 1vh) * 100);
+}

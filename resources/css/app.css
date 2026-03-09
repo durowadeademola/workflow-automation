@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+/* --- Fix root font-size so 1rem = 16px --- */
+html {
+    font-size: 16px !important;
+}
+
+/* Optional: force body to use 1rem */
+body {
+    font-size: 1rem;
+}
+
+/* --- Fix full-height (100vh) sections on mobile/live server --- */
+:root {
+    --vh: 1vh;
+}
+
+.full-height {
+    height: calc(var(--vh, 1vh) * 100);
+}

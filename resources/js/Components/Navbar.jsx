@@ -15,12 +15,12 @@ export default function Navbar() {
                 </nav>
 
                 <div className="flex gap-4">
-                    <Link href="/login" className="text-sm font-medium">
+                    <Link href="/admin/login" className="text-sm font-medium">
                         Login
                     </Link>
-                    <Link href="/register" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+                    {/* <Link href="/register" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
                         Get Started
-                    </Link>
+                    </Link> */}
                 </div>
             </div>
         </header>
