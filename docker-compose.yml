@@ -10,13 +10,13 @@ services:
     networks:
       - app-network
     expose:
-      - "9000"  # only accessible to Nginx
+      - "9000" # only accessible to Nginx
 
   web:
     image: nginx:alpine
     container_name: laravel_nginx
     ports:
-      - "80:80"  # host port 80 → Nginx
+      - "80:80" # host port 80 → Nginx
       - "443:443"
     volumes:
       - .:/var/www
@@ -62,7 +62,7 @@ services:
     volumes:
       - ./n8n_data:/home/node/.n8n
     environment:
-      - N8N_ENCRYPTION_KEY=lq02/BmUWzBX7MzRG+v2E181VaWMK3KQ
+      - N8N_ENCRYPTION_KEY=MrnGwqXZMm8UilxiLU0lWGIV7Sx/nG/J
       - N8N_HOST=n8n.blueflowautomation.com
       - N8N_PROTOCOL=https
       - WEBHOOK_URL=https://n8n.blueflowautomation.com/
