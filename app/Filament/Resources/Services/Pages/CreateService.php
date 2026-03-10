@@ -11,7 +11,7 @@ class CreateService extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['client_id'] = auth()->user()->client_id;
+        $data['client_id'] = auth()->user()?->client_id;
 
         return $data;
     }

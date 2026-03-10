@@ -20,7 +20,7 @@ class ServiceForm
                     ->description('Manage available services')
                     ->schema([
                         Hidden::make('client_id')
-                            ->default(auth()->user()->client_id),
+                            ->default(auth()->user()?->client_id),
                         TextInput::make('name')
                             ->placeholder('Enter service name'),
                         Textarea::make('description')

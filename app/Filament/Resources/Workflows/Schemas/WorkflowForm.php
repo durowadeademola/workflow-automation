@@ -23,10 +23,10 @@ class WorkflowForm
                             ->relationship('client', 'name')
                             ->preload(),
                         TextInput::make('name')
-                            ->placeholder('Enter product name')
+                            ->placeholder('Enter workflow name')
                             ->required(),
                         Textarea::make('description')
-                            ->placeholder('Enter product description')
+                            ->placeholder('Enter workflow description')
                             ->columnSpanFull(),
                         TextInput::make('platform')
                             ->placeholder('Enter platform name'),
