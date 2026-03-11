@@ -19,7 +19,7 @@ class OrderForm
                     ->description('Manage customer orders')
                     ->schema([
                         Hidden::make('client_id')
-                            ->default(auth()->user()->client_id),
+                            ->default(auth()->user()?->client_id),
                         Select::make('customer_id')
                             ->label('Customer')
                             ->relationship('customer', 'username')

@@ -18,7 +18,7 @@ class CustomerForm
                     ->description('Manage leads and customers')
                     ->schema([
                         Hidden::make('client_id')
-                            ->default(auth()->user()->client_id),
+                            ->default(auth()->user()?->client_id),
                         // Select::make('agent_id')
                         //     ->label('Agent')
                         //     ->relationship('agent', 'name')

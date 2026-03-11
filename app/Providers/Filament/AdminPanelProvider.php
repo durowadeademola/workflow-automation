@@ -65,7 +65,7 @@ class AdminPanelProvider extends PanelProvider
                 <style>
                 /* 1. DESKTOP & GENERAL CARD STYLE */
                 html {
-                    font-size: 16px !important; /* force consistent rems */
+                    font-size: 13px !important; /* force consistent rems */
                 }
 
                 body {

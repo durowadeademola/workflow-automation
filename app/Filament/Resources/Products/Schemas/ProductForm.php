@@ -21,7 +21,7 @@ class ProductForm
                     ->description('Manage available products')
                     ->schema([
                         Hidden::make('client_id')
-                            ->default(auth()->user()->client_id),
+                            ->default(auth()->user()?->client_id),
                         TextInput::make('name')
                             ->placeholder('Enter product name')
                             ->required(),

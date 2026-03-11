@@ -62,8 +62,8 @@ class AIAgentsTable
             ->filters([
                 SelectFilter::make('model')
                     ->options([
-                        'grok-beta' => 'Grok Beta',
-                        'grok-vision' => 'Grok Vision',
+                        'groq-beta' => 'Groq Beta',
+                        'groq-vision' => 'Groq Vision',
                     ]),
 
                 TernaryFilter::make('success')
