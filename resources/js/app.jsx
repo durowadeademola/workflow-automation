@@ -5,6 +5,18 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 
+document.addEventListener('inertia:invalid', (event) => {
+    event.preventDefault()
+
+    const url = event.detail.response.request.responseURL
+
+    if (url) {
+        window.location.assign(url)
+    } else {
+        window.location.reload()
+    }
+})
+
 const appName = import.meta.env.VITE_APP_NAME || 'Blueflow';
 
 createInertiaApp({

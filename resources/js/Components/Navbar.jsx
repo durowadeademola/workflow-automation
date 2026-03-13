@@ -101,10 +101,10 @@ export default function Navbar() {
                     {/* Auth Buttons */}
                     <div className="hidden md:flex items-center gap-3">
                         <Link
-                            href="/login"
+                            href="/admin/login"
                             className="text-sm font-medium text-gray-700 hover:text-blue-700 transition-colors"
                         >
-                            Log in
+                            Log In
                         </Link>
                         <Link
                             href="/auth/signup"
