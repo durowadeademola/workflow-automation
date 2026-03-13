@@ -61,7 +61,7 @@ export default function CTABanner() {
                             C
                         </div>
                         <div className="text-left">
-                            <p className="text-white font-semibold text-sm">Chinedu Okafor</p>
+                            <p className="text-white font-semibold text-sm">Babatunde Adebayo</p>
                             <p className="text-green-300 text-xs">Owner, Mama's Kitchen (Lagos)</p>
                         </div>
                     </div>
