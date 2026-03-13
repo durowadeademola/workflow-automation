@@ -54,7 +54,7 @@ export default function CTABanner() {
                 {/* Testimonial */}
                 <div className="mt-12 bg-white/10 backdrop-blur-sm rounded-2xl p-6 max-w-2xl mx-auto border border-white/20">
                     <p className="text-white text-sm italic leading-relaxed mb-4">
-                        "greenflow transformed our business overnight. We went from missing half our customer calls to capturing every single inquiry. The ROI was immediate and massive."
+                        "Blueflow transformed our business overnight. We went from missing half our customer calls to capturing every single inquiry. The ROI was immediate and massive."
                     </p>
                     <div className="flex items-center justify-center gap-3">
                         <div className="w-9 h-9 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-sm">

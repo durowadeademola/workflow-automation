@@ -64,7 +64,7 @@ export default function Navbar() {
                         <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
                             <span className="text-white font-bold text-sm">BF</span>
                         </div>
-                        <span className="font-bold text-gray-900 text-lg">greenflow Automation</span>
+                        <span className="font-bold text-gray-900 text-lg">Blueflow Automation</span>
                     </Link>
 
                     {/* Desktop Nav */}

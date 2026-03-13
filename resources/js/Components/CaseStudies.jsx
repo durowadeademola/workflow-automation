@@ -9,8 +9,8 @@ const caseStudies = [
         challenge: "Missing 40–60% of incoming calls during peak hours which translated to sizable lost revenue and frustrated customers. Peak lunch and dinner rushes meant staff couldn't answer phones, leaving customers frustrated and orders going to competitors.",
         solution: "Implemented a WhatsApp-first ordering flow with automated confirmations, menu quick-replies integrated with their POS system, and smart reservation management.",
         timeframe: "Results achieved in 3 months",
-        quote: "greenflow changed everything for us. We never miss an order now, and our customers love how fast we respond. The WhatsApp system paid for itself in the first month. Best investment we made this year!",
-        author: "Chinedu Okafor",
+        quote: "Blueflow changed everything for us. We never miss an order now, and our customers love how fast we respond. The WhatsApp system paid for itself in the first month. Best investment we made this year!",
+        author: "Babatunde Adebayo",
         role: "Owner, Mama's Kitchen",
         results: [
             { value: "₦465K", label: "Additional Revenue" },

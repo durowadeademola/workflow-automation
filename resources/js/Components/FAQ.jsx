@@ -7,16 +7,16 @@ const faqs = [
         answer: "Most businesses are up and running within 7-10 days. Here's the breakdown: Discovery call (30 min), Solution design (2-3 days), Development & setup (3-5 days), Training & launch (1 day). We handle all the technical work — you just need to show up for the training.",
     },
     {
-        question: "Do I need any technical skills to use greenflow?",
-        answer: "Not at all. greenflow is designed to be simple for business owners and staff. Our interface is intuitive, and we provide full training for you and your team. If you can use WhatsApp, you can use greenflow.",
+        question: "Do I need any technical skills to use Blueflow?",
+        answer: "Not at all. Blueflow is designed to be simple for business owners and staff. Our interface is intuitive, and we provide full training for you and your team. If you can use WhatsApp, you can use Blueflow.",
     },
     {
         question: "What happens if I need to cancel?",
         answer: "You can cancel anytime with no penalties or hidden fees. We operate on a monthly basis, so your subscription simply won't renew. We'll also help export your data so you don't lose anything.",
     },
     {
-        question: "Can I integrate greenflow with my existing systems?",
-        answer: "Yes. greenflow integrates with popular Nigerian tools like Paystack, Flutterwave, and most POS systems. We also support major CRMs, email platforms, and can build custom integrations for your specific stack.",
+        question: "Can I integrate Blueflow with my existing systems?",
+        answer: "Yes. Blueflow integrates with popular Nigerian tools like Paystack, Flutterwave, and most POS systems. We also support major CRMs, email platforms, and can build custom integrations for your specific stack.",
     },
     {
         question: "Is my data safe and secure?",

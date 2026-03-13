@@ -14,7 +14,7 @@ const industries = [
             "Customer feedback collection",
         ],
         metric: { value: "40%", label: "More Reservations" },
-        metricNote: "Average result from restaurants & cafés using greenflow",
+        metricNote: "Average result from restaurants & cafés using Blueflow",
         href: "/industries/restaurants",
     },
     {
