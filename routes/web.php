@@ -12,5 +12,5 @@ Route::get('/start', function () {
 });
 
 Route::get('/', function () {
-    return Inertia::render('HomePage');
+    return Inertia::render('Home');
 });

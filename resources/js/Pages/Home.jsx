@@ -14,7 +14,7 @@ import FAQ from "@/Components/FAQ";
 import CTABanner from "@/Components/CTABanner";
 import Footer from "@/Components/Footer";
 
-export default function HomePage() {
+export default function Home() {
     return (
         <>
             <Head title="Blueflow Automation - AI Automation for Nigerian Businesses">
