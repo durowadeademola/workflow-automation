@@ -34,7 +34,7 @@ export default function CaseStudies() {
                 </div>
 
                 {caseStudies.map((cs) => (
-                    <div key={cs.business} className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 md:p-12 border border-green-100">
+                    <div key={cs.business} className="bg-gradient-to-br from-blue-50 to-emerald-50 rounded-3xl p-8 md:p-12 border border-blue-100">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                             {/* Left */}
                             <div>

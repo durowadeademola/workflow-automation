@@ -118,8 +118,8 @@ export default function Industries() {
                             onClick={() => setActive(ind.id)}
                             className={`text-sm font-medium px-4 py-2 rounded-full transition-all ${
                                 active === ind.id
-                                    ? "bg-green-600 text-white shadow-md"
-                                    : "bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-700"
+                                    ? "bg-blue-600 text-white shadow-md"
+                                    : "bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-700"
                             }`}
                         >
                             {ind.label}
@@ -128,7 +128,7 @@ export default function Industries() {
                 </div>
 
                 {/* Tab Content */}
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 md:p-12">
+                <div className="bg-gradient-to-br from-blue-50 to-emerald-50 rounded-3xl p-8 md:p-12">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
                         <div>
                             <h3 className="text-2xl font-extrabold text-gray-900 mb-3">{industry.title}</h3>
@@ -139,7 +139,7 @@ export default function Industries() {
                             <ul className="space-y-3 mb-8">
                                 {industry.features.map((f) => (
                                     <li key={f} className="flex items-center gap-3 text-gray-700">
-                                        <span className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
                                             <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                             </svg>
@@ -150,7 +150,7 @@ export default function Industries() {
                             </ul>
                             <Link
                                 href={industry.href}
-                                className="inline-flex items-center gap-2 bg-green-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-green-700 transition-colors"
+                                className="inline-flex items-center gap-2 bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors"
                             >
                                 See {industry.title} Solutions
                             </Link>
@@ -158,7 +158,7 @@ export default function Industries() {
 
                         <div className="flex items-center justify-center">
                             <div className="bg-white rounded-2xl shadow-xl p-10 text-center max-w-xs w-full">
-                                <p className="text-6xl font-extrabold text-green-600 mb-2">
+                                <p className="text-6xl font-extrabold text-blue-600 mb-2">
                                     {industry.metric.value}
                                 </p>
                                 <p className="text-xl font-bold text-gray-900 mb-3">{industry.metric.label}</p>
@@ -170,7 +170,7 @@ export default function Industries() {
 
                 <p className="text-center text-gray-500 mt-6 text-sm">
                     Don't see your industry? We've got you covered.{" "}
-                    <Link href="/industries" className="text-green-700 font-semibold hover:underline">
+                    <Link href="/industries" className="text-blue-700 font-semibold hover:underline">
                         View All Industries
                     </Link>
                 </p>

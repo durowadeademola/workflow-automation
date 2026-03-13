@@ -82,7 +82,7 @@ export default function Footer() {
                     {/* Brand col */}
                     <div className="lg:col-span-1">
                         <Link href="/" className="flex items-center gap-2 mb-4">
-                            <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                                 <span className="text-white font-bold text-sm">BF</span>
                             </div>
                             <span className="font-bold text-white text-base">Blueflow Automation</span>
@@ -91,13 +91,13 @@ export default function Footer() {
                             AI-powered automation for Nigerian businesses. Automate everything, grow faster.
                         </p>
                         <div className="space-y-2 text-sm">
-                            <a href="mailto:hello@blueflowautomation.com" className="flex items-center gap-2 hover:text-green-400 transition-colors">
+                            <a href="mailto:hello@blueflowautomation.com" className="flex items-center gap-2 hover:text-blue-400 transition-colors">
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
                                 hello@blueflowautomation.com
                             </a>
-                            <a href="tel:+2348145523052" className="flex items-center gap-2 hover:text-green-400 transition-colors">
+                            <a href="tel:+2348145523052" className="flex items-center gap-2 hover:text-blue-400 transition-colors">
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                 </svg>
@@ -115,7 +115,7 @@ export default function Footer() {
                                     <li key={link.href}>
                                         <Link
                                             href={link.href}
-                                            className="text-sm hover:text-green-400 transition-colors"
+                                            className="text-sm hover:text-blue-400 transition-colors"
                                         >
                                             {link.label}
                                         </Link>
@@ -128,7 +128,7 @@ export default function Footer() {
 
                 {/* Bottom bar */}
                 <div className="border-t border-gray-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <p className="text-sm">© 2026 lueflow Automation. All rights reserved.</p>
+                    <p className="text-sm">© 2026 Blueflow Automation. All rights reserved.</p>
 
                     <div className="flex items-center gap-4">
                         {socials.map((s) => (
@@ -138,7 +138,7 @@ export default function Footer() {
                                 target="_blank"
                                 rel="noreferrer"
                                 aria-label={s.name}
-                                className="text-gray-500 hover:text-green-400 transition-colors"
+                                className="text-gray-500 hover:text-blue-400 transition-colors"
                             >
                                 {s.icon}
                             </a>
@@ -146,9 +146,9 @@ export default function Footer() {
                     </div>
 
                     <div className="flex items-center gap-4 text-sm">
-                        <Link href="/privacy" className="hover:text-green-400 transition-colors">Privacy Policy</Link>
-                        <Link href="/terms" className="hover:text-green-400 transition-colors">Terms of Service</Link>
-                        <Link href="/cookies" className="hover:text-green-400 transition-colors">Cookie Policy</Link>
+                        <Link href="/privacy" className="hover:text-blue-400 transition-colors">Privacy Policy</Link>
+                        <Link href="/terms" className="hover:text-blue-400 transition-colors">Terms of Service</Link>
+                        <Link href="/cookies" className="hover:text-blue-400 transition-colors">Cookie Policy</Link>
                     </div>
                 </div>
             </div>

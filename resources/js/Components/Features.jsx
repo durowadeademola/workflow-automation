@@ -18,7 +18,7 @@ export default function Features() {
                 <div className="grid md:grid-cols-3 gap-10 mt-16">
                     {features.map((feature, index) => (
                         <div key={index} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-lg transition">
-                            <div className="text-green-600 text-4xl mb-4">⚡</div>
+                            <div className="text-blue-600 text-4xl mb-4">⚡</div>
                             <h3 className="text-xl font-semibold">
                                 {feature.title}
                             </h3>

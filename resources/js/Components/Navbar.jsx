@@ -33,7 +33,7 @@ function DropdownMenu({ items }) {
                 <Link
                     key={item.href}
                     href={item.href}
-                    className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors"
+                    className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
                 >
                     {item.label}
                 </Link>
@@ -61,7 +61,7 @@ export default function Navbar() {
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-                        <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                             <span className="text-white font-bold text-sm">BF</span>
                         </div>
                         <span className="font-bold text-gray-900 text-lg">Blueflow Automation</span>
@@ -79,12 +79,12 @@ export default function Navbar() {
                                 {item.href ? (
                                     <Link
                                         href={item.href}
-                                        className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-green-700 rounded-lg hover:bg-green-50 transition-colors"
+                                        className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors"
                                     >
                                         {item.label}
                                     </Link>
                                 ) : (
-                                    <button className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-green-700 rounded-lg hover:bg-green-50 transition-colors flex items-center gap-1">
+                                    <button className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-1">
                                         {item.label}
                                         <svg className="w-3.5 h-3.5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -102,13 +102,13 @@ export default function Navbar() {
                     <div className="hidden md:flex items-center gap-3">
                         <Link
                             href="/admin/login"
-                            className="text-sm font-medium text-gray-700 hover:text-green-700 transition-colors"
+                            className="text-sm font-medium text-gray-700 hover:text-blue-700 transition-colors"
                         >
                             Log In
                         </Link>
                         <Link
                             href="/auth/signup"
-                            className="bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                            className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                         >
                             Sign Up
                         </Link>
@@ -140,7 +140,7 @@ export default function Navbar() {
                             <Link
                                 key={item.label}
                                 href={item.href}
-                                className="block px-3 py-2 text-sm font-medium text-gray-700 hover:text-green-700 hover:bg-green-50 rounded-lg"
+                                className="block px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg"
                                 onClick={() => setMobileOpen(false)}
                             >
                                 {item.label}
@@ -154,7 +154,7 @@ export default function Navbar() {
                                     <Link
                                         key={sub.href}
                                         href={sub.href}
-                                        className="block px-5 py-2 text-sm text-gray-600 hover:text-green-700 hover:bg-green-50 rounded-lg"
+                                        className="block px-5 py-2 text-sm text-gray-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg"
                                         onClick={() => setMobileOpen(false)}
                                     >
                                         {sub.label}
@@ -167,7 +167,7 @@ export default function Navbar() {
                         <Link href="/admin/login" className="block text-center py-2 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50">
                             Log in
                         </Link>
-                        <Link href="/auth/signup" className="block text-center py-2 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700">
+                        <Link href="/auth/signup" className="block text-center py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700">
                             Sign Up
                         </Link>
                     </div>
