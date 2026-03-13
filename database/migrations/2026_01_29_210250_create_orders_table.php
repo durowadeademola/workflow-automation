@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('orders')) {
-             Schema::create('orders', function (Blueprint $table) {
+        if (! Schema::hasTable('orders')) {
+            Schema::create('orders', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('customer_id')->nullable()->constrained('customers');
                 $table->foreignId('client_id')->nullable()->constrained('clients');

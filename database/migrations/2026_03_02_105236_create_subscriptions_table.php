@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-         if (!Schema::hasTable('subscriptions')) {
-             Schema::create('subscriptions', function (Blueprint $table) {
+        if (! Schema::hasTable('subscriptions')) {
+            Schema::create('subscriptions', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('client_id')->nullable()->constrained('clients');
                 $table->string('name')->nullable();
@@ -22,7 +22,7 @@ return new class extends Migration
                 $table->softDeletes();
                 $table->timestamps();
             });
-         }
+        }
     }
 
     /**

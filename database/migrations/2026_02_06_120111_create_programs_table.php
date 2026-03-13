@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-         if (!Schema::hasTable('programs')) {
+        if (! Schema::hasTable('programs')) {
             Schema::create('programs', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('client_id')->nullable()->constrained('clients');
@@ -21,7 +21,7 @@ return new class extends Migration
                 $table->timestamps();
                 $table->softDeletes();
             });
-         }
+        }
     }
 
     /**

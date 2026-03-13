@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-         if (!Schema::hasTable('ai_agents')) {
+        if (! Schema::hasTable('ai_agents')) {
             Schema::create('ai_agents', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('customer_id')->nullable()->constrained('customers');
@@ -30,7 +30,7 @@ return new class extends Migration
                 $table->timestamps();
                 $table->softDeletes();
             });
-         }
+        }
     }
 
     /**

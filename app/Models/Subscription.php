@@ -19,7 +19,7 @@ class Subscription extends Model
         'name',
         'start_date',
         'end_date',
-        'is_active'
+        'is_active',
     ];
 
     public function client()

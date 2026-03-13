@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-         if (!Schema::hasTable('workflows')) {
+        if (! Schema::hasTable('workflows')) {
             Schema::create('workflows', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('client_id')->nullable()->constrained('clients');
@@ -22,7 +22,7 @@ return new class extends Migration
                 $table->timestamps();
                 $table->softDeletes();
             });
-         }
+        }
     }
 
     /**

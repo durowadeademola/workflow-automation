@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('agents')) {
+        if (! Schema::hasTable('agents')) {
             Schema::create('agents', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('client_id')->nullable()->constrained('clients');

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-         if (!Schema::hasTable('failed_import_rows')) {
+        if (! Schema::hasTable('failed_import_rows')) {
             Schema::create('failed_import_rows', function (Blueprint $table): void {
                 $table->id();
                 $table->json('data');
@@ -19,7 +19,7 @@ return new class extends Migration
                 $table->text('validation_error')->nullable();
                 $table->timestamps();
             });
-         }
+        }
     }
 
     /**

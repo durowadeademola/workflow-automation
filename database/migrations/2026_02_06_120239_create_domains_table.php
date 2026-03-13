@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-         if (!Schema::hasTable('domains')) {
-             Schema::create('domains', function (Blueprint $table) {
+        if (! Schema::hasTable('domains')) {
+            Schema::create('domains', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('client_id')->nullable()->constrained('clients');
                 $table->foreignId('parent_id')->nullable()->constrained('domains');
@@ -23,7 +23,7 @@ return new class extends Migration
                 $table->timestamps();
                 $table->softDeletes();
             });
-         }
+        }
     }
 
     /**
