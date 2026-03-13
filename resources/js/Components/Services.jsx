@@ -45,7 +45,7 @@ export default function Services() {
         <section className="py-20 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-14">
-                    <p className="text-blue-600 font-semibold text-sm uppercase tracking-widest mb-3">Our Services</p>
+                    <p className="text-green-600 font-semibold text-sm uppercase tracking-widest mb-3">Our Services</p>
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
                         Complete Business Automation Suite
                     </h2>
@@ -59,11 +59,11 @@ export default function Services() {
                         <div
                             key={service.title}
                             className={`relative bg-white rounded-2xl p-6 border shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 flex flex-col ${
-                                service.popular ? "border-blue-500 ring-1 ring-blue-500" : "border-gray-100"
+                                service.popular ? "border-green-500 ring-1 ring-green-500" : "border-gray-100"
                             }`}
                         >
                             {service.popular && (
-                                <span className="absolute -top-3 left-6 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                                <span className="absolute -top-3 left-6 bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
                                     Popular
                                 </span>
                             )}
@@ -72,7 +72,7 @@ export default function Services() {
                             <ul className="space-y-2 mb-6 flex-1">
                                 {service.features.map((f) => (
                                     <li key={f} className="flex items-center gap-2 text-sm text-gray-600">
-                                        <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                                         </svg>
                                         {f}
@@ -81,7 +81,7 @@ export default function Services() {
                             </ul>
                             <Link
                                 href={service.href}
-                                className="inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors mt-auto"
+                                className="inline-flex items-center gap-1 text-sm font-semibold text-green-700 hover:text-green-800 transition-colors mt-auto"
                             >
                                 Learn More
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -95,7 +95,7 @@ export default function Services() {
                 <div className="text-center mt-10">
                     <Link
                         href="/services"
-                        className="inline-flex items-center gap-2 text-blue-700 font-semibold border-2 border-blue-600 px-6 py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-all"
+                        className="inline-flex items-center gap-2 text-green-700 font-semibold border-2 border-green-600 px-6 py-3 rounded-xl hover:bg-green-600 hover:text-white transition-all"
                     >
                         View All Services
                     </Link>

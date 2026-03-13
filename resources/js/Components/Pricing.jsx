@@ -90,13 +90,13 @@ export default function Pricing() {
                             key={plan.name}
                             className={`relative bg-white rounded-3xl p-8 flex flex-col shadow-sm border transition-all hover:shadow-xl hover:-translate-y-1 ${
                                 plan.popular
-                                    ? "border-blue-500 ring-2 ring-blue-500 shadow-lg"
+                                    ? "border-green-500 ring-2 ring-green-500 shadow-lg"
                                     : "border-gray-100"
                             }`}
                         >
                             {plan.popular && (
                                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                                    <span className="bg-blue-600 text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-md">
+                                    <span className="bg-green-600 text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-md">
                                         Most Popular
                                     </span>
                                 </div>
@@ -115,7 +115,7 @@ export default function Pricing() {
                             <ul className="space-y-3 mb-8 flex-1">
                                 {plan.features.map((f) => (
                                     <li key={f} className="flex items-start gap-2.5 text-sm text-gray-600">
-                                        <svg className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                                         </svg>
                                         {f}
@@ -127,8 +127,8 @@ export default function Pricing() {
                                 href={plan.ctaHref}
                                 className={`block text-center font-semibold py-3 rounded-xl transition-all mt-auto ${
                                     plan.popular
-                                        ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200"
-                                        : "border-2 border-gray-200 text-gray-700 hover:border-blue-500 hover:text-blue-700"
+                                        ? "bg-green-600 text-white hover:bg-green-700 shadow-md shadow-green-200"
+                                        : "border-2 border-gray-200 text-gray-700 hover:border-green-500 hover:text-green-700"
                                 }`}
                             >
                                 {plan.cta}
@@ -143,7 +143,7 @@ export default function Pricing() {
                     <div className="flex flex-wrap justify-center gap-4">
                         {allPlansInclude.map((f) => (
                             <span key={f} className="flex items-center gap-1.5 text-sm text-gray-600">
-                                <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                                 </svg>
                                 {f}
@@ -153,11 +153,11 @@ export default function Pricing() {
                 </div>
 
                 <div className="text-center mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <Link href="/pricing" className="text-blue-700 font-semibold hover:underline text-sm">
+                    <Link href="/pricing" className="text-green-700 font-semibold hover:underline text-sm">
                         Compare All Features →
                     </Link>
                     <span className="text-gray-300 hidden sm:block">|</span>
-                    <Link href="/contact" className="text-blue-700 font-semibold hover:underline text-sm">
+                    <Link href="/contact" className="text-green-700 font-semibold hover:underline text-sm">
                         Talk to Our Team →
                     </Link>
                 </div>

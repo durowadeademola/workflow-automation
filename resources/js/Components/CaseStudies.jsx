@@ -9,7 +9,7 @@ const caseStudies = [
         challenge: "Missing 40–60% of incoming calls during peak hours which translated to sizable lost revenue and frustrated customers. Peak lunch and dinner rushes meant staff couldn't answer phones, leaving customers frustrated and orders going to competitors.",
         solution: "Implemented a WhatsApp-first ordering flow with automated confirmations, menu quick-replies integrated with their POS system, and smart reservation management.",
         timeframe: "Results achieved in 3 months",
-        quote: "Blueflow changed everything for us. We never miss an order now, and our customers love how fast we respond. The WhatsApp system paid for itself in the first month. Best investment we made this year!",
+        quote: "greenflow changed everything for us. We never miss an order now, and our customers love how fast we respond. The WhatsApp system paid for itself in the first month. Best investment we made this year!",
         author: "Chinedu Okafor",
         role: "Owner, Mama's Kitchen",
         results: [
@@ -34,7 +34,7 @@ export default function CaseStudies() {
                 </div>
 
                 {caseStudies.map((cs) => (
-                    <div key={cs.business} className="bg-gradient-to-br from-blue-50 to-emerald-50 rounded-3xl p-8 md:p-12 border border-blue-100">
+                    <div key={cs.business} className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 md:p-12 border border-green-100">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                             {/* Left */}
                             <div>
