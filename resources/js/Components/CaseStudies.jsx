@@ -1,4 +1,5 @@
 import { Link } from "@inertiajs/react";
+import { useScrollAnimation, useCountUp } from "@/hooks/useScrollAnimation";
 
 const caseStudies = [
     {
@@ -13,18 +14,50 @@ const caseStudies = [
         author: "Babatunde Adebayo",
         role: "Owner, Mama's Kitchen",
         results: [
-            { value: "₦465K", label: "Additional Revenue" },
-            { value: "100%", label: "Calls Captured" },
-            { value: "4.8★", label: "Customer Rating" },
+            { value: 465, prefix: "₦", suffix: "K", label: "Additional Revenue" },
+            { value: 100, prefix: "", suffix: "%", label: "Calls Captured" },
+            { value: 4.8, prefix: "", suffix: "★", label: "Customer Rating", isDecimal: true },
         ],
     },
 ];
 
+function ResultMetric({ value, prefix, suffix, label, isDecimal, delay, trigger }) {
+    const count = useCountUp(isDecimal ? Math.round(value * 10) : value, 1800, 0, trigger);
+    const display = isDecimal ? (count / 10).toFixed(1) : count;
+
+    return (
+        <div
+            className="bg-white rounded-2xl p-4 text-center shadow-sm border border-gray-100"
+            style={{
+                opacity: trigger ? 1 : 0,
+                transform: trigger ? "translateY(0) scale(1)" : "translateY(20px) scale(0.95)",
+                transition: `opacity 0.5s ease ${delay}ms, transform 0.5s ease ${delay}ms`,
+            }}
+        >
+            <p className="text-2xl font-extrabold text-blue-600 mb-1">
+                {prefix}{display}{suffix}
+            </p>
+            <p className="text-xs text-gray-500">{label}</p>
+        </div>
+    );
+}
+
 export default function CaseStudies() {
+    const [headingRef, headingVisible] = useScrollAnimation(0.3);
+    const [cardRef, cardVisible] = useScrollAnimation(0.1);
+
     return (
         <section className="py-20 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-14">
+                <div
+                    ref={headingRef}
+                    className="text-center mb-14"
+                    style={{
+                        opacity: headingVisible ? 1 : 0,
+                        transform: headingVisible ? "translateY(0)" : "translateY(30px)",
+                        transition: "opacity 0.6s ease, transform 0.6s ease",
+                    }}
+                >
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
                         Success Stories
                     </h2>
@@ -34,11 +67,19 @@ export default function CaseStudies() {
                 </div>
 
                 {caseStudies.map((cs) => (
-                    <div key={cs.business} className="bg-gradient-to-br from-blue-50 to-emerald-50 rounded-3xl p-8 md:p-12 border border-blue-100">
+                    <div
+                        key={cs.business}
+                        ref={cardRef}
+                        className="bg-gradient-to-br from-blue-50 to-emerald-50 rounded-3xl p-8 md:p-12 border border-blue-100"
+                        style={{
+                            opacity: cardVisible ? 1 : 0,
+                            transform: cardVisible ? "translateY(0)" : "translateY(50px)",
+                            transition: "opacity 0.7s ease 100ms, transform 0.7s ease 100ms",
+                        }}
+                    >
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                             {/* Left */}
                             <div>
-                                {/* Header */}
                                 <div className="flex items-center gap-3 mb-6">
                                     <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-2xl shadow-sm">
                                         {cs.emoji}
@@ -49,15 +90,13 @@ export default function CaseStudies() {
                                     </div>
                                 </div>
 
-                                {/* Challenge */}
                                 <div className="mb-5">
                                     <h4 className="text-xs font-semibold uppercase tracking-wider text-red-600 mb-2">The Challenge</h4>
                                     <p className="text-gray-600 text-sm leading-relaxed">{cs.challenge}</p>
                                 </div>
 
-                                {/* Solution */}
                                 <div className="mb-5">
-                                    <h4 className="text-xs font-semibold uppercase tracking-wider text--600 mb-2">The Solution</h4>
+                                    <h4 className="text-xs font-semibold uppercase tracking-wider text-blue-600 mb-2">The Solution</h4>
                                     <p className="text-gray-600 text-sm leading-relaxed">{cs.solution}</p>
                                 </div>
 
@@ -66,16 +105,13 @@ export default function CaseStudies() {
 
                             {/* Right */}
                             <div className="flex flex-col justify-between gap-6">
-                                {/* Quote */}
                                 <blockquote className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative">
-                                    <svg className="w-8 h-8 text--200 mb-3" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-8 h-8 text-blue-200 mb-3" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                                     </svg>
-                                    <p className="text-gray-700 text-sm leading-relaxed italic mb-4">
-                                        {cs.quote}
-                                    </p>
+                                    <p className="text-gray-700 text-sm leading-relaxed italic mb-4">{cs.quote}</p>
                                     <div className="flex items-center gap-3">
-                                        <div className="w-9 h-9 bg--600 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                                        <div className="w-9 h-9 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
                                             {cs.author[0]}
                                         </div>
                                         <div>
@@ -85,13 +121,15 @@ export default function CaseStudies() {
                                     </div>
                                 </blockquote>
 
-                                {/* Metrics */}
+                                {/* Animated metrics */}
                                 <div className="grid grid-cols-3 gap-4">
-                                    {cs.results.map((r) => (
-                                        <div key={r.label} className="bg-white rounded-2xl p-4 text-center shadow-sm border border-gray-100">
-                                            <p className="text-2xl font-extrabold text--600 mb-1">{r.value}</p>
-                                            <p className="text-xs text-gray-500">{r.label}</p>
-                                        </div>
+                                    {cs.results.map((r, i) => (
+                                        <ResultMetric
+                                            key={r.label}
+                                            {...r}
+                                            delay={200 + i * 150}
+                                            trigger={cardVisible}
+                                        />
                                     ))}
                                 </div>
                             </div>
@@ -99,10 +137,16 @@ export default function CaseStudies() {
                     </div>
                 ))}
 
-                <div className="text-center mt-8">
+                <div
+                    className="text-center mt-8"
+                    style={{
+                        opacity: cardVisible ? 1 : 0,
+                        transition: "opacity 0.6s ease 600ms",
+                    }}
+                >
                     <Link
                         href="/case-studies"
-                        className="inline-flex items-center gap-2 text--700 font-semibold border-2 border--600 px-6 py-3 rounded-xl hover:bg--600 hover:text-white transition-all"
+                        className="inline-flex items-center gap-2 text-blue-700 font-semibold border-2 border-blue-600 px-6 py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-all"
                     >
                         View All Case Studies
                     </Link>

@@ -1,3 +1,5 @@
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+
 const painPoints = [
     {
         icon: "📞",
@@ -22,20 +24,36 @@ const painPoints = [
 ];
 
 export default function PainPoints() {
+    const [headingRef, headingVisible] = useScrollAnimation(0.3);
+    const [cardsRef, cardsVisible] = useScrollAnimation(0.15);
+
     return (
         <section className="py-20 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-14">
+                <div
+                    ref={headingRef}
+                    className="text-center mb-14"
+                    style={{
+                        opacity: headingVisible ? 1 : 0,
+                        transform: headingVisible ? "translateY(0)" : "translateY(30px)",
+                        transition: "opacity 0.6s ease, transform 0.6s ease",
+                    }}
+                >
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
                         Running a Business Shouldn't Be This Hard
                     </h2>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {painPoints.map((item) => (
+                <div ref={cardsRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {painPoints.map((item, i) => (
                         <div
                             key={item.title}
                             className="bg-white rounded-2xl p-6 border border-red-100 shadow-sm hover:shadow-md transition-shadow"
+                            style={{
+                                opacity: cardsVisible ? 1 : 0,
+                                transform: cardsVisible ? "translateY(0)" : "translateY(50px)",
+                                transition: `opacity 0.6s ease ${i * 120}ms, transform 0.6s ease ${i * 120}ms`,
+                            }}
                         >
                             <div className="text-3xl mb-4">{item.icon}</div>
                             <h3 className="font-bold text-gray-900 mb-2 text-base leading-snug">

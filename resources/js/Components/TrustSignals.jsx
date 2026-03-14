@@ -1,3 +1,5 @@
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+
 const trustItems = [
     {
         icon: "🔒",
@@ -44,10 +46,21 @@ const trustItems = [
 const industries = ["Restaurants", "E-commerce", "Hotels", "Healthcare", "Real Estate", "Professional Services"];
 
 export default function TrustSignals() {
+    const [headingRef, headingVisible] = useScrollAnimation(0.3);
+    const [cardsRef, cardsVisible] = useScrollAnimation(0.05);
+
     return (
         <section className="py-20 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-14">
+                <div
+                    ref={headingRef}
+                    className="text-center mb-14"
+                    style={{
+                        opacity: headingVisible ? 1 : 0,
+                        transform: headingVisible ? "translateY(0)" : "translateY(30px)",
+                        transition: "opacity 0.6s ease, transform 0.6s ease",
+                    }}
+                >
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
                         Why Nigerian Businesses Trust Us
                     </h2>
@@ -56,11 +69,16 @@ export default function TrustSignals() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                    {trustItems.map((item) => (
+                <div ref={cardsRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    {trustItems.map((item, i) => (
                         <div
                             key={item.title}
                             className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow hover:-translate-y-0.5"
+                            style={{
+                                opacity: cardsVisible ? 1 : 0,
+                                transform: cardsVisible ? "translateY(0)" : "translateY(50px)",
+                                transition: `opacity 0.6s ease ${i * 80}ms, transform 0.6s ease ${i * 80}ms`,
+                            }}
                         >
                             <div className="text-3xl mb-3">{item.icon}</div>
                             <h3 className="font-bold text-gray-900 text-sm mb-2">{item.title}</h3>
@@ -70,7 +88,13 @@ export default function TrustSignals() {
                 </div>
 
                 {/* Industries ticker */}
-                <div className="text-center">
+                <div
+                    className="text-center"
+                    style={{
+                        opacity: cardsVisible ? 1 : 0,
+                        transition: "opacity 0.6s ease 700ms",
+                    }}
+                >
                     <p className="text-sm font-medium text-gray-400 mb-4">Trusted by leading Nigerian businesses:</p>
                     <div className="flex flex-wrap justify-center gap-3">
                         {industries.map((ind, i) => (

@@ -1,4 +1,5 @@
 import { Link } from "@inertiajs/react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const services = [
     {
@@ -41,10 +42,21 @@ const services = [
 ];
 
 export default function Services() {
+    const [headingRef, headingVisible] = useScrollAnimation(0.3);
+    const [cardsRef, cardsVisible] = useScrollAnimation(0.1);
+
     return (
         <section className="py-20 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-14">
+                <div
+                    ref={headingRef}
+                    className="text-center mb-14"
+                    style={{
+                        opacity: headingVisible ? 1 : 0,
+                        transform: headingVisible ? "translateY(0)" : "translateY(30px)",
+                        transition: "opacity 0.6s ease, transform 0.6s ease",
+                    }}
+                >
                     <p className="text-blue-600 font-semibold text-sm uppercase tracking-widest mb-3">Our Services</p>
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
                         Complete Business Automation Suite
@@ -54,13 +66,18 @@ export default function Services() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {services.map((service) => (
+                <div ref={cardsRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {services.map((service, i) => (
                         <div
                             key={service.title}
                             className={`relative bg-white rounded-2xl p-6 border shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 flex flex-col ${
                                 service.popular ? "border-blue-500 ring-1 ring-blue-500" : "border-gray-100"
                             }`}
+                            style={{
+                                opacity: cardsVisible ? 1 : 0,
+                                transform: cardsVisible ? "translateY(0)" : "translateY(55px)",
+                                transition: `opacity 0.6s ease ${i * 100}ms, transform 0.6s ease ${i * 100}ms`,
+                            }}
                         >
                             {service.popular && (
                                 <span className="absolute -top-3 left-6 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
@@ -92,7 +109,13 @@ export default function Services() {
                     ))}
                 </div>
 
-                <div className="text-center mt-10">
+                <div
+                    className="text-center mt-10"
+                    style={{
+                        opacity: cardsVisible ? 1 : 0,
+                        transition: "opacity 0.6s ease 700ms",
+                    }}
+                >
                     <Link
                         href="/services"
                         className="inline-flex items-center gap-2 text-blue-700 font-semibold border-2 border-blue-600 px-6 py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-all"

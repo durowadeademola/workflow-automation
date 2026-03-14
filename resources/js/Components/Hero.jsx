@@ -1,39 +1,94 @@
 import { Link } from "@inertiajs/react";
+import { useScrollAnimation, useCountUp } from "@/hooks/useScrollAnimation";
 
 const stats = [
-    { value: "100+", label: "Businesses Automated" },
-    { value: "99.5%", label: "Uptime Guarantee" },
-    { value: "24/7", label: "AI Support" },
+    { value: 100, suffix: "+", label: "Businesses Automated" },
+    { value: 99.5, suffix: "%", label: "Uptime Guarantee", isDecimal: true },
+    { value: 24, suffix: "/7", label: "AI Support" },
 ];
 
-export default function Hero() {
+function StatCard({ value, suffix, label, isDecimal, delay, trigger }) {
+    const count = useCountUp(isDecimal ? value * 10 : value, 2000, 0, trigger);
+    const display = isDecimal ? (count / 10).toFixed(1) : count;
+
     return (
-        <section className="relative bg-gradient-to-br from-blue-50 via-white to-emerald-50 pt-32 pb-20 overflow-hidden">
+        <div
+            className="bg-white rounded-2xl px-6 py-5 shadow-md border border-gray-100 hover:shadow-lg transition-shadow"
+            style={{
+                opacity: trigger ? 1 : 0,
+                transform: trigger ? "translateY(0)" : "translateY(40px)",
+                transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
+            }}
+        >
+            <p className="text-3xl font-extrabold text-blue-600 mb-1">
+                {display}{suffix}
+            </p>
+            <p className="text-sm text-gray-500 font-medium">{label}</p>
+        </div>
+    );
+}
+
+export default function Hero() {
+    const [ref, isVisible] = useScrollAnimation(0.1);
+
+    return (
+        <section
+            ref={ref}
+            className="relative bg-gradient-to-br from-blue-50 via-white to-emerald-50 pt-32 pb-20 overflow-hidden"
+        >
             {/* Background decorative blobs */}
             <div className="absolute top-20 right-0 w-96 h-96 bg-blue-100 rounded-full opacity-40 blur-3xl -z-0" />
             <div className="absolute bottom-10 left-0 w-72 h-72 bg-emerald-100 rounded-full opacity-30 blur-3xl -z-0" />
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 {/* Badge */}
-                <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 text-sm font-medium px-4 py-1.5 rounded-full mb-6">
+                <div
+                    style={{
+                        opacity: isVisible ? 1 : 0,
+                        transform: isVisible ? "translateY(0)" : "translateY(24px)",
+                        transition: "opacity 0.5s ease 0ms, transform 0.5s ease 0ms",
+                    }}
+                    className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 text-sm font-medium px-4 py-1.5 rounded-full mb-6"
+                >
                     <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
                     AI-Powered Automation for Nigerian Businesses
                 </div>
 
                 {/* Headline */}
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 max-w-4xl mx-auto">
+                <h1
+                    style={{
+                        opacity: isVisible ? 1 : 0,
+                        transform: isVisible ? "translateY(0)" : "translateY(32px)",
+                        transition: "opacity 0.6s ease 100ms, transform 0.6s ease 100ms",
+                    }}
+                    className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 max-w-4xl mx-auto"
+                >
                     Automate Everything.{" "}
                     <span className="text-blue-600">Grow Faster.</span>
                 </h1>
 
                 {/* Subheadline */}
-                <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+                <p
+                    style={{
+                        opacity: isVisible ? 1 : 0,
+                        transform: isVisible ? "translateY(0)" : "translateY(32px)",
+                        transition: "opacity 0.6s ease 200ms, transform 0.6s ease 200ms",
+                    }}
+                    className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed"
+                >
                     Transform your business operations with AI-powered automation.
                     Save time, reduce costs, and scale effortlessly.
                 </p>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                <div
+                    style={{
+                        opacity: isVisible ? 1 : 0,
+                        transform: isVisible ? "translateY(0)" : "translateY(32px)",
+                        transition: "opacity 0.6s ease 300ms, transform 0.6s ease 300ms",
+                    }}
+                    className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+                >
                     <Link
                         href="/auth/signup"
                         className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-0.5"
@@ -57,14 +112,13 @@ export default function Hero() {
 
                 {/* Stats */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
-                    {stats.map((stat) => (
-                        <div
+                    {stats.map((stat, i) => (
+                        <StatCard
                             key={stat.label}
-                            className="bg-white rounded-2xl px-6 py-5 shadow-md border border-gray-100 hover:shadow-lg transition-shadow"
-                        >
-                            <p className="text-3xl font-extrabold text-blue-600 mb-1">{stat.value}</p>
-                            <p className="text-sm text-gray-500 font-medium">{stat.label}</p>
-                        </div>
+                            {...stat}
+                            delay={400 + i * 120}
+                            trigger={isVisible}
+                        />
                     ))}
                 </div>
             </div>

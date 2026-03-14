@@ -1,4 +1,5 @@
 import { Link } from "@inertiajs/react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const steps = [
     {
@@ -38,11 +39,71 @@ const steps = [
     },
 ];
 
+function StepRow({ step, idx }) {
+    const [ref, isVisible] = useScrollAnimation(0.25);
+    const isEven = idx % 2 === 1;
+
+    return (
+        <div
+            ref={ref}
+            className={`flex flex-col md:flex-row items-center gap-6 md:gap-12 ${isEven ? "md:flex-row-reverse" : ""}`}
+            style={{
+                opacity: isVisible ? 1 : 0,
+                transform: isVisible
+                    ? "translateX(0)"
+                    : isEven
+                    ? "translateX(60px)"
+                    : "translateX(-60px)",
+                transition: "opacity 0.65s ease, transform 0.65s ease",
+            }}
+        >
+            {/* Card */}
+            <div className="flex-1 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow w-full">
+                <h3 className="font-bold text-gray-900 text-lg mb-2">{step.title}</h3>
+                <p className="text-gray-500 text-sm mb-4">{step.description}</p>
+                <div className="flex items-center gap-4 text-xs">
+                    <span className="flex items-center gap-1.5 text-gray-400">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Duration: {step.duration}
+                    </span>
+                    <span className="flex items-center gap-1.5 text-blue-600 font-medium">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        You get: {step.outcome}
+                    </span>
+                </div>
+            </div>
+
+            {/* Step number badge */}
+            <div className="flex-shrink-0 w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center font-extrabold text-lg shadow-lg shadow-blue-200 z-10">
+                {step.number}
+            </div>
+
+            {/* Empty spacer for alternating layout */}
+            <div className="flex-1 hidden md:block" />
+        </div>
+    );
+}
+
 export default function HowItWorks() {
+    const [headingRef, headingVisible] = useScrollAnimation(0.3);
+    const [ctaRef, ctaVisible] = useScrollAnimation(0.2);
+
     return (
         <section id="how-it-works" className="py-20 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-14">
+                <div
+                    ref={headingRef}
+                    className="text-center mb-14"
+                    style={{
+                        opacity: headingVisible ? 1 : 0,
+                        transform: headingVisible ? "translateY(0)" : "translateY(30px)",
+                        transition: "opacity 0.6s ease, transform 0.6s ease",
+                    }}
+                >
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
                         How It Works
                     </h2>
@@ -57,46 +118,21 @@ export default function HowItWorks() {
 
                     <div className="space-y-8 relative z-10">
                         {steps.map((step, idx) => (
-                            <div
-                                key={step.number}
-                                className={`flex flex-col md:flex-row items-center gap-6 md:gap-12 ${
-                                    idx % 2 === 1 ? "md:flex-row-reverse" : ""
-                                }`}
-                            >
-                                {/* Card */}
-                                <div className="flex-1 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow w-full">
-                                    <h3 className="font-bold text-gray-900 text-lg mb-2">{step.title}</h3>
-                                    <p className="text-gray-500 text-sm mb-4">{step.description}</p>
-                                    <div className="flex items-center gap-4 text-xs">
-                                        <span className="flex items-center gap-1.5 text-gray-400">
-                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                            Duration: {step.duration}
-                                        </span>
-                                        <span className="flex items-center gap-1.5 text-blue-600 font-medium">
-                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            You get: {step.outcome}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {/* Step number badge */}
-                                <div className="flex-shrink-0 w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center font-extrabold text-lg shadow-lg shadow-blue-200 z-10">
-                                    {step.number}
-                                </div>
-
-                                {/* Empty spacer for alternating layout */}
-                                <div className="flex-1 hidden md:block" />
-                            </div>
+                            <StepRow key={step.number} step={step} idx={idx} />
                         ))}
                     </div>
                 </div>
 
                 {/* CTA below steps */}
-                <div className="mt-16 bg-blue-600 rounded-3xl p-8 md:p-12 text-center text-white">
+                <div
+                    ref={ctaRef}
+                    className="mt-16 bg-blue-600 rounded-3xl p-8 md:p-12 text-center text-white"
+                    style={{
+                        opacity: ctaVisible ? 1 : 0,
+                        transform: ctaVisible ? "translateY(0)" : "translateY(40px)",
+                        transition: "opacity 0.7s ease, transform 0.7s ease",
+                    }}
+                >
                     <h3 className="text-2xl font-extrabold mb-3">Ready to Get Started?</h3>
                     <p className="text-blue-100 mb-8 max-w-lg mx-auto">
                         Book a free 30-minute discovery call. No commitment, no sales pressure.

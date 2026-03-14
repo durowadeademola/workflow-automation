@@ -1,5 +1,7 @@
+// FAQ.jsx
 import { useState } from "react";
 import { Link } from "@inertiajs/react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const faqs = [
     {
@@ -28,10 +30,17 @@ const faqs = [
     },
 ];
 
-function FAQItem({ question, answer }) {
+function FAQItem({ question, answer, delay, visible }) {
     const [open, setOpen] = useState(false);
     return (
-        <div className="border-b border-gray-100 last:border-0">
+        <div
+            className="border-b border-gray-100 last:border-0"
+            style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateX(0)" : "translateX(-30px)",
+                transition: `opacity 0.5s ease ${delay}ms, transform 0.5s ease ${delay}ms`,
+            }}
+        >
             <button
                 onClick={() => setOpen(!open)}
                 className="w-full flex items-center justify-between py-5 text-left group"
@@ -48,34 +57,53 @@ function FAQItem({ question, answer }) {
                 </span>
             </button>
             {open && (
-                <div className="pb-5 text-sm text-gray-600 leading-relaxed pr-10">
-                    {answer}
-                </div>
+                <div className="pb-5 text-sm text-gray-600 leading-relaxed pr-10">{answer}</div>
             )}
         </div>
     );
 }
 
 export default function FAQ() {
+    const [headingRef, headingVisible] = useScrollAnimation(0.3);
+    const [faqRef, faqVisible] = useScrollAnimation(0.05);
+
     return (
         <section className="py-20 bg-white">
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-12">
+                <div
+                    ref={headingRef}
+                    className="text-center mb-12"
+                    style={{
+                        opacity: headingVisible ? 1 : 0,
+                        transform: headingVisible ? "translateY(0)" : "translateY(30px)",
+                        transition: "opacity 0.6s ease, transform 0.6s ease",
+                    }}
+                >
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
                         Frequently Asked Questions
                     </h2>
-                    <p className="text-gray-500">
-                        Got questions? We have got answers.
-                    </p>
+                    <p className="text-gray-500">Got questions? We have got answers.</p>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 divide-y divide-gray-100 mb-10">
-                    {faqs.map((faq) => (
-                        <FAQItem key={faq.question} {...faq} />
+                <div ref={faqRef} className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 divide-y divide-gray-100 mb-10">
+                    {faqs.map((faq, i) => (
+                        <FAQItem
+                            key={faq.question}
+                            {...faq}
+                            delay={i * 80}
+                            visible={faqVisible}
+                        />
                     ))}
                 </div>
 
-                <div className="bg-gray-50 rounded-2xl p-8 text-center border border-gray-100">
+                <div
+                    className="bg-gray-50 rounded-2xl p-8 text-center border border-gray-100"
+                    style={{
+                        opacity: faqVisible ? 1 : 0,
+                        transform: faqVisible ? "translateY(0)" : "translateY(30px)",
+                        transition: "opacity 0.6s ease 500ms, transform 0.6s ease 500ms",
+                    }}
+                >
                     <h3 className="font-bold text-gray-900 mb-2">Still have questions?</h3>
                     <p className="text-sm text-gray-500 mb-6">
                         We are here to help. Talk to our team and get answers in minutes, not days.

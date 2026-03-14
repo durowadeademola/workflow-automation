@@ -1,4 +1,5 @@
 import { Link } from "@inertiajs/react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const plans = [
     {
@@ -72,10 +73,21 @@ const allPlansInclude = [
 ];
 
 export default function Pricing() {
+    const [headingRef, headingVisible] = useScrollAnimation(0.3);
+    const [cardsRef, cardsVisible] = useScrollAnimation(0.1);
+
     return (
         <section className="py-20 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-14">
+                <div
+                    ref={headingRef}
+                    className="text-center mb-14"
+                    style={{
+                        opacity: headingVisible ? 1 : 0,
+                        transform: headingVisible ? "translateY(0)" : "translateY(30px)",
+                        transition: "opacity 0.6s ease, transform 0.6s ease",
+                    }}
+                >
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
                         Simple, Transparent Pricing
                     </h2>
@@ -84,8 +96,8 @@ export default function Pricing() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-                    {plans.map((plan) => (
+                <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+                    {plans.map((plan, i) => (
                         <div
                             key={plan.name}
                             className={`relative bg-white rounded-3xl p-8 flex flex-col shadow-sm border transition-all hover:shadow-xl hover:-translate-y-1 ${
@@ -93,6 +105,11 @@ export default function Pricing() {
                                     ? "border-blue-500 ring-2 ring-blue-500 shadow-lg"
                                     : "border-gray-100"
                             }`}
+                            style={{
+                                opacity: cardsVisible ? 1 : 0,
+                                transform: cardsVisible ? "translateY(0)" : "translateY(60px)",
+                                transition: `opacity 0.65s ease ${i * 130}ms, transform 0.65s ease ${i * 130}ms`,
+                            }}
                         >
                             {plan.popular && (
                                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -138,7 +155,13 @@ export default function Pricing() {
                 </div>
 
                 {/* All plans include */}
-                <div className="mt-12 bg-white rounded-2xl p-6 border border-gray-100">
+                <div
+                    className="mt-12 bg-white rounded-2xl p-6 border border-gray-100"
+                    style={{
+                        opacity: cardsVisible ? 1 : 0,
+                        transition: "opacity 0.6s ease 500ms",
+                    }}
+                >
                     <h4 className="text-sm font-semibold text-gray-700 text-center mb-5">All Plans Include:</h4>
                     <div className="flex flex-wrap justify-center gap-4">
                         {allPlansInclude.map((f) => (
