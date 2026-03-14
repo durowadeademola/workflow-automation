@@ -137,7 +137,7 @@ export default function Navbar() {
 
             {/* Mobile Menu — rendered outside the navbar, fixed to viewport below the 64px (h-16) header */}
             {mobileOpen && (
-                <div className="md:hidden fixed top-16 left-0 right-0 bottom-0 z-40 bg-white border-t border-gray-100 overflow-y-auto px-4 py-4 space-y-1">
+                <div className="md:hidden fixed top-16 left-0 right-0 h-[calc(100vh-4rem)] z-40 bg-white border-t border-gray-100 overflow-y-auto px-4 py-4 space-y-1">
                     {navItems.map((item) =>
                         item.href ? (
                             <Link
