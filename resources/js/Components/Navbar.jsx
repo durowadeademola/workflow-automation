@@ -56,85 +56,88 @@ export default function Navbar() {
     ];
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-16">
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">BF</span>
-                        </div>
-                        <span className="font-bold text-gray-900 text-lg">Blueflow Automation</span>
-                    </Link>
-
-                    {/* Desktop Nav */}
-                    <div className="hidden md:flex items-center gap-1">
-                        {navItems.map((item) => (
-                            <div
-                                key={item.label}
-                                className="relative"
-                                onMouseEnter={() => item.dropdown && setActiveDropdown(item.label)}
-                                onMouseLeave={() => setActiveDropdown(null)}
-                            >
-                                {item.href ? (
-                                    <Link
-                                        href={item.href}
-                                        className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors"
-                                    >
-                                        {item.label}
-                                    </Link>
-                                ) : (
-                                    <button className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-1">
-                                        {item.label}
-                                        <svg className="w-3.5 h-3.5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </button>
-                                )}
-                                {item.dropdown && activeDropdown === item.label && (
-                                    <DropdownMenu items={item.dropdown} />
-                                )}
+        <>
+            <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-16">
+                        {/* Logo */}
+                        <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+                            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                                <span className="text-white font-bold text-sm">BF</span>
                             </div>
-                        ))}
-                    </div>
-
-                    {/* Auth Buttons */}
-                    <div className="hidden md:flex items-center gap-3">
-                        <Link
-                            href="/admin/login"
-                            className="text-sm font-medium text-gray-700 hover:text-blue-700 transition-colors"
-                        >
-                            Log In
+                            <span className="font-bold text-gray-900 text-lg">Blueflow Automation</span>
                         </Link>
-                        <Link
-                            href="/auth/signup"
-                            className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                        >
-                            Sign Up
-                        </Link>
-                    </div>
 
-                    {/* Mobile Menu Toggle */}
-                    <button
-                        className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100"
-                        onClick={() => setMobileOpen(!mobileOpen)}
-                    >
-                        {mobileOpen ? (
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        ) : (
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        )}
-                    </button>
+                        {/* Desktop Nav */}
+                        <div className="hidden md:flex items-center gap-1">
+                            {navItems.map((item) => (
+                                <div
+                                    key={item.label}
+                                    className="relative"
+                                    onMouseEnter={() => item.dropdown && setActiveDropdown(item.label)}
+                                    onMouseLeave={() => setActiveDropdown(null)}
+                                >
+                                    {item.href ? (
+                                        <Link
+                                            href={item.href}
+                                            className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors"
+                                        >
+                                            {item.label}
+                                        </Link>
+                                    ) : (
+                                        <button className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-1">
+                                            {item.label}
+                                            <svg className="w-3.5 h-3.5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
+                                    )}
+                                    {item.dropdown && activeDropdown === item.label && (
+                                        <DropdownMenu items={item.dropdown} />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Desktop Auth Buttons */}
+                        <div className="hidden md:flex items-center gap-3">
+                            <Link
+                                href="/admin/login"
+                                className="text-sm font-medium text-gray-700 hover:text-blue-700 transition-colors"
+                            >
+                                Log In
+                            </Link>
+                            <Link
+                                href="/auth/signup"
+                                className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                            >
+                                Sign Up
+                            </Link>
+                        </div>
+
+                        {/* Mobile Menu Toggle */}
+                        <button
+                            className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100"
+                            onClick={() => setMobileOpen(!mobileOpen)}
+                            aria-label="Toggle menu"
+                        >
+                            {mobileOpen ? (
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            ) : (
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                            )}
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </nav>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu — rendered outside the navbar, fixed to viewport below the 64px (h-16) header */}
             {mobileOpen && (
-                <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-1">
+                <div className="md:hidden fixed top-16 left-0 right-0 bottom-0 z-40 bg-white border-t border-gray-100 overflow-y-auto px-4 py-4 space-y-1">
                     {navItems.map((item) =>
                         item.href ? (
                             <Link
@@ -164,15 +167,23 @@ export default function Navbar() {
                         )
                     )}
                     <div className="pt-3 flex flex-col gap-2">
-                        <Link href="/admin/login" className="block text-center py-2 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50">
+                        <Link
+                            href="/admin/login"
+                            className="block text-center py-2 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50"
+                            onClick={() => setMobileOpen(false)}
+                        >
                             Log in
                         </Link>
-                        <Link href="/auth/signup" className="block text-center py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                        <Link
+                            href="/auth/signup"
+                            className="block text-center py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                            onClick={() => setMobileOpen(false)}
+                        >
                             Sign Up
                         </Link>
                     </div>
                 </div>
             )}
-        </nav>
+        </>
     );
 }
