@@ -8,7 +8,7 @@ const plans = [
         price: "₦20,000",
         period: "/month",
         cta: "Start Free Trial",
-        ctaHref: "/demo",
+        ctaHref: "#",
         popular: false,
         features: [
             "WhatsApp Business API",
@@ -26,7 +26,7 @@ const plans = [
         price: "₦35,000",
         period: "/month",
         cta: "Start Free Trial",
-        ctaHref: "/demo",
+        ctaHref: "#",
         popular: true,
         features: [
             "Everything in Starter",
@@ -46,7 +46,7 @@ const plans = [
         price: "₦60,000",
         period: "/month",
         cta: "Contact Sales",
-        ctaHref: "/contact",
+        ctaHref: "#",
         popular: false,
         features: [
             "Everything in Professional",
@@ -176,11 +176,11 @@ export default function Pricing() {
                 </div>
 
                 <div className="text-center mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <Link href="/pricing" className="text-blue-700 font-semibold hover:underline text-sm">
+                    <Link href="#" className="text-blue-700 font-semibold hover:underline text-sm">
                         Compare All Features →
                     </Link>
                     <span className="text-gray-300 hidden sm:block">|</span>
-                    <Link href="/contact" className="text-blue-700 font-semibold hover:underline text-sm">
+                    <Link href="#" className="text-blue-700 font-semibold hover:underline text-sm">
                         Talk to Our Team →
                     </Link>
                 </div>

@@ -145,7 +145,7 @@ export default function CaseStudies() {
                     }}
                 >
                     <Link
-                        href="/case-studies"
+                        href="#"
                         className="inline-flex items-center gap-2 text-blue-700 font-semibold border-2 border-blue-600 px-6 py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-all"
                     >
                         View All Case Studies

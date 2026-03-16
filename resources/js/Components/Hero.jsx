@@ -89,15 +89,16 @@ export default function Hero() {
                     }}
                     className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
                 >
-                    <Link
-                        href="/auth/signup"
+                   <a href="https://forms.gle/rG4Jf1xoguD67mH26"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-0.5"
                     >
                         Get Started Free
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
-                    </Link>
+                    </a>
                     <a
                         href="#how-it-works"
                         className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-gray-700 font-semibold px-8 py-3.5 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:text-blue-700 transition-all hover:-translate-y-0.5"

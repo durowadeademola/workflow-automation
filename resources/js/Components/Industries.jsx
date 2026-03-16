@@ -16,7 +16,7 @@ const industries = [
         ],
         metric: { value: 40, suffix: "%", label: "More Reservations" },
         metricNote: "Average result from restaurants & cafés using Blueflow",
-        href: "/industries/restaurants",
+        href: "#",
     },
     {
         id: "ecommerce",
@@ -31,7 +31,7 @@ const industries = [
         ],
         metric: { value: 3, suffix: "x", label: "Faster Support" },
         metricNote: "Average customer response improvement for e-commerce stores",
-        href: "/industries/ecommerce",
+        href: "#",
     },
     {
         id: "hotels",
@@ -46,7 +46,7 @@ const industries = [
         ],
         metric: { value: 25, suffix: "%", label: "Higher Occupancy" },
         metricNote: "Average occupancy improvement across hospitality clients",
-        href: "/industries/hotels",
+        href: "#",
     },
     {
         id: "healthcare",
@@ -61,7 +61,7 @@ const industries = [
         ],
         metric: { value: 60, suffix: "%", label: "Fewer No-Shows" },
         metricNote: "Average reduction in missed appointments for clinics",
-        href: "/industries/healthcare",
+        href: "#",
     },
     {
         id: "real-estate",
@@ -76,7 +76,7 @@ const industries = [
         ],
         metric: { value: 2, suffix: "x", label: "More Qualified Leads" },
         metricNote: "Average lead qualification improvement for real estate agents",
-        href: "/industries/real-estate",
+        href: "#",
     },
     {
         id: "professional-services",
@@ -91,7 +91,7 @@ const industries = [
         ],
         metric: { value: 5, suffix: "hrs", label: "Saved Per Week" },
         metricNote: "Average time saved per professional services business",
-        href: "/industries/professional-services",
+        href: "#",
     },
 ];
 
@@ -216,7 +216,7 @@ export default function Industries() {
                     }}
                 >
                     Don't see your industry? We've got you covered.{" "}
-                    <Link href="/industries" className="text-blue-700 font-semibold hover:underline">
+                    <Link href="#" className="text-blue-700 font-semibold hover:underline">
                         View All Industries
                     </Link>
                 </p>

@@ -2,28 +2,28 @@ import { useState } from "react";
 import { Link } from "@inertiajs/react";
 
 const servicesLinks = [
-    { label: "WhatsApp Automation", href: "/services/whatsapp-automation" },
-    { label: "CRM Integration", href: "/services/crm-integration" },
-    { label: "Email Automation", href: "/services/email-automation" },
-    { label: "Payment Automation", href: "/services/payment-automation" },
-    { label: "Workflow Automation", href: "/services/workflow-automation" },
-    { label: "Custom Solutions", href: "/services/custom-solutions" },
+    { label: "WhatsApp Automation", href: "#" },
+    { label: "CRM Integration", href: "#" },
+    { label: "Email Automation", href: "#" },
+    { label: "Payment Automation", href: "#" },
+    { label: "Workflow Automation", href: "#" },
+    { label: "Custom Solutions", href: "#" },
 ];
 
 const industriesLinks = [
-    { label: "Restaurants & Cafés", href: "/industries/restaurants" },
-    { label: "E-commerce & Retail", href: "/industries/ecommerce" },
-    { label: "Hotels & Hospitality", href: "/industries/hotels" },
-    { label: "Healthcare & Clinics", href: "/industries/healthcare" },
-    { label: "Real Estate", href: "/industries/real-estate" },
-    { label: "Professional Services", href: "/industries/professional-services" },
+    { label: "Restaurants & Cafés", href: "#" },
+    { label: "E-commerce & Retail", href: "#" },
+    { label: "Hotels & Hospitality", href: "#" },
+    { label: "Healthcare & Clinics", href: "#" },
+    { label: "Real Estate", href: "#" },
+    { label: "Professional Services", href: "#" },
 ];
 
 const resourcesLinks = [
-    { label: "Guides & Downloads", href: "/resources/guides" },
-    { label: "FAQs", href: "/resources/faqs" },
-    { label: "ROI Calculator", href: "/resources/roi-calculator" },
-    { label: "Support", href: "/support" },
+    { label: "Guides & Downloads", href: "#" },
+    { label: "FAQs", href: "#" },
+    { label: "ROI Calculator", href: "#" },
+    { label: "Support", href: "#" },
 ];
 
 function DropdownMenu({ items }) {
@@ -49,10 +49,10 @@ export default function Navbar() {
     const navItems = [
         { label: "Services", dropdown: servicesLinks },
         { label: "Industries", dropdown: industriesLinks },
-        { label: "Pricing", href: "/pricing" },
-        { label: "Case Studies", href: "/case-studies" },
+        { label: "Pricing", href: "#" },
+        { label: "Case Studies", href: "#" },
         { label: "Resources", dropdown: resourcesLinks },
-        { label: "About", href: "/about" },
+        { label: "About", href: "#" },
     ];
 
     return (
@@ -107,12 +107,13 @@ export default function Navbar() {
                             >
                                 Log In
                             </Link>
-                            <Link
-                                href="/auth/signup"
+                            <a href="https://forms.gle/rG4Jf1xoguD67mH26"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                             >
-                                Sign Up
-                            </Link>
+                                Get Started
+                            </a>
                         </div>
 
                         {/* Mobile Menu Toggle */}
@@ -174,13 +175,13 @@ export default function Navbar() {
                         >
                             Log in
                         </Link>
-                        <Link
-                            href="/auth/signup"
+                        <a
+                            href="https://forms.gle/rG4Jf1xoguD67mH26"
                             className="block text-center py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700"
                             onClick={() => setMobileOpen(false)}
                         >
-                            Sign Up
-                        </Link>
+                            Get Started
+                        </a>
                     </div>
                 </div>
             )}

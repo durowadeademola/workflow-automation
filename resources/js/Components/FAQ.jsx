@@ -6,7 +6,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 const faqs = [
     {
         question: "How long does implementation take?",
-        answer: "Most businesses are up and running within 7-10 days. Here's the breakdown: Discovery call (30 min), Solution design (2-3 days), Development & setup (3-5 days), Training & launch (1 day). We handle all the technical work — you just need to show up for the training.",
+        answer: "Most businesses are up and running within 7-10 days. Here's the breakdown: Discovery form (10 min), Solution design (2-3 days), Development & setup (3-5 days), Training & launch (1 day). We handle all the technical work — you just need to show up for the training.",
     },
     {
         question: "Do I need any technical skills to use Blueflow?",
@@ -26,7 +26,7 @@ const faqs = [
     },
     {
         question: "What kind of support do you offer?",
-        answer: "All plans include email support. Professional and Enterprise plans include 24/7 priority support via WhatsApp and phone. Enterprise clients also get a dedicated account manager based in Nigeria.",
+        answer: "All subscriptions include email or phone support support.",
     },
 ];
 
@@ -121,7 +121,7 @@ export default function FAQ() {
                             WhatsApp Us
                         </a>
                         <Link
-                            href="/contact"
+                            href="#"
                             className="inline-flex items-center gap-2 border-2 border-gray-200 text-gray-700 font-semibold px-5 py-2.5 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-colors text-sm"
                         >
                             Send a Message

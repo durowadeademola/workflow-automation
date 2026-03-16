@@ -65,7 +65,7 @@ export default function TrustSignals() {
                         Why Nigerian Businesses Trust Us
                     </h2>
                     <p className="text-gray-500 max-w-xl mx-auto">
-                        We are not just a software company. We are your technology partner committed to your success.
+                        We are not just a automation company. We are your technology partner committed to your success.
                     </p>
                 </div>
 

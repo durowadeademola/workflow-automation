@@ -6,38 +6,38 @@ const services = [
         title: "WhatsApp Automation",
         description: "Transform WhatsApp into your 24/7 sales, support, and booking assistant",
         features: ["Order processing", "Booking management", "Customer support", "Payment integration"],
-        href: "/services/whatsapp-automation",
+        href: "#",
         popular: true,
     },
     {
         title: "CRM Integration",
         description: "Centralize customer data and automate relationship management",
         features: ["Data synchronization", "Lead management", "Pipeline automation", "Analytics"],
-        href: "/services/crm-integration",
+        href: "#",
     },
     {
         title: "Email Automation",
         description: "Automated email campaigns, follow-ups, and customer journeys",
         features: ["Campaign automation", "Segmentation", "A/B testing", "Analytics"],
-        href: "/services/email-automation",
+        href: "#",
     },
     {
         title: "Payment Automation",
         description: "Seamless payment processing, invoicing, and reconciliation",
         features: ["Paystack integration", "Auto-invoicing", "Payment tracking", "Refunds"],
-        href: "/services/payment-automation",
+        href: "#",
     },
     {
         title: "Workflow Automation",
         description: "Connect your tools and automate repetitive business processes",
         features: ["Multi-tool integration", "Custom workflows", "Data processing", "Scheduling"],
-        href: "/services/workflow-automation",
+        href: "#",
     },
     {
         title: "Custom Solutions",
         description: "Tailored automation solutions for your specific business needs",
         features: ["Consultation", "Custom development", "Integration", "Support"],
-        href: "/services/custom-solutions",
+        href: "#",
     },
 ];
 
@@ -117,7 +117,7 @@ export default function Services() {
                     }}
                 >
                     <Link
-                        href="/services"
+                        href="#"
                         className="inline-flex items-center gap-2 text-blue-700 font-semibold border-2 border-blue-600 px-6 py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-all"
                     >
                         View All Services

@@ -4,9 +4,9 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 const steps = [
     {
         number: "01",
-        title: "Discovery Call",
-        description: "We understand your business, challenges, and goals. No technical jargon, just real talk.",
-        duration: "30 minutes",
+        title: "Discovery Form",
+        description: "We understand your business, challenges, and goals by filling our pre-onboarding form.",
+        duration: "10 minutes",
         outcome: "Clear understanding of your needs",
     },
     {
@@ -108,7 +108,7 @@ export default function HowItWorks() {
                         How It Works
                     </h2>
                     <p className="text-gray-500 max-w-xl mx-auto">
-                        From first call to full automation in just 7-10 days. Here's our proven process.
+                        From filling our discovery form to full automation in just 7-10 days. Here's our proven process.
                     </p>
                 </div>
 
@@ -135,18 +135,20 @@ export default function HowItWorks() {
                 >
                     <h3 className="text-2xl font-extrabold mb-3">Ready to Get Started?</h3>
                     <p className="text-blue-100 mb-8 max-w-lg mx-auto">
-                        Book a free 30-minute discovery call. No commitment, no sales pressure.
+                        Fill our 10-minute discovery form. No commitment, no sales pressure.
                         Just honest advice on how automation can help your business.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <Link
-                            href="/demo"
+                        <a
+                            href="https://forms.gle/rG4Jf1xoguD67mH26"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="bg-white text-blue-700 font-semibold px-6 py-3 rounded-xl hover:bg-blue-50 transition-colors"
                         >
-                            Schedule Discovery Call
-                        </Link>
+                            Fill Discovery Form
+                        </a>
                         <Link
-                            href="/contact"
+                            href="#"
                             className="border-2 border-white text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors"
                         >
                             Ask a Question

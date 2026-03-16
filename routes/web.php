@@ -7,9 +7,9 @@ use Inertia\Inertia;
 //     return redirect('/admin/login');
 // });
 
-Route::get('/start', function () {
-    return redirect()->away('https://forms.gle/rG4Jf1xoguD67mH26');
-});
+// Route::get('/start', function () {
+//     return redirect()->away('https://forms.gle/rG4Jf1xoguD67mH26');
+// });
 
 Route::get('/', function () {
     return Inertia::render('Home');
