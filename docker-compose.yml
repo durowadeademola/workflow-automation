@@ -68,8 +68,6 @@ services:
       - WEBHOOK_URL=https://n8n.blueflowautomation.com/
       - N8N_EDITOR_BASE_URL=https://n8n.blueflowautomation.com
       - GENERIC_TIMEZONE=Africa/Lagos
-      - NODE_FUNCTION_ALLOW_EXTERNAL=*
-      - EXECUTIONS_PROCESS=main
 
 volumes:
   mysql_data:
