@@ -29,6 +29,7 @@ class ProductResource extends Resource
         return $user && ($user->is_client || $user->is_agent)
             && in_array(strtolower($user->client?->type), [
                 'online-store',
+                'food-beverage',
                 'real-estate',
                 'sme',
                 'ecommerce',
