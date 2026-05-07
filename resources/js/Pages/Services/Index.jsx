@@ -1,0 +1,127 @@
+import { Head, Link } from "@inertiajs/react";
+import MainLayout from "@/Components/Layout/MainLayout";
+import PageHero from "@/Components/Layout/PageHero";
+
+const services = [
+    {
+        title: "WhatsApp Automation",
+        description: "Turn WhatsApp into your 24/7 sales, support, and booking assistant. Never miss a customer message again.",
+        features: ["Order processing", "Booking management", "Customer support", "Payment integration"],
+        href: "/services/whatsapp-automation",
+        popular: true,
+        emoji: "💬",
+    },
+    {
+        title: "CRM Integration",
+        description: "Centralise customer data and automate your entire relationship management pipeline.",
+        features: ["Lead capture", "Pipeline automation", "Follow-up sequences", "Analytics"],
+        href: "/services/crm-integration",
+        emoji: "🗂️",
+    },
+    {
+        title: "Email Automation",
+        description: "Send the right message to the right customer at the right time — automatically.",
+        features: ["Campaign builder", "Smart segmentation", "Cart recovery", "A/B testing"],
+        href: "/services/email-automation",
+        emoji: "📧",
+    },
+    {
+        title: "Payment Automation",
+        description: "Automate invoicing, payment collection, and reconciliation. Get paid faster.",
+        features: ["Auto invoicing", "Payment reminders", "Paystack & Flutterwave", "Financial reports"],
+        href: "/services/payment-automation",
+        emoji: "💳",
+    },
+    {
+        title: "Workflow Automation",
+        description: "Connect your tools and automate repetitive business processes end-to-end.",
+        features: ["100+ app integrations", "Visual builder", "Approval workflows", "Data sync"],
+        href: "/services/workflow-automation",
+        emoji: "⚙️",
+    },
+    {
+        title: "Custom Solutions",
+        description: "Bespoke automation built from scratch for businesses with unique requirements.",
+        features: ["Dedicated architect", "Legacy integrations", "Full ownership", "Ongoing support"],
+        href: "/services/custom-solutions",
+        emoji: "🛠️",
+    },
+];
+
+export default function Services() {
+    return (
+        <MainLayout>
+            <Head title="Services — SmartFlow Africa" />
+
+            <PageHero
+                badge="Our Services"
+                title="Complete Business Automation Suite"
+                subtitle="Everything you need to automate and scale your Nigerian business — from WhatsApp to payments to custom workflows."
+            />
+
+            <section className="py-20 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {services.map((service) => (
+                            <div
+                                key={service.title}
+                                className={`relative bg-white rounded-2xl p-6 border shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 flex flex-col ${
+                                    service.popular
+                                        ? "border-blue-500 ring-1 ring-blue-500"
+                                        : "border-gray-100"
+                                }`}
+                            >
+                                {service.popular && (
+                                    <span className="absolute -top-3 left-6 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                                        Most Popular
+                                    </span>
+                                )}
+
+                                <div className="text-4xl mb-4">{service.emoji}</div>
+                                <h3 className="font-bold text-gray-900 text-lg mb-2">{service.title}</h3>
+                                <p className="text-sm text-gray-500 mb-4">{service.description}</p>
+
+                                <ul className="space-y-2 mb-6 flex-1">
+                                    {service.features.map((f) => (
+                                        <li key={f} className="flex items-center gap-2 text-sm text-gray-600">
+                                            <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            {f}
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                <Link
+                                    href={service.href}
+                                    className="inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors mt-auto"
+                                >
+                                    Learn More
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Bottom CTA */}
+            <section className="py-16 bg-blue-600">
+                <div className="max-w-3xl mx-auto px-4 text-center">
+                    <h2 className="text-2xl font-extrabold text-white mb-3">Not sure which service you need?</h2>
+                    <p className="text-blue-100 text-sm mb-6">
+                        Book a free call and we'll recommend exactly what will have the biggest impact on your business.
+                    </p>
+                    <Link
+                        href="/demo"
+                        className="inline-flex items-center gap-2 bg-white text-blue-700 font-semibold px-6 py-3 rounded-xl hover:bg-blue-50 transition-colors text-sm"
+                    >
+                        Get a Free Recommendation →
+                    </Link>
+                </div>
+            </section>
+        </MainLayout>
+    );
+}

@@ -1,0 +1,186 @@
+import { Head, Link } from "@inertiajs/react";
+import Navbar from "@/Components/Navbar";
+import Footer from "@/Components/Footer";
+
+const highlights = [
+    "Built from scratch around your exact business process — not a generic template",
+    "Dedicated automation engineer assigned to your project from day one",
+    "Integrates with any tool, platform, or legacy system your business already uses",
+    "Ongoing support and iterations as your business grows and requirements change",
+];
+
+const features = [
+    { icon: "🏗️", title: "Bespoke Development", description: "When off-the-shelf solutions don't fit, we build exactly what you need — custom logic, custom integrations, custom interfaces." },
+    { icon: "🔌", title: "Legacy System Integration", description: "Already running on older software? We connect your existing systems to modern automation tools without replacing what works." },
+    { icon: "🧠", title: "AI-Powered Features", description: "Add AI capabilities to your operations — document processing, intelligent routing, predictive analytics, or custom chatbots." },
+    { icon: "📱", title: "Custom Dashboards", description: "Purpose-built reporting dashboards that show the exact metrics your leadership team needs — nothing more, nothing less." },
+    { icon: "🔐", title: "Enterprise-Grade Security", description: "Custom solutions built with data privacy and security at the core — especially important for healthcare, finance, and legal businesses." },
+    { icon: "🔄", title: "Ongoing Iteration", description: "Your business evolves — your automation should too. We provide continuous support, improvements, and new feature rollouts." },
+];
+
+const steps = [
+    { title: "Discovery and scoping session", description: "We spend time understanding your business deeply — your tools, your team, your pain points, and your growth ambitions." },
+    { title: "Solution design and proposal", description: "We produce a detailed technical proposal outlining the solution architecture, timeline, and investment required." },
+    { title: "Agile build and testing", description: "Development happens in short sprints with regular demos. You see progress weekly and give feedback throughout — no surprises at the end." },
+    { title: "Deployment and handover", description: "We deploy your solution, train your team, document everything, and remain available for support and future enhancements." },
+];
+
+const metrics = [
+    { value: "100%", label: "Built for Your Business" },
+    { value: "2–6wk", label: "Typical Build Time" },
+    { value: "∞", label: "Integration Possibilities" },
+    { value: "Ongoing", label: "Support Included" },
+];
+
+const useCases = [
+    { title: "Multi-branch inventory sync", description: "A retail chain needed real-time stock visibility across 12 locations. We built a custom sync layer between their POS systems and a central dashboard." },
+    { title: "Automated loan processing", description: "A microfinance firm reduced loan approval time from 3 days to 4 hours with a custom document verification and credit scoring workflow." },
+    { title: "Hospital patient flow system", description: "A private clinic automated patient check-in, doctor assignment, and billing — eliminating paper-based bottlenecks across all departments." },
+];
+
+export default function CustomSolutions() {
+    return (
+        <>
+            <Head title="Custom Solutions - Blueflow Automation">
+                <meta
+                    name="description"
+                    content="When standard automation tools don't fit, Blueflow builds custom solutions tailored to your exact business needs. Purpose-built for Nigerian businesses."
+                />
+            </Head>
+            <div className="min-h-screen bg-white">
+                <Navbar />
+                <main>
+                    {/* Overview */}
+                    <section className="py-20 bg-white">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                                <div>
+                                    <h2 className="text-3xl font-extrabold text-gray-900 mb-5">
+                                        Your Business Is Unique. Your Automation Should Be Too.
+                                    </h2>
+                                    <p className="text-gray-600 leading-relaxed mb-6">
+                                        Some businesses have processes too specific, too complex, or too critical
+                                        to fit into a standard automation package. That's where Blueflow's Custom
+                                        Solutions come in. We work as an extension of your team — understanding
+                                        your operations at a deep level and engineering automation that fits
+                                        perfectly, integrates completely, and scales with you as you grow.
+                                    </p>
+                                    <ul className="space-y-3">
+                                        {highlights.map((h) => (
+                                            <li key={h} className="flex items-start gap-3 text-gray-700 text-sm">
+                                                <span className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                </span>
+                                                {h}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
+                                    🏗️
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Features */}
+                    <section className="py-20 bg-gray-50">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">What We Can Build</h2>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {features.map((f) => (
+                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                                        <div className="text-3xl mb-3">{f.icon}</div>
+                                        <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
+                                        <p className="text-sm text-gray-500">{f.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* How it works */}
+                    <section className="py-20 bg-white">
+                        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">How It Works</h2>
+                            <div className="space-y-6">
+                                {steps.map((step, i) => (
+                                    <div key={step.title} className="flex items-start gap-5">
+                                        <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0">
+                                            {i + 1}
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-gray-900 mb-1">{step.title}</h3>
+                                            <p className="text-sm text-gray-500">{step.description}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Use Cases */}
+                    <section className="py-20 bg-gray-50">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">Real Problems We've Solved</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {useCases.map((u) => (
+                                    <div key={u.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+                                        <div className="w-8 h-8 bg-blue-600 rounded-lg mb-4 flex items-center justify-center">
+                                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                            </svg>
+                                        </div>
+                                        <h3 className="font-bold text-gray-900 mb-2">{u.title}</h3>
+                                        <p className="text-sm text-gray-500">{u.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Metrics */}
+                    <section className="py-16 bg-blue-600">
+                        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                                {metrics.map((m) => (
+                                    <div key={m.label} className="text-center">
+                                        <p className="text-3xl font-extrabold text-white mb-1">{m.value}</p>
+                                        <p className="text-xs text-blue-100">{m.label}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* CTA */}
+                    <section className="py-20 bg-white">
+                        <div className="max-w-3xl mx-auto px-4 text-center">
+                            <h2 className="text-3xl font-extrabold text-gray-900 mb-4">Have a Complex Problem to Solve?</h2>
+                            <p className="text-gray-500 mb-8">
+                                Tell us what you're trying to automate. If it's possible, we'll build it —
+                                and give you a clear scope and timeline before any work begins.
+                            </p>
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                <a
+                                    href="https://forms.gle/rG4Jf1xoguD67mH26"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors"
+                                >
+                                    Discuss Your Project
+                                </a>
+                                <Link href="/pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
+                                    View Pricing
+                                </Link>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+                <Footer />
+            </div>
+        </>
+    );
+}

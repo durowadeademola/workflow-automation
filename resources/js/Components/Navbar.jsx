@@ -2,21 +2,21 @@ import { useState } from "react";
 import { Link } from "@inertiajs/react";
 
 const servicesLinks = [
-    { label: "WhatsApp Automation", href: "#" },
-    { label: "CRM Integration", href: "#" },
-    { label: "Email Automation", href: "#" },
-    { label: "Payment Automation", href: "#" },
-    { label: "Workflow Automation", href: "#" },
-    { label: "Custom Solutions", href: "#" },
+    { label: "WhatsApp Automation", href: "/services/whatsapp-automation" },
+    { label: "CRM Integration", href: "/services/crm-integration" },
+    { label: "Email Automation", href: "/services/email-automation" },
+    { label: "Payment Automation", href: "/services/payment-automation" },
+    { label: "Workflow Automation", href: "/services/workflow-automation" },
+    { label: "Custom Solutions", href: "/services/custom-solutions" },
 ];
 
 const industriesLinks = [
-    { label: "Restaurants & Cafés", href: "#" },
-    { label: "E-commerce & Retail", href: "#" },
-    { label: "Hotels & Hospitality", href: "#" },
-    { label: "Healthcare & Clinics", href: "#" },
-    { label: "Real Estate", href: "#" },
-    { label: "Professional Services", href: "#" },
+    { label: "Restaurants & Cafés", href: "/industries/restaurants" },
+    { label: "E-commerce & Retail", href: "/industries/ecommerce" },
+    { label: "Hotels & Hospitality", href: "/industries/hospitality" },
+    { label: "Healthcare & Clinics", href: "/industries/healthcare" },
+    { label: "Real Estate", href: "/industries/real-estate" },
+    { label: "Professional Services", href: "/industries/professional-services" },
 ];
 
 const resourcesLinks = [
@@ -28,16 +28,19 @@ const resourcesLinks = [
 
 function DropdownMenu({ items }) {
     return (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
-            {items.map((item) => (
-                <Link
-                    key={item.href}
-                    href={item.href}
-                    className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
-                >
-                    {item.label}
-                </Link>
-            ))}
+        <div className="absolute top-full left-1/2 -translate-x-1/2 w-56 z-50">
+            <div className="h-2 w-full" />
+            <div className="bg-white rounded-xl shadow-xl border border-gray-100 py-2">
+                {items.map((item) => (
+                    <Link
+                        key={item.href}
+                        href={item.href}
+                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+                    >
+                        {item.label}
+                    </Link>
+                ))}
+            </div>
         </div>
     );
 }
