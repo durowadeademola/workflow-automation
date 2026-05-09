@@ -3,48 +3,48 @@ import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
 
 const highlights = [
-    "Take orders and reservations automatically via WhatsApp — even at 2am",
-    "Send payment links and confirm instantly without manual follow-up",
-    "Automated feedback collection after every visit to protect your reputation",
-    "Loyalty reminders and promo blasts that bring customers back consistently",
+    "Answer product questions and process orders automatically — even at midnight",
+    "Send payment links and confirm purchases without any manual follow-up",
+    "Automated delivery updates keep customers informed at every step",
+    "Reorder sequences that bring customers back before they go to a competitor",
 ];
 
 const features = [
-    { icon: "🍽️", title: "WhatsApp Order Taking", description: "Customers send their order via WhatsApp. The system confirms, calculates the total, and sends a payment link — all without staff involvement." },
-    { icon: "📅", title: "Table & Delivery Booking", description: "Automated reservation management with confirmation messages, reminders 1 hour before, and instant rescheduling." },
-    { icon: "💳", title: "Instant Payment Collection", description: "Paystack and Flutterwave payment links sent automatically at checkout. No more waiting for transfers or handling cash disputes." },
-    { icon: "⭐", title: "Review & Feedback Automation", description: "Every customer gets a follow-up message after their visit asking for a Google review or quick feedback — building your reputation on autopilot." },
-    { icon: "📣", title: "Promo & Loyalty Campaigns", description: "Send targeted WhatsApp blasts for new menu items, weekend specials, or loyalty rewards to customers who haven't visited in a while." },
-    { icon: "📊", title: "Sales & Peak Hour Reports", description: "Daily and weekly reports showing your busiest hours, top-selling items, and revenue trends — delivered straight to your phone." },
+    { icon: "🗂️", title: "WhatsApp Product Catalog", description: "Customers browse your full catalog with images, pricing, and variants directly on WhatsApp — no app download, no website visit required." },
+    { icon: "✅", title: "Auto Order Processing", description: "Orders placed, confirmed, and sent to fulfilment automatically. Your team gets notified without touching a single message." },
+    { icon: "💳", title: "Instant Payment Collection", description: "Paystack and Flutterwave payment links sent automatically at checkout. Payments confirmed and receipts issued in seconds." },
+    { icon: "🚚", title: "Delivery Tracking Updates", description: "Customers receive automatic status updates at every stage — order confirmed, dispatched, out for delivery, delivered." },
+    { icon: "🎯", title: "Abandoned Cart Recovery", description: "Customers who enquired but didn't complete their order get a timed follow-up message — recovering sales you'd otherwise lose." },
+    { icon: "📊", title: "Sales & Customer Reports", description: "Daily reports showing top-selling products, peak order times, best customers, and revenue trends — sent straight to your phone." },
 ];
 
 const steps = [
-    { title: "Connect your WhatsApp Business number", description: "We link your existing number to Blueflow and configure your digital menu, pricing, and order flow." },
-    { title: "Set up your payment and booking flows", description: "We integrate Paystack or Flutterwave and configure your reservation system with your table capacity and hours." },
-    { title: "Build your customer database", description: "Every customer who orders or books is captured automatically — building a list you can market to again and again." },
-    { title: "Launch and start filling seats", description: "Go live in days. Your restaurant runs smoother, your staff focus on service, and revenue grows without extra headcount." },
+    { title: "Connect your product catalog", description: "We import your products, pricing, and inventory into the WhatsApp automation system — however many SKUs you have." },
+    { title: "Build your sales and payment flows", description: "We configure your ordering conversation, payment links, and confirmation messages tailored to how your store works." },
+    { title: "Integrate logistics and inventory", description: "We connect your delivery partner and stock management system so orders flow end-to-end without manual handoffs." },
+    { title: "Launch and scale automatically", description: "Go live within days. Every order, update, and follow-up runs on its own — freeing you to focus on sourcing and growth." },
 ];
 
 const metrics = [
-    { value: "3x", label: "More Repeat Customers" },
-    { value: "0", label: "Missed Orders" },
-    { value: "< 1s", label: "Response Time" },
-    { value: "5hrs", label: "Staff Time Saved Daily" },
+    { value: "3x", label: "Higher Conversion Rate" },
+    { value: "6hrs", label: "Saved Daily" },
+    { value: "₦800K", label: "Avg Extra Monthly Sales" },
+    { value: "35%", label: "Repeat Purchase Rate" },
 ];
 
 const testimonial = {
-    quote: "We used to miss orders when the line got busy. Now WhatsApp handles everything automatically and we've grown our repeat customer base significantly.",
-    name: "Adaeze O.",
-    role: "Owner, Lagos Restaurant",
+    quote: "Our WhatsApp used to be overwhelming — hundreds of messages and no way to keep up. Now it's our number one sales channel and we barely touch it. SmartFlow handles everything automatically.",
+    name: "Aisha Bello",
+    role: "Founder, Lagos Style Boutique",
 };
 
-export default function RestaurantsCafes() {
+export default function Ecommerce() {
     return (
         <>
-            <Head title="Automation for Restaurants & Cafés">
+            <Head title="Automation for E-commerce & Retail">
                 <meta
                     name="description"
-                    content="Automate orders, bookings, payments, and customer follow-ups for your restaurant or café. Blueflow helps Nigerian food businesses run smarter and serve more customers."
+                    content="Automate orders, payments, delivery updates, and customer follow-ups for your online store. SmartFlow helps Nigerian e-commerce businesses sell more with less effort."
                 />
             </Head>
             <div className="min-h-screen bg-white">
@@ -56,17 +56,17 @@ export default function RestaurantsCafes() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                                 <div>
                                     <span className="inline-block bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full mb-4">
-                                        Restaurants & Cafés
+                                        E-commerce & Retail
                                     </span>
                                     <h2 className="text-3xl font-extrabold text-gray-900 mb-5">
-                                        Serve More Customers Without Hiring More Staff
+                                        Sell More Without Being Glued to Your Phone
                                     </h2>
                                     <p className="text-gray-600 leading-relaxed mb-6">
-                                        Running a restaurant in Nigeria means managing orders on WhatsApp, handling
-                                        cash and transfers, chasing reviews, and keeping regulars coming back —
-                                        all while trying to keep food quality high. Blueflow automates the
-                                        operational side so your team can focus entirely on delivering a great
-                                        experience. More orders processed, fewer errors, happier customers.
+                                        Running an online store in Nigeria means managing hundreds of WhatsApp
+                                        messages daily, manually sending payment links, updating customers on
+                                        deliveries, and chasing repeat orders — all while trying to source new
+                                        products. SmartFlow automates your entire sales process so every customer
+                                        gets a fast, professional experience and no order ever slips through the cracks.
                                     </p>
                                     <ul className="space-y-3">
                                         {highlights.map((h) => (
@@ -82,7 +82,7 @@ export default function RestaurantsCafes() {
                                     </ul>
                                 </div>
                                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    🍽️
+                                    🛒
                                 </div>
                             </div>
                         </div>
@@ -91,7 +91,9 @@ export default function RestaurantsCafes() {
                     {/* Features */}
                     <section className="py-20 bg-gray-50">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">Built for Food Businesses</h2>
+                            <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">
+                                Built for Nigerian Online Stores
+                            </h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
                                     <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
@@ -153,9 +155,11 @@ export default function RestaurantsCafes() {
                     {/* CTA */}
                     <section className="py-20 bg-white">
                         <div className="max-w-3xl mx-auto px-4 text-center">
-                            <h2 className="text-3xl font-extrabold text-gray-900 mb-4">Ready to Automate Your Restaurant?</h2>
+                            <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
+                                Ready to Automate Your Store?
+                            </h2>
                             <p className="text-gray-500 mb-8">
-                                Book a free demo and we'll show you exactly how Blueflow works for food businesses like yours.
+                                Book a free demo and we'll show you exactly how SmartFlow works for e-commerce businesses like yours.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <a

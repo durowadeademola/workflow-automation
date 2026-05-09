@@ -3,48 +3,48 @@ import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
 
 const highlights = [
-    "Take orders and reservations automatically via WhatsApp — even at 2am",
-    "Send payment links and confirm instantly without manual follow-up",
-    "Automated feedback collection after every visit to protect your reputation",
-    "Loyalty reminders and promo blasts that bring customers back consistently",
+    "Accept direct bookings via WhatsApp 24/7 — no OTA commission on any reservation",
+    "Automated confirmation, check-in reminders, and guest info sent without staff involvement",
+    "Upsell room upgrades, airport pickup, and dining reservations automatically",
+    "Post-stay review requests sent at the perfect moment to boost your ratings",
 ];
 
 const features = [
-    { icon: "🍽️", title: "WhatsApp Order Taking", description: "Customers send their order via WhatsApp. The system confirms, calculates the total, and sends a payment link — all without staff involvement." },
-    { icon: "📅", title: "Table & Delivery Booking", description: "Automated reservation management with confirmation messages, reminders 1 hour before, and instant rescheduling." },
-    { icon: "💳", title: "Instant Payment Collection", description: "Paystack and Flutterwave payment links sent automatically at checkout. No more waiting for transfers or handling cash disputes." },
-    { icon: "⭐", title: "Review & Feedback Automation", description: "Every customer gets a follow-up message after their visit asking for a Google review or quick feedback — building your reputation on autopilot." },
-    { icon: "📣", title: "Promo & Loyalty Campaigns", description: "Send targeted WhatsApp blasts for new menu items, weekend specials, or loyalty rewards to customers who haven't visited in a while." },
-    { icon: "📊", title: "Sales & Peak Hour Reports", description: "Daily and weekly reports showing your busiest hours, top-selling items, and revenue trends — delivered straight to your phone." },
+    { icon: "🏨", title: "Direct WhatsApp Booking", description: "Guests check availability, see room options with photos and pricing, and confirm their booking directly on WhatsApp — no commission, no middlemen." },
+    { icon: "📋", title: "Booking Confirmations & Reminders", description: "Professional confirmation messages sent instantly on every booking, followed by a reminder 24 hours before arrival with directions and check-in details." },
+    { icon: "🛎️", title: "In-Stay Guest Requests", description: "Guests request room service, housekeeping, extra towels, or report issues via WhatsApp. Staff get instant notifications with no phone calls needed." },
+    { icon: "🎁", title: "Upsell Automation", description: "Automatically offer room upgrades, spa bookings, restaurant reservations, and airport transfers at the right moment during the guest journey." },
+    { icon: "⭐", title: "Review Collection", description: "Every guest receives a follow-up message after checkout asking for a Google or TripAdvisor review — building your reputation consistently." },
+    { icon: "📊", title: "Occupancy & Revenue Dashboard", description: "Real-time view of room occupancy, revenue per booking, channel performance, and your busiest seasons — all in one place." },
 ];
 
 const steps = [
-    { title: "Connect your WhatsApp Business number", description: "We link your existing number to Blueflow and configure your digital menu, pricing, and order flow." },
-    { title: "Set up your payment and booking flows", description: "We integrate Paystack or Flutterwave and configure your reservation system with your table capacity and hours." },
-    { title: "Build your customer database", description: "Every customer who orders or books is captured automatically — building a list you can market to again and again." },
-    { title: "Launch and start filling seats", description: "Go live in days. Your restaurant runs smoother, your staff focus on service, and revenue grows without extra headcount." },
+    { title: "Connect your WhatsApp Business number", description: "We link your hotel's number to SmartFlow and configure your room types, availability calendar, and pricing tiers." },
+    { title: "Build your booking and guest journey flows", description: "We design conversation flows for enquiries, confirmations, check-in instructions, in-stay requests, and post-stay follow-ups." },
+    { title: "Integrate your payment and property systems", description: "We connect Paystack or Flutterwave for deposits, and link your existing property management system if you have one." },
+    { title: "Launch and start filling rooms directly", description: "Go live in days. Every booking, guest message, and follow-up is handled automatically — your staff focus on delivering a great stay." },
 ];
 
 const metrics = [
-    { value: "3x", label: "More Repeat Customers" },
-    { value: "0", label: "Missed Orders" },
-    { value: "< 1s", label: "Response Time" },
-    { value: "5hrs", label: "Staff Time Saved Daily" },
+    { value: "25%", label: "Higher Occupancy" },
+    { value: "0%", label: "OTA Commission" },
+    { value: "40%", label: "Direct Bookings" },
+    { value: "4.9★", label: "Avg Guest Rating" },
 ];
 
 const testimonial = {
-    quote: "We used to miss orders when the line got busy. Now WhatsApp handles everything automatically and we've grown our repeat customer base significantly.",
-    name: "Adaeze O.",
-    role: "Owner, Lagos Restaurant",
+    quote: "We used to pay Booking.com on almost every reservation. Now most of our bookings come directly through WhatsApp. We kept all that commission and our guests actually prefer the experience.",
+    name: "Mrs. Funke Adeleke",
+    role: "General Manager, Grandeur Hotel — Port Harcourt",
 };
 
-export default function RestaurantsCafes() {
+export default function Hotels() {
     return (
         <>
-            <Head title="Automation for Restaurants & Cafés">
+            <Head title="Automation for Hotels & Hospitality">
                 <meta
                     name="description"
-                    content="Automate orders, bookings, payments, and customer follow-ups for your restaurant or café. Blueflow helps Nigerian food businesses run smarter and serve more customers."
+                    content="Automate bookings, guest communications, upsells, and reviews for your hotel. SmartFlow helps Nigerian hospitality businesses fill more rooms and earn more per guest."
                 />
             </Head>
             <div className="min-h-screen bg-white">
@@ -56,17 +56,18 @@ export default function RestaurantsCafes() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                                 <div>
                                     <span className="inline-block bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full mb-4">
-                                        Restaurants & Cafés
+                                        Hotels & Hospitality
                                     </span>
                                     <h2 className="text-3xl font-extrabold text-gray-900 mb-5">
-                                        Serve More Customers Without Hiring More Staff
+                                        Fill More Rooms and Stop Paying OTA Commissions
                                     </h2>
                                     <p className="text-gray-600 leading-relaxed mb-6">
-                                        Running a restaurant in Nigeria means managing orders on WhatsApp, handling
-                                        cash and transfers, chasing reviews, and keeping regulars coming back —
-                                        all while trying to keep food quality high. Blueflow automates the
-                                        operational side so your team can focus entirely on delivering a great
-                                        experience. More orders processed, fewer errors, happier customers.
+                                        Nigerian hotels are losing 15–30% of every booking to Booking.com,
+                                        Jumia Travel, and other platforms. Meanwhile, guests are already on
+                                        WhatsApp — the simplest booking channel you have. SmartFlow turns your
+                                        WhatsApp number into a direct booking engine that handles enquiries,
+                                        confirmations, guest requests, and reviews automatically, so your team
+                                        can focus on delivering an exceptional stay.
                                     </p>
                                     <ul className="space-y-3">
                                         {highlights.map((h) => (
@@ -82,7 +83,7 @@ export default function RestaurantsCafes() {
                                     </ul>
                                 </div>
                                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    🍽️
+                                    🏨
                                 </div>
                             </div>
                         </div>
@@ -91,7 +92,9 @@ export default function RestaurantsCafes() {
                     {/* Features */}
                     <section className="py-20 bg-gray-50">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">Built for Food Businesses</h2>
+                            <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">
+                                Built for Nigerian Hotels & Guesthouses
+                            </h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
                                     <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
@@ -153,9 +156,11 @@ export default function RestaurantsCafes() {
                     {/* CTA */}
                     <section className="py-20 bg-white">
                         <div className="max-w-3xl mx-auto px-4 text-center">
-                            <h2 className="text-3xl font-extrabold text-gray-900 mb-4">Ready to Automate Your Restaurant?</h2>
+                            <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
+                                Ready to Automate Your Hotel?
+                            </h2>
                             <p className="text-gray-500 mb-8">
-                                Book a free demo and we'll show you exactly how Blueflow works for food businesses like yours.
+                                Book a free demo and we'll show you exactly how SmartFlow works for hospitality businesses like yours.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <a

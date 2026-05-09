@@ -3,48 +3,48 @@ import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
 
 const highlights = [
-    "Take orders and reservations automatically via WhatsApp — even at 2am",
-    "Send payment links and confirm instantly without manual follow-up",
-    "Automated feedback collection after every visit to protect your reputation",
-    "Loyalty reminders and promo blasts that bring customers back consistently",
+    "AI chatbot qualifies every lead automatically before an agent gets involved",
+    "Property listings with photos and pricing sent instantly to interested prospects",
+    "Viewing appointments booked via WhatsApp without any back-and-forth",
+    "Automated follow-up sequences keep prospects warm until they are ready to buy",
 ];
 
 const features = [
-    { icon: "🍽️", title: "WhatsApp Order Taking", description: "Customers send their order via WhatsApp. The system confirms, calculates the total, and sends a payment link — all without staff involvement." },
-    { icon: "📅", title: "Table & Delivery Booking", description: "Automated reservation management with confirmation messages, reminders 1 hour before, and instant rescheduling." },
-    { icon: "💳", title: "Instant Payment Collection", description: "Paystack and Flutterwave payment links sent automatically at checkout. No more waiting for transfers or handling cash disputes." },
-    { icon: "⭐", title: "Review & Feedback Automation", description: "Every customer gets a follow-up message after their visit asking for a Google review or quick feedback — building your reputation on autopilot." },
-    { icon: "📣", title: "Promo & Loyalty Campaigns", description: "Send targeted WhatsApp blasts for new menu items, weekend specials, or loyalty rewards to customers who haven't visited in a while." },
-    { icon: "📊", title: "Sales & Peak Hour Reports", description: "Daily and weekly reports showing your busiest hours, top-selling items, and revenue trends — delivered straight to your phone." },
+    { icon: "🤖", title: "Lead Qualification Bot", description: "Every enquiry is automatically screened for budget, location preference, property type, and timeline — so agents only spend time on serious buyers." },
+    { icon: "🏘️", title: "Property Listing Broadcasts", description: "Send new listings with photos, pricing, and key details to all interested prospects the moment a property becomes available." },
+    { icon: "📅", title: "Viewing Appointment Scheduler", description: "Prospects book property viewings directly via WhatsApp based on agent availability — no phone tag, no missed opportunities." },
+    { icon: "📸", title: "Virtual Tour & Media Delivery", description: "Automatically send photo galleries, video walkthroughs, floor plans, and location links to interested buyers on request." },
+    { icon: "🔄", title: "Follow-Up Sequences", description: "Timed follow-up messages keep prospects engaged at every stage of their decision — from first enquiry all the way to signing." },
+    { icon: "📊", title: "Lead Pipeline Dashboard", description: "See every lead, their current stage, interest level, last contact date, and projected deal value — all in one clear view." },
 ];
 
 const steps = [
-    { title: "Connect your WhatsApp Business number", description: "We link your existing number to Blueflow and configure your digital menu, pricing, and order flow." },
-    { title: "Set up your payment and booking flows", description: "We integrate Paystack or Flutterwave and configure your reservation system with your table capacity and hours." },
-    { title: "Build your customer database", description: "Every customer who orders or books is captured automatically — building a list you can market to again and again." },
-    { title: "Launch and start filling seats", description: "Go live in days. Your restaurant runs smoother, your staff focus on service, and revenue grows without extra headcount." },
+    { title: "Connect your WhatsApp Business number", description: "We link your agency's number to SmartFlow and configure your property types, locations, price ranges, and agent availability." },
+    { title: "Build your lead qualification flow", description: "We design a conversation that screens every new enquiry for budget, timeline, and preferences before routing to the right agent." },
+    { title: "Set up your listing and follow-up sequences", description: "We configure automated property matching, media delivery, viewing scheduling, and the follow-up cadence that keeps leads from going cold." },
+    { title: "Launch and let agents focus on closing", description: "Go live within days. Agents stop answering repetitive questions and start spending their time on qualified prospects ready to move." },
 ];
 
 const metrics = [
-    { value: "3x", label: "More Repeat Customers" },
-    { value: "0", label: "Missed Orders" },
-    { value: "< 1s", label: "Response Time" },
-    { value: "5hrs", label: "Staff Time Saved Daily" },
+    { value: "2x", label: "More Qualified Leads" },
+    { value: "70%", label: "Less Admin Time" },
+    { value: "15+", label: "Extra Deals Monthly" },
+    { value: "< 1min", label: "Lead Response Time" },
 ];
 
 const testimonial = {
-    quote: "We used to miss orders when the line got busy. Now WhatsApp handles everything automatically and we've grown our repeat customer base significantly.",
-    name: "Adaeze O.",
-    role: "Owner, Lagos Restaurant",
+    quote: "Before SmartFlow, our agents were spending most of the day answering the same basic questions over and over. Now the bot handles all of that and only passes over leads who are genuinely ready to view. Our close rate has never been higher.",
+    name: "Tobi Adeyemi",
+    role: "CEO, Lekki Properties — Lagos",
 };
 
-export default function RestaurantsCafes() {
+export default function RealEstate() {
     return (
         <>
-            <Head title="Automation for Restaurants & Cafés">
+            <Head title="Automation for Real Estate Agents">
                 <meta
                     name="description"
-                    content="Automate orders, bookings, payments, and customer follow-ups for your restaurant or café. Blueflow helps Nigerian food businesses run smarter and serve more customers."
+                    content="Qualify leads automatically, send property listings, and book viewings via WhatsApp. SmartFlow helps Nigerian real estate agents close more deals with less admin."
                 />
             </Head>
             <div className="min-h-screen bg-white">
@@ -56,17 +56,19 @@ export default function RestaurantsCafes() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                                 <div>
                                     <span className="inline-block bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full mb-4">
-                                        Restaurants & Cafés
+                                        Real Estate
                                     </span>
                                     <h2 className="text-3xl font-extrabold text-gray-900 mb-5">
-                                        Serve More Customers Without Hiring More Staff
+                                        Close More Deals. Spend Less Time on Admin.
                                     </h2>
                                     <p className="text-gray-600 leading-relaxed mb-6">
-                                        Running a restaurant in Nigeria means managing orders on WhatsApp, handling
-                                        cash and transfers, chasing reviews, and keeping regulars coming back —
-                                        all while trying to keep food quality high. Blueflow automates the
-                                        operational side so your team can focus entirely on delivering a great
-                                        experience. More orders processed, fewer errors, happier customers.
+                                        Real estate agents in Nigeria are losing deals every day — not because
+                                        of bad properties or bad pricing, but because leads go cold while agents
+                                        are busy answering basic questions, sending listings manually, and
+                                        trying to schedule viewings over the phone. SmartFlow automates every
+                                        step of the lead journey from first enquiry to booked viewing, so your
+                                        agents can focus entirely on what they do best: building relationships
+                                        and closing deals.
                                     </p>
                                     <ul className="space-y-3">
                                         {highlights.map((h) => (
@@ -82,7 +84,7 @@ export default function RestaurantsCafes() {
                                     </ul>
                                 </div>
                                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    🍽️
+                                    🏠
                                 </div>
                             </div>
                         </div>
@@ -91,7 +93,9 @@ export default function RestaurantsCafes() {
                     {/* Features */}
                     <section className="py-20 bg-gray-50">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">Built for Food Businesses</h2>
+                            <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">
+                                Built for Nigerian Real Estate Agencies
+                            </h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
                                     <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
@@ -153,9 +157,11 @@ export default function RestaurantsCafes() {
                     {/* CTA */}
                     <section className="py-20 bg-white">
                         <div className="max-w-3xl mx-auto px-4 text-center">
-                            <h2 className="text-3xl font-extrabold text-gray-900 mb-4">Ready to Automate Your Restaurant?</h2>
+                            <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
+                                Ready to Automate Your Real Estate Business?
+                            </h2>
                             <p className="text-gray-500 mb-8">
-                                Book a free demo and we'll show you exactly how Blueflow works for food businesses like yours.
+                                Book a free demo and we'll show you exactly how SmartFlow works for real estate agencies like yours.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <a
