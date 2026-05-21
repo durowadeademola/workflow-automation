@@ -17,5 +17,19 @@
     </head>
     <body class="font-sans antialiased">
         @inertia
+
+        <script>
+            window.ChatWidgetConfig = {
+                webhookUrl:   'https://unrepugnant-silas-anecdotically.ngrok-free.dev/webhook/chat-widget',
+                businessName: 'MediCare Abuja',
+                agentName:    'MediCare Assistant',
+                primaryColor: '#2563EB',
+                waNumber:     '2347064706193',
+                greeting:     '👋 Hello! How can I help you today?',
+                systemPrompt: 'You are a helpful AI assistant for MediCare Abuja. Help with appointment bookings, clinic hours, and services. Be friendly and concise.',
+                quickReplies: ['Book appointment', 'Clinic hours', 'Our services', 'Talk to a human'],
+            };
+            </script>
+            <script src="{{ asset('chat-widget.js') }}"></script>
     </body>
 </html>
