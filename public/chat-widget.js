@@ -8,6 +8,7 @@
  * <script>
  *   window.ChatWidgetConfig = {
  *     webhookUrl:   'https://your-n8n.com/webhook/chat-widget',
+ *     clientId:     'medicare-abuja',  
  *     businessName: 'Your Business Name',
  *     agentName:    'AI Assistant',         // optional
  *     primaryColor: '#0f6e56',              // optional
@@ -206,7 +207,7 @@
           </svg>
         </button>
       </div>
-      <div id="cw-footer">Powered by AI · <a href="https://wa.me/${cfg.waNumber}" target="_blank" style="color:inherit;">WhatsApp us</a></div>
+      <div id="cw-footer">Powered by Blueflow · <a href="https://wa.me/${cfg.waNumber}" target="_blank" style="color:inherit;">WhatsApp us</a></div>
     </div>
     <button id="cw-bubble" aria-label="Open chat">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -318,7 +319,9 @@
           message: text,
           history: history.slice(-12),
           systemPrompt: cfg.systemPrompt,
-          businessName: cfg.businessName
+          businessName: cfg.businessName,
+          clientId: cfg.clientId, 
+          waNumber: cfg.waNumber
         })
       });
       if (!res.ok) throw new Error('http ' + res.status);
