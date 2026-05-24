@@ -21,16 +21,16 @@
         <script>
             window.ChatWidgetConfig = {
                 webhookUrl:   'https://unrepugnant-silas-anecdotically.ngrok-free.dev/webhook/chat-widget',
-                clientId:     'medicare-abuja',
-                businessName: 'MediCare Abuja',
-                agentName:    'MediCare Assistant',
+                clientId:     'blueflow-automation',
+                businessName: 'Blueflow Automation',
+                agentName:    'Blueflow Assistant',
                 primaryColor: '#2563EB',
                 waNumber:     '2347064706193',
                 greeting:     '👋 Hello! How can I help you today?',
-                //systemPrompt: 'You are a helpful AI assistant for MediCare Abuja. Help with appointment bookings, clinic hours, and services. Be friendly and concise. if the user asks for something not related to the clinic, politely let them know you can only assist with clinic-related inquiries. If they ask for a human agent, provide the contact information.',
-                quickReplies: ['Book appointment', 'Clinic hours', 'Our services', 'Talk to a human'],
+                //systemPrompt: 'You are a helpful AI assistant for Blueflow Automation. Help with orders, products, and services. Be friendly and concise. if the user asks for something not related to the automation, politely let them know you can only assist with automation-related inquiries. If they ask for a human agent, provide the contact information.',
+                quickReplies: [],
             };
-            </script>
+        </script>
             {{-- https://blueflowautomation.com/chat-widget.js --}}
             <script src="{{ asset('chat-widget.js') }}"></script>
     </body>
