@@ -219,6 +219,18 @@
     }
     .cw-user .cw-msg-time { align-self: flex-end; }
 
+    .cw-read-more {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12.5px; font-weight: 500;
+      color: ${pc}; text-decoration: none;
+      margin-top: 8px; padding: 6px 14px;
+      border: 1.5px solid ${pc}30;
+      border-radius: 20px; background: ${pc}08;
+      transition: all .15s; width: fit-content;
+    }
+    .cw-read-more:hover { background: ${pc}18; border-color: ${pc}55; transform: translateY(-1px); }
+    .cw-read-more svg { flex-shrink: 0; }
+
     /* Typing */
     #cw-typing-msg { align-self: flex-start; animation: cwSlideIn .22s ease; }
     .cw-typing-bubble {
@@ -410,7 +422,7 @@
     });
   }
 
-  function appendMsg(role, text) {
+  function appendMsg(role, text, data = {}) {
     const msgs = $('cw-messages');
     const wrap = document.createElement('div');
     wrap.className = `cw-msg cw-${role}`;
@@ -427,25 +439,29 @@
       row.appendChild(av);
       row.appendChild(bub);
       wrap.appendChild(row);
+
+      if (data.sourceUrl) {
+        const readMore = document.createElement('a');
+        readMore.href = data.sourceUrl;
+        readMore.target = '_blank';
+        readMore.rel = 'noopener';
+        readMore.className = 'cw-read-more';
+        readMore.innerHTML = `
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg> Read more
+        `;
+        wrap.appendChild(readMore);
+      }
+
     } else {
       const bub = document.createElement('div');
       bub.className = 'cw-bubble';
       bub.textContent = text;
       wrap.appendChild(bub);
     }
-
-    // const needsWA = role === 'bot' && cfg.waNumber &&
-    //   /whatsapp|agent|human|speak to|talk to|contact us/i.test(text);
-    // if (needsWA) {
-    //   const encoded = encodeURIComponent(`Hello, I need help with ${cfg.businessName}`);
-    //   const a = document.createElement('a');
-    //   a.className = 'cw-wa';
-    //   a.href = `https://wa.me/${cfg.waNumber}?text=${encoded}`;
-    //   a.target = '_blank';
-    //   a.rel = 'noopener';
-    //   a.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M11.99 2C6.477 2 2 6.477 2 11.99c0 1.762.459 3.413 1.262 4.848L2 22l5.338-1.22A9.951 9.951 0 0011.99 22C17.523 22 22 17.523 22 11.99 22 6.477 17.523 2 11.99 2zm0 18.18a8.19 8.19 0 01-4.179-1.146l-.299-.178-3.168.724.756-3.087-.195-.318A8.189 8.189 0 013.82 11.99c0-4.513 3.658-8.18 8.17-8.18s8.18 3.667 8.18 8.18-3.667 8.19-8.18 8.19z"/></svg> Chat on WhatsApp`;
-    //   wrap.appendChild(a);
-    // }
 
     const t = document.createElement('div');
     t.className = 'cw-msg-time';
@@ -505,7 +521,7 @@
       if (!res.ok) throw new Error('http ' + res.status);
       const data = await res.json();
       removeTyping();
-      appendMsg('bot', data.reply || data.message || data.output || 'How else can I help?');
+      appendMsg('bot', data.reply || data.message || data.output || 'How else can I help?', data);
     } catch {
       removeTyping();
       appendMsg('bot', `Sorry, I'm having a little trouble right now. You can reach us directly on WhatsApp and we'll assist you promptly. 😊`);

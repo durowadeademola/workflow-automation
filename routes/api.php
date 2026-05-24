@@ -16,3 +16,16 @@ Route::get('/domains', [DomainController::class, 'index'])->middleware('auth:san
 Route::post('/vulnerabilities', [VulnerabilityController::class, 'store'])->middleware('auth:sanctum')->name('vulnerabilities.store');
 Route::post('/scan', [ScanController::class, 'trigger'])->middleware('auth:sanctum');
 Route::get('/scan-results/{domain}', [ScanController::class, 'results'])->middleware('auth:sanctum');
+// routes/web.php
+Route::get('/widget-knowledge', function () {
+    return response()->json([
+        'content' => '
+            Blueflow Automation is a Nigerian automation agency based in Benin City.
+            We build AI chat widgets for businesses, WhatsApp automation, n8n workflows,
+            and Laravel web applications. Our services include website AI assistants,
+            lead generation automation, and custom business automation pipelines.
+            Contact us on WhatsApp: 2347064706193.
+            We serve businesses across Nigeria including Lagos, Abuja, and Benin City.
+        '
+    ]);
+});

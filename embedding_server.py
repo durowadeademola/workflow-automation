@@ -3,12 +3,15 @@ from sentence_transformers import SentenceTransformer
 import requests
 import json
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
 SUPABASE_URL = os.getenv('SUPABASE_URL')
-SUPABASE_KEY = '' + os.getenv('SUPABASE_KEY')  # Ensure the key is prefixed with 'Bearer '
+SUPABASE_KEY = os.getenv('SUPABASE_KEY')
 
 @app.route('/embed', methods=['POST'])
 def embed():
