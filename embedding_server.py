@@ -13,12 +13,47 @@ model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_KEY')
 
+@app.route('/fetch', methods=['POST'])
+def fetch_page():
+    data = request.json
+    url = data.get('url', '')
+    client_id = data.get('clientId', '')
+    
+    try:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+        response = requests.get(url, headers=headers, timeout=15)
+        return jsonify({
+            'clientId': client_id,
+            'url': url,
+            'data': response.text,
+            'success': True
+        })
+    except Exception as e:
+        return jsonify({
+            'clientId': client_id,
+            'url': url,
+            'data': '',
+            'success': False,
+            'error': str(e)
+        })
+    
 @app.route('/embed', methods=['POST'])
 def embed():
     data = request.json
     text = data.get('text', '')
     embedding = model.encode(text).tolist()
-    return jsonify({ 'embedding': embedding })
+    
+    # Build response with embedding
+    response = { 'embedding': embedding }
+    
+    # Pass through ALL extra fields unchanged
+    for key, value in data.items():
+        if key != 'text':
+            response[key] = value
+    
+    return jsonify(response)
 
 @app.route('/search', methods=['POST'])
 def search():

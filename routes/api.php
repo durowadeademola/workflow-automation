@@ -29,3 +29,13 @@ Route::get('/widget-knowledge', function () {
         '
     ]);
 });
+
+Route::get('/widget-knowledges', function () {
+    return response()->json([
+        'content' => '
+            We are quite ready to help you automate your business processes and build AI chat widgets for your website.
+            Our team of experts can create custom automation solutions tailored to your specific needs, helping you save time and increase efficiency. Whether you need a chatbot for customer support, lead generation, or any other business process, we have the skills and experience to deliver high-quality results. 
+            Contact us today to learn more!
+        '
+    ]);
+});

@@ -55,6 +55,8 @@ services:
   n8n:
     image: n8nio/n8n
     container_name: n8n
+    depends_on:
+      - embedding 
     networks:
       - app-network
     expose:
@@ -68,6 +70,19 @@ services:
       - WEBHOOK_URL=https://n8n.blueflowautomation.com/
       - N8N_EDITOR_BASE_URL=https://n8n.blueflowautomation.com
       - GENERIC_TIMEZONE=Africa/Lagos
+
+  embedding:
+    build:
+      context: .
+      dockerfile: Dockerfile.embedding
+    container_name: embedding_server
+    restart: always
+    expose:
+      - "5000"
+    volumes:
+      - ./.env:/app/.env
+    networks:
+      - app-network
 
 volumes:
   mysql_data:
