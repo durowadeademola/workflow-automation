@@ -203,10 +203,9 @@
       max-width: 100%;
     }
     .cw-bot .cw-bubble {
-      background: #f0f2f5;
-      color: #1a1c23;
-      border-radius: 18px 18px 18px 4px;
-      box-shadow: none;
+      background: white; color: #1a1c23;
+      border-radius: 20px 20px 20px 5px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
     }
     .cw-user .cw-bubble {
       background: ${pc};
