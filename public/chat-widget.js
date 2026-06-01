@@ -416,7 +416,7 @@
       const btn = document.createElement('button');
       btn.className = 'cw-qr';
       btn.textContent = label;
-      btn.onclick = () => { qr.innerHTML = ''; send(label); };
+      btn.onclick = (e) => { e.stopPropagation(); qr.innerHTML = ''; send(label); };
       qr.appendChild(btn);
     });
   }

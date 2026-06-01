@@ -28,7 +28,7 @@
                 waNumber:     '2347064706193',
                 greeting:     '👋 Hello! How can I help you today?',
                 systemPrompt: 'We build ai chat widgets, whatsapp automation, payment automation, email automation, custom automation and many more. Be friendly and concise. if the user asks for something not related to the automation, politely let them know you can only assist with automation-related inquiries. If they ask for a human agent, provide the contact information.',
-                quickReplies: [],
+                quickReplies: ['services', 'pricing', 'contact'],
             };
         </script>
             {{-- https://blueflowautomation.com/chat-widget.js --}}
