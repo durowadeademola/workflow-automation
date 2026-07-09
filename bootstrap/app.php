@@ -18,7 +18,12 @@ return Application::configure(basePath: dirname(__DIR__))
     $middleware->api(prepend: [
         \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
     ]);
+    $middleware->alias([
+        'webhook.secret' => \App\Http\Middleware\VerifyWebhookSecret::class,
+    ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->shouldRenderJsonWhen(
+            fn ($request, $e) => $request->is('api/*') || $request->expectsJson()
+        );
     })->create();

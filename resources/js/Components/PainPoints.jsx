@@ -1,23 +1,25 @@
+import { PhoneMissed, Clock, Banknote, ChartColumnDecreasing } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import IconTile from "@/Components/Icons/IconTile";
 
 const painPoints = [
     {
-        icon: "📞",
+        icon: PhoneMissed,
         title: "Missing 40-60% of customer calls",
         description: "Customers can't reach you during busy hours",
     },
     {
-        icon: "⏰",
+        icon: Clock,
         title: "Staff wasting 4-5 hours daily",
         description: "Answering repetitive questions instead of serving customers",
     },
     {
-        icon: "💸",
+        icon: Banknote,
         title: "Losing ₦500k+ monthly",
         description: "Paying high commissions to third-party platforms",
     },
     {
-        icon: "📊",
+        icon: ChartColumnDecreasing,
         title: "Zero customer insights",
         description: "No data about your best customers or their preferences",
     },
@@ -55,7 +57,7 @@ export default function PainPoints() {
                                 transition: `opacity 0.6s ease ${i * 120}ms, transform 0.6s ease ${i * 120}ms`,
                             }}
                         >
-                            <div className="text-3xl mb-4">{item.icon}</div>
+                            <IconTile icon={item.icon} color="red" size="lg" className="mb-4" />
                             <h3 className="font-bold text-gray-900 mb-2 text-base leading-snug">
                                 {item.title}
                             </h3>

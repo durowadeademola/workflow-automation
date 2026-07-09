@@ -1,6 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
+import { Blocks, Plug, BrainCircuit, Smartphone, ShieldCheck, RefreshCw } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
+import IconTile from "@/Components/Icons/IconTile";
+import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
     "Built from scratch around your exact business process — not a generic template",
@@ -10,12 +13,12 @@ const highlights = [
 ];
 
 const features = [
-    { icon: "🏗️", title: "Bespoke Development", description: "When off-the-shelf solutions don't fit, we build exactly what you need — custom logic, custom integrations, custom interfaces." },
-    { icon: "🔌", title: "Legacy System Integration", description: "Already running on older software? We connect your existing systems to modern automation tools without replacing what works." },
-    { icon: "🧠", title: "AI-Powered Features", description: "Add AI capabilities to your operations — document processing, intelligent routing, predictive analytics, or custom chatbots." },
-    { icon: "📱", title: "Custom Dashboards", description: "Purpose-built reporting dashboards that show the exact metrics your leadership team needs — nothing more, nothing less." },
-    { icon: "🔐", title: "Enterprise-Grade Security", description: "Custom solutions built with data privacy and security at the core — especially important for healthcare, finance, and legal businesses." },
-    { icon: "🔄", title: "Ongoing Iteration", description: "Your business evolves — your automation should too. We provide continuous support, improvements, and new feature rollouts." },
+    { icon: Blocks, title: "Bespoke Development", description: "When off-the-shelf solutions don't fit, we build exactly what you need — custom logic, custom integrations, custom interfaces." },
+    { icon: Plug, title: "Legacy System Integration", description: "Already running on older software? We connect your existing systems to modern automation tools without replacing what works." },
+    { icon: BrainCircuit, title: "AI-Powered Features", description: "Add AI capabilities to your operations — document processing, intelligent routing, predictive analytics, or custom chatbots." },
+    { icon: Smartphone, title: "Custom Dashboards", description: "Purpose-built reporting dashboards that show the exact metrics your leadership team needs — nothing more, nothing less." },
+    { icon: ShieldCheck, title: "Enterprise-Grade Security", description: "Custom solutions built with data privacy and security at the core — especially important for healthcare, finance, and legal businesses." },
+    { icon: RefreshCw, title: "Ongoing Iteration", description: "Your business evolves — your automation should too. We provide continuous support, improvements, and new feature rollouts." },
 ];
 
 const steps = [
@@ -78,9 +81,7 @@ export default function CustomSolutions() {
                                         ))}
                                     </ul>
                                 </div>
-                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    🏗️
-                                </div>
+                                <SectionIllustration icon={Blocks} accent="blue" />
                             </div>
                         </div>
                     </section>
@@ -91,8 +92,8 @@ export default function CustomSolutions() {
                             <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">What We Can Build</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
-                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                        <div className="text-3xl mb-3">{f.icon}</div>
+                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                        <IconTile icon={f.icon} color="blue" size="md" className="mb-3" />
                                         <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
                                         <p className="text-sm text-gray-500">{f.description}</p>
                                     </div>
@@ -164,15 +165,10 @@ export default function CustomSolutions() {
                                 and give you a clear scope and timeline before any work begins.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <a
-                                    href="https://forms.gle/rG4Jf1xoguD67mH26"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors"
-                                >
+                                <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Discuss Your Project
-                                </a>
-                                <Link href="/pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
+                                </Link>
+                                <Link href="/#pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
                                     View Pricing
                                 </Link>
                             </div>

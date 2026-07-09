@@ -1,9 +1,10 @@
+import { UtensilsCrossed } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import { useScrollAnimation, useCountUp } from "@/hooks/useScrollAnimation";
 
 const caseStudies = [
     {
-        emoji: "🍲",
+        icon: UtensilsCrossed,
         business: "Mama's Kitchen",
         category: "Restaurant",
         location: "Lagos, NG",
@@ -47,7 +48,7 @@ export default function CaseStudies() {
     const [cardRef, cardVisible] = useScrollAnimation(0.1);
 
     return (
-        <section className="py-20 bg-white">
+        <section id="case-studies" className="py-20 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div
                     ref={headingRef}
@@ -81,8 +82,8 @@ export default function CaseStudies() {
                             {/* Left */}
                             <div>
                                 <div className="flex items-center gap-3 mb-6">
-                                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-2xl shadow-sm">
-                                        {cs.emoji}
+                                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+                                        <cs.icon className="w-6 h-6 text-blue-600" strokeWidth={1.75} />
                                     </div>
                                     <div>
                                         <p className="font-bold text-gray-900">{cs.business}</p>
@@ -145,10 +146,10 @@ export default function CaseStudies() {
                     }}
                 >
                     <Link
-                        href="#"
+                        href="/contact"
                         className="inline-flex items-center gap-2 text-blue-700 font-semibold border-2 border-blue-600 px-6 py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-all"
                     >
-                        View All Case Studies
+                        Become Our Next Success Story
                     </Link>
                 </div>
             </div>

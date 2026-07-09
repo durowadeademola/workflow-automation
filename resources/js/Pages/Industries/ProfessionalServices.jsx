@@ -1,6 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
+import { Briefcase, Rocket, Receipt, Clock, CalendarCheck, FileSignature, MessageCircle, Quote } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
+import IconTile from "@/Components/Icons/IconTile";
+import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
     "New client onboarding runs automatically — documents, contracts, and welcome sequences without manual effort",
@@ -10,12 +13,12 @@ const highlights = [
 ];
 
 const features = [
-    { icon: "🚀", title: "Client Onboarding Automation", description: "New clients receive a welcome message, onboarding checklist, document request, and kickoff meeting invite automatically the moment they sign up." },
-    { icon: "🧾", title: "Automated Invoicing", description: "Invoices generated and sent automatically at project milestones, monthly retainer dates, or any schedule you define — branded and professional every time." },
-    { icon: "⏰", title: "Payment Reminder Sequences", description: "Polite but persistent WhatsApp and email reminders for due and overdue invoices — reducing late payments without awkward conversations." },
-    { icon: "📅", title: "Meeting & Consultation Scheduling", description: "Clients book calls and meetings via a simple WhatsApp message based on your real-time availability — no phone tag, no scheduling assistant needed." },
-    { icon: "📝", title: "Contract & Document Collection", description: "Send contracts for e-signature and track completion automatically. Chase missing documents with timed follow-ups so projects never stall." },
-    { icon: "💬", title: "Client Check-In Messages", description: "Scheduled check-in messages keep relationships warm between projects and ensure clients think of you first when the next need arises." },
+    { icon: Rocket, title: "Client Onboarding Automation", description: "New clients receive a welcome message, onboarding checklist, document request, and kickoff meeting invite automatically the moment they sign up." },
+    { icon: Receipt, title: "Automated Invoicing", description: "Invoices generated and sent automatically at project milestones, monthly retainer dates, or any schedule you define — branded and professional every time." },
+    { icon: Clock, title: "Payment Reminder Sequences", description: "Polite but persistent WhatsApp and email reminders for due and overdue invoices — reducing late payments without awkward conversations." },
+    { icon: CalendarCheck, title: "Meeting & Consultation Scheduling", description: "Clients book calls and meetings via a simple WhatsApp message based on your real-time availability — no phone tag, no scheduling assistant needed." },
+    { icon: FileSignature, title: "Contract & Document Collection", description: "Send contracts for e-signature and track completion automatically. Chase missing documents with timed follow-ups so projects never stall." },
+    { icon: MessageCircle, title: "Client Check-In Messages", description: "Scheduled check-in messages keep relationships warm between projects and ensure clients think of you first when the next need arises." },
 ];
 
 const steps = [
@@ -44,7 +47,7 @@ export default function ProfessionalServices() {
             <Head title="Automation for Professional Services">
                 <meta
                     name="description"
-                    content="Automate client onboarding, invoicing, proposals, and follow-ups for your professional services business. SmartFlow helps Nigerian consultants and agencies win back hours every week."
+                    content="Automate client onboarding, invoicing, proposals, and follow-ups for your professional services business. Blueflow helps Nigerian consultants and agencies win back hours every week."
                 />
             </Head>
             <div className="min-h-screen bg-white">
@@ -66,7 +69,7 @@ export default function ProfessionalServices() {
                                         disproportionate amount of time on tasks that have nothing to do with
                                         their actual expertise — chasing documents, sending invoice reminders,
                                         following up on proposals, and manually onboarding new clients.
-                                        SmartFlow automates all of it so you can spend your time on billable
+                                        Blueflow automates all of it so you can spend your time on billable
                                         work and business development instead of administrative follow-up.
                                     </p>
                                     <ul className="space-y-3">
@@ -82,9 +85,7 @@ export default function ProfessionalServices() {
                                         ))}
                                     </ul>
                                 </div>
-                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    💼
-                                </div>
+                                <SectionIllustration icon={Briefcase} accent="blue" />
                             </div>
                         </div>
                     </section>
@@ -97,8 +98,8 @@ export default function ProfessionalServices() {
                             </h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
-                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                        <div className="text-3xl mb-3">{f.icon}</div>
+                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                        <IconTile icon={f.icon} color="blue" size="md" className="mb-3" />
                                         <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
                                         <p className="text-sm text-gray-500">{f.description}</p>
                                     </div>
@@ -144,7 +145,7 @@ export default function ProfessionalServices() {
                     {/* Testimonial */}
                     <section className="py-20 bg-gray-50">
                         <div className="max-w-3xl mx-auto px-4 text-center">
-                            <div className="text-4xl mb-6">💬</div>
+                            <div className="w-12 h-12 mx-auto mb-6 bg-blue-50 rounded-2xl flex items-center justify-center"><Quote className="w-6 h-6 text-blue-600" strokeWidth={1.75} /></div>
                             <blockquote className="text-xl font-medium text-gray-800 leading-relaxed mb-6">
                                 "{testimonial.quote}"
                             </blockquote>
@@ -160,18 +161,13 @@ export default function ProfessionalServices() {
                                 Ready to Automate Your Practice?
                             </h2>
                             <p className="text-gray-500 mb-8">
-                                Book a free demo and we'll show you exactly how SmartFlow works for professional services businesses like yours.
+                                Book a free demo and we'll show you exactly how Blueflow works for professional services businesses like yours.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <a
-                                    href="https://forms.gle/rG4Jf1xoguD67mH26"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors"
-                                >
+                                <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Schedule Free Demo
-                                </a>
-                                <Link href="/pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
+                                </Link>
+                                <Link href="/#pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
                                     View Pricing
                                 </Link>
                             </div>

@@ -10,25 +10,38 @@ class AIAgentController extends Controller
 {
     public function insights(Request $request)
     {
+        $validated = $request->validate([
+            'client_id' => ['required', 'exists:clients,id'],
+            'customer_id' => ['nullable', 'exists:customers,id'],
+            'order_id' => ['nullable', 'exists:orders,id'],
+            'product_id' => ['nullable', 'exists:products,id'],
+            'service_id' => ['nullable', 'exists:services,id'],
+            'source' => ['nullable', 'string', 'max:255'],
+            'model' => ['nullable', 'string', 'max:255'],
+            'prompt' => ['nullable', 'string'],
+            'text' => ['nullable', 'string'],
+            'response' => ['nullable', 'string'],
+            'score' => ['nullable'],
+            'priority' => ['nullable'],
+        ]);
+
         // Log the request to storage/logs/laravel.log to see exactly what n8n is sending
-        \Log::info('AI Logs Data:', $request->all());
+        \Log::info('AI Logs Data:', $validated);
 
         $agent = AIAgent::create([
-            'customer_id' => $request->customer_id,
-            'client_id' => $request->client_id,
-            'order_id' => $request->order_id,
-            'product_id' => $request->product_id,
-            'service_id' => $request->service_id,
-            'source' => $request->source,
-            'model' => $request->model ?? 'Groq-Llama-3.3',
-            'prompt' => $request->prompt ?? $request->text,
-            'response' => $request->response,
+            'customer_id' => $validated['customer_id'] ?? null,
+            'client_id' => $validated['client_id'],
+            'order_id' => $validated['order_id'] ?? null,
+            'product_id' => $validated['product_id'] ?? null,
+            'service_id' => $validated['service_id'] ?? null,
+            'source' => $validated['source'] ?? null,
+            'model' => $validated['model'] ?? 'Groq-Llama-3.3',
+            'prompt' => $validated['prompt'] ?? $validated['text'] ?? null,
+            'response' => $validated['response'] ?? null,
             'success' => true,
             'metadata' => [
-                'score' => $request->score,
-                'priority' => $request->priority,
-                // 'workflow_id' => $request->workflow_id,
-                // 'node_name' => $request->node_name,
+                'score' => $validated['score'] ?? null,
+                'priority' => $validated['priority'] ?? null,
             ],
         ]);
 

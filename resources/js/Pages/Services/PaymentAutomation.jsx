@@ -1,6 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
+import { CreditCard, Receipt, BellRing, CheckCircle2, BarChart3, Link2 } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
+import IconTile from "@/Components/Icons/IconTile";
+import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
     "Accept payments via Paystack, Flutterwave, and bank transfer — all automated",
@@ -10,12 +13,12 @@ const highlights = [
 ];
 
 const features = [
-    { icon: "💳", title: "Payment Link Generation", description: "Automatically generate and send Paystack or Flutterwave payment links via WhatsApp, email, or SMS the moment an order is placed." },
-    { icon: "🧾", title: "Automated Invoicing", description: "Professional invoices created and delivered instantly — with due dates, line items, and your branding built in." },
-    { icon: "🔔", title: "Overdue Reminders", description: "Smart follow-up sequences chase unpaid invoices for you — politely at first, more firmly as deadlines pass." },
-    { icon: "✅", title: "Instant Reconciliation", description: "Every payment is matched to an order automatically. Your books stay clean without any manual data entry." },
-    { icon: "📊", title: "Revenue Dashboard", description: "See daily collections, outstanding balances, and payment trends at a glance — built for Nigerian payment realities." },
-    { icon: "🔗", title: "Full System Sync", description: "Payments trigger downstream actions — update your CRM, notify your team on WhatsApp, and fulfil orders automatically." },
+    { icon: CreditCard, title: "Payment Link Generation", description: "Automatically generate and send Paystack or Flutterwave payment links via WhatsApp, email, or SMS the moment an order is placed." },
+    { icon: Receipt, title: "Automated Invoicing", description: "Professional invoices created and delivered instantly — with due dates, line items, and your branding built in." },
+    { icon: BellRing, title: "Overdue Reminders", description: "Smart follow-up sequences chase unpaid invoices for you — politely at first, more firmly as deadlines pass." },
+    { icon: CheckCircle2, title: "Instant Reconciliation", description: "Every payment is matched to an order automatically. Your books stay clean without any manual data entry." },
+    { icon: BarChart3, title: "Revenue Dashboard", description: "See daily collections, outstanding balances, and payment trends at a glance — built for Nigerian payment realities." },
+    { icon: Link2, title: "Full System Sync", description: "Payments trigger downstream actions — update your CRM, notify your team on WhatsApp, and fulfil orders automatically." },
 ];
 
 const steps = [
@@ -72,9 +75,7 @@ export default function PaymentAutomation() {
                                         ))}
                                     </ul>
                                 </div>
-                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    💳
-                                </div>
+                                <SectionIllustration icon={CreditCard} accent="blue" />
                             </div>
                         </div>
                     </section>
@@ -85,8 +86,8 @@ export default function PaymentAutomation() {
                             <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">Everything Included</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
-                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                        <div className="text-3xl mb-3">{f.icon}</div>
+                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                        <IconTile icon={f.icon} color="blue" size="md" className="mb-3" />
                                         <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
                                         <p className="text-sm text-gray-500">{f.description}</p>
                                     </div>
@@ -137,10 +138,10 @@ export default function PaymentAutomation() {
                                 Book a free demo and see how Payment Automation can clean up your cash flow from day one.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Link href="/demo" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
+                                <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Schedule Free Demo
                                 </Link>
-                                <Link href="/pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
+                                <Link href="/#pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
                                     View Pricing
                                 </Link>
                             </div>

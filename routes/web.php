@@ -32,3 +32,9 @@ Route::get('/industries/restaurants', fn() => inertia('Industries/Restaurants'))
 Route::get('/industries/hospitality', fn() => inertia('Industries/Hospitality'));
 Route::get('/industries/real-estate', fn() => inertia('Industries/RealEstate'));
 Route::get('/industries/professional-services', fn() => inertia('Industries/ProfessionalServices'));
+
+//company
+Route::get('/about', fn() => inertia('About'))->name('about');
+Route::get('/contact', fn() => inertia('Contact'))->name('contact');
+Route::get('/privacy-policy', fn() => inertia('PrivacyPolicy'))->name('privacy-policy');
+Route::get('/terms-of-service', fn() => inertia('TermsOfService'))->name('terms-of-service');

@@ -1,26 +1,27 @@
+import { CircleCheckBig, Zap, TrendingUp, Users } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const solutions = [
     {
-        icon: "✓",
+        icon: CircleCheckBig,
         title: "Never Miss an Order",
         description: "24/7 AI handles unlimited customers simultaneously",
         metric: "100% capture rate",
     },
     {
-        icon: "⚡",
+        icon: Zap,
         title: "Staff Focus on What Matters",
         description: "Automation handles routine tasks, staff handle customers",
         metric: "4 hours saved daily",
     },
     {
-        icon: "📈",
+        icon: TrendingUp,
         title: "Keep All Your Revenue",
         description: "Fixed monthly fee, no commission on orders",
         metric: "₦465k saved monthly",
     },
     {
-        icon: "📊",
+        icon: Users,
         title: "Know Your Customers",
         description: "Complete database with preferences, history, analytics",
         metric: "360° customer view",
@@ -59,8 +60,8 @@ export default function Solutions() {
                                 transition: `opacity 0.65s ease ${i * 130}ms, transform 0.65s ease ${i * 130}ms`,
                             }}
                         >
-                            <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center text-lg font-bold mb-4 group-hover:scale-110 transition-transform">
-                                {item.icon}
+                            <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <item.icon className="w-5 h-5" strokeWidth={2.25} />
                             </div>
                             <h3 className="font-bold text-gray-900 mb-2 text-base leading-snug">
                                 {item.title}

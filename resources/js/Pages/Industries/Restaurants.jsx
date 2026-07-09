@@ -1,6 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
+import { UtensilsCrossed, CalendarCheck, CreditCard, Star, Megaphone, BarChart3, Quote } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
+import IconTile from "@/Components/Icons/IconTile";
+import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
     "Take orders and reservations automatically via WhatsApp — even at 2am",
@@ -10,12 +13,12 @@ const highlights = [
 ];
 
 const features = [
-    { icon: "🍽️", title: "WhatsApp Order Taking", description: "Customers send their order via WhatsApp. The system confirms, calculates the total, and sends a payment link — all without staff involvement." },
-    { icon: "📅", title: "Table & Delivery Booking", description: "Automated reservation management with confirmation messages, reminders 1 hour before, and instant rescheduling." },
-    { icon: "💳", title: "Instant Payment Collection", description: "Paystack and Flutterwave payment links sent automatically at checkout. No more waiting for transfers or handling cash disputes." },
-    { icon: "⭐", title: "Review & Feedback Automation", description: "Every customer gets a follow-up message after their visit asking for a Google review or quick feedback — building your reputation on autopilot." },
-    { icon: "📣", title: "Promo & Loyalty Campaigns", description: "Send targeted WhatsApp blasts for new menu items, weekend specials, or loyalty rewards to customers who haven't visited in a while." },
-    { icon: "📊", title: "Sales & Peak Hour Reports", description: "Daily and weekly reports showing your busiest hours, top-selling items, and revenue trends — delivered straight to your phone." },
+    { icon: UtensilsCrossed, title: "WhatsApp Order Taking", description: "Customers send their order via WhatsApp. The system confirms, calculates the total, and sends a payment link — all without staff involvement." },
+    { icon: CalendarCheck, title: "Table & Delivery Booking", description: "Automated reservation management with confirmation messages, reminders 1 hour before, and instant rescheduling." },
+    { icon: CreditCard, title: "Instant Payment Collection", description: "Paystack and Flutterwave payment links sent automatically at checkout. No more waiting for transfers or handling cash disputes." },
+    { icon: Star, title: "Review & Feedback Automation", description: "Every customer gets a follow-up message after their visit asking for a Google review or quick feedback — building your reputation on autopilot." },
+    { icon: Megaphone, title: "Promo & Loyalty Campaigns", description: "Send targeted WhatsApp blasts for new menu items, weekend specials, or loyalty rewards to customers who haven't visited in a while." },
+    { icon: BarChart3, title: "Sales & Peak Hour Reports", description: "Daily and weekly reports showing your busiest hours, top-selling items, and revenue trends — delivered straight to your phone." },
 ];
 
 const steps = [
@@ -81,9 +84,7 @@ export default function RestaurantsCafes() {
                                         ))}
                                     </ul>
                                 </div>
-                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    🍽️
-                                </div>
+                                <SectionIllustration icon={UtensilsCrossed} accent="blue" />
                             </div>
                         </div>
                     </section>
@@ -94,8 +95,8 @@ export default function RestaurantsCafes() {
                             <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">Built for Food Businesses</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
-                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                        <div className="text-3xl mb-3">{f.icon}</div>
+                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                        <IconTile icon={f.icon} color="blue" size="md" className="mb-3" />
                                         <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
                                         <p className="text-sm text-gray-500">{f.description}</p>
                                     </div>
@@ -141,7 +142,7 @@ export default function RestaurantsCafes() {
                     {/* Testimonial */}
                     <section className="py-20 bg-gray-50">
                         <div className="max-w-3xl mx-auto px-4 text-center">
-                            <div className="text-4xl mb-6">💬</div>
+                            <div className="w-12 h-12 mx-auto mb-6 bg-blue-50 rounded-2xl flex items-center justify-center"><Quote className="w-6 h-6 text-blue-600" strokeWidth={1.75} /></div>
                             <blockquote className="text-xl font-medium text-gray-800 leading-relaxed mb-6">
                                 "{testimonial.quote}"
                             </blockquote>
@@ -158,15 +159,10 @@ export default function RestaurantsCafes() {
                                 Book a free demo and we'll show you exactly how Blueflow works for food businesses like yours.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <a
-                                    href="https://forms.gle/rG4Jf1xoguD67mH26"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors"
-                                >
+                                <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Schedule Free Demo
-                                </a>
-                                <Link href="/pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
+                                </Link>
+                                <Link href="/#pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
                                     View Pricing
                                 </Link>
                             </div>

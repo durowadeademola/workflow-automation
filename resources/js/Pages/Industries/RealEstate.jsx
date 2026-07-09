@@ -1,6 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
+import { Home, Bot, Building2, CalendarCheck, Camera, RefreshCw, BarChart3, Quote } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
+import IconTile from "@/Components/Icons/IconTile";
+import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
     "AI chatbot qualifies every lead automatically before an agent gets involved",
@@ -10,16 +13,16 @@ const highlights = [
 ];
 
 const features = [
-    { icon: "🤖", title: "Lead Qualification Bot", description: "Every enquiry is automatically screened for budget, location preference, property type, and timeline — so agents only spend time on serious buyers." },
-    { icon: "🏘️", title: "Property Listing Broadcasts", description: "Send new listings with photos, pricing, and key details to all interested prospects the moment a property becomes available." },
-    { icon: "📅", title: "Viewing Appointment Scheduler", description: "Prospects book property viewings directly via WhatsApp based on agent availability — no phone tag, no missed opportunities." },
-    { icon: "📸", title: "Virtual Tour & Media Delivery", description: "Automatically send photo galleries, video walkthroughs, floor plans, and location links to interested buyers on request." },
-    { icon: "🔄", title: "Follow-Up Sequences", description: "Timed follow-up messages keep prospects engaged at every stage of their decision — from first enquiry all the way to signing." },
-    { icon: "📊", title: "Lead Pipeline Dashboard", description: "See every lead, their current stage, interest level, last contact date, and projected deal value — all in one clear view." },
+    { icon: Bot, title: "Lead Qualification Bot", description: "Every enquiry is automatically screened for budget, location preference, property type, and timeline — so agents only spend time on serious buyers." },
+    { icon: Building2, title: "Property Listing Broadcasts", description: "Send new listings with photos, pricing, and key details to all interested prospects the moment a property becomes available." },
+    { icon: CalendarCheck, title: "Viewing Appointment Scheduler", description: "Prospects book property viewings directly via WhatsApp based on agent availability — no phone tag, no missed opportunities." },
+    { icon: Camera, title: "Virtual Tour & Media Delivery", description: "Automatically send photo galleries, video walkthroughs, floor plans, and location links to interested buyers on request." },
+    { icon: RefreshCw, title: "Follow-Up Sequences", description: "Timed follow-up messages keep prospects engaged at every stage of their decision — from first enquiry all the way to signing." },
+    { icon: BarChart3, title: "Lead Pipeline Dashboard", description: "See every lead, their current stage, interest level, last contact date, and projected deal value — all in one clear view." },
 ];
 
 const steps = [
-    { title: "Connect your WhatsApp Business number", description: "We link your agency's number to SmartFlow and configure your property types, locations, price ranges, and agent availability." },
+    { title: "Connect your WhatsApp Business number", description: "We link your agency's number to Blueflow and configure your property types, locations, price ranges, and agent availability." },
     { title: "Build your lead qualification flow", description: "We design a conversation that screens every new enquiry for budget, timeline, and preferences before routing to the right agent." },
     { title: "Set up your listing and follow-up sequences", description: "We configure automated property matching, media delivery, viewing scheduling, and the follow-up cadence that keeps leads from going cold." },
     { title: "Launch and let agents focus on closing", description: "Go live within days. Agents stop answering repetitive questions and start spending their time on qualified prospects ready to move." },
@@ -33,7 +36,7 @@ const metrics = [
 ];
 
 const testimonial = {
-    quote: "Before SmartFlow, our agents were spending most of the day answering the same basic questions over and over. Now the bot handles all of that and only passes over leads who are genuinely ready to view. Our close rate has never been higher.",
+    quote: "Before Blueflow, our agents were spending most of the day answering the same basic questions over and over. Now the bot handles all of that and only passes over leads who are genuinely ready to view. Our close rate has never been higher.",
     name: "Tobi Adeyemi",
     role: "CEO, Lekki Properties — Lagos",
 };
@@ -44,7 +47,7 @@ export default function RealEstate() {
             <Head title="Automation for Real Estate Agents">
                 <meta
                     name="description"
-                    content="Qualify leads automatically, send property listings, and book viewings via WhatsApp. SmartFlow helps Nigerian real estate agents close more deals with less admin."
+                    content="Qualify leads automatically, send property listings, and book viewings via WhatsApp. Blueflow helps Nigerian real estate agents close more deals with less admin."
                 />
             </Head>
             <div className="min-h-screen bg-white">
@@ -65,7 +68,7 @@ export default function RealEstate() {
                                         Real estate agents in Nigeria are losing deals every day — not because
                                         of bad properties or bad pricing, but because leads go cold while agents
                                         are busy answering basic questions, sending listings manually, and
-                                        trying to schedule viewings over the phone. SmartFlow automates every
+                                        trying to schedule viewings over the phone. Blueflow automates every
                                         step of the lead journey from first enquiry to booked viewing, so your
                                         agents can focus entirely on what they do best: building relationships
                                         and closing deals.
@@ -83,9 +86,7 @@ export default function RealEstate() {
                                         ))}
                                     </ul>
                                 </div>
-                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    🏠
-                                </div>
+                                <SectionIllustration icon={Home} accent="blue" />
                             </div>
                         </div>
                     </section>
@@ -98,8 +99,8 @@ export default function RealEstate() {
                             </h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
-                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                        <div className="text-3xl mb-3">{f.icon}</div>
+                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                        <IconTile icon={f.icon} color="blue" size="md" className="mb-3" />
                                         <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
                                         <p className="text-sm text-gray-500">{f.description}</p>
                                     </div>
@@ -145,7 +146,7 @@ export default function RealEstate() {
                     {/* Testimonial */}
                     <section className="py-20 bg-gray-50">
                         <div className="max-w-3xl mx-auto px-4 text-center">
-                            <div className="text-4xl mb-6">💬</div>
+                            <div className="w-12 h-12 mx-auto mb-6 bg-blue-50 rounded-2xl flex items-center justify-center"><Quote className="w-6 h-6 text-blue-600" strokeWidth={1.75} /></div>
                             <blockquote className="text-xl font-medium text-gray-800 leading-relaxed mb-6">
                                 "{testimonial.quote}"
                             </blockquote>
@@ -161,18 +162,13 @@ export default function RealEstate() {
                                 Ready to Automate Your Real Estate Business?
                             </h2>
                             <p className="text-gray-500 mb-8">
-                                Book a free demo and we'll show you exactly how SmartFlow works for real estate agencies like yours.
+                                Book a free demo and we'll show you exactly how Blueflow works for real estate agencies like yours.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <a
-                                    href="https://forms.gle/rG4Jf1xoguD67mH26"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors"
-                                >
+                                <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Schedule Free Demo
-                                </a>
-                                <Link href="/pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
+                                </Link>
+                                <Link href="/#pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
                                     View Pricing
                                 </Link>
                             </div>

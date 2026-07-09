@@ -20,10 +20,9 @@ const industriesLinks = [
 ];
 
 const resourcesLinks = [
-    { label: "Guides & Downloads", href: "#" },
-    { label: "FAQs", href: "#" },
-    { label: "ROI Calculator", href: "#" },
-    { label: "Support", href: "#" },
+    { label: "FAQs", href: "/#faq" },
+    { label: "ROI Calculator", href: "/#roi-calculator" },
+    { label: "Support", href: "/contact" },
 ];
 
 function DropdownMenu({ items }) {
@@ -52,10 +51,10 @@ export default function Navbar() {
     const navItems = [
         { label: "Services", dropdown: servicesLinks },
         { label: "Industries", dropdown: industriesLinks },
-        { label: "Pricing", href: "#" },
-        { label: "Case Studies", href: "#" },
+        { label: "Pricing", href: "/#pricing" },
+        { label: "Case Studies", href: "/#case-studies" },
         { label: "Resources", dropdown: resourcesLinks },
-        { label: "About", href: "#" },
+        { label: "About", href: "/about" },
     ];
 
     return (
@@ -110,13 +109,11 @@ export default function Navbar() {
                             >
                                 Log In
                             </Link>
-                            <a href="https://forms.gle/rG4Jf1xoguD67mH26"
-                                target="_blank"
-                                rel="noopener noreferrer"
+                            <Link href="/contact"
                                 className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                             >
                                 Get Started
-                            </a>
+                            </Link>
                         </div>
 
                         {/* Mobile Menu Toggle */}
@@ -178,13 +175,13 @@ export default function Navbar() {
                         >
                             Log in
                         </Link>
-                        <a
-                            href="https://forms.gle/rG4Jf1xoguD67mH26"
+                        <Link
+                            href="/contact"
                             className="block text-center py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700"
                             onClick={() => setMobileOpen(false)}
                         >
                             Get Started
-                        </a>
+                        </Link>
                     </div>
                 </div>
             )}

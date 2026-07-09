@@ -68,7 +68,7 @@ export default function FAQ() {
     const [faqRef, faqVisible] = useScrollAnimation(0.05);
 
     return (
-        <section className="py-20 bg-white">
+        <section id="faq" className="py-20 bg-white">
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div
                     ref={headingRef}
@@ -121,7 +121,7 @@ export default function FAQ() {
                             WhatsApp Us
                         </a>
                         <Link
-                            href="#"
+                            href="/contact"
                             className="inline-flex items-center gap-2 border-2 border-gray-200 text-gray-700 font-semibold px-5 py-2.5 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-colors text-sm"
                         >
                             Send a Message

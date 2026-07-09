@@ -1,6 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
+import { ShoppingCart, BookOpen, CheckCircle2, CreditCard, Truck, Target, BarChart3, Quote } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
+import IconTile from "@/Components/Icons/IconTile";
+import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
     "Answer product questions and process orders automatically — even at midnight",
@@ -10,12 +13,12 @@ const highlights = [
 ];
 
 const features = [
-    { icon: "🗂️", title: "WhatsApp Product Catalog", description: "Customers browse your full catalog with images, pricing, and variants directly on WhatsApp — no app download, no website visit required." },
-    { icon: "✅", title: "Auto Order Processing", description: "Orders placed, confirmed, and sent to fulfilment automatically. Your team gets notified without touching a single message." },
-    { icon: "💳", title: "Instant Payment Collection", description: "Paystack and Flutterwave payment links sent automatically at checkout. Payments confirmed and receipts issued in seconds." },
-    { icon: "🚚", title: "Delivery Tracking Updates", description: "Customers receive automatic status updates at every stage — order confirmed, dispatched, out for delivery, delivered." },
-    { icon: "🎯", title: "Abandoned Cart Recovery", description: "Customers who enquired but didn't complete their order get a timed follow-up message — recovering sales you'd otherwise lose." },
-    { icon: "📊", title: "Sales & Customer Reports", description: "Daily reports showing top-selling products, peak order times, best customers, and revenue trends — sent straight to your phone." },
+    { icon: BookOpen, title: "WhatsApp Product Catalog", description: "Customers browse your full catalog with images, pricing, and variants directly on WhatsApp — no app download, no website visit required." },
+    { icon: CheckCircle2, title: "Auto Order Processing", description: "Orders placed, confirmed, and sent to fulfilment automatically. Your team gets notified without touching a single message." },
+    { icon: CreditCard, title: "Instant Payment Collection", description: "Paystack and Flutterwave payment links sent automatically at checkout. Payments confirmed and receipts issued in seconds." },
+    { icon: Truck, title: "Delivery Tracking Updates", description: "Customers receive automatic status updates at every stage — order confirmed, dispatched, out for delivery, delivered." },
+    { icon: Target, title: "Abandoned Cart Recovery", description: "Customers who enquired but didn't complete their order get a timed follow-up message — recovering sales you'd otherwise lose." },
+    { icon: BarChart3, title: "Sales & Customer Reports", description: "Daily reports showing top-selling products, peak order times, best customers, and revenue trends — sent straight to your phone." },
 ];
 
 const steps = [
@@ -33,7 +36,7 @@ const metrics = [
 ];
 
 const testimonial = {
-    quote: "Our WhatsApp used to be overwhelming — hundreds of messages and no way to keep up. Now it's our number one sales channel and we barely touch it. SmartFlow handles everything automatically.",
+    quote: "Our WhatsApp used to be overwhelming — hundreds of messages and no way to keep up. Now it's our number one sales channel and we barely touch it. Blueflow handles everything automatically.",
     name: "Aisha Bello",
     role: "Founder, Lagos Style Boutique",
 };
@@ -44,7 +47,7 @@ export default function Ecommerce() {
             <Head title="Automation for E-commerce & Retail">
                 <meta
                     name="description"
-                    content="Automate orders, payments, delivery updates, and customer follow-ups for your online store. SmartFlow helps Nigerian e-commerce businesses sell more with less effort."
+                    content="Automate orders, payments, delivery updates, and customer follow-ups for your online store. Blueflow helps Nigerian e-commerce businesses sell more with less effort."
                 />
             </Head>
             <div className="min-h-screen bg-white">
@@ -65,7 +68,7 @@ export default function Ecommerce() {
                                         Running an online store in Nigeria means managing hundreds of WhatsApp
                                         messages daily, manually sending payment links, updating customers on
                                         deliveries, and chasing repeat orders — all while trying to source new
-                                        products. SmartFlow automates your entire sales process so every customer
+                                        products. Blueflow automates your entire sales process so every customer
                                         gets a fast, professional experience and no order ever slips through the cracks.
                                     </p>
                                     <ul className="space-y-3">
@@ -81,9 +84,7 @@ export default function Ecommerce() {
                                         ))}
                                     </ul>
                                 </div>
-                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    🛒
-                                </div>
+                                <SectionIllustration icon={ShoppingCart} accent="blue" />
                             </div>
                         </div>
                     </section>
@@ -96,8 +97,8 @@ export default function Ecommerce() {
                             </h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
-                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                        <div className="text-3xl mb-3">{f.icon}</div>
+                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                        <IconTile icon={f.icon} color="blue" size="md" className="mb-3" />
                                         <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
                                         <p className="text-sm text-gray-500">{f.description}</p>
                                     </div>
@@ -143,7 +144,7 @@ export default function Ecommerce() {
                     {/* Testimonial */}
                     <section className="py-20 bg-gray-50">
                         <div className="max-w-3xl mx-auto px-4 text-center">
-                            <div className="text-4xl mb-6">💬</div>
+                            <div className="w-12 h-12 mx-auto mb-6 bg-blue-50 rounded-2xl flex items-center justify-center"><Quote className="w-6 h-6 text-blue-600" strokeWidth={1.75} /></div>
                             <blockquote className="text-xl font-medium text-gray-800 leading-relaxed mb-6">
                                 "{testimonial.quote}"
                             </blockquote>
@@ -159,18 +160,13 @@ export default function Ecommerce() {
                                 Ready to Automate Your Store?
                             </h2>
                             <p className="text-gray-500 mb-8">
-                                Book a free demo and we'll show you exactly how SmartFlow works for e-commerce businesses like yours.
+                                Book a free demo and we'll show you exactly how Blueflow works for e-commerce businesses like yours.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <a
-                                    href="https://forms.gle/rG4Jf1xoguD67mH26"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors"
-                                >
+                                <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Schedule Free Demo
-                                </a>
-                                <Link href="/pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
+                                </Link>
+                                <Link href="/#pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
                                     View Pricing
                                 </Link>
                             </div>

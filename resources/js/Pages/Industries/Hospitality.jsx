@@ -1,6 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
+import { Hotel, ClipboardList, BellRing, Gift, Star, BarChart3, Quote } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
+import IconTile from "@/Components/Icons/IconTile";
+import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
     "Accept direct bookings via WhatsApp 24/7 — no OTA commission on any reservation",
@@ -10,16 +13,16 @@ const highlights = [
 ];
 
 const features = [
-    { icon: "🏨", title: "Direct WhatsApp Booking", description: "Guests check availability, see room options with photos and pricing, and confirm their booking directly on WhatsApp — no commission, no middlemen." },
-    { icon: "📋", title: "Booking Confirmations & Reminders", description: "Professional confirmation messages sent instantly on every booking, followed by a reminder 24 hours before arrival with directions and check-in details." },
-    { icon: "🛎️", title: "In-Stay Guest Requests", description: "Guests request room service, housekeeping, extra towels, or report issues via WhatsApp. Staff get instant notifications with no phone calls needed." },
-    { icon: "🎁", title: "Upsell Automation", description: "Automatically offer room upgrades, spa bookings, restaurant reservations, and airport transfers at the right moment during the guest journey." },
-    { icon: "⭐", title: "Review Collection", description: "Every guest receives a follow-up message after checkout asking for a Google or TripAdvisor review — building your reputation consistently." },
-    { icon: "📊", title: "Occupancy & Revenue Dashboard", description: "Real-time view of room occupancy, revenue per booking, channel performance, and your busiest seasons — all in one place." },
+    { icon: Hotel, title: "Direct WhatsApp Booking", description: "Guests check availability, see room options with photos and pricing, and confirm their booking directly on WhatsApp — no commission, no middlemen." },
+    { icon: ClipboardList, title: "Booking Confirmations & Reminders", description: "Professional confirmation messages sent instantly on every booking, followed by a reminder 24 hours before arrival with directions and check-in details." },
+    { icon: BellRing, title: "In-Stay Guest Requests", description: "Guests request room service, housekeeping, extra towels, or report issues via WhatsApp. Staff get instant notifications with no phone calls needed." },
+    { icon: Gift, title: "Upsell Automation", description: "Automatically offer room upgrades, spa bookings, restaurant reservations, and airport transfers at the right moment during the guest journey." },
+    { icon: Star, title: "Review Collection", description: "Every guest receives a follow-up message after checkout asking for a Google or TripAdvisor review — building your reputation consistently." },
+    { icon: BarChart3, title: "Occupancy & Revenue Dashboard", description: "Real-time view of room occupancy, revenue per booking, channel performance, and your busiest seasons — all in one place." },
 ];
 
 const steps = [
-    { title: "Connect your WhatsApp Business number", description: "We link your hotel's number to SmartFlow and configure your room types, availability calendar, and pricing tiers." },
+    { title: "Connect your WhatsApp Business number", description: "We link your hotel's number to Blueflow and configure your room types, availability calendar, and pricing tiers." },
     { title: "Build your booking and guest journey flows", description: "We design conversation flows for enquiries, confirmations, check-in instructions, in-stay requests, and post-stay follow-ups." },
     { title: "Integrate your payment and property systems", description: "We connect Paystack or Flutterwave for deposits, and link your existing property management system if you have one." },
     { title: "Launch and start filling rooms directly", description: "Go live in days. Every booking, guest message, and follow-up is handled automatically — your staff focus on delivering a great stay." },
@@ -44,7 +47,7 @@ export default function Hotels() {
             <Head title="Automation for Hotels & Hospitality">
                 <meta
                     name="description"
-                    content="Automate bookings, guest communications, upsells, and reviews for your hotel. SmartFlow helps Nigerian hospitality businesses fill more rooms and earn more per guest."
+                    content="Automate bookings, guest communications, upsells, and reviews for your hotel. Blueflow helps Nigerian hospitality businesses fill more rooms and earn more per guest."
                 />
             </Head>
             <div className="min-h-screen bg-white">
@@ -64,7 +67,7 @@ export default function Hotels() {
                                     <p className="text-gray-600 leading-relaxed mb-6">
                                         Nigerian hotels are losing 15–30% of every booking to Booking.com,
                                         Jumia Travel, and other platforms. Meanwhile, guests are already on
-                                        WhatsApp — the simplest booking channel you have. SmartFlow turns your
+                                        WhatsApp — the simplest booking channel you have. Blueflow turns your
                                         WhatsApp number into a direct booking engine that handles enquiries,
                                         confirmations, guest requests, and reviews automatically, so your team
                                         can focus on delivering an exceptional stay.
@@ -82,9 +85,7 @@ export default function Hotels() {
                                         ))}
                                     </ul>
                                 </div>
-                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    🏨
-                                </div>
+                                <SectionIllustration icon={Hotel} accent="blue" />
                             </div>
                         </div>
                     </section>
@@ -97,8 +98,8 @@ export default function Hotels() {
                             </h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
-                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                        <div className="text-3xl mb-3">{f.icon}</div>
+                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                        <IconTile icon={f.icon} color="blue" size="md" className="mb-3" />
                                         <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
                                         <p className="text-sm text-gray-500">{f.description}</p>
                                     </div>
@@ -144,7 +145,7 @@ export default function Hotels() {
                     {/* Testimonial */}
                     <section className="py-20 bg-gray-50">
                         <div className="max-w-3xl mx-auto px-4 text-center">
-                            <div className="text-4xl mb-6">💬</div>
+                            <div className="w-12 h-12 mx-auto mb-6 bg-blue-50 rounded-2xl flex items-center justify-center"><Quote className="w-6 h-6 text-blue-600" strokeWidth={1.75} /></div>
                             <blockquote className="text-xl font-medium text-gray-800 leading-relaxed mb-6">
                                 "{testimonial.quote}"
                             </blockquote>
@@ -160,18 +161,13 @@ export default function Hotels() {
                                 Ready to Automate Your Hotel?
                             </h2>
                             <p className="text-gray-500 mb-8">
-                                Book a free demo and we'll show you exactly how SmartFlow works for hospitality businesses like yours.
+                                Book a free demo and we'll show you exactly how Blueflow works for hospitality businesses like yours.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <a
-                                    href="https://forms.gle/rG4Jf1xoguD67mH26"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors"
-                                >
+                                <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Schedule Free Demo
-                                </a>
-                                <Link href="/pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
+                                </Link>
+                                <Link href="/#pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
                                     View Pricing
                                 </Link>
                             </div>

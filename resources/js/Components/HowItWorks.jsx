@@ -139,16 +139,14 @@ export default function HowItWorks() {
                         Just honest advice on how automation can help your business.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <a
-                            href="https://forms.gle/rG4Jf1xoguD67mH26"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <Link
+                            href="/contact"
                             className="bg-white text-blue-700 font-semibold px-6 py-3 rounded-xl hover:bg-blue-50 transition-colors"
                         >
                             Fill Discovery Form
-                        </a>
+                        </Link>
                         <Link
-                            href="#"
+                            href="/contact"
                             className="border-2 border-white text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors"
                         >
                             Ask a Question

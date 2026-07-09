@@ -7,6 +7,7 @@ import Services from "@/Components/Services";
 import Industries from "@/Components/Industries";
 import HowItWorks from "@/Components/HowItWorks";
 import CaseStudies from "@/Components/CaseStudies";
+import Testimonials from "@/Components/Testimonials";
 import Pricing from "@/Components/Pricing";
 import ROICalculator from "@/Components/ROICalculator";
 import TrustSignals from "@/Components/TrustSignals";
@@ -35,6 +36,7 @@ export default function Home() {
                     <Industries />
                     <HowItWorks />
                     <CaseStudies />
+                    <Testimonials />
                     <Pricing />
                     <ROICalculator />
                     <TrustSignals />

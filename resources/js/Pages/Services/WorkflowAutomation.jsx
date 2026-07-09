@@ -1,6 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
+import { Route, Settings2, Puzzle, Shuffle, ClipboardCheck, Radio } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
+import IconTile from "@/Components/Icons/IconTile";
+import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
     "Automate repetitive tasks across every department — sales, operations, finance, and support",
@@ -10,12 +13,12 @@ const highlights = [
 ];
 
 const features = [
-    { icon: "🔁", title: "Multi-Step Workflows", description: "Chain actions across multiple tools — when X happens in app A, do Y in app B and notify via WhatsApp. Infinitely flexible." },
-    { icon: "⚙️", title: "No-Code Builder", description: "Our team builds your automations using a visual workflow editor. No developers needed, no technical debt created." },
-    { icon: "🧩", title: "App Integrations", description: "Connect Google Workspace, Paystack, WhatsApp, your CRM, inventory systems, and hundreds of other tools out of the box." },
-    { icon: "🔀", title: "Conditional Logic", description: "Workflows that think — route tasks differently based on order value, customer type, time of day, or any condition you define." },
-    { icon: "📋", title: "Task & Approval Flows", description: "Automate internal handoffs — assign tasks, request approvals, and escalate issues without anyone having to remember to do it." },
-    { icon: "📡", title: "Real-Time Monitoring", description: "Every workflow run is logged. See what triggered, what succeeded, and get alerted instantly if anything fails." },
+    { icon: Route, title: "Multi-Step Workflows", description: "Chain actions across multiple tools — when X happens in app A, do Y in app B and notify via WhatsApp. Infinitely flexible." },
+    { icon: Settings2, title: "No-Code Builder", description: "Our team builds your automations using a visual workflow editor. No developers needed, no technical debt created." },
+    { icon: Puzzle, title: "App Integrations", description: "Connect Google Workspace, Paystack, WhatsApp, your CRM, inventory systems, and hundreds of other tools out of the box." },
+    { icon: Shuffle, title: "Conditional Logic", description: "Workflows that think — route tasks differently based on order value, customer type, time of day, or any condition you define." },
+    { icon: ClipboardCheck, title: "Task & Approval Flows", description: "Automate internal handoffs — assign tasks, request approvals, and escalate issues without anyone having to remember to do it." },
+    { icon: Radio, title: "Real-Time Monitoring", description: "Every workflow run is logged. See what triggered, what succeeded, and get alerted instantly if anything fails." },
 ];
 
 const steps = [
@@ -73,9 +76,7 @@ export default function WorkflowAutomation() {
                                         ))}
                                     </ul>
                                 </div>
-                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    ⚙️
-                                </div>
+                                <SectionIllustration icon={Workflow} accent="blue" />
                             </div>
                         </div>
                     </section>
@@ -86,8 +87,8 @@ export default function WorkflowAutomation() {
                             <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">Everything Included</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
-                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                        <div className="text-3xl mb-3">{f.icon}</div>
+                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                        <IconTile icon={f.icon} color="blue" size="md" className="mb-3" />
                                         <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
                                         <p className="text-sm text-gray-500">{f.description}</p>
                                     </div>
@@ -138,10 +139,10 @@ export default function WorkflowAutomation() {
                                 Book a free workflow audit and we'll identify exactly where automation can save your business the most time.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Link href="/demo" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
+                                <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Schedule Free Demo
                                 </Link>
-                                <Link href="/pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
+                                <Link href="/#pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
                                     View Pricing
                                 </Link>
                             </div>

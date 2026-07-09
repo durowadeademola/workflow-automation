@@ -1,6 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
+import { Contact, Bot, TrendingUp, BellRing, BarChart3, Link2 } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
+import IconTile from "@/Components/Icons/IconTile";
+import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
     "Centralise every customer interaction — WhatsApp, email, calls, and social — in one place",
@@ -10,12 +13,12 @@ const highlights = [
 ];
 
 const features = [
-    { icon: "🗂️", title: "Unified Customer View", description: "Every call, message, purchase, and interaction in one timeline — no more switching between apps to find context." },
-    { icon: "🤖", title: "Automated Data Entry", description: "Stop wasting time on manual logging. Blueflow captures leads, updates deal stages, and syncs contact info automatically." },
-    { icon: "📈", title: "Pipeline Management", description: "Visual sales pipeline that moves deals forward automatically based on customer behaviour and triggers you define." },
-    { icon: "🔔", title: "Smart Follow-up Reminders", description: "Never let a hot lead go cold. AI detects when a deal is stalling and prompts your team to act before it's too late." },
-    { icon: "📊", title: "Revenue Analytics", description: "Track deal velocity, conversion rates, and team performance with dashboards built for Nigerian business realities." },
-    { icon: "🔗", title: "Deep Integrations", description: "Connect your CRM to WhatsApp, email, Paystack, Google Sheets, and your existing tools — no developer needed." },
+    { icon: Contact, title: "Unified Customer View", description: "Every call, message, purchase, and interaction in one timeline — no more switching between apps to find context." },
+    { icon: Bot, title: "Automated Data Entry", description: "Stop wasting time on manual logging. Blueflow captures leads, updates deal stages, and syncs contact info automatically." },
+    { icon: TrendingUp, title: "Pipeline Management", description: "Visual sales pipeline that moves deals forward automatically based on customer behaviour and triggers you define." },
+    { icon: BellRing, title: "Smart Follow-up Reminders", description: "Never let a hot lead go cold. AI detects when a deal is stalling and prompts your team to act before it's too late." },
+    { icon: BarChart3, title: "Revenue Analytics", description: "Track deal velocity, conversion rates, and team performance with dashboards built for Nigerian business realities." },
+    { icon: Link2, title: "Deep Integrations", description: "Connect your CRM to WhatsApp, email, Paystack, Google Sheets, and your existing tools — no developer needed." },
 ];
 
 const steps = [
@@ -72,9 +75,7 @@ export default function CRMIntegration() {
                                         ))}
                                     </ul>
                                 </div>
-                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    🗂️
-                                </div>
+                                <SectionIllustration icon={Contact} accent="blue" />
                             </div>
                         </div>
                     </section>
@@ -85,8 +86,8 @@ export default function CRMIntegration() {
                             <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">Everything Included</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
-                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                        <div className="text-3xl mb-3">{f.icon}</div>
+                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                        <IconTile icon={f.icon} color="blue" size="md" className="mb-3" />
                                         <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
                                         <p className="text-sm text-gray-500">{f.description}</p>
                                     </div>
@@ -137,10 +138,10 @@ export default function CRMIntegration() {
                                 Book a free demo and see how CRM Integration can bring order to your customer management.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Link href="/demo" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
+                                <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Schedule Free Demo
                                 </Link>
-                                <Link href="/pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
+                                <Link href="/#pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
                                     View Pricing
                                 </Link>
                             </div>

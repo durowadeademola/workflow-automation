@@ -4,6 +4,8 @@ namespace App\Observers;
 
 use App\Models\Agent;
 use App\Models\User;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class AgentObserver
 {
@@ -12,24 +14,11 @@ class AgentObserver
      */
     public function created(Agent $agent): void
     {
-        // $rawPassword = strtoupper(Str::random(7));
         // Check if a user with this email already exists to avoid crashes
         $existingUser = User::firstWhere('email', $agent->email);
 
         if (! $existingUser) {
-            $user = User::create([
-                'name' => $agent->name,
-                'email' => $agent->email,
-                'agent_id' => $agent->id,
-                'client_id' => $agent->client_id,
-                'password' => bcrypt('password'), // Default password
-                'is_agent' => true,
-                'is_client' => false,
-                'is_admin' => false,
-            ]);
-
-            // If you have a user_id column on your agents table, link it now
-            // $agent->update(['user_id' => $user->id]);
+            $this->createAgentUser($agent);
         }
     }
 
@@ -48,17 +37,27 @@ class AgentObserver
                 'email' => $agent->email,
             ]);
         } else {
-            $user = User::create([
-                'name' => $agent->name,
-                'email' => $agent->email,
-                'agent_id' => $agent->id,
-                'client_id' => $agent->client_id,
-                'password' => bcrypt('password'),
-                'is_agent' => true,
-                'is_client' => false,
-                'is_admin' => false,
-            ]);
+            $this->createAgentUser($agent);
         }
+    }
+
+    /**
+     * Create a login for a new agent with a random password and email them a link to set their own.
+     */
+    private function createAgentUser(Agent $agent): void
+    {
+        $user = User::create([
+            'name' => $agent->name,
+            'email' => $agent->email,
+            'agent_id' => $agent->id,
+            'client_id' => $agent->client_id,
+            'password' => bcrypt(Str::random(32)),
+            'is_agent' => true,
+            'is_client' => false,
+            'is_admin' => false,
+        ]);
+
+        Password::sendResetLink(['email' => $user->email]);
     }
 
     /**

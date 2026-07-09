@@ -48,9 +48,9 @@ export default function Hero() {
                         transform: isVisible ? "translateY(0)" : "translateY(24px)",
                         transition: "opacity 0.5s ease 0ms, transform 0.5s ease 0ms",
                     }}
-                    className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 text-sm font-medium px-4 py-1.5 rounded-full mb-6"
+                    className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 text-xs sm:text-sm font-medium px-3 sm:px-4 py-1.5 rounded-full mb-6 text-center"
                 >
-                    <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                    <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse flex-shrink-0" />
                     AI-Powered Automation for Nigerian Businesses
                 </div>
 
@@ -89,16 +89,14 @@ export default function Hero() {
                     }}
                     className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
                 >
-                   <a href="https://forms.gle/rG4Jf1xoguD67mH26"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                   <Link href="/contact"
                         className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-0.5"
                     >
                         Get Started Free
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
-                    </a>
+                    </Link>
                     <a
                         href="#how-it-works"
                         className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-gray-700 font-semibold px-8 py-3.5 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:text-blue-700 transition-all hover:-translate-y-0.5"

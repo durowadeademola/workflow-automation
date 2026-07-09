@@ -1,43 +1,45 @@
+import { ShieldCheck, MapPin, CreditCard, Zap, Globe, Trophy, BarChart3, Handshake } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import IconTile from "@/Components/Icons/IconTile";
 
 const trustItems = [
     {
-        icon: "🔒",
+        icon: ShieldCheck,
         title: "Bank-Level Security",
         description: "Your data is encrypted with 256-bit SSL. We take security as seriously as Nigerian banks do.",
     },
     {
-        icon: "🇳🇬",
+        icon: MapPin,
         title: "Local Support Team",
         description: "Real Nigerians based in Lagos, Abuja, and Port Harcourt. We understand your business.",
     },
     {
-        icon: "💳",
+        icon: CreditCard,
         title: "Nigerian Payment Options",
         description: "Pay with bank transfer, Paystack, Flutterwave, or POS. No dollar accounts required.",
     },
     {
-        icon: "⚡",
+        icon: Zap,
         title: "24/7 Availability",
         description: "Your automation never sleeps. 99.5% uptime guaranteed with instant failover.",
     },
     {
-        icon: "🌍",
+        icon: Globe,
         title: "Made for Nigeria",
         description: "Built specifically for Nigerian businesses. We understand the unique challenges you face.",
     },
     {
-        icon: "🏆",
+        icon: Trophy,
         title: "100+ Happy Businesses",
         description: "From small shops to large enterprises, businesses across Nigeria trust us daily.",
     },
     {
-        icon: "📊",
+        icon: BarChart3,
         title: "Transparent Reporting",
         description: "See exactly what your automation is doing with real-time analytics and reports.",
     },
     {
-        icon: "🤝",
+        icon: Handshake,
         title: "No Long-Term Contracts",
         description: "Cancel anytime. No penalties. No questions asked. We earn your business every month.",
     },
@@ -80,7 +82,7 @@ export default function TrustSignals() {
                                 transition: `opacity 0.6s ease ${i * 80}ms, transform 0.6s ease ${i * 80}ms`,
                             }}
                         >
-                            <div className="text-3xl mb-3">{item.icon}</div>
+                            <IconTile icon={item.icon} color="blue" size="md" className="mb-3" />
                             <h3 className="font-bold text-gray-900 text-sm mb-2">{item.title}</h3>
                             <p className="text-xs text-gray-500 leading-relaxed">{item.description}</p>
                         </div>

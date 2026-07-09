@@ -63,7 +63,7 @@ export default function ROICalculator() {
     const [calcRef, calcVisible] = useScrollAnimation(0.1);
 
     return (
-        <section className="py-20 bg-white">
+        <section id="roi-calculator" className="py-20 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div
                     ref={headingRef}
@@ -190,7 +190,7 @@ export default function ROICalculator() {
                         </p>
 
                         <Link
-                            href="#"
+                            href="/contact?source=roi_calculator"
                             className="w-full block text-center bg-blue-600 text-white font-semibold py-3 rounded-xl hover:bg-blue-700 transition-colors"
                         >
                             Get Your Custom Quote

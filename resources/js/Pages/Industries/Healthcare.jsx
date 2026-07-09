@@ -1,6 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
+import { HeartPulse, CalendarCheck, BellRing, ClipboardList, TestTube, Pill, Star, Quote } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
+import IconTile from "@/Components/Icons/IconTile";
+import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
     "Patients book, reschedule, and cancel appointments via WhatsApp — no phone calls needed",
@@ -10,16 +13,16 @@ const highlights = [
 ];
 
 const features = [
-    { icon: "📅", title: "WhatsApp Appointment Booking", description: "Patients check doctor availability and book appointments directly on WhatsApp at any time of day — your reception desk handles only complex cases." },
-    { icon: "🔔", title: "Automated Reminder Sequences", description: "Every patient gets a reminder 24 hours before and again 1 hour before their appointment — drastically cutting no-shows without any manual effort." },
-    { icon: "📋", title: "Digital Intake Forms", description: "New patients complete their medical history, symptoms, and insurance details via WhatsApp before they arrive — saving time at the desk and in the consultation." },
-    { icon: "🧪", title: "Lab Results Notifications", description: "Patients are automatically notified when their results are ready for collection or review — no more calling the clinic repeatedly to check." },
-    { icon: "💊", title: "Medication & Follow-Up Reminders", description: "Scheduled reminders for prescriptions, follow-up appointments, and chronic condition check-ins sent automatically based on each patient's care plan." },
-    { icon: "⭐", title: "Patient Feedback Collection", description: "Automated satisfaction surveys sent after every visit help you identify issues early and build a strong reputation with consistent positive reviews." },
+    { icon: CalendarCheck, title: "WhatsApp Appointment Booking", description: "Patients check doctor availability and book appointments directly on WhatsApp at any time of day — your reception desk handles only complex cases." },
+    { icon: BellRing, title: "Automated Reminder Sequences", description: "Every patient gets a reminder 24 hours before and again 1 hour before their appointment — drastically cutting no-shows without any manual effort." },
+    { icon: ClipboardList, title: "Digital Intake Forms", description: "New patients complete their medical history, symptoms, and insurance details via WhatsApp before they arrive — saving time at the desk and in the consultation." },
+    { icon: TestTube, title: "Lab Results Notifications", description: "Patients are automatically notified when their results are ready for collection or review — no more calling the clinic repeatedly to check." },
+    { icon: Pill, title: "Medication & Follow-Up Reminders", description: "Scheduled reminders for prescriptions, follow-up appointments, and chronic condition check-ins sent automatically based on each patient's care plan." },
+    { icon: Star, title: "Patient Feedback Collection", description: "Automated satisfaction surveys sent after every visit help you identify issues early and build a strong reputation with consistent positive reviews." },
 ];
 
 const steps = [
-    { title: "Connect your WhatsApp Business number", description: "We link your clinic's number to SmartFlow and configure your doctors, consultation types, and available appointment slots." },
+    { title: "Connect your WhatsApp Business number", description: "We link your clinic's number to Blueflow and configure your doctors, consultation types, and available appointment slots." },
     { title: "Build your booking and reminder flows", description: "We design conversation flows for new and returning patients, appointment confirmations, reminders, and rescheduling requests." },
     { title: "Set up your follow-up sequences", description: "We configure post-visit messages, lab result alerts, prescription reminders, and any chronic care follow-up schedules your clinic needs." },
     { title: "Launch and reduce no-shows immediately", description: "Go live within days. Appointment reminders alone typically cut no-shows by 50–60% in the first month." },
@@ -44,7 +47,7 @@ export default function Healthcare() {
             <Head title="Automation for Healthcare & Clinics">
                 <meta
                     name="description"
-                    content="Reduce no-shows, automate appointment reminders, and streamline patient communications for your clinic. SmartFlow helps Nigerian healthcare providers run more efficiently."
+                    content="Reduce no-shows, automate appointment reminders, and streamline patient communications for your clinic. Blueflow helps Nigerian healthcare providers run more efficiently."
                 />
             </Head>
             <div className="min-h-screen bg-white">
@@ -64,7 +67,7 @@ export default function Healthcare() {
                                     <p className="text-gray-600 leading-relaxed mb-6">
                                         Nigerian clinics lose hundreds of thousands of naira every month to
                                         no-shows, while reception staff spend most of their day answering calls,
-                                        scheduling appointments, and chasing patients manually. SmartFlow
+                                        scheduling appointments, and chasing patients manually. Blueflow
                                         automates the entire patient communication journey — from booking to
                                         reminders to post-visit follow-ups — so your team can focus on delivering
                                         quality care instead of managing logistics.
@@ -82,9 +85,7 @@ export default function Healthcare() {
                                         ))}
                                     </ul>
                                 </div>
-                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    🏥
-                                </div>
+                                <SectionIllustration icon={HeartPulse} accent="blue" />
                             </div>
                         </div>
                     </section>
@@ -97,8 +98,8 @@ export default function Healthcare() {
                             </h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
-                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                        <div className="text-3xl mb-3">{f.icon}</div>
+                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                        <IconTile icon={f.icon} color="blue" size="md" className="mb-3" />
                                         <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
                                         <p className="text-sm text-gray-500">{f.description}</p>
                                     </div>
@@ -144,7 +145,7 @@ export default function Healthcare() {
                     {/* Testimonial */}
                     <section className="py-20 bg-gray-50">
                         <div className="max-w-3xl mx-auto px-4 text-center">
-                            <div className="text-4xl mb-6">💬</div>
+                            <div className="w-12 h-12 mx-auto mb-6 bg-blue-50 rounded-2xl flex items-center justify-center"><Quote className="w-6 h-6 text-blue-600" strokeWidth={1.75} /></div>
                             <blockquote className="text-xl font-medium text-gray-800 leading-relaxed mb-6">
                                 "{testimonial.quote}"
                             </blockquote>
@@ -160,18 +161,13 @@ export default function Healthcare() {
                                 Ready to Reduce No-Shows and Free Up Your Team?
                             </h2>
                             <p className="text-gray-500 mb-8">
-                                Book a free demo and we'll show you exactly how SmartFlow works for clinics and healthcare providers like yours.
+                                Book a free demo and we'll show you exactly how Blueflow works for clinics and healthcare providers like yours.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <a
-                                    href="https://forms.gle/rG4Jf1xoguD67mH26"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors"
-                                >
+                                <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Schedule Free Demo
-                                </a>
-                                <Link href="/pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
+                                </Link>
+                                <Link href="/#pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
                                     View Pricing
                                 </Link>
                             </div>

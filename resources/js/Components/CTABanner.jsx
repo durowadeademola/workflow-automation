@@ -74,17 +74,19 @@ export default function CTABanner() {
                     className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6"
                 >
                     <Link
-                        href="#"
+                        href="/contact"
                         className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-blue-700 font-bold px-8 py-3.5 rounded-xl hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
                     >
                         Schedule Free Demo
                     </Link>
-                    <Link
-                        href="#"
+                    <a
+                        href="https://wa.me/2347064706193"
+                        target="_blank"
+                        rel="noreferrer"
                         className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border-2 border-white text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-white/10 transition-all"
                     >
                         Talk to Our Team
-                    </Link>
+                    </a>
                 </div>
 
                 <p

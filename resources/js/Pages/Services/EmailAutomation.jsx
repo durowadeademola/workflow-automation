@@ -1,6 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
+import { Zap, Target, Mail, Repeat, BarChart3, Link2 } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
+import IconTile from "@/Components/Icons/IconTile";
+import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
     "Send the right email to the right customer at exactly the right time — automatically",
@@ -10,12 +13,12 @@ const highlights = [
 ];
 
 const features = [
-    { icon: "⚡", title: "Triggered Sequences", description: "Automatically send emails when customers sign up, abandon a cart, make a purchase, or go quiet for too long." },
-    { icon: "🎯", title: "Audience Segmentation", description: "Group customers by behaviour, location, purchase history, or any custom field — and speak to each group differently." },
-    { icon: "✉️", title: "Template Builder", description: "Professional, mobile-ready email templates built for Nigerian businesses. No design skills required." },
-    { icon: "🔄", title: "Drip Campaigns", description: "Nurture leads over days or weeks with automated sequences that move people from curious to paying customer." },
-    { icon: "📊", title: "Revenue Attribution", description: "See exactly which emails are generating sales. Know your open rate, click rate, and naira earned per campaign." },
-    { icon: "🔗", title: "CRM & WhatsApp Sync", description: "Email data flows directly into your CRM and can trigger WhatsApp follow-ups for maximum reach." },
+    { icon: Zap, title: "Triggered Sequences", description: "Automatically send emails when customers sign up, abandon a cart, make a purchase, or go quiet for too long." },
+    { icon: Target, title: "Audience Segmentation", description: "Group customers by behaviour, location, purchase history, or any custom field — and speak to each group differently." },
+    { icon: Mail, title: "Template Builder", description: "Professional, mobile-ready email templates built for Nigerian businesses. No design skills required." },
+    { icon: Repeat, title: "Drip Campaigns", description: "Nurture leads over days or weeks with automated sequences that move people from curious to paying customer." },
+    { icon: BarChart3, title: "Revenue Attribution", description: "See exactly which emails are generating sales. Know your open rate, click rate, and naira earned per campaign." },
+    { icon: Link2, title: "CRM & WhatsApp Sync", description: "Email data flows directly into your CRM and can trigger WhatsApp follow-ups for maximum reach." },
 ];
 
 const steps = [
@@ -72,9 +75,7 @@ export default function EmailAutomation() {
                                         ))}
                                     </ul>
                                 </div>
-                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-16 flex items-center justify-center text-8xl">
-                                    ✉️
-                                </div>
+                                <SectionIllustration icon={Mail} accent="blue" />
                             </div>
                         </div>
                     </section>
@@ -85,8 +86,8 @@ export default function EmailAutomation() {
                             <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">Everything Included</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
-                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                        <div className="text-3xl mb-3">{f.icon}</div>
+                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                        <IconTile icon={f.icon} color="blue" size="md" className="mb-3" />
                                         <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
                                         <p className="text-sm text-gray-500">{f.description}</p>
                                     </div>
@@ -137,10 +138,10 @@ export default function EmailAutomation() {
                                 Book a free demo and see how Email Automation can turn your contact list into consistent revenue.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Link href="/demo" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
+                                <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Schedule Free Demo
                                 </Link>
-                                <Link href="/pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
+                                <Link href="/#pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
                                     View Pricing
                                 </Link>
                             </div>

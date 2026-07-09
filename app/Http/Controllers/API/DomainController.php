@@ -11,8 +11,12 @@ class DomainController extends Controller
 {
     public function index(Request $request)
     {
-        $domains = Domain::all();
+        $user = $request->user();
 
-        return response()->json([$domains]);
+        $domains = $user?->is_admin
+            ? Domain::all()
+            : Domain::where('client_id', $user?->client_id)->get();
+
+        return response()->json($domains);
     }
 }

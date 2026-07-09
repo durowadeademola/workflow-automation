@@ -1,6 +1,8 @@
 import { Head, Link } from "@inertiajs/react";
+import { MessageCircle, Contact, Mail, CreditCard, Workflow, Wrench } from "lucide-react";
 import MainLayout from "@/Components/Layout/MainLayout";
 import PageHero from "@/Components/Layout/PageHero";
+import IconTile from "@/Components/Icons/IconTile";
 
 const services = [
     {
@@ -9,49 +11,49 @@ const services = [
         features: ["Order processing", "Booking management", "Customer support", "Payment integration"],
         href: "/services/whatsapp-automation",
         popular: true,
-        emoji: "💬",
+        icon: MessageCircle,
     },
     {
         title: "CRM Integration",
         description: "Centralise customer data and automate your entire relationship management pipeline.",
         features: ["Lead capture", "Pipeline automation", "Follow-up sequences", "Analytics"],
         href: "/services/crm-integration",
-        emoji: "🗂️",
+        icon: Contact,
     },
     {
         title: "Email Automation",
         description: "Send the right message to the right customer at the right time — automatically.",
         features: ["Campaign builder", "Smart segmentation", "Cart recovery", "A/B testing"],
         href: "/services/email-automation",
-        emoji: "📧",
+        icon: Mail,
     },
     {
         title: "Payment Automation",
         description: "Automate invoicing, payment collection, and reconciliation. Get paid faster.",
         features: ["Auto invoicing", "Payment reminders", "Paystack & Flutterwave", "Financial reports"],
         href: "/services/payment-automation",
-        emoji: "💳",
+        icon: CreditCard,
     },
     {
         title: "Workflow Automation",
         description: "Connect your tools and automate repetitive business processes end-to-end.",
         features: ["100+ app integrations", "Visual builder", "Approval workflows", "Data sync"],
         href: "/services/workflow-automation",
-        emoji: "⚙️",
+        icon: Workflow,
     },
     {
         title: "Custom Solutions",
         description: "Bespoke automation built from scratch for businesses with unique requirements.",
         features: ["Dedicated architect", "Legacy integrations", "Full ownership", "Ongoing support"],
         href: "/services/custom-solutions",
-        emoji: "🛠️",
+        icon: Wrench,
     },
 ];
 
 export default function Services() {
     return (
         <MainLayout>
-            <Head title="Services — SmartFlow Africa" />
+            <Head title="Services — Blueflow Automation" />
 
             <PageHero
                 badge="Our Services"
@@ -77,7 +79,7 @@ export default function Services() {
                                     </span>
                                 )}
 
-                                <div className="text-4xl mb-4">{service.emoji}</div>
+                                <IconTile icon={service.icon} color="blue" size="lg" className="mb-4" />
                                 <h3 className="font-bold text-gray-900 text-lg mb-2">{service.title}</h3>
                                 <p className="text-sm text-gray-500 mb-4">{service.description}</p>
 
@@ -115,7 +117,7 @@ export default function Services() {
                         Book a free call and we'll recommend exactly what will have the biggest impact on your business.
                     </p>
                     <Link
-                        href="/demo"
+                        href="/contact"
                         className="inline-flex items-center gap-2 bg-white text-blue-700 font-semibold px-6 py-3 rounded-xl hover:bg-blue-50 transition-colors text-sm"
                     >
                         Get a Free Recommendation →
