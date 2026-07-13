@@ -46,7 +46,7 @@ class AIAgentForm
                     ->schema([
                         Select::make('customer_id')
                             ->label('Customer')
-                            ->relationship('customers', 'name')
+                            ->relationship('customer', 'name')
                             ->searchable(),
                         TextInput::make('source')->disabled(),
                     ])

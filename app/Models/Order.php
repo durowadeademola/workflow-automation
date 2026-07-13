@@ -28,6 +28,11 @@ class Order extends Model
         'status',
         'source',
         'notes',
+        'items',
+    ];
+
+    protected $casts = [
+        'items' => 'array',
     ];
 
     public function customer()

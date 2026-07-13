@@ -7,7 +7,10 @@ export default defineConfig({
     plugins: [
         tailwindcss(), // 2. Add it here (usually before laravel plugin)
         laravel({
-            input: 'resources/js/app.jsx',
+            input: [
+                'resources/js/app.jsx',
+                'resources/css/filament/admin/theme.css',
+            ],
             refresh: true,
         }),
         react(),

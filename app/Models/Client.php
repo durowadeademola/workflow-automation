@@ -19,6 +19,7 @@ class Client extends Model
         'telephone',
         'type',
         'status',
+        'webhook_url',
     ];
 
     public function agents()
@@ -38,6 +39,25 @@ class Client extends Model
 
     public function services()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Service::class);
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    /**
+     * Whether this client currently has a paid-up subscription. Checked
+     * against end_date directly (not just the stored status) so an expired
+     * period is caught immediately, without depending on a cron job having
+     * already run to flip the status.
+     */
+    public function hasActiveSubscription(): bool
+    {
+        return $this->subscriptions()
+            ->where('status', 'active')
+            ->where('end_date', '>=', now()->startOfDay())
+            ->exists();
     }
 }

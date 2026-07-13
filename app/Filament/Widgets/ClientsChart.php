@@ -7,6 +7,8 @@ use Filament\Widgets\ChartWidget;
 
 class ClientsChart extends ChartWidget
 {
+    protected static bool $isLazy = false;
+
     protected ?string $heading = 'Clients Trend';
 
     protected string $color = 'success';

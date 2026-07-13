@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class RecentMessages extends TableWidget
 {
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = 'full';
 
     public static function canView(): bool
@@ -42,6 +44,7 @@ class RecentMessages extends TableWidget
                     ->exporter(MessageExporter::class),
             ])
             ->query(fn (): Builder => Message::query()
+                ->with('customer')
                 ->where('client_id', auth()->user()?->client_id)
             // Use select to get the latest message per customer
                 ->select('messages.*')
@@ -59,10 +62,10 @@ class RecentMessages extends TableWidget
                     ->label('Username')
                     ->searchable(),
 
-                // TextColumn::make('content')
-                //     ->label('Message')
-                //     ->limit(50)
-                //     ->searchable(),
+                TextColumn::make('content')
+                    ->label('Message')
+                    ->limit(50)
+                    ->searchable(),
 
                 TextColumn::make('source')
                     ->badge()
@@ -81,14 +84,14 @@ class RecentMessages extends TableWidget
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 \Filament\Actions\Action::make('viewHistory')
                     ->label('Chat history')
                     ->icon('heroicon-m-chat-bubble-left-right')
                     ->modalHeading(fn (Message $record) => 'Chat with '.($record->customer?->username ?? 'User'))
                     ->modalSubmitAction(false) // Hide the save button since it's read-only
                     ->modalWidth('xl')
-                    ->form(function (Message $record) {
+                    ->schema(function (Message $record) {
                         // Fetch all messages between this customer and this client
                         $history = Message::where('customer_id', $record->customer_id)
                             ->where('client_id', $record->client_id)
@@ -103,7 +106,7 @@ class RecentMessages extends TableWidget
                     }),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

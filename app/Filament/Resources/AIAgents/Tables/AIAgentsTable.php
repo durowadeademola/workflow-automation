@@ -4,7 +4,6 @@ namespace App\Filament\Resources\AIAgents\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
@@ -22,6 +21,12 @@ class AIAgentsTable
     {
         return $table
             ->columns([
+                TextColumn::make('customer.name')
+                    ->label('Customer')
+                    ->placeholder('—')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('model')
                     ->label('AI Model')
                     ->badge()
@@ -65,70 +70,18 @@ class AIAgentsTable
                         'groq-beta' => 'Groq Beta',
                         'groq-vision' => 'Groq Vision',
                     ]),
-
                 TernaryFilter::make('success')
                     ->label('Request Status'),
-                // TextColumn::make('customers.name')->label('Customer'),
-                // TextColumn::make('metadata.priority')
-                //     ->label('Priority')
-                //     ->badge()
-                //     ->color(fn (string $state): string => match ($state) {
-                //         'Hot' => 'danger',
-                //         'Warm' => 'warning',
-                //         'Cold' => 'info',
-                //         default => 'gray',
-                //     }),
-                // IconColumn::make('success')->boolean(),
-                // TextColumn::make('created_at')->dateTime(),
-                // TextColumn::make('customer_id')
-                //     ->numeric()
-                //     ->sortable(),
-                // TextColumn::make('client_id')
-                //     ->numeric()
-                //     ->sortable(),
-                // TextColumn::make('order_id')
-                //     ->numeric()
-                //     ->sortable(),
-                // TextColumn::make('product_id')
-                //     ->numeric()
-                //     ->sortable(),
-                // TextColumn::make('service_id')
-                //     ->numeric()
-                //     ->sortable(),
-                // TextColumn::make('source')
-                //     ->searchable(),
-                // TextColumn::make('model')
-                //     ->searchable(),
-                // IconColumn::make('success')
-                //     ->boolean(),
-                // TextColumn::make('latency')
-                //     ->numeric()
-                //     ->sortable(),
-                // TextColumn::make('created_at')
-                //     ->dateTime()
-                //     ->sortable()
-                //     ->toggleable(isToggledHiddenByDefault: true),
-                // TextColumn::make('updated_at')
-                //     ->dateTime()
-                //     ->sortable()
-                //     ->toggleable(isToggledHiddenByDefault: true),
-                // TextColumn::make('deleted_at')
-                //     ->dateTime()
-                //     ->sortable()
-                //     ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                // TrashedFilter::make(),
+                TrashedFilter::make(),
             ])
             ->recordActions([
                 ViewAction::make(),
-                // EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    // DeleteBulkAction::make(),
-                    // ForceDeleteBulkAction::make(),
-                    // RestoreBulkAction::make(),
+                    DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }

@@ -25,17 +25,19 @@ class OrderResource extends Resource
     {
         $user = auth()->user();
 
-        /** * We check if the user exists, is a client, and if their
+        /**
+         * We check if the user exists, is a client or agent, and if their
          * associated client profile has the right type.
          */
-        return $user && $user->is_client || $user->is_agent
-            && in_array(strtolower($user->client?->type),
-                ['online-store',
-                    'real-estate',
-                    'logistics',
-                    'sme',
-                    'ecommerce',
-                ]);
+        return $user
+            && ($user->is_client || $user->is_agent)
+            && in_array(strtolower($user->client?->type), [
+                'online-store',
+                'real-estate',
+                'logistics',
+                'sme',
+                'ecommerce',
+            ]);
     }
 
     public static function form(Schema $schema): Schema
@@ -60,7 +62,7 @@ class OrderResource extends Resource
         return [
             'index' => ListOrders::route('/'),
             'create' => CreateOrder::route('/create'),
-            // 'edit' => EditOrder::route('/{record}/edit'),
+            'edit' => EditOrder::route('/{record}/edit'),
         ];
     }
 
@@ -75,6 +77,7 @@ class OrderResource extends Resource
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()
+            ->with(['customer', 'product', 'agent', 'service'])
             ->where('client_id', auth()->user()?->client_id)
             ->orderBy('created_at', 'desc');
     }

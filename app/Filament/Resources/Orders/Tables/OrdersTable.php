@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Orders\Tables;
 
 use App\Filament\Exports\OrderExporter;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -10,6 +11,8 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -39,17 +42,20 @@ class OrdersTable
                     ->placeholder('—')
                     ->searchable()
                     ->sortable(),
-                // TextColumn::make('service.name')
-                //     ->label('service')
-                //     ->placeholder('—')
-                //     ->searchable()
-                //     ->sortable(),
-                // TextColumn::make('customer_name')
-                //     ->searchable(),
-                // TextColumn::make('customer_phone')
-                //     ->searchable(),
-                // TextColumn::make('customer_email')
-                //     ->searchable(),
+                TextColumn::make('service.name')
+                    ->label('Service')
+                    ->placeholder('—')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('customer_name')
+                    ->placeholder('—')
+                    ->searchable(),
+                TextColumn::make('customer_phone')
+                    ->placeholder('—')
+                    ->searchable(),
+                TextColumn::make('customer_email')
+                    ->placeholder('—')
+                    ->searchable(),
                 TextColumn::make('order_reference')
                     ->label('Order id')
                     ->searchable(),
@@ -63,28 +69,43 @@ class OrdersTable
                     ->searchable(),
                 TextColumn::make('notes')
                     ->label('Description')
+                    ->limit(40)
                     ->searchable(),
-                // TextColumn::make('amount')
-                //     ->money(fn ($record) => $record->currency)
-                //     ->sortable(),
-                // TextColumn::make('currency')
-                //     ->searchable(),
+                TextColumn::make('amount')
+                    ->money(fn ($record) => $record->currency ?? 'NGN')
+                    ->sortable(),
+                TextColumn::make('currency')
+                    ->searchable(),
                 TextColumn::make('status')
                     ->badge()
-                    ->color('success'),
+                    ->color(fn (string $state): string => match ($state) {
+                        'new' => 'gray',
+                        'contacted' => 'info',
+                        'pending_payment' => 'warning',
+                        'paid', 'delivered', 'completed' => 'success',
+                        'cancelled' => 'danger',
+                        default => 'gray',
+                    }),
                 TextColumn::make('created_at')
                     ->dateTime('M j, Y h:i A')
                     ->sortable(),
             ])
             ->filters([
-                // TrashedFilter::make(),
+                TrashedFilter::make(),
             ])
             ->recordActions([
-                EditAction::make()
+                EditAction::make(),
+                Action::make('quickStatus')
+                    ->label('Quick Edit')
+                    ->icon('heroicon-o-bolt')
                     ->modalHeading('Edit order')
                     ->modalWidth('lg') // Keeps the modal small and clean
-                    ->form([
-                        \Filament\Forms\Components\Select::make('status')
+                    ->fillForm(fn ($record) => [
+                        'status' => $record->status,
+                        'notes' => $record->notes,
+                    ])
+                    ->schema([
+                        Select::make('status')
                             ->options([
                                 'new' => 'New',
                                 'contacted' => 'Contacted',
@@ -98,17 +119,18 @@ class OrdersTable
                             ->required()
                             ->native(false),
 
-                        \Filament\Forms\Components\Textarea::make('notes')
+                        Textarea::make('notes')
                             ->label('Description')
                             ->rows(3),
-                    ]),
-                // DeleteAction::make(),
+                    ])
+                    ->action(fn ($record, array $data) => $record->update($data)),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    // ForceDeleteBulkAction::make(),
-                    // RestoreBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }

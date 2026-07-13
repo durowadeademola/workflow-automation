@@ -11,7 +11,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class ClientStats extends BaseWidget
 {
-    protected static bool $isLazy = true;
+    protected static bool $isLazy = false;
 
     public static function canView(): bool
     {

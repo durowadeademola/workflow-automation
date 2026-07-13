@@ -39,4 +39,9 @@ return [
         'webhook_secret' => env('N8N_WEBHOOK_SECRET'),
     ],
 
+    'paystack' => [
+        'secret_key' => env('PAYSTACK_SECRET_KEY'),
+        'public_key' => env('PAYSTACK_PUBLIC_KEY'),
+    ],
+
 ];

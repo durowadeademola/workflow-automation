@@ -50,6 +50,11 @@ class ClientForm
                                 'inactive' => 'Inactive',
                             ])
                             ->default('active'),
+                        TextInput::make('webhook_url')
+                            ->label('n8n Webhook URL')
+                            ->helperText('Where the chat widget\'s messages are forwarded once this client has an active subscription.')
+                            ->url()
+                            ->columnSpanFull(),
                     ])->columns(2)
                     ->columnSpan('full'),
             ]);

@@ -34,23 +34,28 @@ class AIAgent extends Model
         'success' => 'boolean',
     ];
 
-    public function agents()
+    public function client()
     {
-        return $this->hasMany(Agent::class);
+        return $this->belongsTo(Client::class);
     }
 
-    public function products()
+    public function customer()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsTo(Customer::class);
     }
 
-    public function customers()
+    public function order()
     {
-        return $this->hasMany(Customer::class);
+        return $this->belongsTo(Order::class);
     }
 
-    public function services()
+    public function product()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsTo(Product::class);
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
     }
 }

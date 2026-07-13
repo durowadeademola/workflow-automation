@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class RecentOrders extends TableWidget
 {
+    protected static bool $isLazy = false;
+
     protected static ?string $heading = 'Assigned Orders';
 
     protected int|string|array $columnSpan = 'full';

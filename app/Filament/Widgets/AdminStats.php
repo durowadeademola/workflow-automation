@@ -10,7 +10,10 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class AdminStats extends BaseWidget
 {
-    protected static bool $isLazy = true;
+    // These are cheap counts against small, indexed tables — rendering them
+    // with the initial page avoids a separate round-trip per card, which is
+    // what was making the dashboard feel slow to "pop in" after login.
+    protected static bool $isLazy = false;
 
     public static function canView(): bool
     {

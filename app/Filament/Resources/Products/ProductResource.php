@@ -65,6 +65,7 @@ class ProductResource extends Resource
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()
+            ->with('client')
             ->where('client_id', auth()->user()?->client_id)
             ->orderBy('created_at', 'asc');
     }

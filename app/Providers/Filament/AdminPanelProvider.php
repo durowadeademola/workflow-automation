@@ -16,7 +16,6 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -28,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->passwordReset()
             ->profile()
@@ -59,72 +59,6 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->sidebarCollapsibleOnDesktop()
-            ->renderHook(
-                'panels::styles.after',
-                fn (): string => Blade::render('
-                <style>
-                /* 1. DESKTOP & GENERAL CARD STYLE */
-                html {
-                    font-size: 13px !important; /* force consistent rems */
-                }
-
-                body {
-                    font-size: 1rem !important;
-                }
-
-                /* Fix 100vh issues */
-                :root {
-                    --vh: 1vh;
-                }
-
-                .filament-full-height {
-                    height: calc(var(--vh, 1vh) * 100);
-                }
-                .fi-sidebar-nav {
-                    margin: 1rem !important;
-                    border-radius: 1.5rem !important;
-                    background-color: white !important;
-                    border: 1px solid rgba(0, 0, 0, 0.05) !important;
-                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
-                    padding: 0.5rem !important;
-                }
-    
-                .fi-layout {
-                    background-color: #f8fafc !important;
-                }
-    
-                aside.fi-sidebar {
-                    background-color: transparent !important;
-                    border: none !important;
-                }
-    
-                /* 2. MOBILE SPECIFIC FIX */
-                /* This ensures the slide-out drawer doesn\'t span too wide */
-                @media (max-width: 1024px) {
-                    .fi-sidebar {
-                        /* This forces the drawer width to be smaller */
-                        width: 16rem !important; 
-                    }
-    
-                    /* This makes the navigation card fit perfectly inside the smaller drawer */
-                    .fi-sidebar-nav {
-                        margin: 0.5rem !important;
-                        height: calc(100vh - 1rem) !important;
-                    }
-                    
-                    /* This allows you to see the page content on the right side */
-                    .fi-sidebar-close-overlay {
-                        backdrop-filter: blur(2px);
-                    }
-                }
-    
-                /* Hide default collapse arrow */
-                .fi-sidebar-collapse-button {
-                    display: none !important;
-                }
-                </style>
-            '),
-            );
+            ->sidebarCollapsibleOnDesktop();
     }
 }

@@ -27,7 +27,7 @@ class OrderObserver
                 ->actions([
                     Action::make('view')
                         ->button()
-                        ->url(fn () => "/admin/orders/{$order->id}"),
+                        ->url(fn () => "/admin/orders/{$order->id}/edit"),
                 ])
                 ->sendToDatabase($recipient);
         }
@@ -42,7 +42,7 @@ class OrderObserver
         if ($order->isDirty('agent_id') && $order->agent_id) {
 
             // Find the User account linked to this Agent
-            $agentUser = User::firstWhere('email', $order->agent->email);
+            $agentUser = User::firstWhere('email', $order->agent?->email);
 
             if ($agentUser) {
                 Notification::make()

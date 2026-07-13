@@ -20,8 +20,8 @@
 
         <script>
             window.ChatWidgetConfig = {
-                webhookUrl:   'https://unrepugnant-silas-anecdotically.ngrok-free.dev/webhook/chat-widget',
-                clientId:     'blueflow-automation',
+                clientId:     4,
+                apiBase:      '{{ url('/api') }}',
                 businessName: 'Blueflow Automation',
                 agentName:    'Blueflow Assistant',
                 primaryColor: '#2563EB',

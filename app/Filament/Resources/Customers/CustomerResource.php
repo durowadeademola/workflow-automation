@@ -12,6 +12,8 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CustomerResource extends Resource
 {
@@ -23,11 +25,14 @@ class CustomerResource extends Resource
     {
         $user = auth()->user();
 
-        /** * We check if the user exists, is a client, and if their
+        /**
+         * We check if the user exists, is a client or agent, and if their
          * associated client profile has the right type.
          */
-        return $user && $user->is_client || $user->is_agent
-            && in_array(strtolower($user->client?->type), ['online-store',
+        return $user
+            && ($user->is_client || $user->is_agent)
+            && in_array(strtolower($user->client?->type), [
+                'online-store',
                 'real-estate',
                 'logistics',
                 'sme',
@@ -57,14 +62,23 @@ class CustomerResource extends Resource
         return [
             'index' => ListCustomers::route('/'),
             'create' => CreateCustomer::route('/create'),
-            // 'edit' => EditCustomer::route('/{record}/edit'),
+            'edit' => EditCustomer::route('/{record}/edit'),
         ];
     }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()
+            ->with(['client', 'agent', 'item'])
             ->where('client_id', auth()->user()?->client_id)
             ->orderBy('created_at', 'desc');
+    }
+
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        return parent::getRecordRouteBindingEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 }

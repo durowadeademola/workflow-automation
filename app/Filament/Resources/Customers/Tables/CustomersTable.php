@@ -3,14 +3,18 @@
 namespace App\Filament\Resources\Customers\Tables;
 
 use App\Filament\Exports\CustomerExporter;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
 class CustomersTable
@@ -23,11 +27,11 @@ class CustomersTable
                     ->exporter(CustomerExporter::class),
             ])
             ->columns([
-                // TextColumn::make('client.name')
-                //     ->label('Client')
-                //     ->placeholder('—')
-                //     ->searchable()
-                //     ->sortable(),
+                TextColumn::make('client.name')
+                    ->label('Client')
+                    ->placeholder('—')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('username')
@@ -35,24 +39,27 @@ class CustomersTable
                 TextColumn::make('chat_id')
                     ->label('Customer id')
                     ->searchable(),
-                // BadgeColumn::make('state')
-                //     ->colors([
-                //         'warning' => 'AWAITING_PRODUCT',
-                //         'warning' => 'AWAITING_SPECS',
-                //         'success' => 'DONE',
-                //     ])
-                //     ->searchable(),
-                // TextColumn::make('agent.name')
-                //     ->label('Agent')
-                //     ->placeholder('—')
-                //     ->searchable()
-                //     ->sortable(),
-                // TextColumn::make('item.name')
-                //     ->label('Product')
-                //     ->placeholder('—')
-                //     ->searchable()
-                //     ->sortable(),
-                // TextColumn::make('message'),
+                TextColumn::make('state')
+                    ->badge()
+                    ->color(fn (?string $state): string => match ($state) {
+                        'AWAITING_PRODUCT', 'AWAITING_SPECS' => 'warning',
+                        'DONE' => 'success',
+                        default => 'gray',
+                    })
+                    ->searchable(),
+                TextColumn::make('agent.name')
+                    ->label('Agent')
+                    ->placeholder('—')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('item.name')
+                    ->label('Product')
+                    ->placeholder('—')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('message')
+                    ->limit(40)
+                    ->placeholder('—'),
                 TextColumn::make('platform')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -61,17 +68,21 @@ class CustomersTable
                         default => 'gray',
                     })
                     ->searchable(),
-                // TextColumn::make('product')
-                //     ->searchable(),
-                // TextColumn::make('specs')
-                //     ->label('Specs')
-                //     ->searchable(),
-                // TextColumn::make('assigned_agent')
-                //     ->label('Assigned Agent')
-                //     ->searchable(),
-                // TextColumn::make('agent_email')
-                //     ->label('Agent Email')
-                //     ->searchable(),
+                TextColumn::make('product')
+                    ->placeholder('—')
+                    ->searchable(),
+                TextColumn::make('specs')
+                    ->label('Specs')
+                    ->placeholder('—')
+                    ->searchable(),
+                TextColumn::make('assigned_agent')
+                    ->label('Assigned Agent')
+                    ->placeholder('—')
+                    ->searchable(),
+                TextColumn::make('agent_email')
+                    ->label('Agent Email')
+                    ->placeholder('—')
+                    ->searchable(),
                 BadgeColumn::make('status')
                     ->colors([
                         'danger' => 'OPEN',
@@ -81,13 +92,20 @@ class CustomersTable
                     ->searchable(),
             ])
             ->filters([
-                //
+                TrashedFilter::make(),
             ])
             ->recordActions([
-                EditAction::make()
-                    ->modalHeading('Edit order')
+                EditAction::make(),
+                Action::make('quickStatus')
+                    ->label('Quick Edit')
+                    ->icon('heroicon-o-bolt')
+                    ->modalHeading('Edit customer')
                     ->modalWidth('lg') // Keeps the modal small and clean
-                    ->form([
+                    ->fillForm(fn ($record) => [
+                        'status' => $record->status,
+                        'platform' => $record->platform,
+                    ])
+                    ->schema([
                         Select::make('status')
                             ->options([
                                 'OPEN' => 'OPEN',
@@ -102,12 +120,15 @@ class CustomersTable
                             'WhatsApp' => 'WhatsApp',
                         ])
                             ->default('telegram'),
-                    ]),
-                // DeleteAction::make(),
+                    ])
+                    ->action(fn ($record, array $data) => $record->update($data)),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }

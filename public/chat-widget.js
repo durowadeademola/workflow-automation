@@ -7,8 +7,8 @@
  * USAGE:
  * <script>
  *   window.ChatWidgetConfig = {
- *     webhookUrl:   'https://your-n8n.com/webhook/chat-widget',
- *     clientId:     'blueflow-automation',        // for multi-instance support
+ *     clientId:     123,                    // the numeric Client id in Blueflow's admin — REQUIRED
+ *     apiBase:      'https://blueflowautomation.com/api',
  *     businessName: 'Your Business Name',
  *     agentName:    'AI Assistant',         // optional
  *     primaryColor: '#0f6e56',              // optional
@@ -20,13 +20,28 @@
  *   };
  * </script>
  * <script src="https://blueflowautomation.com/chat-widget.js"></script>
+ *
+ * The widget never talks to n8n directly — every message goes to
+ * `{apiBase}/widget/chat`, which looks up this client's n8n webhook URL
+ * server-side (set on the Client record in the admin panel) and checks
+ * they have an active subscription before forwarding anything. This is
+ * what makes the widget actually stop working if a client's subscription
+ * lapses, rather than just hiding a button in the UI.
+ *
+ * HUMAN HANDOFF:
+ * Every message includes a `sessionToken` (stable per visitor, persisted
+ * in localStorage). When your n8n workflow detects the visitor wants a
+ * human, call `POST {apiBase}/widget/conversations` with that same session
+ * token (see the Laravel API for the exact contract), then reply with:
+ *   { reply: "Connecting you now...", handoff: true, conversationId: 123, lastMessageId: 45 }
+ * The widget then polls Laravel directly for the agent's replies.
  */
 
 (function () {
   'use strict';
 
   const cfg = Object.assign({
-    webhookUrl: '',
+    apiBase: 'https://blueflowautomation.com/api',
     businessName: 'AI Assistant',
     agentName: 'AI Assistant',
     primaryColor: '#1D9E75',
@@ -36,7 +51,7 @@
     position: 'right',
     quickReplies: [],
     autoOpenDelay: 1500,
-    clientId: 'default',
+    clientId: null,
   }, window.ChatWidgetConfig || {});
 
   const $ = id => document.getElementById(id);
@@ -63,6 +78,25 @@
   const pc = cfg.primaryColor;
   const pcDark = shade(pc, -0.28);
   const grad = `linear-gradient(135deg, ${pc}, ${pcDark})`;
+
+  // Persistent per-visitor identifier, so a human handoff can be tied back
+  // to this browser across messages (and survives a page refresh).
+  function getSessionToken() {
+    const KEY = 'cw_session_token';
+    try {
+      let token = window.localStorage.getItem(KEY);
+      if (!token) {
+        token = window.crypto && window.crypto.randomUUID
+          ? window.crypto.randomUUID()
+          : `cw-${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
+        window.localStorage.setItem(KEY, token);
+      }
+      return token;
+    } catch (e) {
+      return `cw-${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
+    }
+  }
+  const sessionToken = getSessionToken();
 
   const style = document.createElement('style');
   style.textContent = `
@@ -451,8 +485,16 @@
   let isBusy = false;
   let history = [];
   let greeted = false;
+  let handoff = null; // { conversationId, afterId, pollTimer } once a human has taken over
 
   const TICK_SVG = `<svg class="cw-tick" width="14" height="10" viewBox="0 0 16 11" fill="none"><path d="M1 5.5L4.5 9L10 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 5.5L9.5 9L15 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+  function showNotifBadge() {
+    if (isOpen || $('cw-notif')) return;
+    const notif = document.createElement('div');
+    notif.id = 'cw-notif';
+    root.appendChild(notif);
+  }
 
   function toggle() {
     isOpen = !isOpen;
@@ -492,7 +534,7 @@
     });
   }
 
-  function appendMsg(role, text, data = {}) {
+  function appendMsg(role, text, data = {}, senderLabel) {
     const msgs = $('cw-messages');
     const wrap = document.createElement('div');
     wrap.className = `cw-msg cw-${role}`;
@@ -502,7 +544,7 @@
       row.className = 'cw-row';
       const av = document.createElement('div');
       av.className = 'cw-mini-avatar';
-      av.textContent = cfg.agentName.charAt(0).toUpperCase();
+      av.textContent = (senderLabel || cfg.agentName).charAt(0).toUpperCase();
       const bub = document.createElement('div');
       bub.className = 'cw-bubble';
       bub.textContent = text;
@@ -570,6 +612,64 @@
     $('cw-send').classList.toggle('is-disabled', !hasText || isBusy);
   }
 
+  // ── Human handoff ──
+  // Once n8n signals a handoff, the AI steps back: further visitor messages
+  // go straight to Laravel instead of the AI webhook, and we poll for the
+  // agent's replies since the widget has no persistent connection.
+  function enterHandoffMode(conversationId, lastMessageId) {
+    handoff = { conversationId, afterId: lastMessageId || 0, pollTimer: null };
+    startPolling();
+  }
+
+  function startPolling() {
+    if (!handoff || handoff.pollTimer) return;
+    handoff.pollTimer = setInterval(pollForMessages, 4000);
+  }
+
+  function stopPolling() {
+    if (handoff && handoff.pollTimer) {
+      clearInterval(handoff.pollTimer);
+      handoff.pollTimer = null;
+    }
+  }
+
+  async function pollForMessages() {
+    if (!handoff) return;
+    try {
+      const url = `${cfg.apiBase}/widget/conversations/${handoff.conversationId}/messages`
+        + `?token=${encodeURIComponent(sessionToken)}&after_id=${handoff.afterId}`;
+      const res = await fetch(url);
+
+      if (res.status === 402) {
+        // Subscription lapsed mid-conversation — stop politely rather than
+        // failing silently forever.
+        appendMsg('bot', "This conversation is no longer available. Please reach out to us directly.");
+        stopPolling();
+        handoff = null;
+        return;
+      }
+
+      if (!res.ok) return;
+      const data = await res.json();
+
+      (data.messages || []).forEach(m => {
+        handoff.afterId = m.id;
+        if (m.sender_type === 'agent') {
+          appendMsg('bot', m.content, {}, m.sender_name);
+          if (!isOpen) showNotifBadge();
+        }
+      });
+
+      if (data.status === 'closed') {
+        appendMsg('bot', "This conversation has ended. Feel free to start a new one anytime!");
+        stopPolling();
+        handoff = null;
+      }
+    } catch (e) {
+      // transient network error — just try again on the next tick
+    }
+  }
+
   async function send(override) {
     const input = $('cw-input');
     const text = override || input.value.trim();
@@ -579,10 +679,27 @@
     $('cw-qr').innerHTML = '';
     appendMsg('user', text);
     isBusy = true;
+
+    // A human has already taken over — send straight to them, skip the AI.
+    if (handoff) {
+      try {
+        await fetch(`${cfg.apiBase}/widget/conversations/${handoff.conversationId}/messages`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: sessionToken, content: text })
+        });
+      } catch (e) {
+        // the next poll will still pick up any agent reply even if this errors
+      }
+      isBusy = false;
+      updateSendState();
+      return;
+    }
+
     showTyping();
     try {
-      if (!cfg.webhookUrl) throw new Error('no webhook');
-      const res = await fetch(cfg.webhookUrl, {
+      if (!cfg.clientId) throw new Error('no clientId configured');
+      const res = await fetch(`${cfg.apiBase}/widget/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -591,13 +708,23 @@
           systemPrompt: cfg.systemPrompt,
           businessName: cfg.businessName,
           clientId: cfg.clientId,
-          waNumber: cfg.waNumber
+          waNumber: cfg.waNumber,
+          sessionToken: sessionToken
         })
       });
-      if (!res.ok) throw new Error('http ' + res.status);
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       removeTyping();
-      appendMsg('bot', data.reply || data.message || data.output || 'How else can I help?', data);
+
+      if (!res.ok) {
+        // The proxy still sends a friendly, situation-specific message even
+        // on a non-2xx response (e.g. subscription paused, n8n unreachable).
+        appendMsg('bot', data.reply || `Sorry, I'm having a little trouble right now. You can reach us directly on WhatsApp and we'll assist you promptly. 😊`);
+      } else {
+        appendMsg('bot', data.reply || data.message || data.output || 'How else can I help?', data);
+        if (data.handoff && data.conversationId) {
+          enterHandoffMode(data.conversationId, data.lastMessageId);
+        }
+      }
     } catch {
       removeTyping();
       appendMsg('bot', `Sorry, I'm having a little trouble right now. You can reach us directly on WhatsApp and we'll assist you promptly. 😊`);
@@ -627,7 +754,7 @@
     toggle,
     open: () => { if (!isOpen) toggle(); },
     close: () => { if (isOpen) toggle(); },
-    destroy: () => root.remove(),
+    destroy: () => { stopPolling(); root.remove(); },
     clearHistory: () => { history = []; }
   };
 

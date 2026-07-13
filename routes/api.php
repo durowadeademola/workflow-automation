@@ -5,6 +5,9 @@ use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\DomainController;
 use App\Http\Controllers\API\LeadController;
 use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\API\WidgetChatController;
+use App\Http\Controllers\API\WidgetConversationController;
+use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\API\VulnerabilityController;
 use Illuminate\Support\Facades\Route;
@@ -14,8 +17,23 @@ Route::middleware('webhook.secret')->group(function () {
     Route::post('/ai', [AIAgentController::class, 'insights'])->name('ai');
     Route::post('/order', [OrderController::class, 'store'])->name('order');
     Route::post('/customer', [CustomerController::class, 'store'])->name('customer');
+    // Called by n8n only, when a visitor asks to speak with a human.
+    Route::post('/widget/conversations', [WidgetConversationController::class, 'store'])->name('widget.conversations.store');
 });
+
+// Called directly by the embedded chat widget in the visitor's browser.
+// These are anonymous by necessity, so they're locked down by the
+// unguessable per-conversation session token instead of the webhook secret.
+Route::middleware('throttle:30,1')->group(function () {
+    Route::post('/widget/chat', [WidgetChatController::class, 'send'])->name('widget.chat');
+    Route::get('/widget/conversations/{conversation}/messages', [WidgetConversationController::class, 'messages'])->name('widget.conversations.messages');
+    Route::post('/widget/conversations/{conversation}/messages', [WidgetConversationController::class, 'send'])->name('widget.conversations.send');
+});
+
 Route::post('/leads', [LeadController::class, 'store'])->middleware('throttle:5,1')->name('leads.store');
+
+// Server-to-server from Paystack. Authenticated via HMAC signature, not the webhook secret.
+Route::post('/paystack/webhook', [PaystackController::class, 'webhook'])->middleware('throttle:60,1')->name('paystack.webhook');
 Route::get('/domains', [DomainController::class, 'index'])->middleware('auth:sanctum')->name('domains');
 Route::post('/vulnerabilities', [VulnerabilityController::class, 'store'])->middleware('auth:sanctum')->name('vulnerabilities.store');
 Route::post('/scan', [ScanController::class, 'trigger'])->middleware('auth:sanctum');

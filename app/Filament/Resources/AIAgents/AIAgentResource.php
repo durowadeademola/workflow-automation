@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\AIAgents;
 
-use App\Filament\Resources\AIAgents\Pages\CreateAIAgent;
-use App\Filament\Resources\AIAgents\Pages\EditAIAgent;
 use App\Filament\Resources\AIAgents\Pages\ListAIAgent;
 use App\Filament\Resources\AIAgents\Pages\ViewAIAgent;
 use App\Filament\Resources\AIAgents\Schemas\AIAgentForm;
@@ -73,14 +71,13 @@ class AIAgentResource extends Resource
         return [
             'index' => ListAIAgent::route('/'),
             'view' => ViewAIAgent::route('/{record}'),
-            // 'create' => CreateAIAgent::route('/create'),
-            // 'edit' => EditAIAgent::route('/{record}/edit'),
         ];
     }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()
+            ->with(['customer', 'order', 'product', 'service'])
             ->where('client_id', auth()->user()?->client_id);
     }
 

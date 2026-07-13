@@ -7,6 +7,8 @@ use Filament\Widgets\ChartWidget;
 
 class OrdersChart extends ChartWidget
 {
+    protected static bool $isLazy = false;
+
     protected ?string $heading = 'Orders Trend';
 
     protected string $color = 'primary';

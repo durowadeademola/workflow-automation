@@ -27,7 +27,7 @@ class CustomerObserver
                 ->actions([
                     Action::make('view')
                         ->button()
-                        ->url(fn () => "/admin/customers/{$customer->id}"),
+                        ->url(fn () => "/admin/customers/{$customer->id}/edit"),
                 ])
                 ->sendToDatabase($recipient);
         }

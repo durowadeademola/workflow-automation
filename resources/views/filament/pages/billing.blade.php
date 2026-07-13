@@ -1,0 +1,111 @@
+<x-filament-panels::page>
+    @php
+        $current = $this->getCurrentSubscription();
+    @endphp
+
+    {{-- Current status --}}
+    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-6 mb-6">
+        @if($current)
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-emerald-600">Active Plan</p>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $current->name }}</h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Renews {{ $current->end_date?->format('M j, Y') }}
+                        ({{ $current->end_date?->diffForHumans() }})
+                    </p>
+                </div>
+                <span class="text-xs font-semibold uppercase tracking-wide text-emerald-700 bg-emerald-100 rounded-full px-3 py-1">
+                    Active
+                </span>
+            </div>
+        @else
+            <div class="text-center py-4">
+                <p class="text-sm text-gray-500">You don't have an active subscription yet. Choose a plan below to get started.</p>
+            </div>
+        @endif
+    </div>
+
+    {{-- Plans --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        @foreach($this->getPlans() as $plan)
+            <div @class([
+                'rounded-2xl border p-6 bg-white dark:bg-gray-900 flex flex-col',
+                'border-primary-500 ring-2 ring-primary-500' => $plan->is_popular,
+                'border-gray-100 dark:border-gray-800' => ! $plan->is_popular,
+            ])>
+                @if($plan->is_popular)
+                    <span class="text-[10px] font-semibold uppercase tracking-wide text-primary-700 bg-primary-100 rounded-full px-2 py-0.5 w-fit mb-3">
+                        Most Popular
+                    </span>
+                @endif
+                <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $plan->name }}</h3>
+                @if($plan->description)
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $plan->description }}</p>
+                @endif
+                <p class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 mt-2 mb-4">
+                    ₦{{ number_format($plan->amount) }}<span class="text-sm font-normal text-gray-400">/month</span>
+                </p>
+
+                @if($plan->features)
+                    <ul class="space-y-2 mb-6 flex-1">
+                        @foreach($plan->features as $feature)
+                            <li class="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-300">
+                                <svg class="w-3.5 h-3.5 text-primary-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                </svg>
+                                {{ $feature }}
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                @if($current && $current->plan === $plan->slug)
+                    <button disabled class="mt-auto w-full text-center py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-400 text-sm font-semibold cursor-default">
+                        Current Plan
+                    </button>
+                @else
+                    <button
+                        wire:click="subscribe('{{ $plan->slug }}')"
+                        wire:loading.attr="disabled"
+                        class="mt-auto w-full text-center py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold transition-colors"
+                    >
+                        {{ $current ? 'Switch to ' . $plan->name : 'Subscribe' }}
+                    </button>
+                @endif
+            </div>
+        @endforeach
+    </div>
+
+    {{-- History --}}
+    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Billing History</h3>
+        </div>
+        <div class="divide-y divide-gray-100 dark:divide-gray-800">
+            @forelse($this->getRecentSubscriptions() as $sub)
+                <div class="px-4 py-3 flex items-center justify-between gap-4 text-sm">
+                    <div>
+                        <p class="font-medium text-gray-800 dark:text-gray-100">{{ $sub->name }}</p>
+                        <p class="text-xs text-gray-400">{{ $sub->created_at->format('M j, Y g:i A') }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-gray-700 dark:text-gray-200">₦{{ number_format($sub->amount ?? 0) }}</p>
+                        <span @class([
+                            'text-[10px] font-semibold uppercase tracking-wide rounded-full px-2 py-0.5',
+                            'text-emerald-700 bg-emerald-100' => $sub->status === 'active',
+                            'text-amber-700 bg-amber-100' => $sub->status === 'pending',
+                            'text-gray-500 bg-gray-100' => in_array($sub->status, ['expired', 'cancelled']),
+                        ])>
+                            {{ ucfirst($sub->status) }}
+                        </span>
+                    </div>
+                </div>
+            @empty
+                <div class="px-4 py-8 text-center text-sm text-gray-400">
+                    No billing history yet.
+                </div>
+            @endforelse
+        </div>
+    </div>
+</x-filament-panels::page>

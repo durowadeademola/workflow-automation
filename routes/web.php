@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\PaystackController;
+use App\Models\Plan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -12,7 +14,9 @@ use Inertia\Inertia;
 // });
 
 Route::get('/', function () {
-    return Inertia::render('Home');
+    return Inertia::render('Home', [
+        'plans' => Plan::active()->get(['name', 'slug', 'amount', 'description', 'features', 'is_popular']),
+    ]);
 });
 
 //services
@@ -38,3 +42,6 @@ Route::get('/about', fn() => inertia('About'))->name('about');
 Route::get('/contact', fn() => inertia('Contact'))->name('contact');
 Route::get('/privacy-policy', fn() => inertia('PrivacyPolicy'))->name('privacy-policy');
 Route::get('/terms-of-service', fn() => inertia('TermsOfService'))->name('terms-of-service');
+
+// Paystack redirects the browser here after checkout (success or failure).
+Route::get('/billing/callback', [PaystackController::class, 'callback'])->name('paystack.callback');

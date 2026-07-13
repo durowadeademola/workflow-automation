@@ -29,11 +29,11 @@ class ProductsTable
                     ->height(50)
                     ->width(50)
                     ->square(),
-                // TextColumn::make('client.name')
-                //     ->label('Client')
-                //     ->placeholder('—')
-                //     ->searchable()
-                //     ->sortable(),
+                TextColumn::make('client.name')
+                    ->label('Client')
+                    ->placeholder('—')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('description')

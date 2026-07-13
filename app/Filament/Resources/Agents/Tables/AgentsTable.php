@@ -22,11 +22,11 @@ class AgentsTable
                     ->exporter(AgentExporter::class),
             ])
             ->columns([
-                // TextColumn::make('client.name')
-                //     ->label('Client')
-                //     ->placeholder('—')
-                //     ->searchable()
-                //     ->sortable(),
+                TextColumn::make('client.name')
+                    ->label('Client')
+                    ->placeholder('—')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')

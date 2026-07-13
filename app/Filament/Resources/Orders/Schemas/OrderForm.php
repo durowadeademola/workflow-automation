@@ -30,10 +30,15 @@ class OrderForm
                             ->relationship('product', 'name')
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name ?? "Product #{$record->id}")
                             ->preload(),
-                        // Select::make('service_id')
-                        //     ->label('Service')
-                        //     ->relationship('service', 'name')
-                        //     ->preload(),
+                        Select::make('service_id')
+                            ->label('Service')
+                            ->relationship('service', 'name')
+                            ->preload(),
+                        Select::make('agent_id')
+                            ->label('Agent')
+                            ->relationship('agent', 'name')
+                            ->preload()
+                            ->searchable(),
                         TextInput::make('customer_name'),
                         TextInput::make('customer_phone')
                             ->tel(),

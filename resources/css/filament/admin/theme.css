@@ -1,0 +1,89 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+/* Slightly more compact UI density across the panel. */
+html {
+    font-size: 13px;
+}
+
+body {
+    font-size: 1rem;
+}
+
+/* Mobile viewport height fix (used by pages with full-height layouts). */
+:root {
+    --vh: 1vh;
+}
+
+.filament-full-height {
+    height: calc(var(--vh, 1vh) * 100);
+}
+
+/* ── Sidebar: clean, light, attached to the edge — no floating card ── */
+.fi-sidebar {
+    background-color: #ffffff;
+    border-inline-end: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: none;
+}
+
+.fi-sidebar-header {
+    border-block-end: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.fi-sidebar-nav {
+    padding: 0.75rem;
+}
+
+.fi-sidebar-group + .fi-sidebar-group {
+    margin-top: 1.25rem;
+}
+
+.fi-sidebar-group-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgb(148 163 184);
+    padding-inline: 0.5rem;
+}
+
+.fi-sidebar-item-btn {
+    border-radius: 0.625rem;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover {
+    background-color: rgb(248 250 252);
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    background-color: rgb(239 246 255);
+    color: rgb(37 99 235);
+    font-weight: 600;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-icon {
+    color: rgb(37 99 235);
+}
+
+.fi-sidebar-footer {
+    border-block-start: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Page background stays a soft neutral so white content cards stand out. */
+.fi-layout {
+    background-color: rgb(248 250 252);
+}
+
+/* Mobile drawer */
+@media (max-width: 1024px) {
+    .fi-sidebar {
+        width: 16rem;
+    }
+
+    .fi-sidebar-close-overlay {
+        backdrop-filter: blur(2px);
+    }
+}
