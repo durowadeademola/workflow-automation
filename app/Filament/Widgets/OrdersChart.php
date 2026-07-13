@@ -9,6 +9,10 @@ class OrdersChart extends ChartWidget
 {
     protected static bool $isLazy = false;
 
+    // See AdminStats — Filament's default 5s auto-poll on chart widgets was
+    // keeping this page in a constant background-refresh loop.
+    protected ?string $pollingInterval = null;
+
     protected ?string $heading = 'Orders Trend';
 
     protected string $color = 'primary';
@@ -17,26 +21,17 @@ class OrdersChart extends ChartWidget
     {
         $user = auth()->user();
 
-        /** * We check if the user exists, is a client, and if their
-         * associated customer profile has the right type.
-         */
-        return $user && $user->is_client || $user->is_agent
-            && in_array(strtolower($user->client?->type), [
-                'online-store',
-                'real-estate',
-                'logistics',
-                'sme',
-                'ecommerce',
-            ]);
+        return (bool) $user && ($user->is_client || $user->is_agent);
     }
 
     protected function getData(): array
     {
+        $year = now()->year;
+
         $data = Order::query()
             ->selectRaw("DATE_FORMAT(created_at, '%b') as label, COUNT(*) as total")
             ->where('client_id', auth()->user()?->client_id)
-            ->whereYear('created_at', '2025')
-            // ->whereYear('created_at', now()->year)
+            ->whereYear('created_at', $year)
             ->groupBy('label')
             ->orderByRaw('MIN(created_at)')
             ->pluck('total', 'label');
@@ -44,9 +39,8 @@ class OrdersChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Total Orders for 2025',
+                    'label' => "Total Orders for {$year}",
                     'data' => $data->values(),
-                    // 'backgroundColor' => '#3b82f6',
                     'borderColor' => '#3b82f6',
                     'fill' => 'start',
                     'tension' => 0.3,

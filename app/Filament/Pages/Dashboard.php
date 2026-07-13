@@ -2,6 +2,14 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\AdminStats;
+use App\Filament\Widgets\AgentStats;
+use App\Filament\Widgets\ClientsChart;
+use App\Filament\Widgets\ClientStats;
+use App\Filament\Widgets\CustomersChart;
+use App\Filament\Widgets\OrdersChart;
+use App\Filament\Widgets\RecentMessages;
+use App\Filament\Widgets\RecentOrders;
 use BackedEnum;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Support\Icons\Heroicon;
@@ -14,8 +22,9 @@ class Dashboard extends BaseDashboard
     {
         return [
             AdminStats::class,
-            ClientsChart::class,
             ClientStats::class,
+            AgentStats::class,
+            ClientsChart::class,
             CustomersChart::class,
             OrdersChart::class,
             RecentMessages::class,

@@ -9,6 +9,10 @@ class ClientsChart extends ChartWidget
 {
     protected static bool $isLazy = false;
 
+    // See AdminStats — Filament's default 5s auto-poll on chart widgets was
+    // keeping this page in a constant background-refresh loop.
+    protected ?string $pollingInterval = null;
+
     protected ?string $heading = 'Clients Trend';
 
     protected string $color = 'success';

@@ -165,6 +165,7 @@
       ${cfg.position}: 0;
       width: 374px;
       height: 552px;
+      max-height: min(552px, calc(100vh - 100px));
       background: #ffffff;
       border-radius: 26px;
       overflow: hidden;

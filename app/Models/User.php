@@ -69,6 +69,17 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
-        return $this->is_admin || $this->is_client || $this->is_agent;
+        if ($this->is_admin) {
+            return true;
+        }
+
+        // Clients (and their agents) are locked out until an admin approves
+        // the business — self-registration creates them with status
+        // "pending", and "inactive" covers a business suspended afterward.
+        if ($this->is_client || $this->is_agent) {
+            return $this->client?->status === 'active';
+        }
+
+        return false;
     }
 }

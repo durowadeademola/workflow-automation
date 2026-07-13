@@ -16,6 +16,8 @@ class Billing extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::CreditCard;
 
+    protected static ?int $navigationSort = 15;
+
     protected string $view = 'filament.pages.billing';
 
     public static function canAccess(): bool

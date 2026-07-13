@@ -1,17 +1,10 @@
 <?php
 
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaystackController;
 use App\Models\Plan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-// Route::get('/', function () {
-//     return redirect('/admin/login');
-// });
-
-// Route::get('/start', function () {
-//     return redirect()->away('https://forms.gle/rG4Jf1xoguD67mH26');
-// });
 
 Route::get('/', function () {
     return Inertia::render('Home', [
@@ -40,8 +33,13 @@ Route::get('/industries/professional-services', fn() => inertia('Industries/Prof
 //company
 Route::get('/about', fn() => inertia('About'))->name('about');
 Route::get('/contact', fn() => inertia('Contact'))->name('contact');
+Route::get('/register', fn() => inertia('Register'))->name('register');
 Route::get('/privacy-policy', fn() => inertia('PrivacyPolicy'))->name('privacy-policy');
 Route::get('/terms-of-service', fn() => inertia('TermsOfService'))->name('terms-of-service');
 
 // Paystack redirects the browser here after checkout (success or failure).
 Route::get('/billing/callback', [PaystackController::class, 'callback'])->name('paystack.callback');
+
+Route::get('/billing/invoices/{subscription}', [InvoiceController::class, 'download'])
+    ->middleware('auth')
+    ->name('invoices.download');

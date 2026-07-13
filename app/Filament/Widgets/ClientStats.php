@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Message;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Subscription;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -13,49 +14,56 @@ class ClientStats extends BaseWidget
 {
     protected static bool $isLazy = false;
 
+    // See AdminStats — Filament's default 5s auto-poll on stat widgets was
+    // keeping this page in a constant background-refresh loop.
+    protected ?string $pollingInterval = null;
+
     public static function canView(): bool
     {
         $user = auth()->user();
 
-        /** * We check if the user exists, is a client, and if their
-         * associated customer profile has the right type.
-         */
-        return $user && $user->is_client || $user->is_agent
-            && in_array(strtolower($user->client?->type), [
-                'online-store',
-                'real-estate',
-                'logistics',
-                'sme',
-                'ecommerce',
-            ]);
+        return (bool) $user && $user->is_client;
     }
 
     protected function getStats(): array
     {
+        $clientId = auth()->user()?->client_id;
+
+        $subscription = Subscription::where('client_id', $clientId)
+            ->where('status', 'active')
+            ->where('end_date', '>=', now())
+            ->latest('end_date')
+            ->first();
+
         return [
-            Stat::make('Customers', Customer::where(['client_id' => auth()->user()?->client_id])->count())
+            Stat::make(
+                'Subscription',
+                $subscription ? $subscription->name : 'No active plan',
+            )
+                ->description(
+                    $subscription
+                        ? 'Renews '.$subscription->end_date->diffForHumans()
+                        : 'Subscribe to keep your widget running'
+                )
+                ->icon('heroicon-o-credit-card')
+                ->color($subscription ? 'success' : 'danger')
+                ->url('/admin/billing'),
+
+            Stat::make('Customers', Customer::where('client_id', $clientId)->count())
                 ->description('Total customers')
                 ->icon('heroicon-o-users'),
-            // ->descriptionIcon('heroicon-m-arrow-trending-up')
-            // ->chart([7, 2, 10, 3, 15, 4, 17])
-            // ->color('primary'),
 
-            Stat::make('Products', Product::where(['client_id' => auth()->user()?->client_id, 'is_available' => true])->count())
+            Stat::make('Orders', Order::where('client_id', $clientId)->count())
+                ->description('Total orders')
+                ->icon('heroicon-o-shopping-cart')
+                ->url('/admin/orders'),
+
+            Stat::make('Products', Product::where('client_id', $clientId)->where('is_available', true)->count())
                 ->description('Total available products')
                 ->icon('heroicon-o-shopping-bag'),
-            // ->descriptionIcon('heroicon-m-arrow-trending-up')
-            // ->chart([7, 2, 10, 3, 15, 4, 17])
-            // ->color('success'),
 
-            Stat::make('Orders', Order::where(['client_id' => auth()->user()?->client_id])->count())
-                ->description('Total orders')
-                ->icon('heroicon-o-shopping-cart'),
-            // ->descriptionIcon('heroicon-m-arrow-trending-up')
-            // ->chart([7, 2, 10, 3, 15, 4, 17])
-            // ->color('danger'),
-
-            Stat::make('Messages', Message::where('client_id', auth()->user()?->client_id)->whereDate('created_at', today())->count())
-                ->description('Total messages today')
+            Stat::make('Messages Today', Message::where('client_id', $clientId)->whereDate('created_at', today())->count())
+                ->description('Across all channels')
                 ->icon('heroicon-o-chat-bubble-left-right'),
         ];
     }

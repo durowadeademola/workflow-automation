@@ -89,7 +89,7 @@ export default function Hero() {
                     }}
                     className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
                 >
-                   <Link href="/contact"
+                   <Link href="/register"
                         className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-0.5"
                     >
                         Get Started Free

@@ -27,5 +27,7 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\Order::observe(\App\Observers\OrderObserver::class);
         \App\Models\Customer::observe(\App\Observers\CustomerObserver::class);
         \App\Models\Lead::observe(\App\Observers\LeadObserver::class);
+        \App\Models\WidgetConversation::observe(\App\Observers\WidgetConversationObserver::class);
+        \App\Models\Client::observe(\App\Observers\ClientObserver::class);
     }
 }

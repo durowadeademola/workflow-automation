@@ -86,7 +86,7 @@ export default function Pricing({ plans = [] }) {
                                 )}
 
                                 <Link
-                                    href={`/contact?plan=${plan.slug}`}
+                                    href={`/register?plan=${plan.slug}`}
                                     className={`block text-center font-semibold py-3 rounded-xl transition-all mt-auto ${
                                         plan.is_popular
                                             ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200"

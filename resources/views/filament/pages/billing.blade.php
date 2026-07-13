@@ -91,14 +91,25 @@
                     </div>
                     <div class="text-right">
                         <p class="text-gray-700 dark:text-gray-200">₦{{ number_format($sub->amount ?? 0) }}</p>
-                        <span @class([
-                            'text-[10px] font-semibold uppercase tracking-wide rounded-full px-2 py-0.5',
-                            'text-emerald-700 bg-emerald-100' => $sub->status === 'active',
-                            'text-amber-700 bg-amber-100' => $sub->status === 'pending',
-                            'text-gray-500 bg-gray-100' => in_array($sub->status, ['expired', 'cancelled']),
-                        ])>
-                            {{ ucfirst($sub->status) }}
-                        </span>
+                        <div class="flex items-center justify-end gap-2 mt-0.5">
+                            <span @class([
+                                'text-[10px] font-semibold uppercase tracking-wide rounded-full px-2 py-0.5',
+                                'text-emerald-700 bg-emerald-100' => $sub->status === 'active',
+                                'text-amber-700 bg-amber-100' => $sub->status === 'pending',
+                                'text-gray-500 bg-gray-100' => in_array($sub->status, ['expired', 'cancelled']),
+                            ])>
+                                {{ ucfirst($sub->status) }}
+                            </span>
+                            @if($sub->start_date)
+                                <a
+                                    href="{{ route('invoices.download', $sub) }}"
+                                    target="_blank"
+                                    class="text-[10px] font-semibold uppercase tracking-wide text-primary-600 hover:text-primary-700 hover:underline"
+                                >
+                                    Invoice
+                                </a>
+                            @endif
+                        </div>
                     </div>
                 </div>
             @empty

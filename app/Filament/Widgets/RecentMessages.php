@@ -23,17 +23,7 @@ class RecentMessages extends TableWidget
     {
         $user = auth()->user();
 
-        /** * We check if the user exists, is a client, and if their
-         * associated customer profile has the right type.
-         */
-        return $user && $user->is_client
-            && in_array(strtolower($user->client?->type), [
-                'online-store',
-                'real-estate',
-                'logistics',
-                'sme',
-                'ecommerce',
-            ]);
+        return (bool) $user && $user->is_client;
     }
 
     public function table(Table $table): Table
