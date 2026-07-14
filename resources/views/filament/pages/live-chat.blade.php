@@ -32,6 +32,15 @@
                         <p class="text-xs text-gray-400 mt-1">
                             {{ $conversation->last_message_at?->diffForHumans() ?? $conversation->created_at->diffForHumans() }}
                         </p>
+                        <p class="text-[11px] mt-1">
+                            @if($conversation->agent_id === auth()->id())
+                                <span class="text-primary-600 font-semibold">Assigned to you</span>
+                            @elseif($conversation->agent)
+                                <span class="text-gray-400">Assigned to {{ $conversation->agent->name }}</span>
+                            @else
+                                <span class="text-gray-400">Unassigned</span>
+                            @endif
+                        </p>
                     </button>
                 @empty
                     <div class="px-4 py-10 text-center text-sm text-gray-400">
@@ -57,13 +66,24 @@
                         </h3>
                         <p class="text-xs text-gray-400">{{ $conversation->client?->name }}</p>
                     </div>
-                    <button
-                        wire:click="closeConversation"
-                        wire:confirm="Mark this conversation as closed?"
-                        class="text-xs font-semibold text-gray-500 hover:text-danger-600 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-1.5 transition-colors"
-                    >
-                        Close conversation
-                    </button>
+                    <div class="flex items-center gap-2">
+                        @if($conversation->status !== 'closed')
+                            <button
+                                wire:click="returnToAI"
+                                wire:confirm="Hand this conversation back to the AI assistant?"
+                                class="text-xs font-semibold text-gray-500 hover:text-primary-600 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-1.5 transition-colors"
+                            >
+                                Return to AI
+                            </button>
+                        @endif
+                        <button
+                            wire:click="closeConversation"
+                            wire:confirm="Mark this conversation as closed?"
+                            class="text-xs font-semibold text-gray-500 hover:text-danger-600 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-1.5 transition-colors"
+                        >
+                            Close conversation
+                        </button>
+                    </div>
                 </div>
 
                 <div class="flex-1 flex flex-col space-y-3 p-4 bg-slate-50 dark:bg-gray-950 overflow-y-auto" style="max-height: 55vh;">
@@ -91,7 +111,7 @@
                     @endforelse
                 </div>
 
-                @if($conversation->status !== 'closed')
+                @if(! in_array($conversation->status, ['closed', 'returned_to_ai']))
                     <form wire:submit.prevent="sendReply" class="p-4 border-t border-gray-100 dark:border-gray-800 flex items-center gap-3">
                         <input
                             type="text"
@@ -111,7 +131,7 @@
                     @enderror
                 @else
                     <div class="p-4 border-t border-gray-100 dark:border-gray-800 text-center text-xs text-gray-400">
-                        This conversation is closed.
+                        {{ $conversation->status === 'returned_to_ai' ? 'This conversation was handed back to the AI.' : 'This conversation is closed.' }}
                     </div>
                 @endif
             @endif

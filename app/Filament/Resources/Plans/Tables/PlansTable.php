@@ -26,6 +26,10 @@ class PlansTable
                     ->label('Price')
                     ->money('NGN')
                     ->sortable(),
+                TextColumn::make('message_limit')
+                    ->label('Msg limit/mo')
+                    ->placeholder('Unlimited')
+                    ->numeric(),
                 TextColumn::make('subscriptions_count')
                     ->label('Subscribers')
                     ->counts('subscriptions'),

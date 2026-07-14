@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
+use Filament\Facades\Filament;
 use Filament\Models\Contracts\FilamentUser;
 // use Filament\Models\Contracts\HasDatabaseNotifications;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -65,6 +67,18 @@ class User extends Authenticatable implements FilamentUser
     public function agent()
     {
         return $this->belongsTo(Agent::class);
+    }
+
+    /**
+     * Laravel's default relies on a `password.reset` named route, which
+     * doesn't exist here — every login is through the Filament panel, whose
+     * reset route is namespaced under the panel id. See ResetPasswordNotification.
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $url = Filament::getResetPasswordUrl($token, $this);
+
+        $this->notify(new ResetPasswordNotification($url));
     }
 
     public function canAccessPanel(\Filament\Panel $panel): bool

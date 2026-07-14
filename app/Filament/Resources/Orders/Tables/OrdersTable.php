@@ -14,6 +14,7 @@ use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -64,6 +65,7 @@ class OrdersTable
                     ->color(fn (string $state): string => match ($state) {
                         'Telegram' => 'primary',
                         'WhatsApp' => 'success',
+                        'Website' => 'info',
                         default => 'gray',
                     })
                     ->searchable(),
@@ -91,6 +93,12 @@ class OrdersTable
                     ->sortable(),
             ])
             ->filters([
+                SelectFilter::make('source')
+                    ->options([
+                        'Telegram' => 'Telegram',
+                        'WhatsApp' => 'WhatsApp',
+                        'Website' => 'Website',
+                    ]),
                 TrashedFilter::make(),
             ])
             ->recordActions([

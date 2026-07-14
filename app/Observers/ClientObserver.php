@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Client;
+use App\Models\Subscription;
 use App\Models\User;
 use App\Notifications\ClientApproved;
 use Filament\Actions\Action;
@@ -12,10 +13,20 @@ use Illuminate\Support\Facades\Notification as NotificationFacade;
 class ClientObserver
 {
     /**
-     * Handle the Client "created" event.
+     * Handle the Client "created" event. Covers both onboarding paths: a
+     * self-registered business starts "pending" and gets its trial later
+     * (see updated()), while an admin creating one directly in Filament
+     * defaults to "active" immediately — that business should start its
+     * trial right away too, not miss out just because it skipped approval.
      */
     public function created(Client $client): void
     {
+        if ($client->status === 'active') {
+            $this->grantTrialIfEligible($client);
+
+            return;
+        }
+
         if ($client->status !== 'pending') {
             return;
         }
@@ -51,6 +62,8 @@ class ClientObserver
             return;
         }
 
+        $this->grantTrialIfEligible($client);
+
         $recipients = User::where('client_id', $client->id)
             ->where(fn ($query) => $query->where('is_client', true)->orWhere('is_agent', true))
             ->get();
@@ -60,5 +73,30 @@ class ClientObserver
         }
 
         NotificationFacade::send($recipients, new ClientApproved());
+    }
+
+    /**
+     * A business gets one free 14-day trial the first time it's approved —
+     * never again, even if it's later deactivated and reinstated. This is
+     * just a subscription row like any other, so the widget's existing
+     * `hasActiveSubscription()` check and the daily expiry job both apply
+     * to it with zero special-casing.
+     */
+    private function grantTrialIfEligible(Client $client): void
+    {
+        if (Subscription::where('client_id', $client->id)->exists()) {
+            return;
+        }
+
+        Subscription::create([
+            'client_id' => $client->id,
+            'plan' => 'trial',
+            'name' => 'Free Trial',
+            'amount' => 0,
+            'status' => 'active',
+            'is_active' => true,
+            'start_date' => now(),
+            'end_date' => now()->addDays(14),
+        ]);
     }
 }

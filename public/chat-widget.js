@@ -661,7 +661,10 @@
         }
       });
 
-      if (data.status === 'closed') {
+      if (data.status === 'returned_to_ai') {
+        stopPolling();
+        handoff = null;
+      } else if (data.status === 'closed') {
         appendMsg('bot', "This conversation has ended. Feel free to start a new one anytime!");
         stopPolling();
         handoff = null;

@@ -74,6 +74,11 @@ class Client extends Model
         return $this->hasMany(Subscription::class);
     }
 
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
     /**
      * Whether this client currently has a paid-up subscription. Checked
      * against end_date directly (not just the stored status) so an expired
@@ -86,6 +91,64 @@ class Client extends Model
             ->where('status', 'active')
             ->where('end_date', '>=', now()->startOfDay())
             ->exists();
+    }
+
+    public function currentSubscription(): ?Subscription
+    {
+        return $this->subscriptions()
+            ->where('status', 'active')
+            ->where('end_date', '>=', now()->startOfDay())
+            ->latest('end_date')
+            ->first();
+    }
+
+    /**
+     * Free trials get a fixed cap since they aren't tied to a Plan record;
+     * paid plans use whatever the admin set on that Plan (null = unlimited).
+     */
+    public const TRIAL_MESSAGE_LIMIT = 100;
+
+    public function messageLimitForCurrentPlan(): ?int
+    {
+        $subscription = $this->currentSubscription();
+
+        if (! $subscription) {
+            return 0;
+        }
+
+        if ($subscription->plan === 'trial') {
+            return self::TRIAL_MESSAGE_LIMIT;
+        }
+
+        return $subscription->planRecord?->message_limit;
+    }
+
+    /**
+     * Counted from the start of the current subscription period, not the
+     * calendar month — plans run on their own 30-day cycle, not Jan 1st.
+     */
+    public function messagesUsedInCurrentPeriod(): int
+    {
+        $subscription = $this->currentSubscription();
+
+        if (! $subscription || ! $subscription->start_date) {
+            return 0;
+        }
+
+        return $this->messages()
+            ->where('created_at', '>=', $subscription->start_date)
+            ->count();
+    }
+
+    public function hasReachedMessageLimit(): bool
+    {
+        $limit = $this->messageLimitForCurrentPlan();
+
+        if ($limit === null) {
+            return false;
+        }
+
+        return $this->messagesUsedInCurrentPeriod() >= $limit;
     }
 
     /**

@@ -3,10 +3,8 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Client;
-use App\Models\Domain;
 use App\Models\Lead;
 use App\Models\Subscription;
-use App\Models\Vulnerability;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -42,6 +40,11 @@ class AdminStats extends BaseWidget
 
         $newLeads = Lead::where('created_at', '>=', now()->subDays(7))->count();
 
+        $expiringSoon = Subscription::where('status', 'active')
+            ->where('end_date', '>=', now())
+            ->where('end_date', '<=', now()->addDays(7))
+            ->count();
+
         return [
             Stat::make('Pending Approvals', $pendingApprovals)
                 ->description($pendingApprovals > 0 ? 'Businesses waiting to be let in' : 'All caught up')
@@ -71,10 +74,11 @@ class AdminStats extends BaseWidget
                 ->icon('heroicon-o-megaphone')
                 ->url('/admin/leads'),
 
-            Stat::make('Vulnerabilities', Vulnerability::count())
-                ->description('Across '.Domain::count().' scanned domains')
-                ->icon('heroicon-o-shield-exclamation')
-                ->color('danger'),
+            Stat::make('Expiring Soon', $expiringSoon)
+                ->description($expiringSoon > 0 ? 'Trials/plans ending within 7 days' : 'Nothing ending soon')
+                ->icon('heroicon-o-exclamation-triangle')
+                ->color($expiringSoon > 0 ? 'warning' : 'success')
+                ->url('/admin/subscriptions'),
         ];
     }
 }

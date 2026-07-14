@@ -5,7 +5,21 @@
 
     {{-- Current status --}}
     <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-6 mb-6">
-        @if($current)
+        @if($current && $current->plan === 'trial')
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-amber-600">Free Trial</p>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">14-day trial</h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Ends {{ $current->end_date?->format('M j, Y') }}
+                        ({{ $current->end_date?->diffForHumans() }}) — subscribe below to keep your widget running after that.
+                    </p>
+                </div>
+                <span class="text-xs font-semibold uppercase tracking-wide text-amber-700 bg-amber-100 rounded-full px-3 py-1">
+                    Trial
+                </span>
+            </div>
+        @elseif($current)
             <div class="flex items-center justify-between flex-wrap gap-4">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wide text-emerald-600">Active Plan</p>
@@ -21,7 +35,41 @@
             </div>
         @else
             <div class="text-center py-4">
-                <p class="text-sm text-gray-500">You don't have an active subscription yet. Choose a plan below to get started.</p>
+                <p class="text-sm text-gray-500">
+                    @if($this->getRecentSubscriptions()->contains('plan', 'trial'))
+                        Your free trial has ended and your chat widget is paused. Choose a plan below to turn it back on.
+                    @else
+                        You don't have an active subscription yet. Choose a plan below to get started.
+                    @endif
+                </p>
+            </div>
+        @endif
+
+        @if($current)
+            @php
+                $usage = $this->getMessageUsage();
+                $percent = $usage['limit'] ? min(100, (int) round($usage['used'] / $usage['limit'] * 100)) : 0;
+            @endphp
+            <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                <div class="flex items-center justify-between text-xs mb-1.5">
+                    <span class="font-medium text-gray-600 dark:text-gray-300">Messages this billing period</span>
+                    <span class="text-gray-500">
+                        {{ number_format($usage['used']) }}{{ $usage['limit'] ? ' / '.number_format($usage['limit']) : ' (unlimited)' }}
+                    </span>
+                </div>
+                @if($usage['limit'])
+                    <div class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                        <div
+                            class="h-full rounded-full {{ $percent >= 100 ? 'bg-danger-500' : ($percent >= 80 ? 'bg-amber-500' : 'bg-primary-500') }}"
+                            style="width: {{ $percent }}%"
+                        ></div>
+                    </div>
+                    @if($percent >= 100)
+                        <p class="text-xs text-danger-600 mt-1.5">You've reached this period's message limit — the widget is paused until you upgrade or your plan renews.</p>
+                    @elseif($percent >= 80)
+                        <p class="text-xs text-amber-600 mt-1.5">Approaching your monthly message limit.</p>
+                    @endif
+                @endif
             </div>
         @endif
     </div>
@@ -67,6 +115,9 @@
                 @else
                     <button
                         wire:click="subscribe('{{ $plan->slug }}')"
+                        @if($current)
+                            wire:confirm="{{ $this->getSwitchConfirmationMessage($plan->slug) }}"
+                        @endif
                         wire:loading.attr="disabled"
                         class="mt-auto w-full text-center py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold transition-colors"
                     >
@@ -90,7 +141,12 @@
                         <p class="text-xs text-gray-400">{{ $sub->created_at->format('M j, Y g:i A') }}</p>
                     </div>
                     <div class="text-right">
-                        <p class="text-gray-700 dark:text-gray-200">₦{{ number_format($sub->amount ?? 0) }}</p>
+                        <p class="text-gray-700 dark:text-gray-200">
+                            ₦{{ number_format(max(0, ($sub->amount ?? 0) - ($sub->credit_applied ?? 0))) }}
+                        </p>
+                        @if($sub->credit_applied > 0)
+                            <p class="text-[10px] text-emerald-600">₦{{ number_format($sub->credit_applied) }} credit applied</p>
+                        @endif
                         <div class="flex items-center justify-end gap-2 mt-0.5">
                             <span @class([
                                 'text-[10px] font-semibold uppercase tracking-wide rounded-full px-2 py-0.5',
@@ -100,7 +156,7 @@
                             ])>
                                 {{ ucfirst($sub->status) }}
                             </span>
-                            @if($sub->start_date)
+                            @if($sub->start_date && $sub->plan !== 'trial')
                                 <a
                                     href="{{ route('invoices.download', $sub) }}"
                                     target="_blank"

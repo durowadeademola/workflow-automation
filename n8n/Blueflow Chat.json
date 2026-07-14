@@ -1,0 +1,427 @@
+{
+  "name": "Blueflow Chat",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chat-widget",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "ca31086f-9e47-40ff-9503-00046f7c35c1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        256,
+        0
+      ],
+      "webhookId": "chat-widget-rag"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\n\nreturn [{\n  json: {\n    message: body.message || '',\n    history: body.history || [],\n    clientId: body.clientId || 'default',\n    businessName: body.businessName || 'AI Assistant',\n    waNumber: body.waNumber || '',\n    systemPrompt: body.systemPrompt || '',\n    // The widget's per-visitor id. It's how Laravel ties an AI-only chat\n    // to a human handoff conversation later, so it must be forwarded\n    // untouched on every request/response round trip.\n    sessionToken: body.sessionToken || ''\n  }\n}];"
+      },
+      "id": "99ada47c-b887-4f5a-9ae6-b98bf08e9ab2",
+      "name": "Parse Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst parsed = $('Parse Request').first().json;\nconst hasContext = Array.isArray(item.results) && item.results.length > 0;\n\nlet context = '';\nlet sourceUrl = '';\n\nif (hasContext) {\n  context = item.results\n    .map((chunk, i) => `[Source ${i + 1} - ${chunk.url}]\\n${chunk.content}`)\n    .join('\\n\\n');\n\n  // Use the most relevant source URL (first result)\n  sourceUrl = item.results[0].url || '';\n}\n\nconst historyText = (parsed.history || [])\n  .slice(-6)\n  .map(m => `${m.role === 'assistant' ? 'Assistant' : 'User'}: ${m.content}`)\n  .join('\\n');\n\nconst baseKnowledge = parsed.systemPrompt || '';\n\n// Every prompt variant ends with the same handoff instruction so the model\n// always knows how to signal \"this visitor wants a human\" — Extract Reply\n// looks for this exact marker and turns it into a real handoff request to\n// Laravel, regardless of whether we answered from website knowledge or not.\nconst handoffInstruction = `- If the visitor explicitly asks to speak with a human, a real person, an agent, support staff, or similar, OR seems frustrated and unable to get what they need from you, respond warmly letting them know you're connecting them with the team right now, then on its own new line add exactly: HANDOFF:REQUESTED`;\n\nconst systemPrompt = hasContext\n  ? `You are a helpful AI assistant for ${parsed.businessName}.\n${baseKnowledge}\nUse the following information from the business website to answer the visitor's question as accurately as possible:\n--- WEBSITE KNOWLEDGE ---\n${context}\n--- END KNOWLEDGE ---\nGuidelines:\n- Answer naturally and conversationally\n- If the context partially answers the question, use what you have and be helpful\n- Never say \"I don't have information\" - instead offer to connect them with the team\n- If unsure, say \"Based on what I know, ...\" and give your best answer\n- Keep replies concise - 2-3 sentences max unless detail is needed\n- Always end with an offer to help further\n${handoffInstruction}\n- At the end of your response add exactly this on a new line: SOURCE:${sourceUrl}`\n  : `You are a helpful AI assistant for ${parsed.businessName}.\n${baseKnowledge}\nYou don't have specific website content for this question, but use your general knowledge about this type of business to give a helpful response.\nGuidelines:\n- Be genuinely helpful even without specific context\n- Answer general questions about the business type naturally\n- For specific details like exact prices or availability, suggest they contact the team directly\n- Never say \"I don't have that information\" bluntly - always offer an alternative\n- Keep replies concise and friendly\n${handoffInstruction}`;\n\nconst userMessage = historyText\n  ? `${historyText}\\nUser: ${parsed.message}`\n  : parsed.message;\n\nreturn [{\n  json: {\n    systemPrompt,\n    userMessage,\n    businessName: parsed.businessName,\n    chunksFound: hasContext ? item.results.length : 0,\n    sourceUrl\n  }\n}];"
+      },
+      "id": "30318eaf-b18f-49c0-a78d-e35f9141fcd5",
+      "name": "Build RAG Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.userMessage }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "={{ $json.systemPrompt }}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "id": "dc9a22d7-300f-4eb7-869e-5d5d5601d075",
+      "name": "Basic LLM Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1392,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {
+          "maxTokensToSample": 512,
+          "temperature": 0.3
+        }
+      },
+      "id": "015d43a8-35df-4eec-90a4-5d42e20f7de8",
+      "name": "Groq Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        256
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "QSxmM7qUb4IRgQVp",
+          "name": "Groq account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $input.first().json;\nconst parsed = $('Parse Request').first().json;\n\nlet reply = output.text || output.response || output.output ||\n  'Sorry, I could not respond right now.';\n\n// Extract SOURCE URL if present\nlet sourceUrl = '';\nconst sourceMatch = reply.match(/SOURCE:(https?:\\/\\/[^\\s]+)/);\nif (sourceMatch) {\n  sourceUrl = sourceMatch[1];\n  // Remove the SOURCE line from the reply text\n  reply = reply.replace(/\\nSOURCE:https?:\\/\\/[^\\s]+/, '').trim();\n}\n\n// Detect the handoff marker the system prompt asked the model to emit\n// when a visitor wants a human. Strip it out of what the visitor sees.\nlet wantsHandoff = false;\nif (/HANDOFF:\\s*REQUESTED/i.test(reply)) {\n  wantsHandoff = true;\n  reply = reply.replace(/\\n?HANDOFF:\\s*REQUESTED/i, '').trim();\n}\n\n// The full transcript so far, for Laravel to seed the agent's inbox with\n// context if this turns into a handoff.\nconst transcript = [\n  ...(parsed.history || []),\n  { role: 'user', content: parsed.message },\n  { role: 'assistant', content: reply }\n];\n\nreturn [{\n  json: {\n    reply: reply.trim(),\n    sourceUrl,\n    wantsHandoff,\n    clientId: parsed.clientId,\n    sessionToken: parsed.sessionToken,\n    businessName: parsed.businessName,\n    transcript\n  }\n}];"
+      },
+      "id": "4aa0275a-10a5-4f4f-a6b2-57bdbe301e2b",
+      "name": "Extract Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1776,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "f049cc88-d6e7-4a47-bf72-dacccbf07b10",
+      "name": "Respond to Widget",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2800,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5000/search",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $json.message }}"
+            },
+            {
+              "name": "client_id",
+              "value": "={{ $json.clientId }}"
+            },
+            {
+              "name": "threshold",
+              "value": "0.3"
+            },
+            {
+              "name": "count",
+              "value": "5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        832,
+        0
+      ],
+      "id": "df38b5b8-eedd-452f-a968-1e4e4c9ca7cc",
+      "name": "Embed and Search"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-3.3-70b-instruct:free",
+        "options": {
+          "maxTokens": 512,
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        256
+      ],
+      "id": "ff493584-45d7-4ed9-8fcb-2572c228c759",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "bdX3dSiXutQA6jzE",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5f6f2e6e-6b8a-4b7a-9c1e-1a6b1a5b2c3d",
+              "leftValue": "={{ $json.wantsHandoff }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b2c3d4e5-1a2b-4c3d-8e9f-0a1b2c3d4e5f",
+      "name": "Wants Handoff?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2032,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR-BLUEFLOW-DOMAIN.example/api/widget/conversations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Webhook-Secret",
+              "value": "YOUR_N8N_WEBHOOK_SECRET"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ client_id: $json.clientId, session_token: $json.sessionToken, visitor_name: $json.visitorName || null, transcript: $json.transcript }) }}",
+        "options": {}
+      },
+      "id": "c3d4e5f6-2b3c-4d5e-9f0a-1b2c3d4e5f6a",
+      "name": "Request Human Handoff",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2288,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// $json here is Laravel's response from POST /api/widget/conversations:\n// { status, data: { conversation_id, session_token, status, last_message_id } }\nconst extract = $input.first().json;\nconst prior = $('Extract Reply').first().json;\nconst data = extract.data || extract;\n\nreturn [{\n  json: {\n    reply: prior.reply || \"One moment - I'm connecting you with a member of our team now.\",\n    sourceUrl: prior.sourceUrl || '',\n    handoff: true,\n    conversationId: data.conversation_id,\n    lastMessageId: data.last_message_id\n  }\n}];"
+      },
+      "id": "d4e5f6a7-3c4d-5e6f-0a1b-2c3d4e5f6a7b",
+      "name": "Build Handoff Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2544,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### Human handoff setup\n1. Replace the URL in **Request Human Handoff** with your real Blueflow install, e.g.\n   `https://yourapp.com/api/widget/conversations`\n2. Replace the `X-Webhook-Secret` header value with the same secret as `N8N_WEBHOOK_SECRET` in Blueflow's `.env`.\n3. This branch only fires when the model emits `HANDOFF:REQUESTED` (see the system prompt built in **Build RAG Prompt**).\n4. Laravel matches the visitor to an agent automatically (least-busy, active agents only) and notifies them - this workflow just needs to report the handoff and hand back `conversationId`/`lastMessageId` so the widget starts polling for the agent's replies.",
+        "height": 340,
+        "width": 460
+      },
+      "id": "e5f6a7b8-4d5e-6f7a-1b2c-3d4e5f6a7b8c",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2260,
+        -560
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Parse Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Request": {
+      "main": [
+        [
+          {
+            "node": "Embed and Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build RAG Prompt": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Extract Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Reply": {
+      "main": [
+        [
+          {
+            "node": "Wants Handoff?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wants Handoff?": {
+      "main": [
+        [
+          {
+            "node": "Request Human Handoff",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Widget",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request Human Handoff": {
+      "main": [
+        [
+          {
+            "node": "Build Handoff Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Handoff Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Widget",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Embed and Search": {
+      "main": [
+        [
+          {
+            "node": "Build RAG Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a8ce5191-8a50-4a4d-9517-ddd91209acd8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "afbe08eb95075820bb512108fb325a94793b69514acce40eb65440bad4d50bb3"
+  },
+  "id": "8hAUbigdUPcMwBQF",
+  "tags": []
+}

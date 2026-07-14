@@ -20,7 +20,7 @@ class OrderController extends Controller
             'customer_name' => ['nullable', 'string', 'max:255'],
             'customer_phone' => ['nullable', 'string', 'max:50'],
             'customer_email' => ['nullable', 'email', 'max:255'],
-            'source' => ['nullable', 'string', 'max:255'],
+            'source' => ['required', 'string', 'max:255'],
             'notes' => ['nullable', 'string'],
         ]);
 
@@ -47,7 +47,7 @@ class OrderController extends Controller
             'customer_email' => $validated['customer_email'] ?? null,
             'order_reference' => $order_id,
             'status' => 'new',
-            'source' => $validated['source'] ?? 'Telegram',
+            'source' => $validated['source'],
             'notes' => $validated['notes'] ?? null,
         ]);
 

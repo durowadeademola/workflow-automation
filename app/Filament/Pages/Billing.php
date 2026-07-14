@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Models\Plan;
 use App\Models\Subscription;
 use App\Services\PaystackService;
+use App\Services\SubscriptionService;
 use BackedEnum;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -77,6 +78,50 @@ class Billing extends Page
         return Plan::active()->get();
     }
 
+    /**
+     * @return array{used: int, limit: ?int}
+     */
+    public function getMessageUsage(): array
+    {
+        $client = $this->getClient();
+
+        if (! $client) {
+            return ['used' => 0, 'limit' => 0];
+        }
+
+        return [
+            'used' => $client->messagesUsedInCurrentPeriod(),
+            'limit' => $client->messageLimitForCurrentPlan(),
+        ];
+    }
+
+    /**
+     * The Naira credit switching to $planSlug right now would carry over
+     * from the unused portion of the current subscription (₦0 if there's
+     * no current subscription, or it's the free trial).
+     */
+    public function getProratedCredit(): int
+    {
+        return app(SubscriptionService::class)->calculateProratedCredit($this->getCurrentSubscription());
+    }
+
+    public function getSwitchConfirmationMessage(string $planSlug): string
+    {
+        $planRecord = Plan::active()->where('slug', $planSlug)->first();
+        $credit = $this->getProratedCredit();
+
+        if (! $planRecord || $credit <= 0) {
+            return "Switch to {$planRecord?->name}?";
+        }
+
+        $finalCharge = max(0, $planRecord->amount - $credit);
+
+        return "Your remaining time on your current plan is worth a ₦".number_format($credit)." credit. "
+            .($finalCharge > 0
+                ? "You'll pay ₦".number_format($finalCharge)." today instead of ₦".number_format($planRecord->amount).'.'
+                : "That fully covers {$planRecord->name} — you won't be charged anything today.");
+    }
+
     public function subscribe(string $plan)
     {
         $client = $this->getClient();
@@ -97,21 +142,37 @@ class Billing extends Page
 
         abort_unless($planRecord, 404);
 
+        $credit = $this->getProratedCredit();
+        $finalCharge = max(0, $planRecord->amount - $credit);
+
         $subscription = Subscription::create([
             'client_id' => $client->id,
             'plan_id' => $planRecord->id,
             'plan' => $planRecord->slug,
             'amount' => $planRecord->amount,
+            'credit_applied' => $credit,
             'name' => $planRecord->name,
             'status' => 'pending',
             'is_active' => false,
-            'paystack_reference' => 'BF-'.strtoupper(Str::random(14)),
+            'paystack_reference' => $finalCharge > 0 ? 'BF-'.strtoupper(Str::random(14)) : null,
         ]);
+
+        // The credit fully covers this plan — no payment needed at all.
+        if ($finalCharge <= 0) {
+            app(SubscriptionService::class)->activateFree($subscription);
+
+            Notification::make()
+                ->title("You're now on {$planRecord->name} — fully covered by your remaining credit.")
+                ->success()
+                ->send();
+
+            return;
+        }
 
         try {
             $result = app(PaystackService::class)->initializeTransaction([
                 'email' => $client->email,
-                'amount' => $planRecord->amount * 100, // kobo
+                'amount' => $finalCharge * 100, // kobo
                 'reference' => $subscription->paystack_reference,
                 'callback_url' => route('paystack.callback'),
                 'metadata' => [

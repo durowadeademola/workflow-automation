@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Subscription;
-use App\Models\User;
-use App\Notifications\SubscriptionInvoice;
 use App\Services\PaystackService;
+use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
 
 class PaystackController extends Controller
 {
-    public function __construct(private PaystackService $paystack) {}
+    public function __construct(
+        private PaystackService $paystack,
+        private SubscriptionService $subscriptions,
+    ) {}
 
     /**
      * The browser lands here after the visitor finishes (or abandons) the
@@ -87,52 +88,14 @@ class PaystackController extends Controller
         return response()->json(['status' => 'ok']);
     }
 
+    /**
+     * The callback and webhook can both race to activate the same
+     * subscription — activateFree() is a no-op past the first successful
+     * call, so we never reset the billing period or send a duplicate
+     * invoice regardless of which path gets there first.
+     */
     private function activate(Subscription $subscription): void
     {
-        // The callback and webhook can both race to activate the same
-        // subscription — make this a no-op past the first successful call
-        // so we never reset the billing period or send a duplicate invoice.
-        if ($subscription->status === 'active') {
-            return;
-        }
-
-        // Only one active subscription per client at a time.
-        Subscription::where('client_id', $subscription->client_id)
-            ->where('id', '!=', $subscription->id)
-            ->where('status', 'active')
-            ->update(['status' => 'expired', 'is_active' => false]);
-
-        $subscription->update([
-            'status' => 'active',
-            'is_active' => true,
-            'start_date' => now(),
-            'end_date' => now()->addDays(30),
-        ]);
-
-        $this->sendInvoice($subscription);
-    }
-
-    /**
-     * Emails a PDF invoice (and a matching in-app notification) to every
-     * client-side user for this subscription's business.
-     */
-    private function sendInvoice(Subscription $subscription): void
-    {
-        $recipients = User::where('client_id', $subscription->client_id)
-            ->where('is_client', true)
-            ->get();
-
-        if ($recipients->isEmpty()) {
-            return;
-        }
-
-        try {
-            Notification::send($recipients, new SubscriptionInvoice($subscription));
-        } catch (\Throwable $e) {
-            Log::warning('Failed to send subscription invoice', [
-                'subscription_id' => $subscription->id,
-                'error' => $e->getMessage(),
-            ]);
-        }
+        $this->subscriptions->activateFree($subscription);
     }
 }

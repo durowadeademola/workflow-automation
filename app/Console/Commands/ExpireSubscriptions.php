@@ -3,7 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Models\Subscription;
+use App\Models\User;
+use App\Notifications\SubscriptionExpired;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 
 class ExpireSubscriptions extends Command
 {
@@ -26,10 +29,22 @@ class ExpireSubscriptions extends Command
      */
     public function handle(): void
     {
-        $count = Subscription::where('status', 'active')
+        $expiring = Subscription::where('status', 'active')
             ->where('end_date', '<', now()->startOfDay())
-            ->update(['status' => 'expired', 'is_active' => false]);
+            ->get();
 
-        $this->info("Expired {$count} subscription(s).");
+        foreach ($expiring as $subscription) {
+            $subscription->update(['status' => 'expired', 'is_active' => false]);
+
+            $recipients = User::where('client_id', $subscription->client_id)
+                ->where(fn ($query) => $query->where('is_client', true)->orWhere('is_agent', true))
+                ->get();
+
+            if ($recipients->isNotEmpty()) {
+                Notification::send($recipients, new SubscriptionExpired($subscription));
+            }
+        }
+
+        $this->info("Expired {$expiring->count()} subscription(s).");
     }
 }

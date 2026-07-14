@@ -49,4 +49,39 @@ class Customer extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    /**
+     * The shared identity lookup for every inbound channel (WhatsApp,
+     * Telegram, the website widget, etc.) — a customer is the same person
+     * across messages/orders as long as (client, platform, chat_id) match,
+     * where `chat_id` is whatever that channel's own conversation id is
+     * (a Telegram chat id, a WhatsApp number, the widget's session token).
+     */
+    public static function findOrCreateForChannel(
+        int $clientId,
+        string $platform,
+        string $chatId,
+        ?string $name = null,
+    ): self {
+        $customer = static::firstOrNew([
+            'client_id' => $clientId,
+            'platform' => $platform,
+            'chat_id' => $chatId,
+        ]);
+
+        if (! $customer->exists) {
+            $customer->status = 'OPEN';
+        }
+
+        if ($name && blank($customer->name)) {
+            $customer->name = $name;
+            $customer->username ??= $name;
+        }
+
+        if (! $customer->exists || $customer->isDirty()) {
+            $customer->save();
+        }
+
+        return $customer;
+    }
 }

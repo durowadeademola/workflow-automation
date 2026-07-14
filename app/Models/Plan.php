@@ -13,6 +13,7 @@ class Plan extends Model
         'name',
         'slug',
         'amount',
+        'message_limit',
         'description',
         'features',
         'is_popular',

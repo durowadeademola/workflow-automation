@@ -32,6 +32,12 @@ class PlanForm
                     ->required()
                     ->numeric()
                     ->prefix('₦'),
+                TextInput::make('message_limit')
+                    ->label('Message limit / month')
+                    ->numeric()
+                    ->minValue(1)
+                    ->placeholder('Unlimited')
+                    ->helperText('Chat messages the widget will process per month on this plan. Leave blank for unlimited.'),
                 Textarea::make('description')
                     ->rows(2)
                     ->columnSpanFull(),

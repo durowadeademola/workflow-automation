@@ -2,14 +2,20 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Vulnerability;
+use App\Models\Subscription;
 use Filament\Widgets\ChartWidget;
 
-class VulnerabilitiesChart extends ChartWidget
+class SubscriptionsChart extends ChartWidget
 {
-    protected ?string $heading = 'Vulnerabilities Trend';
+    protected static bool $isLazy = false;
 
-    protected string $color = 'success';
+    // See AdminStats — Filament's default 5s auto-poll on chart widgets was
+    // keeping this page in a constant background-refresh loop.
+    protected ?string $pollingInterval = null;
+
+    protected ?string $heading = 'Subscriptions Trend';
+
+    protected string $color = 'primary';
 
     public static function canView(): bool
     {
@@ -18,11 +24,14 @@ class VulnerabilitiesChart extends ChartWidget
 
     protected function getData(): array
     {
-        $data = Vulnerability::query()
+        $year = now()->year;
+
+        // Trials aren't a purchase decision, so they're excluded here —
+        // this chart is meant to track paid conversions/growth, not signups.
+        $data = Subscription::query()
             ->selectRaw('MONTHNAME(created_at) as label, COUNT(*) as total')
-            // ->where('status', 'active')
-            // ->where('client_id', auth()->user()?->client_id)
-            ->whereYear('created_at', now()->year)
+            ->where('plan', '!=', 'trial')
+            ->whereYear('created_at', $year)
             ->groupBy('label')
             ->orderByRaw('MIN(created_at)')
             ->pluck('total', 'label');
@@ -30,7 +39,7 @@ class VulnerabilitiesChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Found Vulnerabilities',
+                    'label' => "New paid subscriptions for {$year}",
                     'data' => $data->values(),
                     'fill' => 'start',
                 ],

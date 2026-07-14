@@ -24,6 +24,7 @@ class ClientRegistrationController extends Controller
             'telephone' => ['nullable', 'string', 'max:50'],
             'type' => ['required', 'string', 'max:255'],
             'password' => ['required', 'confirmed', Password::min(8)],
+            'terms_accepted' => ['accepted'],
         ]);
 
         $client = DB::transaction(function () use ($validated) {

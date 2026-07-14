@@ -10,6 +10,7 @@ use App\Filament\Widgets\CustomersChart;
 use App\Filament\Widgets\OrdersChart;
 use App\Filament\Widgets\RecentMessages;
 use App\Filament\Widgets\RecentOrders;
+use App\Filament\Widgets\SubscriptionsChart;
 use BackedEnum;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Support\Icons\Heroicon;
@@ -25,6 +26,7 @@ class Dashboard extends BaseDashboard
             ClientStats::class,
             AgentStats::class,
             ClientsChart::class,
+            SubscriptionsChart::class,
             CustomersChart::class,
             OrdersChart::class,
             RecentMessages::class,

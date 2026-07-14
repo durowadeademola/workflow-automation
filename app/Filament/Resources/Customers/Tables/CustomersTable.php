@@ -14,6 +14,7 @@ use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -65,6 +66,7 @@ class CustomersTable
                     ->color(fn (string $state): string => match ($state) {
                         'Telegram' => 'primary',
                         'WhatsApp' => 'success',
+                        'Website' => 'info',
                         default => 'gray',
                     })
                     ->searchable(),
@@ -92,6 +94,12 @@ class CustomersTable
                     ->searchable(),
             ])
             ->filters([
+                SelectFilter::make('platform')
+                    ->options([
+                        'Telegram' => 'Telegram',
+                        'WhatsApp' => 'WhatsApp',
+                        'Website' => 'Website',
+                    ]),
                 TrashedFilter::make(),
             ])
             ->recordActions([
@@ -118,8 +126,8 @@ class CustomersTable
                         Select::make('platform')->options([
                             'Telegram' => 'Telegram',
                             'WhatsApp' => 'WhatsApp',
-                        ])
-                            ->default('telegram'),
+                            'Website' => 'Website',
+                        ]),
                     ])
                     ->action(fn ($record, array $data) => $record->update($data)),
                 DeleteAction::make(),

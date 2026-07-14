@@ -38,6 +38,7 @@ export default function Register() {
         type: "",
         password: "",
         password_confirmation: "",
+        terms_accepted: false,
         website: "", // honeypot — left empty by real visitors
     });
     const [status, setStatus] = useState("idle"); // idle | submitting | success | error
@@ -45,6 +46,10 @@ export default function Register() {
 
     function update(field) {
         return (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
+    }
+
+    function updateCheckbox(field) {
+        return (e) => setForm((f) => ({ ...f, [field]: e.target.checked }));
     }
 
     async function handleSubmit(e) {
@@ -196,6 +201,32 @@ export default function Register() {
                                 </div>
                             </div>
 
+                            <div>
+                                <label className="flex items-start gap-2.5 text-sm text-gray-600 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        required
+                                        checked={form.terms_accepted}
+                                        onChange={updateCheckbox("terms_accepted")}
+                                        className="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                    />
+                                    <span>
+                                        By continuing, I agree to Blueflow's{" "}
+                                        <Link href="/terms-of-service" target="_blank" className="text-blue-700 font-semibold hover:underline">
+                                            Terms of Service
+                                        </Link>{" "}
+                                        and{" "}
+                                        <Link href="/privacy-policy" target="_blank" className="text-blue-700 font-semibold hover:underline">
+                                            Privacy Policy
+                                        </Link>
+                                        . *
+                                    </span>
+                                </label>
+                                {errors.terms_accepted && (
+                                    <p className="text-red-600 text-xs mt-1">{errors.terms_accepted[0]}</p>
+                                )}
+                            </div>
+
                             {status === "error" && !Object.keys(errors).length && (
                                 <p className="text-red-600 text-sm">
                                     Something went wrong. Please try again or message us on WhatsApp.
@@ -204,7 +235,7 @@ export default function Register() {
 
                             <button
                                 type="submit"
-                                disabled={status === "submitting"}
+                                disabled={status === "submitting" || !form.terms_accepted}
                                 className="w-full bg-blue-600 text-white font-semibold py-3 rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-60"
                             >
                                 {status === "submitting" ? "Creating account..." : "Create Account"}

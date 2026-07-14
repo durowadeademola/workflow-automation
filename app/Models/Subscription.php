@@ -16,18 +16,21 @@ class Subscription extends Model
         'plan_id',
         'plan',
         'amount',
+        'credit_applied',
         'name',
         'start_date',
         'end_date',
         'is_active',
         'status',
         'paystack_reference',
+        'limit_reached_notified_at',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
         'is_active' => 'boolean',
+        'limit_reached_notified_at' => 'datetime',
     ];
 
     public function client()

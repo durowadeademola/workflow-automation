@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Http\Controllers\API\WidgetConversationController;
 use App\Models\WidgetConversation;
 use BackedEnum;
 use Filament\Pages\Page;
@@ -34,8 +35,10 @@ class LiveChat extends Page
         $user = Auth::user();
 
         return WidgetConversation::query()
-            ->where('status', '!=', 'closed')
+            ->with('agent')
+            ->whereNotIn('status', ['closed', 'returned_to_ai'])
             ->where('client_id', $user->client_id)
+            ->orderByRaw('agent_id = ? desc', [$user->id])
             ->orderByDesc('last_message_at')
             ->get();
     }
@@ -76,6 +79,7 @@ class LiveChat extends Page
         $conversation = $this->getSelectedConversation();
 
         abort_unless($conversation, 404);
+        abort_if(in_array($conversation->status, ['closed', 'returned_to_ai']), 409);
 
         $user = Auth::user();
 
@@ -91,6 +95,8 @@ class LiveChat extends Page
             'last_message_at' => now(),
         ]);
 
+        WidgetConversationController::mirrorToMessages($conversation, $this->replyContent, fromCustomer: false);
+
         $this->replyContent = '';
     }
 
@@ -101,6 +107,36 @@ class LiveChat extends Page
         abort_unless($conversation, 404);
 
         $conversation->update(['status' => 'closed']);
+        $this->selectedConversationId = null;
+    }
+
+    /**
+     * Ends the human session and signals the widget to resume talking to
+     * the AI directly — for when the visitor's question is answered but
+     * they might want to keep chatting (unlike closeConversation, which
+     * frames things as "this is over").
+     */
+    public function returnToAI(): void
+    {
+        $conversation = $this->getSelectedConversation();
+
+        abort_unless($conversation, 404);
+
+        $handoffMessage = "You're now back with our AI assistant — feel free to keep chatting!";
+
+        $conversation->messages()->create([
+            'sender_type' => 'agent',
+            'sender_name' => Auth::user()->name,
+            'content' => $handoffMessage,
+        ]);
+
+        $conversation->update([
+            'status' => 'returned_to_ai',
+            'last_message_at' => now(),
+        ]);
+
+        WidgetConversationController::mirrorToMessages($conversation, $handoffMessage, fromCustomer: false);
+
         $this->selectedConversationId = null;
     }
 }

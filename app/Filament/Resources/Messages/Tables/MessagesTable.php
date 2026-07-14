@@ -37,6 +37,7 @@ class MessagesTable
                     ->color(fn (string $state): string => match ($state) {
                         'Telegram' => 'primary',
                         'WhatsApp' => 'success',
+                        'Website' => 'info',
                         default => 'gray',
                     })
                     ->searchable(),
