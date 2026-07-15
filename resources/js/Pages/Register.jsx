@@ -5,6 +5,15 @@ import { CircleCheckBig } from "lucide-react";
 import MainLayout from "@/Components/Layout/MainLayout";
 import PageHero from "@/Components/Layout/PageHero";
 
+const SERVICES = [
+    { value: "chat-widget", label: "Chat Widget", description: "AI assistant embedded on your website" },
+    { value: "whatsapp-automation", label: "WhatsApp Automation", description: "Automated replies & workflows on WhatsApp" },
+    { value: "email-automation", label: "Email Automation", description: "Automated email sequences and replies" },
+    { value: "payment-automation", label: "Payment Automation", description: "Automated invoicing and payment collection" },
+    { value: "crm-integration", label: "CRM Integration", description: "Sync leads and customers into your CRM" },
+    { value: "workflow-automation", label: "Workflow Automation", description: "Custom internal process automation" },
+];
+
 const BUSINESS_TYPES = [
     { value: "commercial-bank", label: "Commercial Bank" },
     { value: "ecommerce", label: "Ecommerce" },
@@ -36,6 +45,7 @@ export default function Register() {
         email: "",
         telephone: "",
         type: "",
+        features: [],
         password: "",
         password_confirmation: "",
         terms_accepted: false,
@@ -50,6 +60,15 @@ export default function Register() {
 
     function updateCheckbox(field) {
         return (e) => setForm((f) => ({ ...f, [field]: e.target.checked }));
+    }
+
+    function toggleFeature(slug) {
+        setForm((f) => ({
+            ...f,
+            features: f.features.includes(slug)
+                ? f.features.filter((s) => s !== slug)
+                : [...f.features, slug],
+        }));
     }
 
     async function handleSubmit(e) {
@@ -88,7 +107,7 @@ export default function Register() {
             />
 
             <section className="py-16 bg-white">
-                <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                     {status === "success" ? (
                         <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-10 text-center">
                             <div className="w-14 h-14 mx-auto mb-4 bg-emerald-100 rounded-2xl flex items-center justify-center">
@@ -173,6 +192,35 @@ export default function Register() {
                                 {errors.type && <p className="text-red-600 text-xs mt-1">{errors.type[0]}</p>}
                             </div>
 
+                            <div>
+                                <label className="text-sm font-medium text-gray-700 mb-1 block">Which services are you interested in? *</label>
+                                <p className="text-xs text-gray-400 mb-2">This decides what shows up in your dashboard — you can change it later.</p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    {SERVICES.map((s) => (
+                                        <label
+                                            key={s.value}
+                                            className={`flex items-start gap-2.5 text-sm rounded-xl border px-3.5 py-2.5 cursor-pointer transition-colors ${
+                                                form.features.includes(s.value)
+                                                    ? "border-blue-500 bg-blue-50"
+                                                    : "border-gray-200 hover:border-gray-300"
+                                            }`}
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                checked={form.features.includes(s.value)}
+                                                onChange={() => toggleFeature(s.value)}
+                                                className="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            />
+                                            <span>
+                                                <span className="block font-medium text-gray-800">{s.label}</span>
+                                                <span className="block text-xs text-gray-400">{s.description}</span>
+                                            </span>
+                                        </label>
+                                    ))}
+                                </div>
+                                {errors.features && <p className="text-red-600 text-xs mt-1">{errors.features[0]}</p>}
+                            </div>
+
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
                                     <label className="text-sm font-medium text-gray-700 mb-1 block">Password *</label>
@@ -235,7 +283,7 @@ export default function Register() {
 
                             <button
                                 type="submit"
-                                disabled={status === "submitting" || !form.terms_accepted}
+                                disabled={status === "submitting" || !form.terms_accepted || form.features.length === 0}
                                 className="w-full bg-blue-600 text-white font-semibold py-3 rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-60"
                             >
                                 {status === "submitting" ? "Creating account..." : "Create Account"}

@@ -12,6 +12,11 @@ class AgentExporter extends Exporter
 {
     protected static ?string $model = Agent::class;
 
+    public function getJobConnection(): ?string
+    {
+        return 'sync';
+    }
+
     public static function getColumns(): array
     {
         return [

@@ -23,8 +23,14 @@ class SubscriptionsTable
                 TextColumn::make('name')
                     ->label('Plan'),
                 TextColumn::make('amount')
+                    ->label('Charged')
                     ->money('NGN')
                     ->sortable(),
+                TextColumn::make('credit_applied')
+                    ->label('Credit used')
+                    ->money('NGN')
+                    ->placeholder('—')
+                    ->toggleable(),
                 BadgeColumn::make('status')
                     ->colors([
                         'warning' => 'pending',
@@ -38,6 +44,26 @@ class SubscriptionsTable
                 TextColumn::make('end_date')
                     ->date()
                     ->sortable(),
+                TextColumn::make('paystack_channel')
+                    ->label('Channel')
+                    ->badge()
+                    ->placeholder('—')
+                    ->toggleable(),
+                TextColumn::make('paystack_paid_at')
+                    ->label('Paid at')
+                    ->dateTime()
+                    ->placeholder('—')
+                    ->toggleable(),
+                TextColumn::make('paystack_amount_charged')
+                    ->label('Paystack amount')
+                    ->money('NGN')
+                    ->placeholder('—')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('paystack_transaction_id')
+                    ->label('Paystack txn ID')
+                    ->copyable()
+                    ->placeholder('—')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('paystack_reference')
                     ->label('Reference')
                     ->copyable()
@@ -47,6 +73,11 @@ class SubscriptionsTable
                     ->sortable(),
             ])
             ->filters([
+                SelectFilter::make('client_id')
+                    ->label('Client')
+                    ->relationship('client', 'name')
+                    ->searchable()
+                    ->preload(),
                 SelectFilter::make('status')
                     ->options([
                         'pending' => 'Pending',

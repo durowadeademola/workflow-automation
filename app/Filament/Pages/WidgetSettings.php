@@ -31,7 +31,7 @@ class WidgetSettings extends Page
     {
         $user = Auth::user();
 
-        return (bool) $user && $user->is_client;
+        return (bool) $user && $user->is_client && $user->client?->hasFeature('chat-widget');
     }
 
     public function getClient(): ?Client

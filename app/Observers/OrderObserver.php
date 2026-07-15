@@ -4,8 +4,9 @@ namespace App\Observers;
 
 use App\Models\Order;
 use App\Models\User;
-use Filament\Actions\Action;
-use Filament\Notifications\Notification;
+use App\Notifications\NewOrderReceived;
+use App\Notifications\OrderAssigned;
+use Illuminate\Support\Facades\Notification;
 
 class OrderObserver
 {
@@ -20,16 +21,7 @@ class OrderObserver
             ->first();
 
         if ($recipient) {
-            Notification::make()
-                ->title('New Order Received')
-                ->success()
-                ->body("Order #{$order->order_reference} is ready for processing.")
-                ->actions([
-                    Action::make('view')
-                        ->button()
-                        ->url(fn () => "/admin/orders/{$order->id}/edit"),
-                ])
-                ->sendToDatabase($recipient);
+            Notification::send($recipient, new NewOrderReceived($order));
         }
     }
 
@@ -45,11 +37,7 @@ class OrderObserver
             $agentUser = User::firstWhere('email', $order->agent?->email);
 
             if ($agentUser) {
-                Notification::make()
-                    ->title('New Order')
-                    ->info()
-                    ->body("You have been assigned to Order #{$order->order_reference}.")
-                    ->sendToDatabase($agentUser);
+                Notification::send($agentUser, new OrderAssigned($order));
             }
         }
     }

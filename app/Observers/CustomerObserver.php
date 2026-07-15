@@ -4,8 +4,8 @@ namespace App\Observers;
 
 use App\Models\Customer;
 use App\Models\User;
-use Filament\Actions\Action;
-use Filament\Notifications\Notification;
+use App\Notifications\NewCustomerAlert;
+use Illuminate\Support\Facades\Notification;
 
 class CustomerObserver
 {
@@ -20,16 +20,7 @@ class CustomerObserver
             ->first();
 
         if ($recipient) {
-            Notification::make()
-                ->title('New Customer Alert')
-                ->success()
-                ->body("Customer #{$customer->chat_id} is ready for processing.")
-                ->actions([
-                    Action::make('view')
-                        ->button()
-                        ->url(fn () => "/admin/customers/{$customer->id}/edit"),
-                ])
-                ->sendToDatabase($recipient);
+            Notification::send($recipient, new NewCustomerAlert($customer));
         }
     }
 

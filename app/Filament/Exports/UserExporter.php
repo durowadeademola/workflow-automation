@@ -12,6 +12,11 @@ class UserExporter extends Exporter
 {
     protected static ?string $model = User::class;
 
+    public function getJobConnection(): ?string
+    {
+        return 'sync';
+    }
+
     public static function getColumns(): array
     {
         return [

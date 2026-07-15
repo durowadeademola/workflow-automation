@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\Plans\Tables;
 
+use App\Models\Client;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class PlansTable
@@ -22,6 +24,11 @@ class PlansTable
                 TextColumn::make('slug')
                     ->badge()
                     ->color('gray'),
+                TextColumn::make('service')
+                    ->label('Service')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state) => $state ? (Client::FEATURES[$state] ?? $state) : 'Universal')
+                    ->color(fn (?string $state) => $state ? 'info' : 'gray'),
                 TextColumn::make('amount')
                     ->label('Price')
                     ->money('NGN')
@@ -42,6 +49,11 @@ class PlansTable
             ])
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
+            ->filters([
+                SelectFilter::make('service')
+                    ->options(Client::FEATURES)
+                    ->label('Service'),
+            ])
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),

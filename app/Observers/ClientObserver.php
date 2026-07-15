@@ -6,9 +6,8 @@ use App\Models\Client;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Notifications\ClientApproved;
-use Filament\Actions\Action;
-use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Notification as NotificationFacade;
+use App\Notifications\ClientAwaitingApproval;
+use Illuminate\Support\Facades\Notification;
 
 class ClientObserver
 {
@@ -33,18 +32,11 @@ class ClientObserver
 
         $admins = User::where('is_admin', true)->get();
 
-        foreach ($admins as $admin) {
-            Notification::make()
-                ->title('New business awaiting approval')
-                ->body("{$client->name} just self-registered and can't log in until you approve them.")
-                ->warning()
-                ->actions([
-                    Action::make('view')
-                        ->button()
-                        ->url(fn () => "/admin/clients/{$client->id}/edit"),
-                ])
-                ->sendToDatabase($admin);
+        if ($admins->isEmpty()) {
+            return;
         }
+
+        Notification::send($admins, new ClientAwaitingApproval($client));
     }
 
     /**
@@ -72,7 +64,7 @@ class ClientObserver
             return;
         }
 
-        NotificationFacade::send($recipients, new ClientApproved());
+        Notification::send($recipients, new ClientApproved());
     }
 
     /**

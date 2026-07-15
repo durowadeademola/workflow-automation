@@ -4,8 +4,8 @@ namespace App\Observers;
 
 use App\Models\Lead;
 use App\Models\User;
-use Filament\Actions\Action;
-use Filament\Notifications\Notification;
+use App\Notifications\NewLeadReceived;
+use Illuminate\Support\Facades\Notification;
 
 class LeadObserver
 {
@@ -16,17 +16,10 @@ class LeadObserver
     {
         $admins = User::where('is_admin', true)->get();
 
-        foreach ($admins as $admin) {
-            Notification::make()
-                ->title('New Lead Received')
-                ->success()
-                ->body("{$lead->name} submitted the contact form.")
-                ->actions([
-                    Action::make('view')
-                        ->button()
-                        ->url(fn () => "/admin/leads/{$lead->id}/edit"),
-                ])
-                ->sendToDatabase($admin);
+        if ($admins->isEmpty()) {
+            return;
         }
+
+        Notification::send($admins, new NewLeadReceived($lead));
     }
 }

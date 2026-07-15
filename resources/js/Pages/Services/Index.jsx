@@ -1,16 +1,23 @@
 import { Head, Link } from "@inertiajs/react";
-import { MessageCircle, Contact, Mail, CreditCard, Workflow, Wrench } from "lucide-react";
+import { MessageSquareText, MessageCircle, Contact, Mail, CreditCard, Workflow } from "lucide-react";
 import MainLayout from "@/Components/Layout/MainLayout";
 import PageHero from "@/Components/Layout/PageHero";
 import IconTile from "@/Components/Icons/IconTile";
 
 const services = [
     {
+        title: "Chat Widget",
+        description: "An AI assistant embedded on your website that answers visitors instantly, 24/7 — and hands off to a human when asked.",
+        features: ["Trained on your website content", "Human handoff on request", "Fully customizable branding", "Live agent inbox"],
+        href: "/services/chat-widget",
+        popular: true,
+        icon: MessageSquareText,
+    },
+    {
         title: "WhatsApp Automation",
         description: "Turn WhatsApp into your 24/7 sales, support, and booking assistant. Never miss a customer message again.",
         features: ["Order processing", "Booking management", "Customer support", "Payment integration"],
         href: "/services/whatsapp-automation",
-        popular: true,
         icon: MessageCircle,
     },
     {
@@ -40,13 +47,6 @@ const services = [
         features: ["100+ app integrations", "Visual builder", "Approval workflows", "Data sync"],
         href: "/services/workflow-automation",
         icon: Workflow,
-    },
-    {
-        title: "Custom Solutions",
-        description: "Bespoke automation built from scratch for businesses with unique requirements.",
-        features: ["Dedicated architect", "Legacy integrations", "Full ownership", "Ongoing support"],
-        href: "/services/custom-solutions",
-        icon: Wrench,
     },
 ];
 

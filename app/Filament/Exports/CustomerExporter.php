@@ -12,6 +12,11 @@ class CustomerExporter extends Exporter
 {
     protected static ?string $model = Customer::class;
 
+    public function getJobConnection(): ?string
+    {
+        return 'sync';
+    }
+
     public static function getColumns(): array
     {
         return [

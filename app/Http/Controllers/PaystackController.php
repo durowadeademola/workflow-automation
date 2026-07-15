@@ -45,7 +45,7 @@ class PaystackController extends Controller
         }
 
         if (($result['data']['status'] ?? null) === 'success') {
-            $this->activate($subscription);
+            $this->activate($subscription, $result['data']);
 
             return redirect('/admin/billing')->with('paystack_notice', [
                 'type' => 'success',
@@ -81,7 +81,7 @@ class PaystackController extends Controller
             $subscription = Subscription::where('paystack_reference', $reference)->first();
 
             if ($subscription && $subscription->status !== 'active') {
-                $this->activate($subscription);
+                $this->activate($subscription, (array) $request->input('data', []));
             }
         }
 
@@ -94,8 +94,8 @@ class PaystackController extends Controller
      * call, so we never reset the billing period or send a duplicate
      * invoice regardless of which path gets there first.
      */
-    private function activate(Subscription $subscription): void
+    private function activate(Subscription $subscription, array $paystackData = []): void
     {
-        $this->subscriptions->activateFree($subscription);
+        $this->subscriptions->activateFree($subscription, $paystackData);
     }
 }

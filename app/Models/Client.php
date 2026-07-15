@@ -19,6 +19,7 @@ class Client extends Model
         'telephone',
         'type',
         'status',
+        'features',
         'webhook_url',
         'widget_agent_name',
         'widget_primary_color',
@@ -32,7 +33,37 @@ class Client extends Model
 
     protected $casts = [
         'widget_quick_replies' => 'array',
+        'features' => 'array',
     ];
+
+    /**
+     * The Blueflow automation services a client can pick at registration
+     * (and admins can adjust afterward). Each slug that maps to dedicated
+     * dashboard pages gates them — see WidgetSettings/LiveChat canAccess().
+     */
+    public const FEATURES = [
+        'chat-widget' => 'Chat Widget',
+        'whatsapp-automation' => 'WhatsApp Automation',
+        'email-automation' => 'Email Automation',
+        'payment-automation' => 'Payment Automation',
+        'crm-integration' => 'CRM Integration',
+        'workflow-automation' => 'Workflow Automation',
+    ];
+
+    /**
+     * `null` means this client predates the feature-selection system (or an
+     * admin hasn't set it) — treated as unrestricted rather than retroactively
+     * locking out access nobody actually took away. Once a real array is set
+     * (even an empty one), it's enforced as an actual allowlist.
+     */
+    public function hasFeature(string $slug): bool
+    {
+        if ($this->features === null) {
+            return true;
+        }
+
+        return in_array($slug, $this->features, strict: true);
+    }
 
     /**
      * Fallbacks used until a client customizes their widget — kept in sync
@@ -77,6 +108,27 @@ class Client extends Model
     public function messages()
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function kycSubmissions()
+    {
+        return $this->hasMany(KycSubmission::class);
+    }
+
+    /**
+     * KYC is optional and never enforced anywhere — this is purely for the
+     * admin/client to see status. A rejected submission can always be
+     * resubmitted, which is why this is the latest row rather than a single
+     * mutable one: the rejection history stays visible to the admin.
+     */
+    public function latestKyc(): ?KycSubmission
+    {
+        return $this->kycSubmissions()->orderByDesc('id')->first();
+    }
+
+    public function kycStatus(): string
+    {
+        return $this->latestKyc()?->status ?? 'not_submitted';
     }
 
     /**

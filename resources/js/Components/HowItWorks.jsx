@@ -4,10 +4,10 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 const steps = [
     {
         number: "01",
-        title: "Discovery Form",
-        description: "We understand your business, challenges, and goals by filling our pre-onboarding form.",
-        duration: "10 minutes",
-        outcome: "Clear understanding of your needs",
+        title: "Create Your Account",
+        description: "Register your business and tell us which services you need — WhatsApp, chat widget, and more.",
+        duration: "2 minutes",
+        outcome: "Account pending approval",
     },
     {
         number: "02",
@@ -108,7 +108,7 @@ export default function HowItWorks() {
                         How It Works
                     </h2>
                     <p className="text-gray-500 max-w-xl mx-auto">
-                        From filling our discovery form to full automation in just 7-10 days. Here's our proven process.
+                        From signing up to full automation in just 7-10 days. Here's our proven process.
                     </p>
                 </div>
 
@@ -135,15 +135,15 @@ export default function HowItWorks() {
                 >
                     <h3 className="text-2xl font-extrabold mb-3">Ready to Get Started?</h3>
                     <p className="text-blue-100 mb-8 max-w-lg mx-auto">
-                        Fill our 10-minute discovery form. No commitment, no sales pressure.
+                        Create your account in a couple of minutes. No commitment, no sales pressure.
                         Just honest advice on how automation can help your business.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link
-                            href="/contact"
+                            href="/register"
                             className="bg-white text-blue-700 font-semibold px-6 py-3 rounded-xl hover:bg-blue-50 transition-colors"
                         >
-                            Fill Discovery Form
+                            Create Account
                         </Link>
                         <Link
                             href="/contact"

@@ -6,7 +6,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 const faqs = [
     {
         question: "How long does implementation take?",
-        answer: "Most businesses are up and running within 7-10 days. Here's the breakdown: Discovery form (10 min), Solution design (2-3 days), Development & setup (3-5 days), Training & launch (1 day). We handle all the technical work — you just need to show up for the training.",
+        answer: "Most businesses are up and running within 7-10 days. Here's the breakdown: Sign up (2 min), Solution design (2-3 days), Development & setup (3-5 days), Training & launch (1 day). We handle all the technical work — you just need to show up for the training.",
     },
     {
         question: "Do I need any technical skills to use Blueflow?",

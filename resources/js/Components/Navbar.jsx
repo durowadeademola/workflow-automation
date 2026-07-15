@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "@inertiajs/react";
 
 const servicesLinks = [
+    { label: "Chat Widget", href: "/services/chat-widget" },
     { label: "WhatsApp Automation", href: "/services/whatsapp-automation" },
     { label: "CRM Integration", href: "/services/crm-integration" },
     { label: "Email Automation", href: "/services/email-automation" },

@@ -38,13 +38,16 @@ class SubscriptionService
     }
 
     /**
-     * Activates a subscription outright with no payment step — used when a
-     * prorated credit fully covers the new plan's price. Mirrors exactly
-     * what PaystackController::activate() does after a real payment, minus
-     * the payment itself, so both paths stay in sync (idempotent, one
-     * active subscription per client, invoice sent).
+     * Activates a subscription — used both after a real Paystack payment
+     * (with $paystackData from the verify/webhook response, for admin
+     * auditing) and when a prorated credit fully covers the new plan's
+     * price with no payment at all (no args). Idempotent: a no-op once
+     * already active, so callback/webhook racing to activate the same
+     * subscription never resets the billing period or double-invoices.
+     *
+     * @param  array<string, mixed>  $paystackData  Paystack's own "data" object
      */
-    public function activateFree(Subscription $subscription): void
+    public function activateFree(Subscription $subscription, array $paystackData = []): void
     {
         if ($subscription->status === 'active') {
             return;
@@ -55,12 +58,24 @@ class SubscriptionService
             ->where('status', 'active')
             ->update(['status' => 'expired', 'is_active' => false]);
 
-        $subscription->update([
+        $updates = [
             'status' => 'active',
             'is_active' => true,
             'start_date' => now(),
             'end_date' => now()->addDays(30),
-        ]);
+        ];
+
+        if (! empty($paystackData)) {
+            $updates['paystack_transaction_id'] = $paystackData['id'] ?? null;
+            $updates['paystack_amount_charged'] = isset($paystackData['amount'])
+                ? (int) round($paystackData['amount'] / 100)
+                : null;
+            $updates['paystack_channel'] = $paystackData['channel'] ?? null;
+            $updates['paystack_paid_at'] = $paystackData['paid_at'] ?? null;
+            $updates['paystack_gateway_response'] = $paystackData['gateway_response'] ?? null;
+        }
+
+        $subscription->update($updates);
 
         $this->sendInvoice($subscription);
     }

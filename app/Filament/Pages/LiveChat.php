@@ -27,7 +27,7 @@ class LiveChat extends Page
     {
         $user = Auth::user();
 
-        return (bool) $user && $user->is_agent;
+        return (bool) $user && $user->is_agent && $user->client?->hasFeature('chat-widget');
     }
 
     public function getConversations()

@@ -12,6 +12,11 @@ class ServiceExporter extends Exporter
 {
     protected static ?string $model = Service::class;
 
+    public function getJobConnection(): ?string
+    {
+        return 'sync';
+    }
+
     public static function getColumns(): array
     {
         return [

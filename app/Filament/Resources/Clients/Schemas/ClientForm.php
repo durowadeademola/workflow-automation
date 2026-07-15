@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Clients\Schemas;
 
+use App\Models\Client;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -55,6 +57,12 @@ class ClientForm
                             ])
                             ->helperText('Clients can\'t log in until this is "Active" — self-registered businesses start as "Pending approval".')
                             ->default('active'),
+                        CheckboxList::make('features')
+                            ->label('Services / dashboard access')
+                            ->options(Client::FEATURES)
+                            ->helperText('Which dashboard menus this client (and their agents) can see — e.g. no "Chat Widget" means no Widget Settings or Live Chat. Blank/unset means unrestricted (legacy clients).')
+                            ->columns(2)
+                            ->columnSpanFull(),
                         TextInput::make('webhook_url')
                             ->label('n8n Webhook URL')
                             ->helperText('Where the chat widget\'s messages are forwarded once this client has an active subscription.')

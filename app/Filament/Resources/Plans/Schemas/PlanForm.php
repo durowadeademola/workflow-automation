@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Plans\Schemas;
 
+use App\Models\Client;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -27,6 +29,11 @@ class PlanForm
                     ->unique(ignoreRecord: true)
                     ->alphaDash()
                     ->helperText('Used internally to link checkouts and past subscriptions to this plan. Changing it after clients have subscribed is not recommended.'),
+                Select::make('service')
+                    ->label('Restricted to service')
+                    ->options(Client::FEATURES)
+                    ->placeholder('Universal — visible to every client')
+                    ->helperText('Leave blank for a plan every client can see. Set a service to only show this plan to clients who selected it (e.g. a WhatsApp-only plan for WhatsApp Automation clients).'),
                 TextInput::make('amount')
                     ->label('Price (₦/month)')
                     ->required()

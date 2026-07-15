@@ -75,7 +75,7 @@ class Billing extends Page
 
     public function getPlans()
     {
-        return Plan::active()->get();
+        return Plan::active()->forClient($this->getClient())->get();
     }
 
     /**
@@ -107,7 +107,7 @@ class Billing extends Page
 
     public function getSwitchConfirmationMessage(string $planSlug): string
     {
-        $planRecord = Plan::active()->where('slug', $planSlug)->first();
+        $planRecord = Plan::active()->forClient($this->getClient())->where('slug', $planSlug)->first();
         $credit = $this->getProratedCredit();
 
         if (! $planRecord || $credit <= 0) {
@@ -138,7 +138,7 @@ class Billing extends Page
             return;
         }
 
-        $planRecord = Plan::active()->where('slug', $plan)->first();
+        $planRecord = Plan::active()->forClient($client)->where('slug', $plan)->first();
 
         abort_unless($planRecord, 404);
 

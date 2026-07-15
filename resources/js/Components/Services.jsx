@@ -3,11 +3,17 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const services = [
     {
+        title: "Chat Widget",
+        description: "An AI assistant embedded on your website that answers visitors instantly, 24/7",
+        features: ["Trained on your website content", "Hands off to a human on request", "Fully customizable branding", "Live agent inbox"],
+        href: "/services/chat-widget",
+        popular: true,
+    },
+    {
         title: "WhatsApp Automation",
         description: "Transform WhatsApp into your 24/7 sales, support, and booking assistant",
         features: ["Order processing", "Booking management", "Customer support", "Payment integration"],
         href: "/services/whatsapp-automation",
-        popular: true,
     },
     {
         title: "CRM Integration",
@@ -32,12 +38,6 @@ const services = [
         description: "Connect your tools and automate repetitive business processes",
         features: ["Multi-tool integration", "Custom workflows", "Data processing", "Scheduling"],
         href: "/services/workflow-automation",
-    },
-    {
-        title: "Custom Solutions",
-        description: "Tailored automation solutions for your specific business needs",
-        features: ["Consultation", "Custom development", "Integration", "Support"],
-        href: "/services/custom-solutions",
     },
 ];
 

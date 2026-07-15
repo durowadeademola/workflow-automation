@@ -23,6 +23,11 @@ class Subscription extends Model
         'is_active',
         'status',
         'paystack_reference',
+        'paystack_transaction_id',
+        'paystack_amount_charged',
+        'paystack_channel',
+        'paystack_paid_at',
+        'paystack_gateway_response',
         'limit_reached_notified_at',
     ];
 
@@ -30,6 +35,7 @@ class Subscription extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'is_active' => 'boolean',
+        'paystack_paid_at' => 'datetime',
         'limit_reached_notified_at' => 'datetime',
     ];
 

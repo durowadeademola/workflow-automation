@@ -8,12 +8,17 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Home', [
-        'plans' => Plan::active()->get(['name', 'slug', 'amount', 'description', 'features', 'is_popular']),
+        // The homepage markets the Chat Widget product, so it shows
+        // universal plans plus anything scoped specifically to it.
+        'plans' => Plan::active()
+            ->where(fn ($query) => $query->whereNull('service')->orWhere('service', 'chat-widget'))
+            ->get(['name', 'slug', 'amount', 'description', 'features', 'is_popular']),
     ]);
 });
 
 //services
 Route::get('/services', fn() => inertia('Services/Index'))->name('services');
+Route::get('/services/chat-widget', fn() => inertia('Services/ChatWidget'));
 Route::get('/services/whatsapp-automation', fn() => inertia('Services/WhatsappAutomation'));
 Route::get('/services/crm-integration', fn() => inertia('Services/CRMIntegration'));
 Route::get('/services/email-automation', fn() => inertia('Services/EmailAutomation'));

@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class ClientRegistrationController extends Controller
@@ -23,6 +24,8 @@ class ClientRegistrationController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:clients,email', 'unique:users,email'],
             'telephone' => ['nullable', 'string', 'max:50'],
             'type' => ['required', 'string', 'max:255'],
+            'features' => ['required', 'array', 'min:1'],
+            'features.*' => ['string', Rule::in(array_keys(Client::FEATURES))],
             'password' => ['required', 'confirmed', Password::min(8)],
             'terms_accepted' => ['accepted'],
         ]);
@@ -33,6 +36,7 @@ class ClientRegistrationController extends Controller
                 'email' => $validated['email'],
                 'telephone' => $validated['telephone'] ?? null,
                 'type' => $validated['type'],
+                'features' => $validated['features'],
                 'status' => 'pending',
             ]);
 
