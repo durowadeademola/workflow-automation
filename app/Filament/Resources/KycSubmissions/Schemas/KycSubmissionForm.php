@@ -44,17 +44,23 @@ class KycSubmissionForm
                             ->disk('local')
                             ->directory('kyc')
                             ->image()
+                            ->openable()
+                            ->downloadable()
                             ->disabled(),
                         FileUpload::make('document_back')
                             ->label('Document (back)')
                             ->disk('local')
                             ->directory('kyc')
                             ->image()
+                            ->openable()
+                            ->downloadable()
                             ->disabled(),
                         FileUpload::make('selfie')
                             ->disk('local')
                             ->directory('kyc')
                             ->image()
+                            ->openable()
+                            ->downloadable()
                             ->disabled(),
                     ])
                     ->columns(3)

@@ -53,7 +53,7 @@
             </div>
 
             <div class="flex justify-end">
-                <x-filament::button type="submit">
+                <x-filament::button type="submit" wire:target="submit">
                     {{ $latest ? 'Resubmit' : 'Submit for Review' }}
                 </x-filament::button>
             </div>

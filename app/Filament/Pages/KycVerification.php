@@ -90,19 +90,25 @@ class KycVerification extends Page
                     ->disk('local')
                     ->directory('kyc')
                     ->image()
+                    ->openable()
+                    ->downloadable()
                     ->required(),
                 FileUpload::make('document_back')
                     ->label('Document (back)')
                     ->helperText('Only needed for two-sided IDs, e.g. a driver\'s license.')
                     ->disk('local')
                     ->directory('kyc')
-                    ->image(),
+                    ->image()
+                    ->openable()
+                    ->downloadable(),
                 FileUpload::make('selfie')
                     ->label('Selfie holding the document')
                     ->helperText('Optional, but speeds up review.')
                     ->disk('local')
                     ->directory('kyc')
-                    ->image(),
+                    ->image()
+                    ->openable()
+                    ->downloadable(),
             ]);
     }
 

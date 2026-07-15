@@ -39,10 +39,12 @@ class Plan extends Model
     }
 
     /**
-     * Restricts to plans this client can actually see: universal plans
-     * (service = null) plus any plan scoped to a service the client picked
-     * at registration. A client with `features = null` (unrestricted/legacy)
-     * sees everything, same rule as Client::hasFeature().
+     * Restricts to plans this client can actually see. A client with
+     * `features = null` (unrestricted/legacy) sees everything, same rule as
+     * Client::hasFeature(). Otherwise it's a strict match: only plans scoped
+     * to one of the client's selected services — universal plans
+     * (service = null) are NOT shown as a fallback, so every service a
+     * client can pick needs its own plans or that client sees none at all.
      */
     public function scopeForClient($query, ?Client $client)
     {
@@ -52,8 +54,6 @@ class Plan extends Model
             return $query;
         }
 
-        return $query->where(function ($q) use ($clientFeatures) {
-            $q->whereNull('service')->orWhereIn('service', $clientFeatures);
-        });
+        return $query->whereIn('service', $clientFeatures);
     }
 }

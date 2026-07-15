@@ -5,7 +5,7 @@
         </div>
 
         <div class="flex justify-end">
-            <x-filament::button type="submit">
+            <x-filament::button type="submit" wire:target="save">
                 Save Changes
             </x-filament::button>
         </div>

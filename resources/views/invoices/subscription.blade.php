@@ -5,7 +5,7 @@
     <title>Invoice {{ $subscription->paystack_reference }}</title>
     <style>
         body {
-            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-family: 'DejaVu Sans', 'Helvetica', 'Arial', sans-serif;
             font-size: 13px;
             color: #1f2937;
             margin: 0;

@@ -160,6 +160,18 @@ class Client extends Model
      */
     public const TRIAL_MESSAGE_LIMIT = 100;
 
+    /**
+     * Maps a plan's service to the Message `source` value(s) that count
+     * toward its limit — so a WhatsApp/Telegram message never eats into a
+     * chat-widget plan's cap (and vice versa) just because both happen to
+     * share the same client. Only chat-widget has messaging-based billing
+     * today; a service with no entry here falls back to counting every
+     * source, same as a universal (service = null) plan.
+     */
+    public const SERVICE_MESSAGE_SOURCES = [
+        'chat-widget' => ['Website'],
+    ];
+
     public function messageLimitForCurrentPlan(): ?int
     {
         $subscription = $this->currentSubscription();
@@ -177,7 +189,9 @@ class Client extends Model
 
     /**
      * Counted from the start of the current subscription period, not the
-     * calendar month — plans run on their own 30-day cycle, not Jan 1st.
+     * calendar month — plans run on their own 30-day cycle. Scoped to the
+     * message source(s) that belong to the current plan's service, so
+     * usage on a different channel doesn't count against this plan's cap.
      */
     public function messagesUsedInCurrentPeriod(): int
     {
@@ -187,9 +201,18 @@ class Client extends Model
             return 0;
         }
 
-        return $this->messages()
-            ->where('created_at', '>=', $subscription->start_date)
-            ->count();
+        $query = $this->messages()->where('created_at', '>=', $subscription->start_date);
+
+        // The trial exists to try out the chat widget specifically — the
+        // only feature that's actually usable today — so it's scoped the
+        // same way a chat-widget plan would be.
+        $service = $subscription->plan === 'trial' ? 'chat-widget' : $subscription->planRecord?->service;
+
+        if ($sources = self::SERVICE_MESSAGE_SOURCES[$service] ?? null) {
+            $query->whereIn('source', $sources);
+        }
+
+        return $query->count();
     }
 
     public function hasReachedMessageLimit(): bool
