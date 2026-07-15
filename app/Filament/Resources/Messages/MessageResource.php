@@ -26,15 +26,23 @@ class MessageResource extends Resource
     {
         $user = auth()->user();
 
+        /**
+         * Type-whitelisted businesses see this either way — plus anyone with
+         * the chat-widget service, since every widget conversation logs here
+         * regardless of business type.
+         */
         return $user
             && ($user->is_client || $user->is_agent)
-            && in_array(strtolower($user->client?->type), [
-                'online-store',
-                'real-estate',
-                'logistics',
-                'sme',
-                'ecommerce',
-            ]);
+            && (
+                in_array(strtolower($user->client?->type), [
+                    'online-store',
+                    'real-estate',
+                    'logistics',
+                    'sme',
+                    'ecommerce',
+                ])
+                || $user->client?->hasFeature('chat-widget')
+            );
     }
 
     public static function form(Schema $schema): Schema

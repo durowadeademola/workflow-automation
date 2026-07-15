@@ -27,17 +27,22 @@ class CustomerResource extends Resource
 
         /**
          * We check if the user exists, is a client or agent, and if their
-         * associated client profile has the right type.
+         * associated client profile has the right type — OR they have the
+         * chat-widget service, since every widget conversation creates a
+         * Customer record regardless of business type.
          */
         return $user
             && ($user->is_client || $user->is_agent)
-            && in_array(strtolower($user->client?->type), [
-                'online-store',
-                'real-estate',
-                'logistics',
-                'sme',
-                'ecommerce',
-            ]);
+            && (
+                in_array(strtolower($user->client?->type), [
+                    'online-store',
+                    'real-estate',
+                    'logistics',
+                    'sme',
+                    'ecommerce',
+                ])
+                || $user->client?->hasFeature('chat-widget')
+            );
     }
 
     public static function form(Schema $schema): Schema

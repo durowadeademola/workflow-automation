@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Client;
 use App\Models\Customer;
 use App\Models\Message;
 use App\Models\Order;
@@ -28,12 +29,17 @@ class ClientStats extends BaseWidget
     protected function getStats(): array
     {
         $clientId = auth()->user()?->client_id;
+        $client = Client::find($clientId);
 
         $subscription = Subscription::where('client_id', $clientId)
             ->where('status', 'active')
             ->where('end_date', '>=', now())
             ->latest('end_date')
             ->first();
+
+        $messagesUsed = $client?->messagesUsedInCurrentPeriod() ?? 0;
+        $messageLimit = $client?->messageLimitForCurrentPlan();
+        $messagePercent = $messageLimit ? min(100, (int) round($messagesUsed / $messageLimit * 100)) : 0;
 
         return [
             Stat::make(
@@ -65,6 +71,15 @@ class ClientStats extends BaseWidget
             Stat::make('Messages Today', Message::where('client_id', $clientId)->whereDate('created_at', today())->count())
                 ->description('Across all channels')
                 ->icon('heroicon-o-chat-bubble-left-right'),
+
+            Stat::make(
+                'Messages This Period',
+                $messageLimit ? "{$messagesUsed} / {$messageLimit}" : (string) $messagesUsed,
+            )
+                ->description($messageLimit ? "{$messagePercent}% of your plan's limit used" : 'Unlimited on your plan')
+                ->icon('heroicon-o-chart-bar')
+                ->color($messageLimit && $messagePercent >= 100 ? 'danger' : ($messageLimit && $messagePercent >= 80 ? 'warning' : 'success'))
+                ->url('/admin/billing'),
         ];
     }
 }
