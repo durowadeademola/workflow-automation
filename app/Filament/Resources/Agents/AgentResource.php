@@ -23,16 +23,7 @@ class AgentResource extends Resource
     {
         $user = auth()->user();
 
-        /** * We check if the user exists, is a client, and if their
-         * associated client profile has the right type.
-         */
-        return $user && $user->is_client
-            && in_array(strtolower($user->client?->type), ['online-store',
-                'real-estate',
-                'logistics',
-                'sme',
-                'ecommerce',
-            ]);
+        return (bool) $user && $user->is_client;
     }
 
     public static function form(Schema $schema): Schema

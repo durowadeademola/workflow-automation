@@ -7,6 +7,7 @@ use App\Models\Subscription;
 use App\Services\PaystackService;
 use App\Services\SubscriptionService;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
@@ -122,6 +123,27 @@ class Billing extends Page
                 : "That fully covers {$planRecord->name} — you won't be charged anything today.");
     }
 
+    /**
+     * Wraps subscribe() in a Filament modal instead of the browser's native
+     * confirm() dialog (triggered via wire:confirm previously) — only asks
+     * for confirmation when switching an existing plan, matching the old
+     * behavior where a fresh subscribe needed no confirmation at all.
+     */
+    public function subscribeAction(): Action
+    {
+        return Action::make('subscribe')
+            ->requiresConfirmation(fn (array $arguments): bool => (bool) $this->getCurrentSubscription())
+            // shouldOpenModal() cares whether a heading/description is present at
+            // all, not just requiresConfirmation() — so these must themselves
+            // return null for a fresh subscribe, or the modal opens regardless.
+            ->modalHeading(fn (array $arguments): ?string => $this->getCurrentSubscription() ? 'Confirm plan change' : null)
+            ->modalDescription(fn (array $arguments): ?string => $this->getCurrentSubscription()
+                ? $this->getSwitchConfirmationMessage($arguments['plan'] ?? '')
+                : null)
+            ->modalSubmitActionLabel('Confirm')
+            ->action(fn (array $arguments) => $this->subscribe($arguments['plan']));
+    }
+
     public function subscribe(string $plan)
     {
         $client = $this->getClient();
@@ -204,6 +226,23 @@ class Billing extends Page
      * time. Subscribing to any plan afterward naturally supersedes this,
      * since it creates a fresh subscription untouched by cancelled_at.
      */
+    public function cancelAction(): Action
+    {
+        return Action::make('cancel')
+            ->requiresConfirmation()
+            ->modalHeading('Cancel subscription?')
+            ->modalDescription(function (): string {
+                $subscription = $this->getCurrentSubscription();
+
+                return $subscription
+                    ? "You'll keep access until {$subscription->end_date->format('M j, Y')} — no refund for unused time, and it won't renew after that."
+                    : 'No active subscription to cancel.';
+            })
+            ->modalSubmitActionLabel('Cancel subscription')
+            ->color('danger')
+            ->action(fn () => $this->cancel());
+    }
+
     public function cancel(): void
     {
         $subscription = $this->getCurrentSubscription();

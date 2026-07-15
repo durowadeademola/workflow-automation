@@ -6,7 +6,9 @@
       "Bash(php artisan *)",
       "Bash(php -l app/Filament/Pages/Billing.php)",
       "Bash(php -l app/Models/Subscription.php)",
-      "Bash(php -l resources/views/filament/pages/billing.blade.php)"
+      "Bash(php -l resources/views/filament/pages/billing.blade.php)",
+      "Bash(grep -n 'function getActionFunction\\\\|protected.*$action\\\\b\\\\|Closure.*$action' vendor/filament/actions/src/Concerns/HasAction.php)",
+      "Bash(php -l app/Filament/Resources/Agents/AgentResource.php)"
     ]
   }
 }

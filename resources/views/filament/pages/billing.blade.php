@@ -48,9 +48,8 @@
                         Active
                     </span>
                     <button
-                        wire:click="cancel"
-                        wire:confirm="Cancel your subscription? You'll keep access until {{ $current->end_date?->format('M j, Y') }} — no refund for unused time, and it won't renew after that."
-                        class="text-xs font-medium text-gray-400 hover:text-danger-600 transition-colors"
+                        wire:click="mountAction('cancel')"
+                        class="text-xs font-medium text-danger-600 hover:text-danger-700 transition-colors"
                     >
                         Cancel subscription
                     </button>
@@ -137,10 +136,7 @@
                     </button>
                 @else
                     <button
-                        wire:click="subscribe('{{ $plan->slug }}')"
-                        @if($current)
-                            wire:confirm="{{ $this->getSwitchConfirmationMessage($plan->slug) }}"
-                        @endif
+                        wire:click="mountAction('subscribe', { plan: '{{ $plan->slug }}' })"
                         wire:loading.attr="disabled"
                         class="mt-auto w-full text-center py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold transition-colors"
                     >
