@@ -2,7 +2,7 @@ import { Link } from "@inertiajs/react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const badges = [
-    { value: "7 Days", label: "Free Trial" },
+    { value: "14 Days", label: "Free Trial" },
     { value: "₦0", label: "Setup Fee" },
     { value: "24/7", label: "Support" },
 ];

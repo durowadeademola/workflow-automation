@@ -7,11 +7,11 @@ import PageHero from "@/Components/Layout/PageHero";
 
 const SERVICES = [
     { value: "chat-widget", label: "Chat Widget", description: "AI assistant embedded on your website" },
-    { value: "whatsapp-automation", label: "WhatsApp Automation", description: "Automated replies & workflows on WhatsApp" },
-    { value: "email-automation", label: "Email Automation", description: "Automated email sequences and replies" },
-    { value: "payment-automation", label: "Payment Automation", description: "Automated invoicing and payment collection" },
-    { value: "crm-integration", label: "CRM Integration", description: "Sync leads and customers into your CRM" },
-    { value: "workflow-automation", label: "Workflow Automation", description: "Custom internal process automation" },
+    { value: "whatsapp-automation", label: "WhatsApp Automation", description: "Automated replies & workflows on WhatsApp", comingSoon: true },
+    { value: "email-automation", label: "Email Automation", description: "Automated email sequences and replies", comingSoon: true },
+    { value: "payment-automation", label: "Payment Automation", description: "Automated invoicing and payment collection", comingSoon: true },
+    { value: "crm-integration", label: "CRM Integration", description: "Sync leads and customers into your CRM", comingSoon: true },
+    { value: "workflow-automation", label: "Workflow Automation", description: "Custom internal process automation", comingSoon: true },
 ];
 
 const BUSINESS_TYPES = [
@@ -45,7 +45,7 @@ export default function Register() {
         email: "",
         telephone: "",
         type: "",
-        features: [],
+        features: ["chat-widget"],
         password: "",
         password_confirmation: "",
         terms_accepted: false,
@@ -199,20 +199,30 @@ export default function Register() {
                                     {SERVICES.map((s) => (
                                         <label
                                             key={s.value}
-                                            className={`flex items-start gap-2.5 text-sm rounded-xl border px-3.5 py-2.5 cursor-pointer transition-colors ${
-                                                form.features.includes(s.value)
-                                                    ? "border-blue-500 bg-blue-50"
-                                                    : "border-gray-200 hover:border-gray-300"
+                                            className={`flex items-start gap-2.5 text-sm rounded-xl border px-3.5 py-2.5 transition-colors ${
+                                                s.comingSoon
+                                                    ? "border-gray-100 bg-gray-50 cursor-not-allowed opacity-60"
+                                                    : form.features.includes(s.value)
+                                                        ? "border-blue-500 bg-blue-50 cursor-pointer"
+                                                        : "border-gray-200 hover:border-gray-300 cursor-pointer"
                                             }`}
                                         >
                                             <input
                                                 type="checkbox"
                                                 checked={form.features.includes(s.value)}
                                                 onChange={() => toggleFeature(s.value)}
-                                                className="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                                disabled={s.comingSoon}
+                                                className="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:cursor-not-allowed"
                                             />
                                             <span>
-                                                <span className="block font-medium text-gray-800">{s.label}</span>
+                                                <span className="flex items-center gap-1.5 font-medium text-gray-800">
+                                                    {s.label}
+                                                    {s.comingSoon && (
+                                                        <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 bg-gray-200 rounded-full px-1.5 py-0.5">
+                                                            Coming soon
+                                                        </span>
+                                                    )}
+                                                </span>
                                                 <span className="block text-xs text-gray-400">{s.description}</span>
                                             </span>
                                         </label>

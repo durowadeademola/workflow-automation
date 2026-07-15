@@ -41,19 +41,6 @@ export default function Hero() {
             <div className="absolute bottom-10 left-0 w-72 h-72 bg-emerald-100 rounded-full opacity-30 blur-3xl -z-0" />
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                {/* Badge */}
-                <div
-                    style={{
-                        opacity: isVisible ? 1 : 0,
-                        transform: isVisible ? "translateY(0)" : "translateY(24px)",
-                        transition: "opacity 0.5s ease 0ms, transform 0.5s ease 0ms",
-                    }}
-                    className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 text-xs sm:text-sm font-medium px-3 sm:px-4 py-1.5 rounded-full mb-6 text-center"
-                >
-                    <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse flex-shrink-0" />
-                    AI-Powered Automation for Nigerian Businesses
-                </div>
-
                 {/* Headline */}
                 <h1
                     style={{

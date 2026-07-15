@@ -194,4 +194,35 @@ class Billing extends Page
 
         return redirect()->away($authorizationUrl);
     }
+
+    /**
+     * Cancels the current subscription. Since billing here is one-off
+     * charges with no auto-renewal (nothing ever re-charges a client
+     * automatically), "cancel" doesn't stop a future payment — it just
+     * marks intent and hides the renewal nudge. Access keeps running until
+     * end_date (already paid for), with no refund or credit for unused
+     * time. Subscribing to any plan afterward naturally supersedes this,
+     * since it creates a fresh subscription untouched by cancelled_at.
+     */
+    public function cancel(): void
+    {
+        $subscription = $this->getCurrentSubscription();
+
+        if (! $subscription) {
+            Notification::make()->title('No active subscription to cancel.')->danger()->send();
+
+            return;
+        }
+
+        if ($subscription->cancelled_at) {
+            return;
+        }
+
+        $subscription->update(['cancelled_at' => now()]);
+
+        Notification::make()
+            ->title('Subscription cancelled — you\'ll keep access until '.$subscription->end_date->format('M j, Y').'.')
+            ->success()
+            ->send();
+    }
 }

@@ -3,11 +3,11 @@ import { Link } from "@inertiajs/react";
 
 const servicesLinks = [
     { label: "Chat Widget", href: "/services/chat-widget" },
-    { label: "WhatsApp Automation", href: "/services/whatsapp-automation" },
-    { label: "CRM Integration", href: "/services/crm-integration" },
-    { label: "Email Automation", href: "/services/email-automation" },
-    { label: "Payment Automation", href: "/services/payment-automation" },
-    { label: "Workflow Automation", href: "/services/workflow-automation" },
+    { label: "WhatsApp Automation", href: "/services/whatsapp-automation", comingSoon: true },
+    { label: "CRM Integration", href: "/services/crm-integration", comingSoon: true },
+    { label: "Email Automation", href: "/services/email-automation", comingSoon: true },
+    { label: "Payment Automation", href: "/services/payment-automation", comingSoon: true },
+    { label: "Workflow Automation", href: "/services/workflow-automation", comingSoon: true },
     { label: "Custom Solutions", href: "/services/custom-solutions" },
 ];
 
@@ -31,15 +31,27 @@ function DropdownMenu({ items }) {
         <div className="absolute top-full left-1/2 -translate-x-1/2 w-56 z-50">
             <div className="h-2 w-full" />
             <div className="bg-white rounded-xl shadow-xl border border-gray-100 py-2">
-                {items.map((item) => (
-                    <Link
-                        key={item.href}
-                        href={item.href}
-                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
-                    >
-                        {item.label}
-                    </Link>
-                ))}
+                {items.map((item) =>
+                    item.comingSoon ? (
+                        <span
+                            key={item.href}
+                            className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-400 cursor-not-allowed"
+                        >
+                            {item.label}
+                            <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 bg-gray-100 rounded-full px-1.5 py-0.5">
+                                Soon
+                            </span>
+                        </span>
+                    ) : (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+                        >
+                            {item.label}
+                        </Link>
+                    )
+                )}
             </div>
         </div>
     );
@@ -155,16 +167,28 @@ export default function Navbar() {
                                 <p className="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                                     {item.label}
                                 </p>
-                                {item.dropdown.map((sub) => (
-                                    <Link
-                                        key={sub.href}
-                                        href={sub.href}
-                                        className="block px-5 py-2 text-sm text-gray-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg"
-                                        onClick={() => setMobileOpen(false)}
-                                    >
-                                        {sub.label}
-                                    </Link>
-                                ))}
+                                {item.dropdown.map((sub) =>
+                                    sub.comingSoon ? (
+                                        <span
+                                            key={sub.href}
+                                            className="flex items-center justify-between px-5 py-2 text-sm text-gray-400"
+                                        >
+                                            {sub.label}
+                                            <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 bg-gray-100 rounded-full px-1.5 py-0.5">
+                                                Soon
+                                            </span>
+                                        </span>
+                                    ) : (
+                                        <Link
+                                            key={sub.href}
+                                            href={sub.href}
+                                            className="block px-5 py-2 text-sm text-gray-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg"
+                                            onClick={() => setMobileOpen(false)}
+                                        >
+                                            {sub.label}
+                                        </Link>
+                                    )
+                                )}
                             </div>
                         )
                     )}

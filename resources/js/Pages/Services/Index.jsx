@@ -19,6 +19,7 @@ const services = [
         features: ["Order processing", "Booking management", "Customer support", "Payment integration"],
         href: "/services/whatsapp-automation",
         icon: MessageCircle,
+        comingSoon: true,
     },
     {
         title: "CRM Integration",
@@ -26,6 +27,7 @@ const services = [
         features: ["Lead capture", "Pipeline automation", "Follow-up sequences", "Analytics"],
         href: "/services/crm-integration",
         icon: Contact,
+        comingSoon: true,
     },
     {
         title: "Email Automation",
@@ -33,6 +35,7 @@ const services = [
         features: ["Campaign builder", "Smart segmentation", "Cart recovery", "A/B testing"],
         href: "/services/email-automation",
         icon: Mail,
+        comingSoon: true,
     },
     {
         title: "Payment Automation",
@@ -40,6 +43,7 @@ const services = [
         features: ["Auto invoicing", "Payment reminders", "Paystack & Flutterwave", "Financial reports"],
         href: "/services/payment-automation",
         icon: CreditCard,
+        comingSoon: true,
     },
     {
         title: "Workflow Automation",
@@ -47,6 +51,7 @@ const services = [
         features: ["100+ app integrations", "Visual builder", "Approval workflows", "Data sync"],
         href: "/services/workflow-automation",
         icon: Workflow,
+        comingSoon: true,
     },
 ];
 
@@ -67,15 +72,20 @@ export default function Services() {
                         {services.map((service) => (
                             <div
                                 key={service.title}
-                                className={`relative bg-white rounded-2xl p-6 border shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 flex flex-col ${
-                                    service.popular
-                                        ? "border-blue-500 ring-1 ring-blue-500"
-                                        : "border-gray-100"
+                                className={`relative bg-white rounded-2xl p-6 border shadow-sm flex flex-col ${
+                                    service.comingSoon
+                                        ? "opacity-60 grayscale border-gray-100"
+                                        : `hover:shadow-lg transition-all hover:-translate-y-1 ${service.popular ? "border-blue-500 ring-1 ring-blue-500" : "border-gray-100"}`
                                 }`}
                             >
                                 {service.popular && (
                                     <span className="absolute -top-3 left-6 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
                                         Most Popular
+                                    </span>
+                                )}
+                                {service.comingSoon && (
+                                    <span className="absolute -top-3 left-6 bg-gray-400 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                                        Coming Soon
                                     </span>
                                 )}
 
@@ -94,15 +104,21 @@ export default function Services() {
                                     ))}
                                 </ul>
 
-                                <Link
-                                    href={service.href}
-                                    className="inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors mt-auto"
-                                >
-                                    Learn More
-                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
-                                </Link>
+                                {service.comingSoon ? (
+                                    <span className="inline-flex items-center gap-1 text-sm font-semibold text-gray-400 cursor-not-allowed mt-auto">
+                                        Learn More
+                                    </span>
+                                ) : (
+                                    <Link
+                                        href={service.href}
+                                        className="inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors mt-auto"
+                                    >
+                                        Learn More
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                        </svg>
+                                    </Link>
+                                )}
                             </div>
                         ))}
                     </div>

@@ -2,8 +2,7 @@ import { Link } from "@inertiajs/react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const allPlansInclude = [
-    "7-day free trial",
-    "No setup fees",
+    "14-day free trial",
     "Cancel anytime",
     "Free training",
     "Regular updates",

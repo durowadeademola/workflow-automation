@@ -25,7 +25,7 @@ class ClientRegistrationController extends Controller
             'telephone' => ['nullable', 'string', 'max:50'],
             'type' => ['required', 'string', 'max:255'],
             'features' => ['required', 'array', 'min:1'],
-            'features.*' => ['string', Rule::in(array_keys(Client::FEATURES))],
+            'features.*' => ['string', Rule::in(Client::SELF_REGISTRATION_FEATURES)],
             'password' => ['required', 'confirmed', Password::min(8)],
             'terms_accepted' => ['accepted'],
         ]);

@@ -5,7 +5,21 @@
 
     {{-- Current status --}}
     <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-6 mb-6">
-        @if($current && $current->plan === 'trial')
+        @if($current && $current->cancelled_at)
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Cancelled</p>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $current->name }}</h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Your widget stays active until {{ $current->end_date?->format('M j, Y') }}
+                        ({{ $current->end_date?->diffForHumans() }}), then won't renew. Subscribe to any plan below to resume.
+                    </p>
+                </div>
+                <span class="text-xs font-semibold uppercase tracking-wide text-gray-600 bg-gray-100 rounded-full px-3 py-1">
+                    Cancelled
+                </span>
+            </div>
+        @elseif($current && $current->plan === 'trial')
             <div class="flex items-center justify-between flex-wrap gap-4">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wide text-amber-600">Free Trial</p>
@@ -29,9 +43,18 @@
                         ({{ $current->end_date?->diffForHumans() }})
                     </p>
                 </div>
-                <span class="text-xs font-semibold uppercase tracking-wide text-emerald-700 bg-emerald-100 rounded-full px-3 py-1">
-                    Active
-                </span>
+                <div class="flex flex-col items-end gap-2">
+                    <span class="text-xs font-semibold uppercase tracking-wide text-emerald-700 bg-emerald-100 rounded-full px-3 py-1">
+                        Active
+                    </span>
+                    <button
+                        wire:click="cancel"
+                        wire:confirm="Cancel your subscription? You'll keep access until {{ $current->end_date?->format('M j, Y') }} — no refund for unused time, and it won't renew after that."
+                        class="text-xs font-medium text-gray-400 hover:text-danger-600 transition-colors"
+                    >
+                        Cancel subscription
+                    </button>
+                </div>
             </div>
         @else
             <div class="text-center py-4">
@@ -150,11 +173,12 @@
                         <div class="flex items-center justify-end gap-2 mt-0.5">
                             <span @class([
                                 'text-[10px] font-semibold uppercase tracking-wide rounded-full px-2 py-0.5',
-                                'text-emerald-700 bg-emerald-100' => $sub->status === 'active',
+                                'text-emerald-700 bg-emerald-100' => $sub->status === 'active' && ! $sub->cancelled_at,
+                                'text-gray-600 bg-gray-100' => $sub->status === 'active' && $sub->cancelled_at,
                                 'text-amber-700 bg-amber-100' => $sub->status === 'pending',
                                 'text-gray-500 bg-gray-100' => in_array($sub->status, ['expired', 'cancelled']),
                             ])>
-                                {{ ucfirst($sub->status) }}
+                                {{ $sub->status === 'active' && $sub->cancelled_at ? 'Cancelled' : ucfirst($sub->status) }}
                             </span>
                             @if($sub->start_date && $sub->plan !== 'trial')
                                 <a

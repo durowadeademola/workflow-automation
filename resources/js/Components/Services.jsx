@@ -14,30 +14,35 @@ const services = [
         description: "Transform WhatsApp into your 24/7 sales, support, and booking assistant",
         features: ["Order processing", "Booking management", "Customer support", "Payment integration"],
         href: "/services/whatsapp-automation",
+        comingSoon: true,
     },
     {
         title: "CRM Integration",
         description: "Centralize customer data and automate relationship management",
         features: ["Data synchronization", "Lead management", "Pipeline automation", "Analytics"],
         href: "/services/crm-integration",
+        comingSoon: true,
     },
     {
         title: "Email Automation",
         description: "Automated email campaigns, follow-ups, and customer journeys",
         features: ["Campaign automation", "Segmentation", "A/B testing", "Analytics"],
         href: "/services/email-automation",
+        comingSoon: true,
     },
     {
         title: "Payment Automation",
         description: "Seamless payment processing, invoicing, and reconciliation",
         features: ["Paystack integration", "Auto-invoicing", "Payment tracking", "Refunds"],
         href: "/services/payment-automation",
+        comingSoon: true,
     },
     {
         title: "Workflow Automation",
         description: "Connect your tools and automate repetitive business processes",
         features: ["Multi-tool integration", "Custom workflows", "Data processing", "Scheduling"],
         href: "/services/workflow-automation",
+        comingSoon: true,
     },
 ];
 
@@ -70,11 +75,13 @@ export default function Services() {
                     {services.map((service, i) => (
                         <div
                             key={service.title}
-                            className={`relative bg-white rounded-2xl p-6 border shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 flex flex-col ${
-                                service.popular ? "border-blue-500 ring-1 ring-blue-500" : "border-gray-100"
+                            className={`relative bg-white rounded-2xl p-6 border shadow-sm flex flex-col ${
+                                service.comingSoon
+                                    ? "opacity-60 grayscale border-gray-100"
+                                    : `hover:shadow-lg transition-all hover:-translate-y-1 ${service.popular ? "border-blue-500 ring-1 ring-blue-500" : "border-gray-100"}`
                             }`}
                             style={{
-                                opacity: cardsVisible ? 1 : 0,
+                                opacity: cardsVisible ? (service.comingSoon ? 0.6 : 1) : 0,
                                 transform: cardsVisible ? "translateY(0)" : "translateY(55px)",
                                 transition: `opacity 0.6s ease ${i * 100}ms, transform 0.6s ease ${i * 100}ms`,
                             }}
@@ -82,6 +89,11 @@ export default function Services() {
                             {service.popular && (
                                 <span className="absolute -top-3 left-6 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
                                     Popular
+                                </span>
+                            )}
+                            {service.comingSoon && (
+                                <span className="absolute -top-3 left-6 bg-gray-400 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                                    Coming Soon
                                 </span>
                             )}
                             <h3 className="font-bold text-gray-900 text-lg mb-2">{service.title}</h3>
@@ -96,15 +108,21 @@ export default function Services() {
                                     </li>
                                 ))}
                             </ul>
-                            <Link
-                                href={service.href}
-                                className="inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors mt-auto"
-                            >
-                                Learn More
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                </svg>
-                            </Link>
+                            {service.comingSoon ? (
+                                <span className="inline-flex items-center gap-1 text-sm font-semibold text-gray-400 cursor-not-allowed mt-auto">
+                                    Learn More
+                                </span>
+                            ) : (
+                                <Link
+                                    href={service.href}
+                                    className="inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors mt-auto"
+                                >
+                                    Learn More
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                </Link>
+                            )}
                         </div>
                     ))}
                 </div>

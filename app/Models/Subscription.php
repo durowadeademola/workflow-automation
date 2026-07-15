@@ -22,6 +22,7 @@ class Subscription extends Model
         'end_date',
         'is_active',
         'status',
+        'cancelled_at',
         'paystack_reference',
         'paystack_transaction_id',
         'paystack_amount_charged',
@@ -37,6 +38,7 @@ class Subscription extends Model
         'is_active' => 'boolean',
         'paystack_paid_at' => 'datetime',
         'limit_reached_notified_at' => 'datetime',
+        'cancelled_at' => 'datetime',
     ];
 
     public function client()

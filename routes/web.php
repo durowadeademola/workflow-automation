@@ -8,10 +8,12 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Home', [
-        // The homepage markets the Chat Widget product, so it shows
-        // universal plans plus anything scoped specifically to it.
+        // Only chat-widget is actually sellable right now, so the homepage
+        // pricing section shows exactly those plans — not the older
+        // universal ones, which predate service-scoping and aren't part of
+        // what's being sold today.
         'plans' => Plan::active()
-            ->where(fn ($query) => $query->whereNull('service')->orWhere('service', 'chat-widget'))
+            ->where('service', 'chat-widget')
             ->get(['name', 'slug', 'amount', 'description', 'features', 'is_popular']),
     ]);
 });

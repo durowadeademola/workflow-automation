@@ -51,6 +51,15 @@ class Client extends Model
     ];
 
     /**
+     * Only chat-widget is actually built right now — the rest of FEATURES
+     * exists so the data model and admin tooling are ready for them, but
+     * self-registration is deliberately restricted to this subset until
+     * more services ship. Admins can still assign any FEATURES slug to a
+     * client manually via ClientForm.
+     */
+    public const SELF_REGISTRATION_FEATURES = ['chat-widget'];
+
+    /**
      * `null` means this client predates the feature-selection system (or an
      * admin hasn't set it) — treated as unrestricted rather than retroactively
      * locking out access nobody actually took away. Once a real array is set
