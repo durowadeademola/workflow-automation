@@ -98,6 +98,23 @@ class Billing extends Page
     }
 
     /**
+     * @return array{used: int, limit: ?int}
+     */
+    public function getAppointmentUsage(): array
+    {
+        $client = $this->getClient();
+
+        if (! $client) {
+            return ['used' => 0, 'limit' => 0];
+        }
+
+        return [
+            'used' => $client->appointmentsBookedInCurrentPeriod(),
+            'limit' => $client->appointmentLimitForCurrentPlan(),
+        ];
+    }
+
+    /**
      * The Naira credit switching to $planSlug right now would carry over
      * from the unused portion of the current subscription (₦0 if there's
      * no current subscription, or it's the free trial).

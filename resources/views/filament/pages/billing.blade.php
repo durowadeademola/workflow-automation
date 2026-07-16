@@ -93,6 +93,32 @@
                     @endif
                 @endif
             </div>
+
+            @php
+                $apptUsage = $this->getAppointmentUsage();
+                $apptPercent = $apptUsage['limit'] ? min(100, (int) round($apptUsage['used'] / $apptUsage['limit'] * 100)) : 0;
+            @endphp
+            <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                <div class="flex items-center justify-between text-xs mb-1.5">
+                    <span class="font-medium text-gray-600 dark:text-gray-300">Appointments this billing period</span>
+                    <span class="text-gray-500">
+                        {{ number_format($apptUsage['used']) }}{{ $apptUsage['limit'] ? ' / '.number_format($apptUsage['limit']) : ' (unlimited)' }}
+                    </span>
+                </div>
+                @if($apptUsage['limit'])
+                    <div class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                        <div
+                            class="h-full rounded-full {{ $apptPercent >= 100 ? 'bg-danger-500' : ($apptPercent >= 80 ? 'bg-amber-500' : 'bg-primary-500') }}"
+                            style="width: {{ $apptPercent }}%"
+                        ></div>
+                    </div>
+                    @if($apptPercent >= 100)
+                        <p class="text-xs text-danger-600 mt-1.5">You've reached this period's appointment limit — the widget can't book new appointments until you upgrade or your plan renews.</p>
+                    @elseif($apptPercent >= 80)
+                        <p class="text-xs text-amber-600 mt-1.5">Approaching your monthly appointment limit.</p>
+                    @endif
+                @endif
+            </div>
         @endif
     </div>
 
@@ -113,8 +139,11 @@
                 @if($plan->description)
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $plan->description }}</p>
                 @endif
-                <p class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 mt-2 mb-4">
+                <p class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 mt-2 mb-1">
                     ₦{{ number_format($plan->amount) }}<span class="text-sm font-normal text-gray-400">/month</span>
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                    {{ $plan->appointment_limit ? number_format($plan->appointment_limit).' appointments/month' : 'Unlimited appointments' }}
                 </p>
 
                 @if($plan->features)
