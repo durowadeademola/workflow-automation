@@ -22,7 +22,8 @@ class UserForm
                         Select::make('client_id')
                             ->label('Client')
                             ->relationship('client', 'name')
-                            ->preload(),
+                            ->preload()
+                            ->live(),
                         // ->required(),
                         // ->visible(fn () => auth()->user()->is_admin) // Only Admin sees this
                         // ->default(auth()->user()->client_id),
@@ -54,24 +55,22 @@ class UserForm
                             ->label('Account Type')
                         // We don't save this to DB, so we must manually fetch the value for existing records
                             ->formatStateUsing(function ($record) {
-                                // if (! $record) {
-                                //     return 'is_agent';
-                                // }
                                 if ($record?->is_admin) {
                                     return 'is_admin';
                                 }
                                 if ($record?->is_client) {
                                     return 'is_client';
                                 }
-
-                                // return 'is_agent';
+                                if ($record?->is_agent) {
+                                    return 'is_agent';
+                                }
                             })
                             ->options(function () {
                                 if (auth()->user()?->is_admin) {
                                     return [
                                         'is_admin' => 'Admin',
                                         'is_client' => 'Client',
-                                        // 'is_agent' => 'Agent',
+                                        'is_agent' => 'Agent',
                                     ];
                                 }
 
@@ -93,7 +92,24 @@ class UserForm
                         // Add these Hidden fields so Filament actually saves the data to your columns
                         Hidden::make('is_admin'),
                         Hidden::make('is_client'),
-                        // Hidden::make('is_agent'),
+                        Hidden::make('is_agent'),
+
+                        // 4. AGENT PROFILE LINK
+                        // Handoffs are only ever assigned to agents with a linked,
+                        // active Agent profile (see AgentAssignmentService) — without
+                        // this, an "Agent" login can sign in but never receive a chat.
+                        Select::make('agent_id')
+                            ->label('Agent profile')
+                            ->relationship(
+                                'agent',
+                                'name',
+                                fn ($query, $get) => $query->where('client_id', $get('client_id')),
+                            )
+                            ->searchable()
+                            ->preload()
+                            ->helperText('The Agent record this login is tied to — determines which client\'s chats they can be assigned and which orders they show up on.')
+                            ->visible(fn ($get) => $get('role_type') === 'is_agent')
+                            ->required(fn ($get) => $get('role_type') === 'is_agent'),
 
                     ])->columns(2)
                     ->columnSpan('full'),

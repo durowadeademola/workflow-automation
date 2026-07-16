@@ -434,13 +434,12 @@
         <div class="cw-header-left">
           <div class="cw-avatar-wrap">
             <div class="cw-avatar">${cfg.agentName.charAt(0).toUpperCase()}</div>
-            <div class="cw-online-ring"></div>
           </div>
           <div class="cw-header-text">
             <div class="cw-header-name">${cfg.agentName}</div>
             <div class="cw-header-status">
               <span class="cw-status-dot"></span>
-              Online now
+              Online
             </div>
           </div>
         </div>
@@ -720,6 +719,7 @@
       removeTyping();
 
       if (!res.ok) {
+        
         // The proxy still sends a friendly, situation-specific message even
         // on a non-2xx response (e.g. subscription paused, n8n unreachable).
         appendMsg('bot', data.reply || `Sorry, I'm having a little trouble right now. You can reach us directly on WhatsApp and we'll assist you promptly. 😊`);

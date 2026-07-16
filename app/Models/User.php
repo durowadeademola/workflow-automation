@@ -34,6 +34,8 @@ class User extends Authenticatable implements FilamentUser
         'is_admin',
         'is_client',
         'is_agent',
+        'is_active',
+        'email_notifications_enabled',
     ];
 
     /**
@@ -56,6 +58,8 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
+            'email_notifications_enabled' => 'boolean',
         ];
     }
 
@@ -90,6 +94,11 @@ class User extends Authenticatable implements FilamentUser
      */
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
+        // Deactivated by an admin — blocked from either panel regardless of role.
+        if (! $this->is_active) {
+            return false;
+        }
+
         if ($panel->getId() === 'admin') {
             return (bool) $this->is_admin;
         }

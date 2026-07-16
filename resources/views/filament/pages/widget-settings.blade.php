@@ -1,4 +1,34 @@
 <x-filament-panels::page>
+    @if($this->isWidgetReady())
+        <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-6 mb-6 flex items-center justify-between gap-4">
+            <div>
+                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Widget Status</h3>
+                <p class="text-xs text-gray-400 mt-0.5">
+                    {{ $this->isWidgetEnabled()
+                        ? 'Your assistant is live and answering visitors right now.'
+                        : "Your assistant is turned off — visitors won't get a response until you turn it back on." }}
+                </p>
+            </div>
+            <button
+                type="button"
+                wire:click="toggleWidgetEnabled"
+                wire:loading.attr="disabled"
+                @class([
+                    'shrink-0 relative inline-flex h-7 w-12 items-center rounded-full transition-colors',
+                    'bg-emerald-500' => $this->isWidgetEnabled(),
+                    'bg-gray-300 dark:bg-gray-700' => ! $this->isWidgetEnabled(),
+                ])
+                aria-label="Toggle widget on or off"
+            >
+                <span @class([
+                    'inline-block h-5 w-5 transform rounded-full bg-white transition-transform',
+                    'translate-x-6' => $this->isWidgetEnabled(),
+                    'translate-x-1' => ! $this->isWidgetEnabled(),
+                ])></span>
+            </button>
+        </div>
+    @endif
+
     <form wire:submit="save" class="space-y-6">
         <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-6">
             {{ $this->form }}

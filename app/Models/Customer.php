@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Customer extends Model
 {
@@ -48,6 +49,23 @@ class Customer extends Model
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'customer_id');
+    }
+
+    /**
+     * Anonymous visitors (the overwhelming majority of chat-widget chats)
+     * never give a name, so `name` stays null — this gives them a stable,
+     * human-scannable label instead of a blank cell. It's derived from
+     * `chat_id` rather than stored, so it's consistent on every render and
+     * automatically stops being used the moment a real name is captured.
+     */
+    public function getDisplayNameAttribute(): string
+    {
+        return $this->name ?: Str::upper(substr(md5((string) $this->chat_id), 0, 8));
     }
 
     /**

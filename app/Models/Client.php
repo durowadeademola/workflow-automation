@@ -24,6 +24,7 @@ class Client extends Model
         'webhook_url',
         'widget_ready',
         'widget_ready_at',
+        'widget_enabled',
         'widget_agent_name',
         'widget_primary_color',
         'widget_greeting',
@@ -39,6 +40,7 @@ class Client extends Model
         'features' => 'array',
         'widget_ready' => 'boolean',
         'widget_ready_at' => 'datetime',
+        'widget_enabled' => 'boolean',
     ];
 
     /**

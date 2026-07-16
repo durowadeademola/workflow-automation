@@ -23,7 +23,7 @@ class WidgetChatController extends Controller
     public function send(Request $request)
     {
         $validated = $request->validate([
-            'client_id' => ['required', Rule::exists('clients', 'id')],
+            'clientId' => ['required', Rule::exists('clients', 'id')],
             'message' => ['required', 'string', 'max:4000'],
             'history' => ['array'],
             'history.*.role' => ['required_with:history', 'in:user,assistant'],
@@ -34,7 +34,14 @@ class WidgetChatController extends Controller
             'sessionToken' => ['nullable', 'string', 'max:100'],
         ]);
 
-        $client = Client::findOrFail($validated['client_id']);
+        $client = Client::findOrFail($validated['clientId']);
+
+        if (! $client->widget_enabled) {
+            return response()->json([
+                'reply' => "This assistant is currently turned off. Please reach out to us directly and we'll get back to you.",
+                'blocked' => true,
+            ], 403);
+        }
 
         if (! $client->hasActiveSubscription()) {
             return response()->json([

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Messages;
 use App\Filament\Resources\Messages\Pages\CreateMessage;
 use App\Filament\Resources\Messages\Pages\EditMessage;
 use App\Filament\Resources\Messages\Pages\ListMessages;
+use App\Filament\Resources\Messages\Pages\ViewMessage;
 use App\Filament\Resources\Messages\Schemas\MessageForm;
 use App\Filament\Resources\Messages\Tables\MessagesTable;
 use App\Models\Message;
@@ -68,14 +69,25 @@ class MessageResource extends Resource
             'index' => ListMessages::route('/'),
             'create' => CreateMessage::route('/create'),
             'edit' => EditMessage::route('/{record}/edit'),
+            'view' => ViewMessage::route('/{record}'),
         ];
     }
 
+    /**
+     * One row per customer — whichever of their messages has the highest id
+     * (i.e. their latest) — rather than every individual message. The full
+     * thread for that customer is only a click away via the view page.
+     */
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
             ->with('customer')
             ->where('client_id', auth()->user()?->client_id)
+            ->whereIn('id', function ($query) {
+                $query->selectRaw('MAX(id)')
+                    ->from('messages')
+                    ->groupBy('customer_id');
+            })
             ->orderBy('created_at', 'desc');
     }
 

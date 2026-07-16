@@ -33,8 +33,9 @@ class CustomersTable
                     ->placeholder('—')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('name')
-                    ->searchable(),
+                TextColumn::make('display_name')
+                    ->label('Name')
+                    ->searchable(query: fn ($query, $search) => $query->orWhere('name', 'like', "%{$search}%")),
                 TextColumn::make('username')
                     ->searchable(),
                 TextColumn::make('chat_id')

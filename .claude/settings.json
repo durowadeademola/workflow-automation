@@ -26,7 +26,27 @@
       "Bash(php -l app/Filament/Pages/AppointmentCalendar.php)",
       "Bash(php -l app/Filament/Resources/Appointments/Pages/ListAppointments.php)",
       "Bash(php -l resources/views/filament/pages/appointment-calendar.blade.php)",
-      "Bash(php -l app/Filament/Resources/Clients/RelationManagers/AppointmentsRelationManager.php)"
+      "Bash(php -l app/Filament/Resources/Clients/RelationManagers/AppointmentsRelationManager.php)",
+      "Bash(curl -s -o /tmp_response.txt -w 'HTTP_STATUS:%{http_code}\\\\n' -X POST http://blueflow.test/api/widget/chat -H 'Content-Type: application/json' -H 'Origin: http://blueflow.test' -H 'Referer: http://blueflow.test/' -d '{\"clientId\":4,\"message\":\"hello\",\"sessionToken\":\"test-token-123\"}')",
+      "Bash(cat /tmp_response.txt)",
+      "Bash(curl -s -o /tmp_response.txt -w 'HTTP_STATUS:%{http_code}\\\\n' -X POST http://blueflow.test/api/widget/chat -H 'Content-Type: application/json' -H 'Origin: http://blueflow.test' -H 'Referer: http://blueflow.test/' -d '{\"client_id\":4,\"message\":\"hello\",\"sessionToken\":\"test-token-123\"}')",
+      "Bash(curl -s -o /tmp_response2.txt -w 'HTTP_STATUS:%{http_code}\\\\n' -X POST http://blueflow.test/api/widget/chat -H 'Content-Type: application/json' -H 'Origin: http://blueflow.test' -H 'Referer: http://blueflow.test/' -d '{\"clientId\":4,\"message\":\"hello\",\"history\":[],\"systemPrompt\":null,\"businessName\":\"Blueflow Automation\",\"waNumber\":null,\"sessionToken\":\"test-token-456\"}')",
+      "Bash(cat /tmp_response2.txt)",
+      "Bash(rm -f /tmp_response2.txt)",
+      "Bash(netstat -ano)",
+      "Bash(curl -s -o /tmp_r3.txt -w 'HTTP_STATUS:%{http_code}\\\\n' -X POST http://127.0.0.1:8000/api/widget/chat -H 'Content-Type: application/json' -d '{\"clientId\":4,\"message\":\"hello\",\"sessionToken\":\"test-789\"}')",
+      "Bash(cat /tmp_r3.txt)",
+      "Bash(rm -f /tmp_r3.txt)",
+      "Bash(powershell -Command \"Get-Process -Id 25388 | Select-Object Id,ProcessName,Path\")",
+      "Bash(powershell -Command \"Get-CimInstance Win32_Process -Filter \\\\\"ProcessId=25388\\\\\" | Select-Object CommandLine\")",
+      "Bash(powershell -Command \"\\(Get-CimInstance Win32_Process -Filter \\\\\"ProcessId=25388\\\\\"\\).CommandLine\")",
+      "Bash(curl -s -i -X POST http://127.0.0.1:8000/api/widget/chat -H 'Content-Type: application/json' -d '{\"clientId\":4,\"message\":\"hello\",\"sessionToken\":\"test-789\"}')",
+      "Bash(curl -s -i \"http://127.0.0.1:8000/api/widget-knowledge\")",
+      "Bash(curl -s -i -X POST https://unrepugnant-silas-anecdotically.ngrok-free.dev/webhook/chat-widget -H 'Content-Type: application/json' -d '{\"message\":\"hello test\"}' --max-time 15)",
+      "Bash(curl -s -i -X POST https://unrepugnant-silas-anecdotically.ngrok-free.dev/webhook/chat-widget -H 'Content-Type: application/json' -d '{\"message\":\"Hello, what services do you offer?\",\"history\":[],\"systemPrompt\":null,\"businessName\":\"Blueflow Automation\",\"clientId\":4,\"waNumber\":null,\"sessionToken\":\"diag-test-001\"}' --max-time 25)",
+      "Bash(curl -s -o /tmp_n8n_response.json -w 'STATUS:%{http_code} SIZE:%{size_download}\\\\n' -X POST https://unrepugnant-silas-anecdotically.ngrok-free.dev/webhook/chat-widget -H 'Content-Type: application/json' -d '{\"message\":\"Hello, what services do you offer?\",\"history\":[],\"systemPrompt\":null,\"businessName\":\"Blueflow Automation\",\"clientId\":4,\"waNumber\":null,\"sessionToken\":\"diag-test-002\"}' --max-time 25)",
+      "Bash(cat /tmp_n8n_response.json)",
+      "Bash(rm -f /tmp_n8n_response.json)"
     ]
   }
 }

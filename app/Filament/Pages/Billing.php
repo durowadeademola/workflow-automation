@@ -143,22 +143,26 @@ class Billing extends Page
 
     /**
      * Wraps subscribe() in a Filament modal instead of the browser's native
-     * confirm() dialog (triggered via wire:confirm previously) — only asks
-     * for confirmation when switching an existing plan, matching the old
-     * behavior where a fresh subscribe needed no confirmation at all.
+     * confirm() dialog (triggered via wire:confirm previously). Always
+     * confirms now — even a fresh subscribe carries the processing-fee
+     * disclosure below, so it can no longer skip the modal the way it used
+     * to when there was nothing plan-switch-specific to say.
      */
     public function subscribeAction(): Action
     {
         return Action::make('subscribe')
-            ->requiresConfirmation(fn (array $arguments): bool => (bool) $this->getCurrentSubscription())
-            // shouldOpenModal() cares whether a heading/description is present at
-            // all, not just requiresConfirmation() — so these must themselves
-            // return null for a fresh subscribe, or the modal opens regardless.
-            ->modalHeading(fn (array $arguments): ?string => $this->getCurrentSubscription() ? 'Confirm plan change' : null)
-            ->modalDescription(fn (array $arguments): ?string => $this->getCurrentSubscription()
-                ? $this->getSwitchConfirmationMessage($arguments['plan'] ?? '')
-                : null)
-            ->modalSubmitActionLabel('Confirm')
+            ->requiresConfirmation()
+            ->modalHeading(fn (array $arguments): string => $this->getCurrentSubscription() ? 'Confirm plan change' : 'Confirm subscription')
+            ->modalDescription(function (array $arguments): string {
+                $feeNote = 'Additional processing fees apply.';
+
+                if ($this->getCurrentSubscription()) {
+                    return $this->getSwitchConfirmationMessage($arguments['plan'] ?? '').' '.$feeNote;
+                }
+
+                return $feeNote;
+            })
+            ->modalSubmitActionLabel('Proceed to payment')
             ->action(fn (array $arguments) => $this->subscribe($arguments['plan']));
     }
 

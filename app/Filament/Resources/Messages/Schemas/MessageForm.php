@@ -23,7 +23,7 @@ class MessageForm
                         Select::make('customer_id')
                             ->label('Customer')
                             ->relationship('customer', 'username')
-                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->username ?? $record->name ?? "Customer #{$record->id}")
+                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->username ?? $record->display_name)
                             ->searchable()
                             ->preload()
                             ->required(),

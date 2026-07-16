@@ -1,0 +1,381 @@
+{
+  "name": "Blueflow Crawler",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 2
+            }
+          ]
+        }
+      },
+      "id": "beee33f8-0630-4495-8cac-030dafbfd5a6",
+      "name": "Weekly Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        944,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://qqvrdqnzkxutwipysiwk.supabase.co/rest/v1/rpc/delete_client_chunks",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxdnJkcW56a3h1dHdpcHlzaXdrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM4MTU5NCwiZXhwIjoyMDk0OTU3NTk0fQ.ds2BscRxOzVGcj_3MgCxRUHS_Z5cInQp6pIqxBvi-Gg"
+            },
+            {
+              "name": "Authorization",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxdnJkcW56a3h1dHdpcHlzaXdrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM4MTU5NCwiZXhwIjoyMDk0OTU3NTk0fQ.ds2BscRxOzVGcj_3MgCxRUHS_Z5cInQp6pIqxBvi-Gg"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{ \"p_client_id\": \"blueflow-automation\" }",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "2b4b1414-a842-4af2-8304-762ac3bd281c",
+      "name": "Delete Old Chunks",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1216,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ---- CONFIGURE PER CLIENT ----\nconst CLIENT_ID = 'blueflow-automation';\nconst WEBSITE_URL = 'http://127.0.0.1:8000';\nconst PAGES_TO_CRAWL = ['/api/widget-knowledge', '/api/widget-knowledges'];\n// --------------------------------\n\nconst pages = PAGES_TO_CRAWL.map(path => ({\n  clientId: CLIENT_ID,\n  baseUrl: WEBSITE_URL,\n  path,\n  fullUrl: WEBSITE_URL.replace(/\\/$/, '') + path\n}));\n\nreturn pages.map(p => ({ json: p }));"
+      },
+      "id": "41347fe1-f4cb-4a25-8274-d7fd0f84b008",
+      "name": "Client Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1424,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://127.0.0.1:5000/fetch",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.fullUrl }}"
+            },
+            {
+              "name": "clientId",
+              "value": "={{ $json.clientId }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          },
+          "timeout": 15000
+        }
+      },
+      "id": "441f1033-8557-4292-8419-683cb1a07fa7",
+      "name": "Fetch Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1648,
+        1008
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const allItems = $input.all();\nconst results = [];\n\nfor (const inputItem of allItems) {\n  const item = inputItem.json;\n  const clientId = item.clientId;\n  const url = item.url;\n\n  let html = item.data || item.content || '';\n\n  let text = html\n    .replace(/<script[^>]*>[\\s\\S]*?<\\/script>/gi, '')\n    .replace(/<style[^>]*>[\\s\\S]*?<\\/style>/gi, '')\n    .replace(/<nav[^>]*>[\\s\\S]*?<\\/nav>/gi, '')\n    .replace(/<footer[^>]*>[\\s\\S]*?<\\/footer>/gi, '')\n    .replace(/<header[^>]*>[\\s\\S]*?<\\/header>/gi, '')\n    .replace(/<[^>]+>/g, ' ')\n    .replace(/&nbsp;/g, ' ')\n    .replace(/&amp;/g, '&')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/\\\\n/g, ' ')\n    .replace(/\\\\t/g, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim();\n\n  if (text.length < 50) continue;\n\n  const CHUNK_SIZE = 500;\n  const OVERLAP = 50;\n  let start = 0;\n  let chunkIndex = 0;\n\n  while (start < text.length) {\n    const end = Math.min(start + CHUNK_SIZE, text.length);\n    const chunk = text.slice(start, end).trim();\n    if (chunk.length > 100) {\n      results.push({\n        json: {\n          clientId,\n          url,\n          content: chunk,\n          chunkIndex\n        }\n      });\n      chunkIndex++;\n    }\n    start += CHUNK_SIZE - OVERLAP;\n  }\n}\n\nreturn results;"
+      },
+      "id": "25cde2a8-63ef-4352-a1e1-68c2f90f0eaf",
+      "name": "Extract & Chunk",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1872,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5000/embed",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "name": "clientId",
+              "value": "={{ $json.clientId }}"
+            },
+            {
+              "name": "url",
+              "value": "={{ $json.url }}"
+            },
+            {
+              "name": "content",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "name": "chunkIndex",
+              "value": "={{ $json.chunkIndex }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "faa4db71-3d52-4f7e-a425-d7dd4ee27dd0",
+      "name": "Generate Embedding",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2128,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const allItems = $input.all();\nconst results = [];\n\nfor (const inputItem of allItems) {\n  const item = inputItem.json;\n\n  results.push({\n    json: {\n      client_id: item.clientId,\n      url: item.url || '',\n      content: item.content || '',\n      embedding: item.embeddingString,\n      metadata: {\n        chunkIndex: item.chunkIndex || 0,\n        contentLength: item.content ? item.content.length : 0\n      }\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "8cf80420-d026-4cf2-bcb1-01b26125a3bf",
+      "name": "Prepare for Supabase",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2672,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://qqvrdqnzkxutwipysiwk.supabase.co/rest/v1/website_chunks",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxdnJkcW56a3h1dHdpcHlzaXdrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM4MTU5NCwiZXhwIjoyMDk0OTU3NTk0fQ.ds2BscRxOzVGcj_3MgCxRUHS_Z5cInQp6pIqxBvi-Gg"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxdnJkcW56a3h1dHdpcHlzaXdrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTM4MTU5NCwiZXhwIjoyMDk0OTU3NTk0fQ.ds2BscRxOzVGcj_3MgCxRUHS_Z5cInQp6pIqxBvi-Gg"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "client_id",
+              "value": "={{ $json.client_id }}"
+            },
+            {
+              "name": "url",
+              "value": "={{ $json.url }}"
+            },
+            {
+              "name": "content",
+              "value": "={{ $json.content }}"
+            },
+            {
+              "name": "embedding",
+              "value": "={{ $json.embedding }}"
+            },
+            {
+              "name": "metadata",
+              "value": "={{ JSON.stringify($json.metadata) }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "780cef78-36c9-4c0e-b62e-e97bb0e8c964",
+      "name": "Store in Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2944,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const allItems = $input.all();\nconst results = [];\n\nfor (const inputItem of allItems) {\n  const item = inputItem.json;\n  const embedding = item.embedding;\n\n  if (!embedding || !Array.isArray(embedding)) continue;\n\n  results.push({\n    json: {\n      clientId: item.clientId,\n      url: item.url,\n      content: item.content,\n      chunkIndex: item.chunkIndex,\n      embeddingString: '[' + embedding.join(',') + ']',\n      embeddingLength: embedding.length\n    }\n  });\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        1008
+      ],
+      "id": "f8531a4b-7b92-40ab-a2f0-dd781e56e1f5",
+      "name": "Build Embedding"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        960,
+        768
+      ],
+      "id": "1785eb07-9895-45a4-92f1-2266d4893941",
+      "name": "Manual Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Weekly Schedule": {
+      "main": [
+        [
+          {
+            "node": "Delete Old Chunks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old Chunks": {
+      "main": [
+        [
+          {
+            "node": "Client Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Client Config": {
+      "main": [
+        [
+          {
+            "node": "Fetch Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Page": {
+      "main": [
+        [
+          {
+            "node": "Extract & Chunk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract & Chunk": {
+      "main": [
+        [
+          {
+            "node": "Generate Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Embedding": {
+      "main": [
+        [
+          {
+            "node": "Build Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare for Supabase": {
+      "main": [
+        [
+          {
+            "node": "Store in Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Embedding": {
+      "main": [
+        [
+          {
+            "node": "Prepare for Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Delete Old Chunks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "690f0aae-621a-4866-b194-32814305c3c2",
+  "meta": {
+    "instanceId": "afbe08eb95075820bb512108fb325a94793b69514acce40eb65440bad4d50bb3"
+  },
+  "id": "3NbwfIEB9FzcE4R3",
+  "tags": []
+}

@@ -34,6 +34,7 @@ class WidgetConversationController extends Controller
 
         $client = Client::findOrFail($validated['client_id']);
 
+        abort_unless($client->widget_enabled, 403, 'This widget is currently turned off.');
         abort_unless($client->hasActiveSubscription(), 402, 'This client does not have an active subscription.');
 
         if ($client->hasReachedMessageLimit()) {
@@ -210,6 +211,8 @@ class WidgetConversationController extends Controller
 
     private function assertClientActive(WidgetConversation $conversation): void
     {
+        abort_unless($conversation->client?->widget_enabled, 403, 'This widget is currently turned off.');
+
         abort_unless(
             $conversation->client?->hasActiveSubscription(),
             402,

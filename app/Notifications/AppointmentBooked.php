@@ -17,7 +17,9 @@ class AppointmentBooked extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return $notifiable->email_notifications_enabled
+            ? ['mail', 'database']
+            : ['database'];
     }
 
     public function toMail(object $notifiable): MailMessage

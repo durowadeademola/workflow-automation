@@ -130,4 +130,33 @@ class WidgetSettings extends Page
     {
         return (bool) $this->getClient()?->widget_ready;
     }
+
+    public function isWidgetEnabled(): bool
+    {
+        return (bool) $this->getClient()?->widget_enabled;
+    }
+
+    /**
+     * Instant on/off — unlike the customization form above, this doesn't
+     * wait for a "Save Changes" click, since a client toggling this off
+     * (e.g. outside business hours) wants it to take effect immediately.
+     */
+    public function toggleWidgetEnabled(): void
+    {
+        $client = $this->getClient();
+
+        if (! $client) {
+            return;
+        }
+
+        $client->update(['widget_enabled' => ! $client->widget_enabled]);
+
+        Notification::make()
+            ->title($client->widget_enabled ? 'Widget turned on' : 'Widget turned off')
+            ->body($client->widget_enabled
+                ? 'Your assistant is answering visitors again.'
+                : 'Your assistant will not respond to visitors until you turn it back on.')
+            ->success()
+            ->send();
+    }
 }

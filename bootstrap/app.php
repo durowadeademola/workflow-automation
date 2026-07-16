@@ -15,9 +15,6 @@ return Application::configure(basePath: dirname(__DIR__))
          $middleware->web(append: [
         \App\Http\Middleware\HandleInertiaRequests::class,
     ]);
-    $middleware->api(prepend: [
-        \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-    ]);
     $middleware->alias([
         'webhook.secret' => \App\Http\Middleware\VerifyWebhookSecret::class,
     ]);
