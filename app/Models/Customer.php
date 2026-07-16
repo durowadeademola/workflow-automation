@@ -29,6 +29,16 @@ class Customer extends Model
         'assigned_agent',
         'agent_email',
         'status',
+        'is_qualified_lead',
+        'lead_intent',
+        'lead_budget',
+        'lead_timeline',
+        'qualified_at',
+    ];
+
+    protected $casts = [
+        'is_qualified_lead' => 'boolean',
+        'qualified_at' => 'datetime',
     ];
 
     public function client()

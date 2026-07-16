@@ -119,6 +119,32 @@
                     @endif
                 @endif
             </div>
+
+            @php
+                $leadUsage = $this->getLeadUsage();
+                $leadPercent = $leadUsage['limit'] ? min(100, (int) round($leadUsage['used'] / $leadUsage['limit'] * 100)) : 0;
+            @endphp
+            <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                <div class="flex items-center justify-between text-xs mb-1.5">
+                    <span class="font-medium text-gray-600 dark:text-gray-300">Qualified leads this billing period</span>
+                    <span class="text-gray-500">
+                        {{ number_format($leadUsage['used']) }}{{ $leadUsage['limit'] ? ' / '.number_format($leadUsage['limit']) : ' (unlimited)' }}
+                    </span>
+                </div>
+                @if($leadUsage['limit'])
+                    <div class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                        <div
+                            class="h-full rounded-full {{ $leadPercent >= 100 ? 'bg-danger-500' : ($leadPercent >= 80 ? 'bg-amber-500' : 'bg-primary-500') }}"
+                            style="width: {{ $leadPercent }}%"
+                        ></div>
+                    </div>
+                    @if($leadPercent >= 100)
+                        <p class="text-xs text-danger-600 mt-1.5">You've reached this period's lead qualification limit — new visitors won't be flagged as leads until you upgrade or your plan renews.</p>
+                    @elseif($leadPercent >= 80)
+                        <p class="text-xs text-amber-600 mt-1.5">Approaching your monthly lead qualification limit.</p>
+                    @endif
+                @endif
+            </div>
         @endif
     </div>
 
@@ -142,8 +168,11 @@
                 <p class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 mt-2 mb-1">
                     ₦{{ number_format($plan->amount) }}<span class="text-sm font-normal text-gray-400">/month</span>
                 </p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">
                     {{ $plan->appointment_limit ? number_format($plan->appointment_limit).' appointments/month' : 'Unlimited appointments' }}
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                    {{ $plan->lead_limit ? number_format($plan->lead_limit).' qualified leads/month' : 'Unlimited qualified leads' }}
                 </p>
 
                 @if($plan->features)

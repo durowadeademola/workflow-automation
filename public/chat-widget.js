@@ -46,7 +46,7 @@
     agentName: 'AI Assistant',
     primaryColor: '#1D9E75',
     waNumber: '',
-    greeting: '👋 Hello! How can I help you today?',
+    greeting: '👋 Hello! Welcome, How can I help you today?',
     systemPrompt: 'You are a helpful AI assistant. Be friendly and concise.',
     position: 'right',
     quickReplies: [],

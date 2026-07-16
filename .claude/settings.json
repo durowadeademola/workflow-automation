@@ -48,7 +48,13 @@
       "Bash(cat /tmp_n8n_response.json)",
       "Bash(rm -f /tmp_n8n_response.json)",
       "Bash(curl -s \"http://blueflow.test/chat-widget.js\")",
-      "Bash(curl -s -I \"http://blueflow.test/chat-widget.js\")"
+      "Bash(curl -s -I \"http://blueflow.test/chat-widget.js\")",
+      "Bash(php -r ' *)",
+      "Read(//c//**)",
+      "Bash(npx vite *)",
+      "Bash(node --check check_rag.js)",
+      "Bash(rm -f check_rag.js)",
+      "Bash(sed -i 's|^APP_URL=.*|APP_URL=http://blueflow.test|' .env)"
     ]
   }
 }

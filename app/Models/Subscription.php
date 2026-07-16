@@ -31,6 +31,8 @@ class Subscription extends Model
         'paystack_paid_at',
         'paystack_gateway_response',
         'limit_reached_notified_at',
+        'rolled_over_appointments',
+        'rolled_over_leads',
     ];
 
     protected $casts = [

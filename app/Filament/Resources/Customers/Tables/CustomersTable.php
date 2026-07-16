@@ -13,8 +13,10 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -28,40 +30,18 @@ class CustomersTable
                     ->exporter(CustomerExporter::class),
             ])
             ->columns([
-                TextColumn::make('client.name')
-                    ->label('Client')
-                    ->placeholder('—')
-                    ->searchable()
-                    ->sortable(),
                 TextColumn::make('display_name')
                     ->label('Name')
                     ->searchable(query: fn ($query, $search) => $query->orWhere('name', 'like', "%{$search}%")),
-                TextColumn::make('username')
-                    ->searchable(),
-                TextColumn::make('chat_id')
-                    ->label('Customer id')
-                    ->searchable(),
-                TextColumn::make('state')
-                    ->badge()
-                    ->color(fn (?string $state): string => match ($state) {
-                        'AWAITING_PRODUCT', 'AWAITING_SPECS' => 'warning',
-                        'DONE' => 'success',
-                        default => 'gray',
-                    })
-                    ->searchable(),
-                TextColumn::make('agent.name')
-                    ->label('Agent')
-                    ->placeholder('—')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('item.name')
-                    ->label('Product')
-                    ->placeholder('—')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('message')
+                IconColumn::make('is_qualified_lead')
+                    ->label('Qualified lead')
+                    ->boolean(),
+                TextColumn::make('lead_intent')
+                    ->label('Interested in')
                     ->limit(40)
-                    ->placeholder('—'),
+                    ->placeholder('—')
+                    ->searchable()
+                    ->tooltip(fn ($record) => $record->lead_intent),
                 TextColumn::make('platform')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -70,9 +50,6 @@ class CustomersTable
                         'Website' => 'info',
                         default => 'gray',
                     })
-                    ->searchable(),
-                TextColumn::make('product')
-                    ->placeholder('—')
                     ->searchable(),
                 TextColumn::make('specs')
                     ->label('Specs')
@@ -101,6 +78,8 @@ class CustomersTable
                         'WhatsApp' => 'WhatsApp',
                         'Website' => 'Website',
                     ]),
+                TernaryFilter::make('is_qualified_lead')
+                    ->label('Qualified lead?'),
                 TrashedFilter::make(),
             ])
             ->recordActions([

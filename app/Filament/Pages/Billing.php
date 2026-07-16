@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Client;
 use App\Models\Plan;
 use App\Models\Subscription;
 use App\Services\PaystackService;
@@ -115,6 +116,23 @@ class Billing extends Page
     }
 
     /**
+     * @return array{used: int, limit: ?int}
+     */
+    public function getLeadUsage(): array
+    {
+        $client = $this->getClient();
+
+        if (! $client) {
+            return ['used' => 0, 'limit' => 0];
+        }
+
+        return [
+            'used' => $client->qualifiedLeadsInCurrentPeriod(),
+            'limit' => $client->leadLimitForCurrentPlan(),
+        ];
+    }
+
+    /**
      * The Naira credit switching to $planSlug right now would carry over
      * from the unused portion of the current subscription (₦0 if there's
      * no current subscription, or it's the free trial).
@@ -189,6 +207,9 @@ class Billing extends Page
         $credit = $this->getProratedCredit();
         $finalCharge = max(0, $planRecord->amount - $credit);
 
+        $previousSubscription = $client->currentSubscription();
+        [$rolledOverAppointments, $rolledOverLeads] = $this->calculateRollover($client, $previousSubscription);
+
         $subscription = Subscription::create([
             'client_id' => $client->id,
             'plan_id' => $planRecord->id,
@@ -199,6 +220,8 @@ class Billing extends Page
             'status' => 'pending',
             'is_active' => false,
             'paystack_reference' => $finalCharge > 0 ? 'BF-'.strtoupper(Str::random(14)) : null,
+            'rolled_over_appointments' => $rolledOverAppointments,
+            'rolled_over_leads' => $rolledOverLeads,
         ]);
 
         // The credit fully covers this plan — no payment needed at all.
@@ -237,6 +260,36 @@ class Billing extends Page
         }
 
         return redirect()->away($authorizationUrl);
+    }
+
+    /**
+     * Appointments/leads only carry into the next subscription when the
+     * message cap — not just ordinary low demand — is what left them
+     * unused, so plan tiers still mean something instead of slowly becoming
+     * unlimited for anyone who under-uses their plan. Only ever pulled from
+     * the immediately preceding subscription — it doesn't itself roll over
+     * again if left unused a second time.
+     *
+     * @return array{0: int, 1: int} [rolled_over_appointments, rolled_over_leads]
+     */
+    private function calculateRollover(Client $client, ?Subscription $previous): array
+    {
+        if (! $previous || ! $previous->limit_reached_notified_at) {
+            return [0, 0];
+        }
+
+        $appointmentLimit = $client->appointmentLimitForCurrentPlan();
+        $leadLimit = $client->leadLimitForCurrentPlan();
+
+        $unusedAppointments = $appointmentLimit === null
+            ? 0
+            : max(0, $appointmentLimit - $client->appointmentsBookedInCurrentPeriod());
+
+        $unusedLeads = $leadLimit === null
+            ? 0
+            : max(0, $leadLimit - $client->qualifiedLeadsInCurrentPeriod());
+
+        return [$unusedAppointments, $unusedLeads];
     }
 
     /**

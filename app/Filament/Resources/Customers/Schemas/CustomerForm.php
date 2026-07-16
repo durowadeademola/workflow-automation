@@ -19,37 +19,22 @@ class CustomerForm
                     ->schema([
                         Hidden::make('client_id')
                             ->default(auth()->user()?->client_id),
-                        Select::make('agent_id')
-                            ->label('Agent')
-                            ->relationship('agent', 'name')
-                            ->preload()
-                            ->searchable(),
-                        Select::make('item_id')
-                            ->label('Product')
-                            ->relationship('item', 'name')
-                            ->preload()
-                            ->searchable(),
                         TextInput::make('name')
-                            ->placeholder('Enter customer full name or business name'),
-                        TextInput::make('username')
-                            ->placeholder('Enter customer username'),
-                        TextInput::make('chat_id')
-                            ->placeholder('Enter customer reference or chat id')
-                            ->numeric(),
-                        Select::make('state')->options([
-                            'DONE' => 'DONE',
-                            'AWAITING_PRODUCT' => 'AWAITING PRODUCT',
-                            'AWAITING_SPECS' => 'AWAITING SPECS',
-                        ]),
-                        TextInput::make('message')
-                            ->placeholder('Enter customer message'),
+                            ->label('Customer name')
+                            ->placeholder('Enter customer full name or business name')
+                            // Anonymous visitors never give a name, so the raw
+                            // column is null — show their generated display
+                            // code instead of leaving the field looking empty.
+                            ->afterStateHydrated(function (TextInput $component, $state, $record) {
+                                if (blank($state) && $record) {
+                                    $component->state($record->display_name);
+                                }
+                            }),
                         Select::make('platform')->options([
                             'Telegram' => 'Telegram',
                             'WhatsApp' => 'WhatsApp',
-                        ])
-                            ->default('telegram'),
-                        TextInput::make('product')
-                            ->placeholder('Enter customer product'),
+                            'Website' => 'Website',
+                        ]),
                         TextInput::make('specs')
                             ->placeholder('Enter customer specs'),
                         TextInput::make('assigned_agent')

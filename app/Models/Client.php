@@ -266,7 +266,14 @@ class Client extends Model
             return self::TRIAL_APPOINTMENT_LIMIT;
         }
 
-        return $subscription->planRecord?->appointment_limit;
+        $limit = $subscription->planRecord?->appointment_limit;
+
+        // Unlimited stays unlimited — rollover only matters when there's an
+        // actual cap to extend. Only ever carried in from the immediately
+        // preceding period (see Billing::subscribe()), and only when that
+        // period's message cap — not just normal demand — is what left
+        // this capacity unused, so plan tiers still mean something.
+        return $limit === null ? null : $limit + $subscription->rolled_over_appointments;
     }
 
     /**
@@ -297,6 +304,60 @@ class Client extends Model
         }
 
         return $this->appointmentsBookedInCurrentPeriod() >= $limit;
+    }
+
+    /**
+     * Same shape as the message/appointment limits above.
+     */
+    public const TRIAL_LEAD_LIMIT = 10;
+
+    public function leadLimitForCurrentPlan(): ?int
+    {
+        $subscription = $this->currentSubscription();
+
+        if (! $subscription) {
+            return 0;
+        }
+
+        if ($subscription->plan === 'trial') {
+            return self::TRIAL_LEAD_LIMIT;
+        }
+
+        $limit = $subscription->planRecord?->lead_limit;
+
+        return $limit === null ? null : $limit + $subscription->rolled_over_leads;
+    }
+
+    /**
+     * Counts distinct customers first qualified since the start of the
+     * current subscription period, not the calendar month, same as messages
+     * and appointments — re-qualifying an already-qualified customer (their
+     * intent gets reiterated later in the conversation) never counts twice,
+     * since `qualified_at` is only ever set once.
+     */
+    public function qualifiedLeadsInCurrentPeriod(): int
+    {
+        $subscription = $this->currentSubscription();
+
+        if (! $subscription || ! $subscription->start_date) {
+            return 0;
+        }
+
+        return $this->customers()
+            ->where('is_qualified_lead', true)
+            ->where('qualified_at', '>=', $subscription->start_date)
+            ->count();
+    }
+
+    public function hasReachedLeadLimit(): bool
+    {
+        $limit = $this->leadLimitForCurrentPlan();
+
+        if ($limit === null) {
+            return false;
+        }
+
+        return $this->qualifiedLeadsInCurrentPeriod() >= $limit;
     }
 
     /**
