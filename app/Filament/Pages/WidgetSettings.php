@@ -125,4 +125,9 @@ class WidgetSettings extends Page
     {
         return $this->getClient()?->getWidgetEmbedSnippet();
     }
+
+    public function isWidgetReady(): bool
+    {
+        return (bool) $this->getClient()?->widget_ready;
+    }
 }

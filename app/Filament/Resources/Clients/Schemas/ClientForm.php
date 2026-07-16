@@ -5,10 +5,12 @@ namespace App\Filament\Resources\Clients\Schemas;
 use App\Models\Client;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -81,6 +83,14 @@ class ClientForm
                 Section::make('Widget Configuration')
                     ->description('What this client has configured from their dashboard. These exact values are sent to the n8n webhook above with every message — use them to build or debug that client\'s workflow.')
                     ->schema([
+                        Toggle::make('widget_ready')
+                            ->label('Ready to go live')
+                            ->helperText('Prefer the "Mark Widget Ready" button on the Clients list instead — it notifies the client automatically. Toggling it here just corrects the flag without sending anything.')
+                            ->columnSpanFull(),
+                        DateTimePicker::make('widget_ready_at')
+                            ->label('Marked ready at')
+                            ->disabled()
+                            ->columnSpanFull(),
                         TextInput::make('widget_agent_name')
                             ->label('Assistant name')
                             ->maxLength(255)

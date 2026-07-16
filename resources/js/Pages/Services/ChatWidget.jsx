@@ -1,5 +1,5 @@
 import { Head, Link } from "@inertiajs/react";
-import { Bot, Palette, Users, Code2, BarChart3, MessagesSquare, MessageSquareText } from "lucide-react";
+import { Bot, Palette, Users, Code2, BarChart3, MessagesSquare, MessageSquareText, CalendarCheck } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
 import IconTile from "@/Components/Icons/IconTile";
@@ -8,6 +8,7 @@ import SectionIllustration from "@/Components/Icons/SectionIllustration";
 const highlights = [
     "Answers visitors instantly using your own website content — no manual training required",
     "Hands off to a real member of your team the moment a visitor asks for one",
+    "Books appointments right in the chat, with automatic conflict checking",
     "Fully branded to match your business — colors, greeting, avatar name, and more",
     "Two-minute setup: copy one snippet onto your site and you're live",
 ];
@@ -16,6 +17,7 @@ const features = [
     { icon: Bot, title: "AI That Knows Your Business", description: "Trained on your website's own content, so it answers real questions accurately instead of generic chatbot replies." },
     { icon: Users, title: "Human Handoff", description: "The moment a visitor asks for a person, it's automatically routed to whichever of your agents is least busy — no lost requests." },
     { icon: MessagesSquare, title: "Live Agent Inbox", description: "Your team replies to handed-off conversations from a dedicated inbox, and can hand a conversation back to the AI anytime." },
+    { icon: CalendarCheck, title: "Appointment Booking", description: "Visitors can book an appointment right in the chat — the AI collects the details and checks for conflicts, so no two bookings ever land on the same slot." },
     { icon: Palette, title: "Full Branding Control", description: "Set your assistant's name, brand color, greeting message, quick-reply buttons, and widget position — all from your dashboard." },
     { icon: Code2, title: "One-Snippet Install", description: "No developer needed. Copy your personalized embed code from Widget Settings and paste it before your site's closing </body> tag." },
     { icon: BarChart3, title: "Unified Conversation History", description: "Every visitor becomes a real customer record, with their full message history — same as WhatsApp and Telegram." },
@@ -24,7 +26,8 @@ const features = [
 const steps = [
     { title: "Register and choose Chat Widget", description: "Sign up and select Chat Widget as one of your services — takes about two minutes." },
     { title: "Customize your assistant", description: "From Widget Settings, set your assistant's name, brand color, greeting, and quick replies to match your business." },
-    { title: "Copy your embed code", description: "Paste the personalized snippet we generate for you onto your website — that's the entire technical setup." },
+    { title: "We integrate it on our end", description: "Our team wires your customized setup into place behind the scenes, then lets you know the moment it's ready to go live." },
+    { title: "Copy your embed code", description: "Once you get the go-live notification, paste your personalized snippet onto your website — that's the entire technical setup." },
     { title: "Go live and start chatting", description: "Your AI assistant starts answering visitors immediately, and hands off to your team whenever one asks for a human." },
 ];
 

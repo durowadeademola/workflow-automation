@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Clients\Tables;
 use App\Filament\Exports\ClientExporter;
 use App\Models\User;
 use App\Notifications\ClientRejected;
+use App\Notifications\WidgetReady;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -14,8 +15,10 @@ use Filament\Actions\ExportAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
 
@@ -42,6 +45,10 @@ class ClientsTable
                         'warning' => 'pending',
                         'danger' => ['inactive', 'rejected'],
                     ]),
+                IconColumn::make('widget_ready')
+                    ->label('Widget live?')
+                    ->boolean()
+                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->dateTime('M j, Y h:i A')
                     ->sortable(),
@@ -54,6 +61,8 @@ class ClientsTable
                         'inactive' => 'Inactive',
                         'rejected' => 'Rejected',
                     ]),
+                TernaryFilter::make('widget_ready')
+                    ->label('Widget ready?'),
             ])
             ->recordActions([
                 Action::make('approve')
@@ -100,6 +109,34 @@ class ClientsTable
 
                         Notification::make()
                             ->title('Client rejected')
+                            ->success()
+                            ->send();
+                    }),
+                Action::make('markWidgetReady')
+                    ->label('Mark Widget Ready')
+                    ->icon('heroicon-o-rocket-launch')
+                    ->color('success')
+                    ->visible(fn ($record) => $record->status === 'active'
+                        && $record->hasFeature('chat-widget')
+                        && ! $record->widget_ready)
+                    ->requiresConfirmation()
+                    ->modalDescription('This tells the client their widget is ready to embed and go live — make sure the n8n workflow and webhook URL are actually wired up first.')
+                    ->action(function ($record) {
+                        $record->update([
+                            'widget_ready' => true,
+                            'widget_ready_at' => now(),
+                        ]);
+
+                        $recipients = User::where('client_id', $record->id)
+                            ->where(fn ($query) => $query->where('is_client', true)->orWhere('is_agent', true))
+                            ->get();
+
+                        if ($recipients->isNotEmpty()) {
+                            NotificationFacade::send($recipients, new WidgetReady());
+                        }
+
+                        Notification::make()
+                            ->title('Client notified — widget marked ready')
                             ->success()
                             ->send();
                     }),

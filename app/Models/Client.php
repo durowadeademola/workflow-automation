@@ -22,6 +22,8 @@ class Client extends Model
         'rejection_reason',
         'features',
         'webhook_url',
+        'widget_ready',
+        'widget_ready_at',
         'widget_agent_name',
         'widget_primary_color',
         'widget_greeting',
@@ -35,6 +37,8 @@ class Client extends Model
     protected $casts = [
         'widget_quick_replies' => 'array',
         'features' => 'array',
+        'widget_ready' => 'boolean',
+        'widget_ready_at' => 'datetime',
     ];
 
     /**
