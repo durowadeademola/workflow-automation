@@ -46,7 +46,7 @@ class RecentMessages extends TableWidget
                 ->latest())
             ->columns([
                 TextColumn::make('customer.display_name')
-                    ->label('Name')
+                    ->label('Customer ID / Name')
                     ->searchable(query: fn ($query, $search) => $query->orWhereHas(
                         'customer',
                         fn ($q) => $q->where('name', 'like', "%{$search}%"),

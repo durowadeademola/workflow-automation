@@ -21,7 +21,7 @@ class MessagesTable
         return $table
             ->columns([
                 TextColumn::make('customer.display_name')
-                    ->label('Customer')
+                    ->label('Customer ID / Name')
                     ->placeholder('—')
                     ->searchable(query: fn ($query, $search) => $query->orWhereHas(
                         'customer',

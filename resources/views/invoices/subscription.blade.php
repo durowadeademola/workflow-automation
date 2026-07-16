@@ -64,6 +64,15 @@
             background: #d1fae5;
             color: #065f46;
         }
+        .status-badge.status-expired,
+        .status-badge.status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .status-badge.status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
         .footer {
             margin-top: 48px;
             padding-top: 16px;
@@ -100,7 +109,7 @@
                 <div class="section-label">Invoice Date</div>
                 {{ ($subscription->start_date ?? $subscription->created_at)->format('F j, Y') }}<br><br>
                 <div class="section-label">Status</div>
-                <span class="status-badge">{{ ucfirst($subscription->status) }}</span>
+                <span class="status-badge status-{{ $subscription->status }}">{{ ucfirst($subscription->status) }}</span>
             </td>
         </tr>
     </table>

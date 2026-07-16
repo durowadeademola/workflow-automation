@@ -55,6 +55,12 @@ class PlanForm
                             ->minValue(1)
                             ->placeholder('Unlimited')
                             ->helperText('Appointments the AI (or the client themselves) can book per billing period on this plan. Leave blank for unlimited.'),
+                        TextInput::make('lead_limit')
+                            ->label('Lead qualification limit / month')
+                            ->numeric()
+                            ->minValue(1)
+                            ->placeholder('Unlimited')
+                            ->helperText('Visitors the AI can flag as a qualified lead per billing period on this plan. Leave blank for unlimited.'),
                         Textarea::make('description')
                             ->rows(2)
                             ->columnSpanFull(),

@@ -42,6 +42,11 @@ class PlansTable
                     ->placeholder('Unlimited')
                     ->numeric()
                     ->toggleable(),
+                TextColumn::make('lead_limit')
+                    ->label('Leads limit/mo')
+                    ->placeholder('Unlimited')
+                    ->numeric()
+                    ->toggleable(),
                 TextColumn::make('subscriptions_count')
                     ->label('Subscribers')
                     ->counts('subscriptions'),

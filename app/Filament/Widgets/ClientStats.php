@@ -2,11 +2,10 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Appointment;
 use App\Models\Client;
 use App\Models\Customer;
 use App\Models\Message;
-use App\Models\Order;
-use App\Models\Product;
 use App\Models\Subscription;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -59,14 +58,15 @@ class ClientStats extends BaseWidget
                 ->description('Total customers')
                 ->icon('heroicon-o-users'),
 
-            Stat::make('Orders', Order::where('client_id', $clientId)->count())
-                ->description('Total orders')
-                ->icon('heroicon-o-shopping-cart')
-                ->url('/user/orders'),
+            Stat::make('Appointments Booked', Appointment::where('client_id', $clientId)->count())
+                ->description('Total appointments')
+                ->icon('heroicon-o-calendar')
+                ->url('/user/appointments'),
 
-            Stat::make('Products', Product::where('client_id', $clientId)->where('is_available', true)->count())
-                ->description('Total available products')
-                ->icon('heroicon-o-shopping-bag'),
+            Stat::make('Leads Qualified', Customer::where('client_id', $clientId)->where('is_qualified_lead', true)->count())
+                ->description('Total qualified leads')
+                ->icon('heroicon-o-user-plus')
+                ->url('/user/customers'),
 
             Stat::make('Messages Today', Message::where('client_id', $clientId)->whereDate('created_at', today())->count())
                 ->description('Across all channels')

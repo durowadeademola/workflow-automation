@@ -2,7 +2,8 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Order;
+use App\Models\Appointment;
+use App\Models\Customer;
 use App\Models\WidgetConversation;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -40,8 +41,10 @@ class AgentStats extends BaseWidget
             ->whereDate('updated_at', today())
             ->count();
 
-        $myOrders = Order::where('client_id', $clientId)
-            ->where('agent_id', $user->agent_id)
+        $appointmentsBooked = Appointment::where('client_id', $clientId)->count();
+
+        $leadsQualified = Customer::where('client_id', $clientId)
+            ->where('is_qualified_lead', true)
             ->count();
 
         return [
@@ -62,10 +65,15 @@ class AgentStats extends BaseWidget
                 ->icon('heroicon-o-check-circle')
                 ->color('success'),
 
-            Stat::make('My Orders', $myOrders)
-                ->description('Assigned to you')
-                ->icon('heroicon-o-shopping-cart')
-                ->url('/user/orders'),
+            Stat::make('Appointments Booked', $appointmentsBooked)
+                ->description('Total appointments')
+                ->icon('heroicon-o-calendar')
+                ->url('/user/appointments'),
+
+            Stat::make('Leads Qualified', $leadsQualified)
+                ->description('Total qualified leads')
+                ->icon('heroicon-o-user-plus')
+                ->url('/user/customers'),
         ];
     }
 }

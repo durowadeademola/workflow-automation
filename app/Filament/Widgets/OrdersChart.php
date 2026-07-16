@@ -2,7 +2,7 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Order;
+use App\Models\Appointment;
 use Filament\Widgets\ChartWidget;
 
 class OrdersChart extends ChartWidget
@@ -13,7 +13,7 @@ class OrdersChart extends ChartWidget
     // keeping this page in a constant background-refresh loop.
     protected ?string $pollingInterval = null;
 
-    protected ?string $heading = 'Orders Trend';
+    protected ?string $heading = 'Appointments Booked Trend';
 
     protected string $color = 'primary';
 
@@ -28,7 +28,7 @@ class OrdersChart extends ChartWidget
     {
         $year = now()->year;
 
-        $data = Order::query()
+        $data = Appointment::query()
             ->selectRaw("DATE_FORMAT(created_at, '%b') as label, COUNT(*) as total")
             ->where('client_id', auth()->user()?->client_id)
             ->whereYear('created_at', $year)
@@ -39,7 +39,7 @@ class OrdersChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => "Total Orders for {$year}",
+                    'label' => "Appointments Booked in {$year}",
                     'data' => $data->values(),
                     'borderColor' => '#3b82f6',
                     'fill' => 'start',
