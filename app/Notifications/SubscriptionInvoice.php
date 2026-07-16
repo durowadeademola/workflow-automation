@@ -32,7 +32,7 @@ class SubscriptionInvoice extends Notification
             ->line("Thanks for your payment — your {$subscription->name} subscription is now active.")
             ->line('Amount paid: ₦'.number_format($subscription->amount))
             ->line('Your invoice is attached for your records.')
-            ->action('View Billing', url('/admin/billing'))
+            ->action('View Billing', url('/user/billing'))
             ->attachData($pdf, "invoice-{$subscription->paystack_reference}.pdf", [
                 'mime' => 'application/pdf',
             ]);

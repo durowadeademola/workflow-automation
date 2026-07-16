@@ -81,16 +81,28 @@ class User extends Authenticatable implements FilamentUser
         $this->notify(new ResetPasswordNotification($url));
     }
 
+    /**
+     * Admins and everyone else use separate panels (/admin vs /user) with no
+     * overlap — an admin can't log into /user and a client/agent can't log
+     * into /admin, even though both panels discover the exact same
+     * resource/page classes (each one's own canViewAny()/canAccess() still
+     * gates by role on top of this).
+     */
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
-        if ($this->is_admin) {
-            return true;
+        if ($panel->getId() === 'admin') {
+            return (bool) $this->is_admin;
         }
 
-        // Clients (and their agents) are locked out until an admin approves
-        // the business — self-registration creates them with status
-        // "pending", and "inactive" covers a business suspended afterward.
-        if ($this->is_client || $this->is_agent) {
+        if ($panel->getId() === 'user') {
+            if (! ($this->is_client || $this->is_agent)) {
+                return false;
+            }
+
+            // Clients (and their agents) are locked out until an admin
+            // approves the business — self-registration creates them with
+            // status "pending", and "inactive"/"rejected" cover the other
+            // ways a business ends up unable to log in.
             return $this->client?->status === 'active';
         }
 

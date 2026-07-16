@@ -41,7 +41,7 @@ export default function Footer() {
                     <div className="lg:col-span-1">
                         <Link href="/" className="flex items-center gap-2 mb-4">
                             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">BF</span>
+                                <span className="text-white font-bold text-sm">BA</span>
                             </div>
                             <span className="font-bold text-white text-base">Blueflow Automation</span>
                         </Link>

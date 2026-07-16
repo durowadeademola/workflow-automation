@@ -23,6 +23,7 @@ class Subscription extends Model
         'is_active',
         'status',
         'cancelled_at',
+        'cancellation_reason',
         'paystack_reference',
         'paystack_transaction_id',
         'paystack_amount_charged',

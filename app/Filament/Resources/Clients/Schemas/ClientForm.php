@@ -54,9 +54,15 @@ class ClientForm
                                 'pending' => 'Pending approval',
                                 'active' => 'Active',
                                 'inactive' => 'Inactive',
+                                'rejected' => 'Rejected',
                             ])
                             ->helperText('Clients can\'t log in until this is "Active" — self-registered businesses start as "Pending approval".')
                             ->default('active'),
+                        Textarea::make('rejection_reason')
+                            ->label('Rejection reason')
+                            ->rows(2)
+                            ->visible(fn ($record) => $record?->status === 'rejected')
+                            ->columnSpanFull(),
                         CheckboxList::make('features')
                             ->label('Services / dashboard access')
                             ->options(Client::FEATURES)
@@ -67,7 +73,8 @@ class ClientForm
                             ->label('n8n Webhook URL')
                             ->helperText('Where the chat widget\'s messages are forwarded once this client has an active subscription.')
                             ->url()
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->visible(fn (?Client $record) => $record?->hasFeature('chat-widget')),
                     ])->columns(2)
                     ->columnSpan('full'),
 
@@ -90,6 +97,12 @@ class ClientForm
                                 'right' => 'Bottom right',
                                 'left' => 'Bottom left',
                             ]),
+                        TextInput::make('widget_auto_open_delay')
+                            ->label('Auto-open delay')
+                            ->numeric()
+                            ->minValue(0)
+                            ->suffix('ms')
+                            ->helperText('How long after the page loads before the widget pops open on its own.'),
                         Textarea::make('widget_greeting')
                             ->label('Greeting message')
                             ->rows(2)
@@ -120,7 +133,7 @@ class ClientForm
                     ])
                     ->columns(2)
                     ->columnSpan('full')
-                    ->visible(fn ($record) => $record !== null),
+                    ->visible(fn (?Client $record) => $record?->hasFeature('chat-widget')),
             ]);
     }
 }

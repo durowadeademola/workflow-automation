@@ -26,7 +26,7 @@ class KycRejected extends Notification
             ->greeting("Hi {$notifiable->name},")
             ->line('Your submitted KYC documents could not be approved for the following reason:')
             ->line($this->submission->rejection_reason ?? 'No reason was given.')
-            ->action('Resubmit', url('/admin/kyc-verification'));
+            ->action('Resubmit', url('/user/kyc-verification'));
     }
 
     /**

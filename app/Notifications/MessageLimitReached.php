@@ -23,7 +23,7 @@ class MessageLimitReached extends Notification
             ->greeting("Hi {$notifiable->name},")
             ->line('Your chat widget has used up all the messages included in your current plan for this billing period, so it has paused for the rest of this cycle.')
             ->line('Upgrade to a higher plan to keep it running right away.')
-            ->action('Upgrade Plan', url('/admin/billing'));
+            ->action('Upgrade Plan', url('/user/billing'));
     }
 
     /**

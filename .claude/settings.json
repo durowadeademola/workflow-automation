@@ -10,7 +10,14 @@
       "Bash(grep -n 'function getActionFunction\\\\|protected.*$action\\\\b\\\\|Closure.*$action' vendor/filament/actions/src/Concerns/HasAction.php)",
       "Bash(php -l app/Filament/Resources/Agents/AgentResource.php)",
       "Bash(php -l app/Filament/Resources/Customers/CustomerResource.php)",
-      "Bash(php -l app/Filament/Resources/Messages/MessageResource.php)"
+      "Bash(php -l app/Filament/Resources/Messages/MessageResource.php)",
+      "Bash(curl -s http://blueflow.test/admin/login)",
+      "Bash(php -l app/Console/Commands/CancelStalePendingSubscriptions.php)",
+      "Bash(curl -s -o /dev/null -w \"terms-of-service: %{http_code}\\\\n\" http://blueflow.test/terms-of-service)",
+      "Bash(curl -s -o /dev/null -w \"privacy-policy: %{http_code}\\\\n\" http://blueflow.test/privacy-policy)",
+      "Bash(php -l app/Filament/Resources/Clients/Tables/ClientsTable.php)",
+      "Bash(php -l app/Notifications/ClientRejected.php)",
+      "Bash(grep -oP \"\\(?<=›\\\\s\\)[\\\\w\\\\\\\\\\\\\\\\]+\\\\s›\\\\s[\\\\w\\\\\\\\\\\\\\\\]+\")"
     ]
   }
 }

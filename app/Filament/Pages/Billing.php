@@ -8,6 +8,7 @@ use App\Services\PaystackService;
 use App\Services\SubscriptionService;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
@@ -238,12 +239,18 @@ class Billing extends Page
                     ? "You'll keep access until {$subscription->end_date->format('M j, Y')} — no refund for unused time, and it won't renew after that."
                     : 'No active subscription to cancel.';
             })
+            ->schema([
+                Textarea::make('reason')
+                    ->label('Why are you cancelling? (optional)')
+                    ->helperText('Helps us understand what we could do better — visible only to our team.')
+                    ->rows(3),
+            ])
             ->modalSubmitActionLabel('Cancel subscription')
             ->color('danger')
-            ->action(fn () => $this->cancel());
+            ->action(fn (array $data) => $this->cancel($data['reason'] ?? null));
     }
 
-    public function cancel(): void
+    public function cancel(?string $reason = null): void
     {
         $subscription = $this->getCurrentSubscription();
 
@@ -257,7 +264,10 @@ class Billing extends Page
             return;
         }
 
-        $subscription->update(['cancelled_at' => now()]);
+        $subscription->update([
+            'cancelled_at' => now(),
+            'cancellation_reason' => $reason,
+        ]);
 
         Notification::make()
             ->title('Subscription cancelled — you\'ll keep access until '.$subscription->end_date->format('M j, Y').'.')

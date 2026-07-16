@@ -123,7 +123,7 @@ export default function CaseStudies() {
                                 </blockquote>
 
                                 {/* Animated metrics */}
-                                <div className="grid grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                     {cs.results.map((r, i) => (
                                         <ResultMetric
                                             key={r.label}

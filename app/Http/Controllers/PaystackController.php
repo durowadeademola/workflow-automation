@@ -27,7 +27,7 @@ class PaystackController extends Controller
         $subscription = $reference ? Subscription::where('paystack_reference', $reference)->first() : null;
 
         if (! $subscription) {
-            return redirect('/admin/billing')->with('paystack_notice', [
+            return redirect('/user/billing')->with('paystack_notice', [
                 'type' => 'danger',
                 'message' => 'We could not find that payment reference.',
             ]);
@@ -38,7 +38,7 @@ class PaystackController extends Controller
         } catch (\Throwable $e) {
             Log::warning('Paystack verify failed on callback', ['reference' => $reference, 'error' => $e->getMessage()]);
 
-            return redirect('/admin/billing')->with('paystack_notice', [
+            return redirect('/user/billing')->with('paystack_notice', [
                 'type' => 'warning',
                 'message' => 'We could not confirm your payment yet. If you were charged, it will reflect shortly.',
             ]);
@@ -47,15 +47,18 @@ class PaystackController extends Controller
         if (($result['data']['status'] ?? null) === 'success') {
             $this->activate($subscription, $result['data']);
 
-            return redirect('/admin/billing')->with('paystack_notice', [
+            return redirect('/user/billing')->with('paystack_notice', [
                 'type' => 'success',
                 'message' => 'Payment confirmed — your subscription is now active.',
             ]);
         }
 
-        $subscription->update(['status' => 'cancelled']);
+        $subscription->update([
+            'status' => 'cancelled',
+            'paystack_gateway_response' => $result['data']['gateway_response'] ?? null,
+        ]);
 
-        return redirect('/admin/billing')->with('paystack_notice', [
+        return redirect('/user/billing')->with('paystack_notice', [
             'type' => 'danger',
             'message' => 'Payment was not successful. You have not been charged.',
         ]);
@@ -82,6 +85,26 @@ class PaystackController extends Controller
 
             if ($subscription && $subscription->status !== 'active') {
                 $this->activate($subscription, (array) $request->input('data', []));
+            }
+        }
+
+        if ($event === 'charge.failed' && $reference) {
+            $subscription = Subscription::where('paystack_reference', $reference)->first();
+
+            // Only touch it if it's still pending — never overwrite a
+            // subscription some other event (or the callback) already
+            // resolved, e.g. a retry on the same reference that succeeded.
+            if ($subscription && $subscription->status === 'pending') {
+                $subscription->update([
+                    'status' => 'cancelled',
+                    'paystack_gateway_response' => $request->input('data.gateway_response'),
+                ]);
+
+                Log::info('Paystack charge failed', [
+                    'reference' => $reference,
+                    'subscription_id' => $subscription->id,
+                    'reason' => $request->input('data.gateway_response'),
+                ]);
             }
         }
 

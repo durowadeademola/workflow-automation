@@ -44,6 +44,18 @@ class SubscriptionsTable
                 TextColumn::make('end_date')
                     ->date()
                     ->sortable(),
+                TextColumn::make('cancelled_at')
+                    ->label('Cancelled')
+                    ->dateTime()
+                    ->placeholder('—')
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('cancellation_reason')
+                    ->label('Cancellation reason')
+                    ->placeholder('—')
+                    ->wrap()
+                    ->limit(60)
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('paystack_channel')
                     ->label('Channel')
                     ->badge()

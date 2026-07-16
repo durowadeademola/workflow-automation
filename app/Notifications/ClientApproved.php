@@ -22,7 +22,7 @@ class ClientApproved extends Notification
             ->subject("You're approved — welcome to Blueflow")
             ->greeting("Hi {$notifiable->name},")
             ->line('Good news — your business has been approved and your dashboard is now active.')
-            ->action('Log In', url('/admin/login'))
+            ->action('Log In', url('/user/login'))
             ->line('You can subscribe to a plan and set up your chat widget from your dashboard.');
     }
 

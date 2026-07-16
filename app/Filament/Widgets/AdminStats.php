@@ -64,7 +64,7 @@ class AdminStats extends BaseWidget
                 ->color('success')
                 ->url('/admin/subscriptions'),
 
-            Stat::make('MRR', '₦'.number_format($mrr))
+            Stat::make('Monthly Recurring Revenue', '₦'.number_format($mrr))
                 ->description('From active subscriptions')
                 ->icon('heroicon-o-banknotes')
                 ->color('success'),

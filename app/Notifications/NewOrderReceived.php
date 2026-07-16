@@ -29,7 +29,7 @@ class NewOrderReceived extends Notification
             ->success()
             ->body("Order #{$this->order->order_reference} is ready for processing.")
             ->actions([
-                Action::make('view')->button()->url("/admin/orders/{$this->order->id}/edit"),
+                Action::make('view')->button()->url("/user/orders/{$this->order->id}/edit"),
             ])
             ->getDatabaseMessage();
     }

@@ -19,6 +19,7 @@ class Client extends Model
         'telephone',
         'type',
         'status',
+        'rejection_reason',
         'features',
         'webhook_url',
         'widget_agent_name',

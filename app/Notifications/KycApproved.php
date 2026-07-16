@@ -22,7 +22,7 @@ class KycApproved extends Notification
             ->subject('Your identity verification was approved')
             ->greeting("Hi {$notifiable->name},")
             ->line('Good news — your submitted KYC documents have been reviewed and approved.')
-            ->action('View Status', url('/admin/kyc-verification'));
+            ->action('View Status', url('/user/kyc-verification'));
     }
 
     /**

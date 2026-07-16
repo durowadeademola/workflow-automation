@@ -29,7 +29,7 @@ class NewCustomerAlert extends Notification
             ->success()
             ->body("Customer #{$this->customer->chat_id} is ready for processing.")
             ->actions([
-                Action::make('view')->button()->url("/admin/customers/{$this->customer->id}/edit"),
+                Action::make('view')->button()->url("/user/customers/{$this->customer->id}/edit"),
             ])
             ->getDatabaseMessage();
     }

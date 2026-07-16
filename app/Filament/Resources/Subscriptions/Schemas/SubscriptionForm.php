@@ -5,7 +5,9 @@ namespace App\Filament\Resources\Subscriptions\Schemas;
 use App\Models\Client;
 use App\Models\Plan;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
@@ -60,6 +62,16 @@ class SubscriptionForm
                         TextInput::make('paystack_reference')
                             ->label('Paystack Reference')
                             ->disabled(),
+                        DateTimePicker::make('cancelled_at')
+                            ->label('Cancelled at')
+                            ->disabled()
+                            ->helperText('Set when the client cancels from their own Billing page — not editable here.'),
+                        Textarea::make('cancellation_reason')
+                            ->label('Cancellation reason')
+                            ->rows(2)
+                            ->disabled()
+                            ->columnSpanFull()
+                            ->helperText('The reason the client gave when cancelling, if any.'),
                     ])
                     ->columns(2)
                     ->columnSpan('full'),

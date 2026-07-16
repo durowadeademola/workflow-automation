@@ -30,7 +30,7 @@ class SubscriptionExpired extends Notification
                 ? 'Your 14-day free trial has ended, and your chat widget has been paused.'
                 : "Your {$this->subscription->name} subscription has ended, and your chat widget has been paused.")
             ->line('Subscribe to a plan to get your widget answering visitors again.')
-            ->action('Subscribe Now', url('/admin/billing'));
+            ->action('Subscribe Now', url('/user/billing'));
     }
 
     /**

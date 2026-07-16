@@ -165,7 +165,7 @@ export default function ROICalculator() {
                     {/* Results */}
                     <div>
                         <h3 className="font-bold text-gray-900 text-lg mb-6">Your Potential Savings</h3>
-                        <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                             {[
                                 { label: "Monthly Savings", value: results.monthlySavings, highlight: true },
                                 { label: "Recovered Revenue", value: results.recoveredRevenue },

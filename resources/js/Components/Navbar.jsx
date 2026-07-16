@@ -78,7 +78,7 @@ export default function Navbar() {
                         {/* Logo */}
                         <Link href="/" className="flex items-center gap-2 flex-shrink-0">
                             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">BF</span>
+                                <span className="text-white font-bold text-sm">BA</span>
                             </div>
                             <span className="font-bold text-gray-900 text-lg">Blueflow Automation</span>
                         </Link>
@@ -117,7 +117,7 @@ export default function Navbar() {
                         {/* Desktop Auth Buttons */}
                         <div className="hidden md:flex items-center gap-3">
                             <Link
-                                href="/admin/login"
+                                href="/user/login"
                                 className="text-sm font-medium text-gray-700 hover:text-blue-700 transition-colors"
                             >
                                 Log In
@@ -194,7 +194,7 @@ export default function Navbar() {
                     )}
                     <div className="pt-3 flex flex-col gap-2">
                         <Link
-                            href="/admin/login"
+                            href="/user/login"
                             className="block text-center py-2 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50"
                             onClick={() => setMobileOpen(false)}
                         >

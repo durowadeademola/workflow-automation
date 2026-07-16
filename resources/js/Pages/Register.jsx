@@ -102,7 +102,7 @@ export default function Register() {
                 subtitle={
                     plan
                         ? `You selected the ${plan} plan — create your account below, and you'll be able to subscribe as soon as you're approved.`
-                        : "Tell us about your business. Once approved, you'll get full access to your dashboard, chat widget, and billing."
+                        : "Tell us about your business. Once approved, you'll get full access to your dashboard, chat widget, and billing and more."
                 }
             />
 
@@ -117,7 +117,7 @@ export default function Register() {
                             <p className="text-gray-600">
                                 Your business is pending approval. We'll email you as soon as an admin approves your
                                 account — you'll then be able to{" "}
-                                <Link href="/admin/login" className="text-blue-700 font-semibold hover:underline">
+                                <Link href="/user/login" className="text-blue-700 font-semibold hover:underline">
                                     log in
                                 </Link>{" "}
                                 and set up your chat widget and subscription.
@@ -301,7 +301,7 @@ export default function Register() {
 
                             <p className="text-center text-xs text-gray-400">
                                 Already registered?{" "}
-                                <Link href="/admin/login" className="text-blue-700 font-semibold hover:underline">
+                                <Link href="/user/login" className="text-blue-700 font-semibold hover:underline">
                                     Log in
                                 </Link>
                             </p>

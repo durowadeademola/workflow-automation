@@ -49,13 +49,13 @@ class AgentStats extends BaseWidget
                 ->description($waiting > 0 ? 'Visitors asked for a human' : 'Nothing waiting')
                 ->icon('heroicon-o-exclamation-circle')
                 ->color($waiting > 0 ? 'danger' : 'success')
-                ->url('/admin/live-chat'),
+                ->url('/user/live-chat'),
 
             Stat::make('Active Conversations', $active)
                 ->description('Currently being handled')
                 ->icon('heroicon-o-chat-bubble-left-right')
                 ->color('primary')
-                ->url('/admin/live-chat'),
+                ->url('/user/live-chat'),
 
             Stat::make('Resolved Today', $resolvedToday)
                 ->description('Conversations closed today')
@@ -65,7 +65,7 @@ class AgentStats extends BaseWidget
             Stat::make('My Orders', $myOrders)
                 ->description('Assigned to you')
                 ->icon('heroicon-o-shopping-cart')
-                ->url('/admin/orders'),
+                ->url('/user/orders'),
         ];
     }
 }

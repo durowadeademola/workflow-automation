@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* Matches the Inter font used in the Filament admin panel — loaded via the
+   bunny fonts link in app.blade.php. Without this override, Tailwind's
+   `font-sans` utility (used on <body>) falls back to the plain system-font
+   stack and the loaded font file is never actually applied to anything. */
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
 /* --- Fix root font-size so 1rem = 16px --- */
 html {
     font-size: 16px !important;

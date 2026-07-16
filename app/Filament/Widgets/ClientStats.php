@@ -53,7 +53,7 @@ class ClientStats extends BaseWidget
                 )
                 ->icon('heroicon-o-credit-card')
                 ->color($subscription ? 'success' : 'danger')
-                ->url('/admin/billing'),
+                ->url('/user/billing'),
 
             Stat::make('Customers', Customer::where('client_id', $clientId)->count())
                 ->description('Total customers')
@@ -62,7 +62,7 @@ class ClientStats extends BaseWidget
             Stat::make('Orders', Order::where('client_id', $clientId)->count())
                 ->description('Total orders')
                 ->icon('heroicon-o-shopping-cart')
-                ->url('/admin/orders'),
+                ->url('/user/orders'),
 
             Stat::make('Products', Product::where('client_id', $clientId)->where('is_available', true)->count())
                 ->description('Total available products')
@@ -79,7 +79,7 @@ class ClientStats extends BaseWidget
                 ->description($messageLimit ? "{$messagePercent}% of your plan's limit used" : 'Unlimited on your plan')
                 ->icon('heroicon-o-chart-bar')
                 ->color($messageLimit && $messagePercent >= 100 ? 'danger' : ($messageLimit && $messagePercent >= 80 ? 'warning' : 'success'))
-                ->url('/admin/billing'),
+                ->url('/user/billing'),
         ];
     }
 }

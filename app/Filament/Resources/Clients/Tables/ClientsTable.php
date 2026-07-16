@@ -3,17 +3,21 @@
 namespace App\Filament\Resources\Clients\Tables;
 
 use App\Filament\Exports\ClientExporter;
+use App\Models\User;
+use App\Notifications\ClientRejected;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
+use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Notification as NotificationFacade;
 
 class ClientsTable
 {
@@ -36,7 +40,7 @@ class ClientsTable
                     ->colors([
                         'success' => 'active',
                         'warning' => 'pending',
-                        'danger' => 'inactive',
+                        'danger' => ['inactive', 'rejected'],
                     ]),
                 TextColumn::make('created_at')
                     ->dateTime('M j, Y h:i A')
@@ -48,6 +52,7 @@ class ClientsTable
                         'pending' => 'Pending approval',
                         'active' => 'Active',
                         'inactive' => 'Inactive',
+                        'rejected' => 'Rejected',
                     ]),
             ])
             ->recordActions([
@@ -63,6 +68,38 @@ class ClientsTable
 
                         Notification::make()
                             ->title('Client approved')
+                            ->success()
+                            ->send();
+                    }),
+                Action::make('reject')
+                    ->label('Reject')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->visible(fn ($record) => $record->status === 'pending')
+                    ->requiresConfirmation()
+                    ->schema([
+                        Textarea::make('reason')
+                            ->label('Reason for rejection')
+                            ->helperText('Included in the email sent to the client.')
+                            ->required()
+                            ->rows(3),
+                    ])
+                    ->action(function ($record, array $data) {
+                        $record->update([
+                            'status' => 'rejected',
+                            'rejection_reason' => $data['reason'],
+                        ]);
+
+                        $recipients = User::where('client_id', $record->id)
+                            ->where(fn ($query) => $query->where('is_client', true)->orWhere('is_agent', true))
+                            ->get();
+
+                        if ($recipients->isNotEmpty()) {
+                            NotificationFacade::send($recipients, new ClientRejected($record));
+                        }
+
+                        Notification::make()
+                            ->title('Client rejected')
                             ->success()
                             ->send();
                     }),

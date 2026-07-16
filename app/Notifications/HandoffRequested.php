@@ -28,7 +28,7 @@ class HandoffRequested extends Notification
             ->subject('A visitor wants to speak with you')
             ->greeting("Hi {$notifiable->name},")
             ->line("{$visitor} on your live chat widget has asked to speak with a person.")
-            ->action('Open Live Chat', url('/admin/live-chat'))
+            ->action('Open Live Chat', url('/user/live-chat'))
             ->line("Reply as soon as you can — they're waiting.");
     }
 
@@ -46,7 +46,7 @@ class HandoffRequested extends Notification
             ->actions([
                 Action::make('view')
                     ->button()
-                    ->url('/admin/live-chat')
+                    ->url('/user/live-chat')
                     ->label('Open Live Chat'),
             ])
             ->getDatabaseMessage();
