@@ -358,7 +358,11 @@ class Client extends Model
             ->map(fn ($value, $key) => "        {$key}: {$value},")
             ->implode("\n");
 
-        $widgetSrc = asset('chat-widget.js');
+        // Query param changes whenever the file itself changes, so browsers
+        // that already cached an older chat-widget.js fetch the new one
+        // instead of silently keeping stale styles/behavior indefinitely.
+        $widgetVersion = file_exists(public_path('chat-widget.js')) ? filemtime(public_path('chat-widget.js')) : time();
+        $widgetSrc = asset('chat-widget.js').'?v='.$widgetVersion;
 
         return <<<HTML
         <script>

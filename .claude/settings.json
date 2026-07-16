@@ -46,7 +46,9 @@
       "Bash(curl -s -i -X POST https://unrepugnant-silas-anecdotically.ngrok-free.dev/webhook/chat-widget -H 'Content-Type: application/json' -d '{\"message\":\"Hello, what services do you offer?\",\"history\":[],\"systemPrompt\":null,\"businessName\":\"Blueflow Automation\",\"clientId\":4,\"waNumber\":null,\"sessionToken\":\"diag-test-001\"}' --max-time 25)",
       "Bash(curl -s -o /tmp_n8n_response.json -w 'STATUS:%{http_code} SIZE:%{size_download}\\\\n' -X POST https://unrepugnant-silas-anecdotically.ngrok-free.dev/webhook/chat-widget -H 'Content-Type: application/json' -d '{\"message\":\"Hello, what services do you offer?\",\"history\":[],\"systemPrompt\":null,\"businessName\":\"Blueflow Automation\",\"clientId\":4,\"waNumber\":null,\"sessionToken\":\"diag-test-002\"}' --max-time 25)",
       "Bash(cat /tmp_n8n_response.json)",
-      "Bash(rm -f /tmp_n8n_response.json)"
+      "Bash(rm -f /tmp_n8n_response.json)",
+      "Bash(curl -s \"http://blueflow.test/chat-widget.js\")",
+      "Bash(curl -s -I \"http://blueflow.test/chat-widget.js\")"
     ]
   }
 }

@@ -264,7 +264,7 @@
     }
     #cw-messages::-webkit-scrollbar { width: 0px; }
 
-    .cw-msg { display: flex; flex-direction: column; max-width: 86%; }
+    .cw-msg { display: flex; flex-direction: column; max-width: 94%; }
     .cw-msg.cw-bot { align-self: flex-start; }
     .cw-msg.cw-user { align-self: flex-end; }
     .cw-msg { animation: cwSlideIn .22s ease; }
@@ -284,14 +284,17 @@
     }
 
     .cw-bubble {
-      display: block;
-      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      min-height: 60px;
+      padding: 22px 28px;
       line-height: 1.65;
       font-size: 14.5px;
       word-break: break-word;
       overflow-wrap: break-word;
       white-space: pre-wrap;
       max-width: 100%;
+      box-sizing: border-box;
     }
     .cw-bot .cw-bubble {
       background: white; color: #1a1c23;
@@ -363,7 +366,7 @@
     .cw-qr {
       background: white; color: ${pcDark};
       border: 1.5px solid ${pc}30;
-      border-radius: 24px; padding: 7px 16px;
+      border-radius: 24px; padding: 16px 30px;
       font-size: 13px; font-weight: 500; cursor: pointer;
       transition: all .18s; white-space: nowrap;
       box-shadow: 0 1px 4px rgba(0,0,0,0.06);
