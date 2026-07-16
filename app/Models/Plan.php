@@ -15,6 +15,7 @@ class Plan extends Model
         'service',
         'amount',
         'message_limit',
+        'appointment_limit',
         'description',
         'features',
         'is_popular',

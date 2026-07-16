@@ -49,6 +49,12 @@ class PlanForm
                             ->minValue(1)
                             ->placeholder('Unlimited')
                             ->helperText('Chat messages the widget will process per month on this plan. Leave blank for unlimited.'),
+                        TextInput::make('appointment_limit')
+                            ->label('Appointment limit / month')
+                            ->numeric()
+                            ->minValue(1)
+                            ->placeholder('Unlimited')
+                            ->helperText('Appointments the AI (or the client themselves) can book per billing period on this plan. Leave blank for unlimited.'),
                         Textarea::make('description')
                             ->rows(2)
                             ->columnSpanFull(),

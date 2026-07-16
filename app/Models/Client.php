@@ -120,6 +120,11 @@ class Client extends Model
         return $this->hasMany(Message::class);
     }
 
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
     public function kycSubmissions()
     {
         return $this->hasMany(KycSubmission::class);
@@ -234,6 +239,58 @@ class Client extends Model
         }
 
         return $this->messagesUsedInCurrentPeriod() >= $limit;
+    }
+
+    /**
+     * Same shape as the message limit above: trials get a fixed cap since
+     * they aren't tied to a Plan record, paid plans use whatever the admin
+     * set (null = unlimited).
+     */
+    public const TRIAL_APPOINTMENT_LIMIT = 5;
+
+    public function appointmentLimitForCurrentPlan(): ?int
+    {
+        $subscription = $this->currentSubscription();
+
+        if (! $subscription) {
+            return 0;
+        }
+
+        if ($subscription->plan === 'trial') {
+            return self::TRIAL_APPOINTMENT_LIMIT;
+        }
+
+        return $subscription->planRecord?->appointment_limit;
+    }
+
+    /**
+     * Counted from the start of the current subscription period, not the
+     * calendar month, same as messages. Cancelled appointments don't count
+     * against the cap — cancelling one genuinely frees up capacity.
+     */
+    public function appointmentsBookedInCurrentPeriod(): int
+    {
+        $subscription = $this->currentSubscription();
+
+        if (! $subscription || ! $subscription->start_date) {
+            return 0;
+        }
+
+        return $this->appointments()
+            ->where('created_at', '>=', $subscription->start_date)
+            ->where('status', '!=', 'cancelled')
+            ->count();
+    }
+
+    public function hasReachedAppointmentLimit(): bool
+    {
+        $limit = $this->appointmentLimitForCurrentPlan();
+
+        if ($limit === null) {
+            return false;
+        }
+
+        return $this->appointmentsBookedInCurrentPeriod() >= $limit;
     }
 
     /**

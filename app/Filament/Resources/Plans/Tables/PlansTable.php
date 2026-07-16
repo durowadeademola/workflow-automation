@@ -37,6 +37,11 @@ class PlansTable
                     ->label('Msg limit/mo')
                     ->placeholder('Unlimited')
                     ->numeric(),
+                TextColumn::make('appointment_limit')
+                    ->label('Appt limit/mo')
+                    ->placeholder('Unlimited')
+                    ->numeric()
+                    ->toggleable(),
                 TextColumn::make('subscriptions_count')
                     ->label('Subscribers')
                     ->counts('subscriptions'),

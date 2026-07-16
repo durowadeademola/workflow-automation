@@ -6,6 +6,7 @@ use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\DomainController;
 use App\Http\Controllers\API\LeadController;
 use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\API\WidgetAppointmentController;
 use App\Http\Controllers\API\WidgetChatController;
 use App\Http\Controllers\API\WidgetConversationController;
 use App\Http\Controllers\PaystackController;
@@ -20,6 +21,8 @@ Route::middleware('webhook.secret')->group(function () {
     Route::post('/customer', [CustomerController::class, 'store'])->name('customer');
     // Called by n8n only, when a visitor asks to speak with a human.
     Route::post('/widget/conversations', [WidgetConversationController::class, 'store'])->name('widget.conversations.store');
+    // Called by n8n only, once the AI has collected everything needed to book an appointment.
+    Route::post('/widget/appointments', [WidgetAppointmentController::class, 'store'])->name('widget.appointments.store');
 });
 
 // Called directly by the embedded chat widget in the visitor's browser.

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Clients;
 use App\Filament\Resources\Clients\Pages\CreateClient;
 use App\Filament\Resources\Clients\Pages\EditClient;
 use App\Filament\Resources\Clients\Pages\ListClients;
+use App\Filament\Resources\Clients\RelationManagers\AppointmentsRelationManager;
 use App\Filament\Resources\Clients\RelationManagers\SubscriptionsRelationManager;
 use App\Filament\Resources\Clients\Schemas\ClientForm;
 use App\Filament\Resources\Clients\Tables\ClientsTable;
@@ -39,6 +40,7 @@ class ClientResource extends Resource
     {
         return [
             SubscriptionsRelationManager::class,
+            AppointmentsRelationManager::class,
         ];
     }
 

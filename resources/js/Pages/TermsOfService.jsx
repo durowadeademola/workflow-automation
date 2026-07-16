@@ -27,8 +27,8 @@ export default function TermsOfService() {
                             <h2 className="text-xl font-bold text-gray-900 mb-3">2. Our Services</h2>
                             <p>
                                 Blueflow Automation designs and implements business automation — including WhatsApp
-                                automation, CRM integration, email and payment automation, and custom workflow
-                                automation using tools such as n8n. Specific deliverables, timelines, and pricing for
+                                automation, Chat Widget integration, CRM integration, email and payment automation, and custom workflow
+                                automation. Specific deliverables, timelines, and pricing for
                                 any engagement are agreed separately with each client before work begins.
                             </p>
                         </div>

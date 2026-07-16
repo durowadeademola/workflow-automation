@@ -17,7 +17,16 @@
       "Bash(curl -s -o /dev/null -w \"privacy-policy: %{http_code}\\\\n\" http://blueflow.test/privacy-policy)",
       "Bash(php -l app/Filament/Resources/Clients/Tables/ClientsTable.php)",
       "Bash(php -l app/Notifications/ClientRejected.php)",
-      "Bash(grep -oP \"\\(?<=›\\\\s\\)[\\\\w\\\\\\\\\\\\\\\\]+\\\\s›\\\\s[\\\\w\\\\\\\\\\\\\\\\]+\")"
+      "Bash(grep -oP \"\\(?<=›\\\\s\\)[\\\\w\\\\\\\\\\\\\\\\]+\\\\s›\\\\s[\\\\w\\\\\\\\\\\\\\\\]+\")",
+      "Bash(php -l app/Models/Appointment.php)",
+      "Bash(php -l app/Http/Controllers/API/WidgetAppointmentController.php)",
+      "Bash(php -l app/Notifications/AppointmentBooked.php)",
+      "Bash(node -e ' *)",
+      "Bash(xargs grep -l \"beforeCreate\")",
+      "Bash(php -l app/Filament/Pages/AppointmentCalendar.php)",
+      "Bash(php -l app/Filament/Resources/Appointments/Pages/ListAppointments.php)",
+      "Bash(php -l resources/views/filament/pages/appointment-calendar.blade.php)",
+      "Bash(php -l app/Filament/Resources/Clients/RelationManagers/AppointmentsRelationManager.php)"
     ]
   }
 }
