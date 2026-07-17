@@ -82,6 +82,21 @@ class Client extends Model
     }
 
     /**
+     * Blocks a client from removing a service themselves while they still
+     * have an active (or mid-checkout) subscription tied to a plan scoped
+     * to that service — otherwise billing and access would disagree with
+     * each other, with a paid subscription for a feature the client no
+     * longer has. They have to cancel first.
+     */
+    public function hasActiveOrPendingSubscriptionForService(string $service): bool
+    {
+        return $this->subscriptions()
+            ->whereIn('status', ['active', 'pending'])
+            ->whereHas('planRecord', fn ($query) => $query->where('service', $service))
+            ->exists();
+    }
+
+    /**
      * Fallbacks used until a client customizes their widget — kept in sync
      * with the defaults baked into public/chat-widget.js itself.
      */

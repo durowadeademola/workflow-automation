@@ -2,8 +2,11 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Client;
 use App\Models\User;
 use BackedEnum;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
@@ -42,7 +45,49 @@ class Settings extends Page
             'name' => $this->getUser()->name,
             'email' => $this->getUser()->email,
             'email_notifications_enabled' => $this->getUser()->email_notifications_enabled,
+            'features' => $this->clientFeaturesForForm($this->getUser()->client),
         ]);
+    }
+
+    /**
+     * The CheckboxList only ever offers Client::SELF_REGISTRATION_FEATURES
+     * as options, so its dehydrated state must be scoped to that same
+     * subset — Filament validates submitted CheckboxList values against
+     * getEnabledOptions() only, so anything outside it (e.g. an
+     * admin-granted "coming soon" feature) would fail validation and block
+     * the whole Settings save. `null` on the client means "unrestricted"
+     * (see Client::hasFeature), so it's treated as having every
+     * self-registration feature already enabled.
+     */
+    private function clientFeaturesForForm(?Client $client): array
+    {
+        if (! $client) {
+            return [];
+        }
+
+        if ($client->features === null) {
+            return Client::SELF_REGISTRATION_FEATURES;
+        }
+
+        return array_values(array_intersect($client->features, Client::SELF_REGISTRATION_FEATURES));
+    }
+
+    /**
+     * Features the client has that aren't self-service manageable here —
+     * shown read-only so they're not left wondering where a service went.
+     */
+    private function otherClientFeatures(?Client $client): array
+    {
+        if (! $client) {
+            return [];
+        }
+
+        $features = $client->features ?? array_keys(Client::FEATURES);
+
+        return collect(array_diff($features, Client::SELF_REGISTRATION_FEATURES))
+            ->map(fn (string $slug) => Client::FEATURES[$slug] ?? $slug)
+            ->values()
+            ->all();
     }
 
     public function defaultForm(Schema $schema): Schema
@@ -107,6 +152,27 @@ class Settings extends Page
                             ->default(true),
                     ])
                     ->columnSpan('full'),
+
+                // Business-level, so only the client owner manages it — same
+                // rule WidgetSettings already uses for widget config, not
+                // something an agent should be changing on the business's
+                // behalf.
+                Section::make('Services')
+                    ->description('Add a service to unlock its dashboard pages. Only what\'s actually available today can be toggled here — the rest is coming soon.')
+                    ->visible(fn () => (bool) $user->is_client)
+                    ->schema([
+                        CheckboxList::make('features')
+                            ->label('')
+                            ->options(array_intersect_key(Client::FEATURES, array_flip(Client::SELF_REGISTRATION_FEATURES)))
+                            ->helperText('Removing a service you\'re actively subscribed to isn\'t allowed here — cancel that subscription from Billing first.')
+                            ->columns(2)
+                            ->bulkToggleable(false),
+                        Placeholder::make('other_features')
+                            ->label('Also enabled on your account')
+                            ->visible(fn () => filled($this->otherClientFeatures($user->client)))
+                            ->content(fn () => implode(', ', $this->otherClientFeatures($user->client))),
+                    ])
+                    ->columnSpan('full'),
             ]);
     }
 
@@ -133,15 +199,67 @@ class Settings extends Page
         $user->email_notifications_enabled = (bool) ($state['email_notifications_enabled'] ?? true);
         $user->save();
 
+        $blockedRemovals = [];
+
+        if ($user->is_client && ($client = $user->client)) {
+            $blockedRemovals = $this->saveFeatures($client, $state['features'] ?? []);
+        }
+
         $this->form->fill([
             'name' => $user->name,
             'email' => $user->email,
             'email_notifications_enabled' => $user->email_notifications_enabled,
+            'features' => $this->clientFeaturesForForm($user->client),
         ]);
+
+        if ($blockedRemovals) {
+            Notification::make()
+                ->title('Settings saved, but not everything')
+                ->body("Couldn't remove ".implode(', ', $blockedRemovals).' — cancel the active subscription for that service first.')
+                ->warning()
+                ->send();
+
+            return;
+        }
 
         Notification::make()
             ->title('Settings saved.')
             ->success()
             ->send();
+    }
+
+    /**
+     * Applies the client's new self-service feature selection, refusing to
+     * remove any service that still has an active or in-progress
+     * subscription tied to it. The CheckboxList only ever offers
+     * SELF_REGISTRATION_FEATURES, so anything else the client has (admin
+     * granted) is preserved untouched here rather than round-tripped
+     * through form state.
+     *
+     * @param  array<int, string>  $requestedSelfRegFeatures
+     * @return array<int, string> service labels that couldn't be removed
+     */
+    private function saveFeatures(Client $client, array $requestedSelfRegFeatures): array
+    {
+        $otherFeatures = $client->features === null
+            ? array_diff(array_keys(Client::FEATURES), Client::SELF_REGISTRATION_FEATURES)
+            : array_diff($client->features, Client::SELF_REGISTRATION_FEATURES);
+
+        $currentSelfReg = $this->clientFeaturesForForm($client);
+        $removed = array_diff($currentSelfReg, $requestedSelfRegFeatures);
+
+        $blocked = [];
+        $finalSelfReg = $requestedSelfRegFeatures;
+
+        foreach ($removed as $service) {
+            if ($client->hasActiveOrPendingSubscriptionForService($service)) {
+                $blocked[] = Client::FEATURES[$service] ?? $service;
+                $finalSelfReg[] = $service;
+            }
+        }
+
+        $client->update(['features' => array_values(array_unique(array_merge($otherFeatures, $finalSelfReg)))]);
+
+        return $blocked;
     }
 }

@@ -94,6 +94,13 @@ export default function Pricing({ plans = [] }) {
                                     </p>
                                 )}
 
+                                <p className="text-xs text-gray-500 mb-1">
+                                    {plan.appointment_limit ? `${Number(plan.appointment_limit).toLocaleString("en-NG")} appointments/month` : "Unlimited appointments"}
+                                </p>
+                                <p className="text-xs text-gray-500 mb-6">
+                                    {plan.lead_limit ? `${Number(plan.lead_limit).toLocaleString("en-NG")} qualified leads/month` : "Unlimited qualified leads"}
+                                </p>
+
                                 {plan.features?.length > 0 && (
                                     <ul className="space-y-3 mb-8 flex-1">
                                         {plan.features.map((f) => (

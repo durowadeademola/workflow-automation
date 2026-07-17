@@ -36,7 +36,7 @@ export default function Testimonials({ reviews = [] }) {
                         What Our Clients Say
                     </h2>
                     <p className="text-gray-500 max-w-xl mx-auto">
-                        Real feedback from real Nigerian businesses using Blueflow
+                        Feedbacks from some of our happy customers
                     </p>
                 </div>
 
