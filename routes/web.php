@@ -3,6 +3,7 @@
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaystackController;
 use App\Models\Plan;
+use App\Models\Review;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -14,7 +15,18 @@ Route::get('/', function () {
         // what's being sold today.
         'plans' => Plan::active()
             ->where('service', 'chat-widget')
-            ->get(['name', 'slug', 'amount', 'description', 'features', 'is_popular']),
+            ->get(['id', 'name', 'slug', 'amount', 'promo_price', 'promo_ends_at', 'description', 'features', 'is_popular']),
+        // Real client-submitted reviews, approved by an admin and explicitly
+        // marked to show here — never anything fabricated.
+        'reviews' => Review::featured()
+            ->latest()
+            ->get(['name', 'job_title', 'company', 'location', 'rating', 'description']),
+        // One 5-star featured review for the closing CTA banner — null (and
+        // the banner just omits that block) until a real one exists.
+        'ctaReview' => Review::featured()
+            ->where('rating', 5)
+            ->latest()
+            ->first(['name', 'job_title', 'company', 'location', 'rating', 'description']),
     ]);
 });
 

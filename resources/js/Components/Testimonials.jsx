@@ -1,56 +1,5 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
-const testimonials = [
-    {
-        quote: "Blueflow transformed our business overnight. We went from missing half our customer calls to capturing every single inquiry. The ROI was immediate and massive.",
-        author: "Babatunde Adebayo",
-        role: "Owner, Mama's Kitchen",
-        location: "Lagos",
-        rating: 5,
-        initial: "B",
-    },
-    {
-        quote: "I was skeptical at first, but within 2 weeks we saw a 40% jump in completed orders. The WhatsApp automation handles hundreds of customer inquiries daily without any staff.",
-        author: "Ngozi Okonkwo",
-        role: "CEO, StyleHaven",
-        location: "Abuja",
-        rating: 5,
-        initial: "N",
-    },
-    {
-        quote: "Our hotel occupancy went from 60% to 85% in just one quarter. The automated booking reminders alone have saved us thousands in lost reservations.",
-        author: "Emeka Nwosu",
-        role: "General Manager, Lekki Suites",
-        location: "Lagos",
-        rating: 5,
-        initial: "E",
-    },
-    {
-        quote: "Patient no-shows dropped by over 50% after we deployed the reminder system. Our clinic runs smoother than ever and our staff are less stressed.",
-        author: "Dr. Amaka Obi",
-        role: "Medical Director, CareFirst Clinics",
-        location: "Port Harcourt",
-        rating: 5,
-        initial: "A",
-    },
-    {
-        quote: "As a real estate agent, following up with every lead manually was impossible. Now Blueflow does it for me. My close rate has more than doubled.",
-        author: "Tunde Fashola",
-        role: "Principal Agent, PrimeProp",
-        location: "Abuja",
-        rating: 5,
-        initial: "T",
-    },
-    {
-        quote: "The automation saved our small team about 25 hours a week. That's time we now spend growing the business instead of answering the same questions over and over.",
-        author: "Chioma Eze",
-        role: "Founder, Zeemade Bakery",
-        location: "Enugu",
-        rating: 5,
-        initial: "C",
-    },
-];
-
 function Stars({ count = 5 }) {
     return (
         <div className="flex gap-0.5 mb-3">
@@ -63,9 +12,13 @@ function Stars({ count = 5 }) {
     );
 }
 
-export default function Testimonials() {
+export default function Testimonials({ reviews = [] }) {
     const [headingRef, headingVisible] = useScrollAnimation(0.3);
     const [cardsRef, cardsVisible] = useScrollAnimation(0.05);
+
+    if (reviews.length === 0) {
+        return null;
+    }
 
     return (
         <section className="py-20 bg-white">
@@ -83,14 +36,14 @@ export default function Testimonials() {
                         What Our Clients Say
                     </h2>
                     <p className="text-gray-500 max-w-xl mx-auto">
-                        Join 100+ Nigerian businesses that have transformed their operations with Blueflow
+                        Real feedback from real Nigerian businesses using Blueflow
                     </p>
                 </div>
 
                 <div ref={cardsRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {testimonials.map((t, i) => (
+                    {reviews.map((r, i) => (
                         <div
-                            key={t.author}
+                            key={i}
                             className="bg-gray-50 rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-shadow flex flex-col"
                             style={{
                                 opacity: cardsVisible ? 1 : 0,
@@ -98,17 +51,20 @@ export default function Testimonials() {
                                 transition: `opacity 0.6s ease ${i * 90}ms, transform 0.6s ease ${i * 90}ms`,
                             }}
                         >
-                            <Stars />
+                            <Stars count={r.rating} />
                             <p className="text-gray-700 text-sm leading-relaxed italic flex-1 mb-5">
-                                "{t.quote}"
+                                "{r.description}"
                             </p>
                             <div className="flex items-center gap-3">
                                 <div className="w-9 h-9 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
-                                    {t.initial}
+                                    {r.name.charAt(0).toUpperCase()}
                                 </div>
                                 <div>
-                                    <p className="font-semibold text-gray-900 text-sm">{t.author}</p>
-                                    <p className="text-xs text-gray-500">{t.role} • {t.location}</p>
+                                    <p className="font-semibold text-gray-900 text-sm">{r.name}</p>
+                                    <p className="text-xs text-gray-500">
+                                        {[r.job_title, r.company].filter(Boolean).join(", ")}
+                                        {r.location ? ` • ${r.location}` : ""}
+                                    </p>
                                 </div>
                             </div>
                         </div>

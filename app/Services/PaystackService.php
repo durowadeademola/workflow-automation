@@ -31,6 +31,27 @@ class PaystackService
             ->json();
     }
 
+    /**
+     * $amountInKobo omitted refunds the transaction's full amount; passed,
+     * it refunds only that much (a proration, e.g. for unused subscription
+     * time). Paystack processes refunds asynchronously — a successful call
+     * here means the refund was accepted, not necessarily settled yet.
+     */
+    public function refundTransaction(string $transactionReference, ?int $amountInKobo = null): array
+    {
+        $payload = ['transaction' => $transactionReference];
+
+        if ($amountInKobo !== null) {
+            $payload['amount'] = $amountInKobo;
+        }
+
+        return Http::withToken($this->secretKey)
+            ->baseUrl('https://api.paystack.co')
+            ->post('/refund', $payload)
+            ->throw()
+            ->json();
+    }
+
     public function verifyWebhookSignature(string $rawPayload, ?string $signature): bool
     {
         if (! $signature || ! $this->secretKey) {

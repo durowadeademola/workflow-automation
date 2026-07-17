@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Plans\Schemas;
 
 use App\Models\Client;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -43,6 +44,16 @@ class PlanForm
                             ->required()
                             ->numeric()
                             ->prefix('₦'),
+                        TextInput::make('promo_price')
+                            ->label('Promo price (₦/month)')
+                            ->numeric()
+                            ->prefix('₦')
+                            ->placeholder('No promotion running')
+                            ->helperText('Set a lower price to run a promotion — clients see the regular price struck through, this price, and the percentage saved. This is what actually gets charged, not the regular price above.'),
+                        DateTimePicker::make('promo_ends_at')
+                            ->label('Promo ends at')
+                            ->native(false)
+                            ->helperText('Leave blank to run the promotion until you manually clear the promo price above.'),
                         TextInput::make('message_limit')
                             ->label('Message limit / month')
                             ->numeric()

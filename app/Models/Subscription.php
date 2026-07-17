@@ -33,6 +33,14 @@ class Subscription extends Model
         'limit_reached_notified_at',
         'rolled_over_appointments',
         'rolled_over_leads',
+        'refund_status',
+        'refund_amount',
+        'refund_requested_at',
+        'refund_reviewed_at',
+        'refund_processed_at',
+        'refund_reference',
+        'refund_rejection_reason',
+        'refund_original_end_date',
     ];
 
     protected $casts = [
@@ -42,6 +50,10 @@ class Subscription extends Model
         'paystack_paid_at' => 'datetime',
         'limit_reached_notified_at' => 'datetime',
         'cancelled_at' => 'datetime',
+        'refund_requested_at' => 'datetime',
+        'refund_reviewed_at' => 'datetime',
+        'refund_processed_at' => 'datetime',
+        'refund_original_end_date' => 'date',
     ];
 
     public function client()

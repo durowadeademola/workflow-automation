@@ -26,6 +26,8 @@ class ProgramsTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('description')
+                    ->limit(50)
+                    ->tooltip(fn ($record) => $record->description)
                     ->searchable(),
                 BadgeColumn::make('status')
                     ->colors([

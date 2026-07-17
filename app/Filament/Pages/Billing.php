@@ -5,15 +5,19 @@ namespace App\Filament\Pages;
 use App\Models\Client;
 use App\Models\Plan;
 use App\Models\Subscription;
+use App\Models\User;
+use App\Notifications\RefundRequested;
 use App\Services\PaystackService;
 use App\Services\SubscriptionService;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification as LaravelNotification;
 use Illuminate\Support\Str;
 
 class Billing extends Page
@@ -58,6 +62,7 @@ class Billing extends Page
 
         return Subscription::where('client_id', $client->id)
             ->where('status', 'active')
+            ->where('end_date', '>=', now()->startOfDay())
             ->latest('end_date')
             ->first();
     }
@@ -133,13 +138,57 @@ class Billing extends Page
     }
 
     /**
-     * The Naira credit switching to $planSlug right now would carry over
-     * from the unused portion of the current subscription (₦0 if there's
-     * no current subscription, or it's the free trial).
+     * The Naira credit switching plans right now would carry over — the
+     * larger of two mutually-exclusive components (a subscription either
+     * still has remaining days, or it's already run its course, never
+     * both): unused time on a still-active subscription being switched
+     * mid-cycle, or unused message capacity on one that already expired
+     * with room to spare. ₦0 if there's nothing to credit, or it's the
+     * free trial.
      */
     public function getProratedCredit(): int
     {
-        return app(SubscriptionService::class)->calculateProratedCredit($this->getCurrentSubscription());
+        $dayBasedCredit = app(SubscriptionService::class)->calculateProratedCredit($this->getCurrentSubscription());
+
+        $client = $this->getClient();
+        $messageCredit = $client
+            ? $this->calculateMessageProrationCredit($client, $client->mostRecentSubscription())
+            : 0;
+
+        return $dayBasedCredit + $messageCredit;
+    }
+
+    /**
+     * Unused message capacity from a subscription that already ran its
+     * full course becomes a credit on the next one — the message-quota
+     * equivalent of the day-based credit above, for a plan that used up
+     * all its time rather than being switched early (those two never
+     * overlap: calculateProratedCredit() already returns 0 once a
+     * subscription isn't still active). Skipped for trials (nothing was
+     * actually paid), unlimited plans (nothing to prorate), and anything
+     * already refunded (would double-count the unused-time compensation
+     * it already got).
+     */
+    private function calculateMessageProrationCredit(Client $client, ?Subscription $previous): int
+    {
+        if (! $previous || $previous->refund_status || $previous->plan === 'trial' || $previous->amount <= 0) {
+            return 0;
+        }
+
+        if (! $previous->end_date || $previous->end_date->isFuture()) {
+            return 0;
+        }
+
+        $messageLimit = $previous->planRecord?->message_limit;
+
+        if (! $messageLimit) {
+            return 0;
+        }
+
+        $unusedMessages = max(0, $messageLimit - $client->messagesUsedInSubscriptionPeriod($previous));
+        $creditPerMessage = $previous->amount / $messageLimit;
+
+        return (int) round($unusedMessages * $creditPerMessage);
     }
 
     public function getSwitchConfirmationMessage(string $planSlug): string
@@ -151,11 +200,11 @@ class Billing extends Page
             return "Switch to {$planRecord?->name}?";
         }
 
-        $finalCharge = max(0, $planRecord->amount - $credit);
+        $finalCharge = max(0, $planRecord->effective_price - $credit);
 
         return "Your remaining time on your current plan is worth a ₦".number_format($credit)." credit. "
             .($finalCharge > 0
-                ? "You'll pay ₦".number_format($finalCharge)." today instead of ₦".number_format($planRecord->amount).'.'
+                ? "You'll pay ₦".number_format($finalCharge)." today instead of ₦".number_format($planRecord->effective_price).'.'
                 : "That fully covers {$planRecord->name} — you won't be charged anything today.");
     }
 
@@ -205,16 +254,20 @@ class Billing extends Page
         abort_unless($planRecord, 404);
 
         $credit = $this->getProratedCredit();
-        $finalCharge = max(0, $planRecord->amount - $credit);
+        $finalCharge = max(0, $planRecord->effective_price - $credit);
 
-        $previousSubscription = $client->currentSubscription();
+        // Not currentSubscription() — by the time a client resubscribes,
+        // the period being rolled over from has very often already expired
+        // (that's usually *why* they're resubscribing), and currentSubscription()
+        // would no longer find it.
+        $previousSubscription = $client->mostRecentSubscription();
         [$rolledOverAppointments, $rolledOverLeads] = $this->calculateRollover($client, $previousSubscription);
 
         $subscription = Subscription::create([
             'client_id' => $client->id,
             'plan_id' => $planRecord->id,
             'plan' => $planRecord->slug,
-            'amount' => $planRecord->amount,
+            'amount' => $planRecord->effective_price,
             'credit_applied' => $credit,
             'name' => $planRecord->name,
             'status' => 'pending',
@@ -278,28 +331,42 @@ class Billing extends Page
             return [0, 0];
         }
 
-        $appointmentLimit = $client->appointmentLimitForCurrentPlan();
-        $leadLimit = $client->leadLimitForCurrentPlan();
+        $appointmentLimit = $client->appointmentLimitForSubscription($previous);
+        $leadLimit = $client->leadLimitForSubscription($previous);
 
         $unusedAppointments = $appointmentLimit === null
             ? 0
-            : max(0, $appointmentLimit - $client->appointmentsBookedInCurrentPeriod());
+            : max(0, $appointmentLimit - $client->appointmentsBookedInSubscriptionPeriod($previous));
 
         $unusedLeads = $leadLimit === null
             ? 0
-            : max(0, $leadLimit - $client->qualifiedLeadsInCurrentPeriod());
+            : max(0, $leadLimit - $client->qualifiedLeadsInSubscriptionPeriod($previous));
 
         return [$unusedAppointments, $unusedLeads];
+    }
+
+    /**
+     * A refund is only offered when this subscription was actually charged
+     * directly through Paystack — a trial, or one fully covered by rollover
+     * credit from a plan switch, never took a real payment, so there's
+     * nothing to send back.
+     */
+    private function isRefundEligible(?Subscription $subscription): bool
+    {
+        return (bool) $subscription?->paystack_transaction_id;
     }
 
     /**
      * Cancels the current subscription. Since billing here is one-off
      * charges with no auto-renewal (nothing ever re-charges a client
      * automatically), "cancel" doesn't stop a future payment — it just
-     * marks intent and hides the renewal nudge. Access keeps running until
-     * end_date (already paid for), with no refund or credit for unused
-     * time. Subscribing to any plan afterward naturally supersedes this,
-     * since it creates a fresh subscription untouched by cancelled_at.
+     * marks intent. Two paths from here: keep access until end_date with
+     * no refund (the default, and the only option when there's nothing to
+     * refund), or end access right now and request a refund for the unused
+     * remainder — which requires an admin to actually process the Paystack
+     * refund before any money moves. Subscribing to any plan afterward
+     * naturally supersedes this, since it creates a fresh subscription
+     * untouched by cancelled_at.
      */
     public function cancelAction(): Action
     {
@@ -309,22 +376,42 @@ class Billing extends Page
             ->modalDescription(function (): string {
                 $subscription = $this->getCurrentSubscription();
 
-                return $subscription
-                    ? "You'll keep access until {$subscription->end_date->format('M j, Y')} — no refund for unused time, and it won't renew after that."
-                    : 'No active subscription to cancel.';
+                if (! $subscription) {
+                    return 'No active subscription to cancel.';
+                }
+
+                return $this->isRefundEligible($subscription)
+                    ? 'Choose what happens next.'
+                    : "You'll keep access until {$subscription->end_date->format('M j, Y')} — no refund for unused time, and it won't renew after that.";
             })
-            ->schema([
-                Textarea::make('reason')
+            ->schema(function (): array {
+                $subscription = $this->getCurrentSubscription();
+                $fields = [];
+
+                if ($this->isRefundEligible($subscription)) {
+                    $fields[] = Radio::make('refund_choice')
+                        ->label('What would you like to do?')
+                        ->options([
+                            'keep' => "Keep access until {$subscription->end_date->format('M j, Y')} — no refund",
+                            'refund' => 'Stop now and request a refund for the unused time',
+                        ])
+                        ->default('keep')
+                        ->required();
+                }
+
+                $fields[] = Textarea::make('reason')
                     ->label('Why are you cancelling? (optional)')
                     ->helperText('Helps us understand what we could do better — visible only to our team.')
-                    ->rows(3),
-            ])
+                    ->rows(3);
+
+                return $fields;
+            })
             ->modalSubmitActionLabel('Cancel subscription')
             ->color('danger')
-            ->action(fn (array $data) => $this->cancel($data['reason'] ?? null));
+            ->action(fn (array $data) => $this->cancel($data['reason'] ?? null, $data['refund_choice'] ?? 'keep'));
     }
 
-    public function cancel(?string $reason = null): void
+    public function cancel(?string $reason = null, string $refundChoice = 'keep'): void
     {
         $subscription = $this->getCurrentSubscription();
 
@@ -338,6 +425,12 @@ class Billing extends Page
             return;
         }
 
+        if ($refundChoice === 'refund' && $this->isRefundEligible($subscription)) {
+            $this->requestRefund($subscription, $reason);
+
+            return;
+        }
+
         $subscription->update([
             'cancelled_at' => now(),
             'cancellation_reason' => $reason,
@@ -345,6 +438,47 @@ class Billing extends Page
 
         Notification::make()
             ->title('Subscription cancelled — you\'ll keep access until '.$subscription->end_date->format('M j, Y').'.')
+            ->success()
+            ->send();
+    }
+
+    /**
+     * Ends access immediately (rather than at end_date) since the client
+     * explicitly chose money back over continued use, and flags the
+     * subscription for an admin to actually process the Paystack refund —
+     * nothing here moves real money by itself. The original end_date is
+     * preserved so access can be restored if the request is rejected
+     * instead of processed.
+     */
+    private function requestRefund(Subscription $subscription, ?string $reason): void
+    {
+        $totalDays = max(1, (int) $subscription->start_date->diffInDays($subscription->end_date));
+        $remainingDays = max(0, (int) now()->startOfDay()->diffInDays($subscription->end_date, false));
+        $baseAmount = $subscription->paystack_amount_charged ?? $subscription->amount;
+        $refundAmount = (int) round($baseAmount * ($remainingDays / $totalDays));
+
+        $subscription->update([
+            'cancelled_at' => now(),
+            'cancellation_reason' => $reason,
+            'refund_status' => 'requested',
+            'refund_requested_at' => now(),
+            'refund_amount' => $refundAmount,
+            'refund_original_end_date' => $subscription->end_date,
+            // currentSubscription() compares end_date against now()->startOfDay(),
+            // and end_date itself has no time-of-day precision — so "today"
+            // would still read as active for the rest of today. Yesterday is
+            // the only value that's unambiguously excluded immediately.
+            'end_date' => now()->subDay(),
+        ]);
+
+        $admins = User::where('is_admin', true)->get();
+
+        if ($admins->isNotEmpty()) {
+            LaravelNotification::send($admins, new RefundRequested($subscription));
+        }
+
+        Notification::make()
+            ->title('Refund requested — your access has ended, and our team will process your refund of ₦'.number_format($refundAmount).' shortly.')
             ->success()
             ->send();
     }

@@ -15,7 +15,7 @@ import FAQ from "@/Components/FAQ";
 import CTABanner from "@/Components/CTABanner";
 import Footer from "@/Components/Footer";
 
-export default function Home({ plans }) {
+export default function Home({ plans, reviews, ctaReview }) {
     return (
         <>
             <Head title="Blueflow Automation - AI Automation for Nigerian Businesses">
@@ -36,12 +36,12 @@ export default function Home({ plans }) {
                     <Industries />
                     <HowItWorks />
                     <CaseStudies />
-                    <Testimonials />
+                    <Testimonials reviews={reviews} />
                     <Pricing plans={plans} />
                     <ROICalculator />
                     <TrustSignals />
                     <FAQ />
-                    <CTABanner />
+                    <CTABanner ctaReview={ctaReview} />
                 </main>
 
                 <Footer />

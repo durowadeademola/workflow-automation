@@ -37,6 +37,8 @@ class ProductsTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('description')
+                    ->limit(50)
+                    ->tooltip(fn ($record) => $record->description)
                     ->searchable(),
                 TextColumn::make('price')
                     ->money(fn ($record) => $record->currency)

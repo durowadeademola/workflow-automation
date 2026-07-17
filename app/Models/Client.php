@@ -176,6 +176,18 @@ class Client extends Model
     }
 
     /**
+     * Whatever subscription the client most recently had, active or not —
+     * unlike currentSubscription(), this still finds one that's already
+     * expired. Used for anything that needs to look back at "the period
+     * that just ended" (appointment/lead rollover, message proration
+     * credit) once the client is subscribing again after a gap.
+     */
+    public function mostRecentSubscription(): ?Subscription
+    {
+        return $this->subscriptions()->latest('created_at')->first();
+    }
+
+    /**
      * Free trials get a fixed cap since they aren't tied to a Plan record;
      * paid plans use whatever the admin set on that Plan (null = unlimited).
      */
@@ -222,7 +234,26 @@ class Client extends Model
             return 0;
         }
 
+        return $this->messagesUsedInSubscriptionPeriod($subscription);
+    }
+
+    /**
+     * Same source-scoping as messagesUsedInCurrentPeriod(), but usable for
+     * any subscription — including one that has already ended — so a
+     * just-expired period's usage can still be looked up (e.g. for
+     * proration credit) after currentSubscription() stops returning it.
+     */
+    public function messagesUsedInSubscriptionPeriod(Subscription $subscription): int
+    {
+        if (! $subscription->start_date) {
+            return 0;
+        }
+
         $query = $this->messages()->where('created_at', '>=', $subscription->start_date);
+
+        if ($subscription->end_date) {
+            $query->where('created_at', '<=', $subscription->end_date->copy()->endOfDay());
+        }
 
         // The trial exists to try out the chat widget specifically — the
         // only feature that's actually usable today — so it's scoped the
@@ -262,6 +293,17 @@ class Client extends Model
             return 0;
         }
 
+        return $this->appointmentLimitForSubscription($subscription);
+    }
+
+    /**
+     * Same as appointmentLimitForCurrentPlan(), but for any subscription —
+     * including one that's already ended — so rollover calculations can
+     * ask "what was this period's limit" without needing it to still be
+     * the client's current one.
+     */
+    public function appointmentLimitForSubscription(Subscription $subscription): ?int
+    {
         if ($subscription->plan === 'trial') {
             return self::TRIAL_APPOINTMENT_LIMIT;
         }
@@ -285,14 +327,32 @@ class Client extends Model
     {
         $subscription = $this->currentSubscription();
 
-        if (! $subscription || ! $subscription->start_date) {
+        if (! $subscription) {
             return 0;
         }
 
-        return $this->appointments()
+        return $this->appointmentsBookedInSubscriptionPeriod($subscription);
+    }
+
+    /**
+     * Same as appointmentsBookedInCurrentPeriod(), but for any subscription
+     * — including one that's already ended (see appointmentLimitForSubscription()).
+     */
+    public function appointmentsBookedInSubscriptionPeriod(Subscription $subscription): int
+    {
+        if (! $subscription->start_date) {
+            return 0;
+        }
+
+        $query = $this->appointments()
             ->where('created_at', '>=', $subscription->start_date)
-            ->where('status', '!=', 'cancelled')
-            ->count();
+            ->where('status', '!=', 'cancelled');
+
+        if ($subscription->end_date) {
+            $query->where('created_at', '<=', $subscription->end_date->copy()->endOfDay());
+        }
+
+        return $query->count();
     }
 
     public function hasReachedAppointmentLimit(): bool
@@ -319,6 +379,15 @@ class Client extends Model
             return 0;
         }
 
+        return $this->leadLimitForSubscription($subscription);
+    }
+
+    /**
+     * Same as leadLimitForCurrentPlan(), but for any subscription —
+     * including one that's already ended (see appointmentLimitForSubscription()).
+     */
+    public function leadLimitForSubscription(Subscription $subscription): ?int
+    {
         if ($subscription->plan === 'trial') {
             return self::TRIAL_LEAD_LIMIT;
         }
@@ -339,14 +408,32 @@ class Client extends Model
     {
         $subscription = $this->currentSubscription();
 
-        if (! $subscription || ! $subscription->start_date) {
+        if (! $subscription) {
             return 0;
         }
 
-        return $this->customers()
+        return $this->qualifiedLeadsInSubscriptionPeriod($subscription);
+    }
+
+    /**
+     * Same as qualifiedLeadsInCurrentPeriod(), but for any subscription —
+     * including one that's already ended (see appointmentLimitForSubscription()).
+     */
+    public function qualifiedLeadsInSubscriptionPeriod(Subscription $subscription): int
+    {
+        if (! $subscription->start_date) {
+            return 0;
+        }
+
+        $query = $this->customers()
             ->where('is_qualified_lead', true)
-            ->where('qualified_at', '>=', $subscription->start_date)
-            ->count();
+            ->where('qualified_at', '>=', $subscription->start_date);
+
+        if ($subscription->end_date) {
+            $query->where('qualified_at', '<=', $subscription->end_date->copy()->endOfDay());
+        }
+
+        return $query->count();
     }
 
     public function hasReachedLeadLimit(): bool

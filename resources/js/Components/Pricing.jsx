@@ -57,6 +57,12 @@ export default function Pricing({ plans = [] }) {
                                     </div>
                                 )}
 
+                                {plan.has_active_promo && (
+                                    <span className="absolute -top-4 right-4 bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-md">
+                                        {plan.promo_percent}% off
+                                    </span>
+                                )}
+
                                 <div className="mb-6">
                                     <h3 className="text-xl font-extrabold text-gray-900 mb-1">{plan.name}</h3>
                                     {plan.description && (
@@ -65,11 +71,28 @@ export default function Pricing({ plans = [] }) {
                                 </div>
 
                                 <div className="mb-6">
-                                    <span className="text-4xl font-extrabold text-gray-900">
-                                        ₦{Number(plan.amount).toLocaleString("en-NG")}
-                                    </span>
+                                    {plan.has_active_promo ? (
+                                        <>
+                                            <span className="text-lg text-gray-400 line-through mr-2">
+                                                ₦{Number(plan.amount).toLocaleString("en-NG")}
+                                            </span>
+                                            <span className="text-4xl font-extrabold text-red-600">
+                                                ₦{Number(plan.promo_price).toLocaleString("en-NG")}
+                                            </span>
+                                        </>
+                                    ) : (
+                                        <span className="text-4xl font-extrabold text-gray-900">
+                                            ₦{Number(plan.amount).toLocaleString("en-NG")}
+                                        </span>
+                                    )}
                                     <span className="text-gray-400 text-sm">/month</span>
                                 </div>
+
+                                {plan.has_active_promo && plan.promo_ends_at && (
+                                    <p className="text-xs text-red-600 -mt-4 mb-6">
+                                        Offer ends {new Date(plan.promo_ends_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                                    </p>
+                                )}
 
                                 {plan.features?.length > 0 && (
                                     <ul className="space-y-3 mb-8 flex-1">

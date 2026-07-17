@@ -55,6 +55,22 @@
                     </button>
                 </div>
             </div>
+        @elseif($this->getRecentSubscriptions()->first()?->refund_status === 'requested')
+            @php
+                $refunding = $this->getRecentSubscriptions()->first();
+            @endphp
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-amber-600">Refund Requested</p>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $refunding->name }}</h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Your access has ended and a ₦{{ number_format($refunding->refund_amount) }} refund is pending review by our team.
+                    </p>
+                </div>
+                <span class="text-xs font-semibold uppercase tracking-wide text-amber-700 bg-amber-100 rounded-full px-3 py-1">
+                    Pending
+                </span>
+            </div>
         @else
             <div class="text-center py-4">
                 <p class="text-sm text-gray-500">
@@ -156,18 +172,38 @@
                 'border-primary-500 ring-2 ring-primary-500' => $plan->is_popular,
                 'border-gray-100 dark:border-gray-800' => ! $plan->is_popular,
             ])>
-                @if($plan->is_popular)
-                    <span class="text-[10px] font-semibold uppercase tracking-wide text-primary-700 bg-primary-100 rounded-full px-2 py-0.5 w-fit mb-3">
-                        Most Popular
-                    </span>
-                @endif
+                <div class="flex items-center gap-2 flex-wrap mb-3">
+                    @if($plan->is_popular)
+                        <span class="text-[10px] font-semibold uppercase tracking-wide text-primary-700 bg-primary-100 rounded-full px-2 py-0.5 w-fit">
+                            Most Popular
+                        </span>
+                    @endif
+                    @if($plan->has_active_promo)
+                        <span class="text-[10px] font-semibold uppercase tracking-wide text-danger-700 bg-danger-100 rounded-full px-2 py-0.5 w-fit">
+                            {{ $plan->promo_percent }}% off
+                        </span>
+                    @endif
+                </div>
                 <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $plan->name }}</h3>
                 @if($plan->description)
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $plan->description }}</p>
                 @endif
-                <p class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 mt-2 mb-1">
-                    ₦{{ number_format($plan->amount) }}<span class="text-sm font-normal text-gray-400">/month</span>
-                </p>
+                @if($plan->has_active_promo)
+                    <p class="mt-2 mb-1">
+                        <span class="text-sm text-gray-400 line-through">₦{{ number_format($plan->amount) }}</span>
+                        <span class="text-2xl font-extrabold text-danger-600">₦{{ number_format($plan->promo_price) }}</span>
+                        <span class="text-sm font-normal text-gray-400">/month</span>
+                    </p>
+                    @if($plan->promo_ends_at)
+                        <p class="text-[11px] text-danger-600 mb-1">
+                            Offer ends {{ $plan->promo_ends_at->format('M j, Y') }} ({{ $plan->promo_ends_at->diffForHumans() }})
+                        </p>
+                    @endif
+                @else
+                    <p class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 mt-2 mb-1">
+                        ₦{{ number_format($plan->amount) }}<span class="text-sm font-normal text-gray-400">/month</span>
+                    </p>
+                @endif
                 <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">
                     {{ $plan->appointment_limit ? number_format($plan->appointment_limit).' appointments/month' : 'Unlimited appointments' }}
                 </p>

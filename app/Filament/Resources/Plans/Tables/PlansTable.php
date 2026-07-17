@@ -33,6 +33,16 @@ class PlansTable
                     ->label('Price')
                     ->money('NGN')
                     ->sortable(),
+                TextColumn::make('promo_price')
+                    ->label('Promo price')
+                    ->money('NGN')
+                    ->placeholder('—')
+                    ->description(fn ($record) => $record->has_active_promo ? "{$record->promo_percent}% off" : null),
+                TextColumn::make('promo_ends_at')
+                    ->label('Promo ends')
+                    ->dateTime()
+                    ->placeholder('—')
+                    ->toggleable(),
                 TextColumn::make('message_limit')
                     ->label('Msg limit/mo')
                     ->placeholder('Unlimited')

@@ -1,26 +1,9 @@
-import { UtensilsCrossed } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import { useScrollAnimation, useCountUp } from "@/hooks/useScrollAnimation";
 
-const caseStudies = [
-    {
-        icon: UtensilsCrossed,
-        business: "Mama's Kitchen",
-        category: "Restaurant",
-        location: "Lagos, NG",
-        challenge: "Missing 40–60% of incoming calls during peak hours which translated to sizable lost revenue and frustrated customers. Peak lunch and dinner rushes meant staff couldn't answer phones, leaving customers frustrated and orders going to competitors.",
-        solution: "Implemented a WhatsApp-first ordering flow with automated confirmations, menu quick-replies integrated with their POS system, and smart reservation management.",
-        timeframe: "Results achieved in 3 months",
-        quote: "Blueflow changed everything for us. We never miss an order now, and our customers love how fast we respond. The WhatsApp system paid for itself in the first month. Best investment we made this year!",
-        author: "Babatunde Adebayo",
-        role: "Owner, Mama's Kitchen",
-        results: [
-            { value: 465, prefix: "₦", suffix: "K", label: "Additional Revenue" },
-            { value: 100, prefix: "", suffix: "%", label: "Calls Captured" },
-            { value: 4.8, prefix: "", suffix: "★", label: "Customer Rating", isDecimal: true },
-        ],
-    },
-];
+// No fabricated success stories — this renders nothing until real case
+// studies (with the client's permission) are added here.
+const caseStudies = [];
 
 function ResultMetric({ value, prefix, suffix, label, isDecimal, delay, trigger }) {
     const count = useCountUp(isDecimal ? Math.round(value * 10) : value, 1800, 0, trigger);
@@ -46,6 +29,10 @@ function ResultMetric({ value, prefix, suffix, label, isDecimal, delay, trigger 
 export default function CaseStudies() {
     const [headingRef, headingVisible] = useScrollAnimation(0.3);
     const [cardRef, cardVisible] = useScrollAnimation(0.1);
+
+    if (caseStudies.length === 0) {
+        return null;
+    }
 
     return (
         <section id="case-studies" className="py-20 bg-white">

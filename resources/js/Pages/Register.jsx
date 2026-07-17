@@ -140,7 +140,7 @@ export default function Register() {
                             />
 
                             <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1 block">Business Name *</label>
+                                <label className="text-sm font-medium text-gray-700 mb-1 block">Business Name <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     required
@@ -155,7 +155,7 @@ export default function Register() {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
-                                    <label className="text-sm font-medium text-gray-700 mb-1 block">Email *</label>
+                                    <label className="text-sm font-medium text-gray-700 mb-1 block">Email <span className="text-red-500">*</span></label>
                                     <input
                                         type="email"
                                         required
@@ -177,7 +177,7 @@ export default function Register() {
                             </div>
 
                             <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1 block">Business Type *</label>
+                                <label className="text-sm font-medium text-gray-700 mb-1 block">Business Type <span className="text-red-500">*</span></label>
                                 <select
                                     required
                                     value={form.type}
@@ -193,7 +193,7 @@ export default function Register() {
                             </div>
 
                             <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1 block">Which services are you interested in? *</label>
+                                <label className="text-sm font-medium text-gray-700 mb-1 block">Which services are you interested in? <span className="text-red-500">*</span></label>
                                 <p className="text-xs text-gray-400 mb-2">This decides what shows up in your dashboard — you can change it later.</p>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     {SERVICES.map((s) => (
@@ -233,7 +233,7 @@ export default function Register() {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
-                                    <label className="text-sm font-medium text-gray-700 mb-1 block">Password *</label>
+                                    <label className="text-sm font-medium text-gray-700 mb-1 block">Password <span className="text-red-500">*</span></label>
                                     <input
                                         type="password"
                                         required
@@ -247,7 +247,7 @@ export default function Register() {
                                     )}
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-gray-700 mb-1 block">Confirm Password *</label>
+                                    <label className="text-sm font-medium text-gray-700 mb-1 block">Confirm Password <span className="text-red-500">*</span></label>
                                     <input
                                         type="password"
                                         required
@@ -277,7 +277,7 @@ export default function Register() {
                                         <Link href="/privacy-policy" target="_blank" className="text-blue-700 font-semibold hover:underline">
                                             Privacy Policy
                                         </Link>
-                                        . *
+                                        . <span className="text-red-500">*</span>
                                     </span>
                                 </label>
                                 {errors.terms_accepted && (

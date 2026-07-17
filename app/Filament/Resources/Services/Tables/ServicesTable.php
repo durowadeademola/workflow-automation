@@ -28,7 +28,9 @@ class ServicesTable
                 //     ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('description'),
+                TextColumn::make('description')
+                    ->limit(50)
+                    ->tooltip(fn ($record) => $record->description),
                 TextColumn::make('price')
                     ->money(fn ($record) => $record->currency)
                     ->sortable(),

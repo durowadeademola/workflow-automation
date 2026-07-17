@@ -7,7 +7,7 @@ const badges = [
     { value: "24/7", label: "Support" },
 ];
 
-export default function CTABanner() {
+export default function CTABanner({ ctaReview = null }) {
     const [ref, isVisible] = useScrollAnimation(0.2);
 
     return (
@@ -96,28 +96,33 @@ export default function CTABanner() {
                     No credit card required • Cancel anytime • Free training included
                 </p>
 
-                {/* Testimonial */}
-                <div
-                    style={{
-                        opacity: isVisible ? 1 : 0,
-                        transform: isVisible ? "translateY(0)" : "translateY(30px)",
-                        transition: "opacity 0.7s ease 500ms, transform 0.7s ease 500ms",
-                    }}
-                    className="mt-12 bg-white/10 backdrop-blur-sm rounded-2xl p-6 max-w-2xl mx-auto border border-white/20"
-                >
-                    <p className="text-white text-sm italic leading-relaxed mb-4">
-                        "Blueflow transformed our business overnight. We went from missing half our customer calls to capturing every single inquiry. The ROI was immediate and massive."
-                    </p>
-                    <div className="flex items-center justify-center gap-3">
-                        <div className="w-9 h-9 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
-                            C
-                        </div>
-                        <div className="text-left">
-                            <p className="text-white font-semibold text-sm">Babatunde Adebayo</p>
-                            <p className="text-blue-300 text-xs">Owner, Mama's Kitchen (Lagos)</p>
+                {/* Testimonial — a real featured 5-star review, omitted entirely until one exists */}
+                {ctaReview && (
+                    <div
+                        style={{
+                            opacity: isVisible ? 1 : 0,
+                            transform: isVisible ? "translateY(0)" : "translateY(30px)",
+                            transition: "opacity 0.7s ease 500ms, transform 0.7s ease 500ms",
+                        }}
+                        className="mt-12 bg-white/10 backdrop-blur-sm rounded-2xl p-6 max-w-2xl mx-auto border border-white/20"
+                    >
+                        <p className="text-white text-sm italic leading-relaxed mb-4">
+                            "{ctaReview.description}"
+                        </p>
+                        <div className="flex items-center justify-center gap-3">
+                            <div className="w-9 h-9 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                                {ctaReview.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="text-left">
+                                <p className="text-white font-semibold text-sm">{ctaReview.name}</p>
+                                <p className="text-blue-300 text-xs">
+                                    {[ctaReview.job_title, ctaReview.company].filter(Boolean).join(", ")}
+                                    {ctaReview.location ? ` (${ctaReview.location})` : ""}
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         </section>
     );

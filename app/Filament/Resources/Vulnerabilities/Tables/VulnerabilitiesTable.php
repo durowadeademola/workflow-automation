@@ -37,6 +37,8 @@ class VulnerabilitiesTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('description')
+                    ->limit(50)
+                    ->tooltip(fn ($record) => $record->description)
                     ->searchable(),
                 IconColumn::make('category')
                     ->searchable(),

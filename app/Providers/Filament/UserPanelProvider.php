@@ -2,7 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Actions\Action;
 use Filament\Enums\ThemeMode;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -42,6 +44,32 @@ class UserPanelProvider extends PanelProvider
             ->login()
             ->passwordReset()
             ->profile()
+            ->userMenuItems([
+                // The default logout action renders as a real <form
+                // method="post"> (via ->url()->postToUrl()) that submits
+                // immediately on click — requiresConfirmation() alone
+                // doesn't stop that, since Action::toHtml() only renders a
+                // Livewire-wired <button> (the thing that can actually open
+                // a modal) when there's no URL at all. Clearing both forces
+                // it to render as a button and go through mountAction(), so
+                // the actual logout has to be replicated in ->action()
+                // instead of relying on the URL.
+                'logout' => fn (Action $action) => $action
+                    ->color('danger')
+                    ->url(null)
+                    ->postToUrl(false)
+                    ->requiresConfirmation()
+                    ->modalHeading('Log out?')
+                    ->modalDescription('You\'ll need to sign in again to get back in.')
+                    ->modalSubmitActionLabel('Log out')
+                    ->action(function () {
+                        Filament::auth()->logout();
+                        request()->session()->invalidate();
+                        request()->session()->regenerateToken();
+
+                        return redirect(Filament::getLoginUrl());
+                    }),
+            ])
             ->colors([
                 'primary' => Color::Blue,
             ])
