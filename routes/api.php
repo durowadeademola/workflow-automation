@@ -9,6 +9,7 @@ use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\WidgetAppointmentController;
 use App\Http\Controllers\API\WidgetChatController;
 use App\Http\Controllers\API\WidgetConversationController;
+use App\Http\Controllers\API\WidgetFaqController;
 use App\Http\Controllers\API\WidgetLeadController;
 use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\ScanController;
@@ -35,6 +36,7 @@ Route::middleware('throttle:30,1')->group(function () {
     Route::post('/widget/chat', [WidgetChatController::class, 'send'])->name('widget.chat');
     Route::get('/widget/conversations/{conversation}/messages', [WidgetConversationController::class, 'messages'])->name('widget.conversations.messages');
     Route::post('/widget/conversations/{conversation}/messages', [WidgetConversationController::class, 'send'])->name('widget.conversations.send');
+    Route::get('/widget/faqs', [WidgetFaqController::class, 'index'])->name('widget.faqs');
 });
 
 Route::post('/leads', [LeadController::class, 'store'])->middleware('throttle:5,1')->name('leads.store');

@@ -98,11 +98,66 @@
   }
   const sessionToken = getSessionToken();
 
+  // ── Sound ──
+  // Synthesized with the Web Audio API rather than an embedded audio file,
+  // so this stays a single self-contained script with no extra asset to
+  // host or load. On by default; muted state is remembered per visitor.
+  function getSoundMuted() {
+    try {
+      return window.localStorage.getItem('cw_sound_muted') === '1';
+    } catch (e) {
+      return false;
+    }
+  }
+  function setSoundMuted(muted) {
+    try { window.localStorage.setItem('cw_sound_muted', muted ? '1' : '0'); } catch (e) {}
+  }
+  let soundMuted = getSoundMuted();
+
+  let audioCtx = null;
+  function getAudioCtx() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!audioCtx) audioCtx = new AC();
+    // Browsers start a freshly-created context "suspended" until a user
+    // gesture — every sound in this widget is only ever triggered from
+    // inside a click handler or a response to one, so this always resolves.
+    if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+    return audioCtx;
+  }
+
+  function playTone(freq, duration, delay = 0, volume = 0.16) {
+    if (soundMuted) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    const startTime = ctx.currentTime + delay;
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(volume, startTime + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(startTime);
+    osc.stop(startTime + duration + 0.02);
+  }
+
+  function playSendSound() { playTone(620, 0.09); }
+  function playReceiveSound() { playTone(720, 0.09); playTone(960, 0.11, 0.09); }
+
   const style = document.createElement('style');
   style.textContent = `
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-    #cw-root *, #cw-root *::before, #cw-root *::after {
+    /* :where() keeps this reset's specificity at zero, so it only ever
+       acts as a baseline default — every component rule below (all plain
+       class selectors) wins its own margin/padding as written. Without
+       :where(), "#cw-root *" carries #cw-root's ID specificity, which
+       beats every class selector in this file regardless of source order
+       and silently discards every padding/margin declared below. */
+    :where(#cw-root) *, :where(#cw-root) *::before, :where(#cw-root) *::after {
       box-sizing: border-box; margin: 0; padding: 0;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-font-smoothing: antialiased;
@@ -254,6 +309,19 @@
     }
     .cw-close-btn:hover { background: rgba(255,255,255,0.26); transform: rotate(90deg); }
 
+    .cw-sound-btn {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.15); border: none;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: white; flex-shrink: 0; transition: background .15s;
+      position: relative; z-index: 1; margin-right: 4px;
+    }
+    .cw-sound-btn:hover { background: rgba(255,255,255,0.26); }
+    .cw-sound-btn svg { position: absolute; transition: opacity .15s, transform .15s; }
+    .cw-sound-btn .cw-icon-sound-off { opacity: 0; transform: scale(0.7); }
+    .cw-sound-btn.is-muted .cw-icon-sound-on { opacity: 0; transform: scale(0.7); }
+    .cw-sound-btn.is-muted .cw-icon-sound-off { opacity: 1; transform: scale(1); }
+
     /* ── Messages ── */
     #cw-messages {
       flex: 1; overflow-y: auto; overflow-x: hidden;
@@ -264,7 +332,7 @@
     }
     #cw-messages::-webkit-scrollbar { width: 0px; }
 
-    .cw-msg { display: flex; flex-direction: column; max-width: 94%; }
+    .cw-msg { display: flex; flex-direction: column; max-width: 86%; }
     .cw-msg.cw-bot { align-self: flex-start; }
     .cw-msg.cw-user { align-self: flex-end; }
     .cw-msg { animation: cwSlideIn .22s ease; }
@@ -284,17 +352,14 @@
     }
 
     .cw-bubble {
-      display: flex;
-      align-items: center;
-      min-height: 60px;
-      padding: 22px 28px;
+      display: block;
+      padding: 8px 12px;
       line-height: 1.65;
       font-size: 14.5px;
       word-break: break-word;
       overflow-wrap: break-word;
       white-space: pre-wrap;
       max-width: 100%;
-      box-sizing: border-box;
     }
     .cw-bot .cw-bubble {
       background: white; color: #1a1c23;
@@ -357,6 +422,52 @@
       width: fit-content;
     }
     .cw-wa:hover { background: #20bd5a; transform: translateY(-1px); }
+
+    /* ── Tabs ── */
+    #cw-tabs {
+      display: flex; flex-shrink: 0;
+      background: white; border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .cw-tab {
+      flex: 1; background: none; border: none; cursor: pointer;
+      padding: 12px 10px 10px;
+      font-size: 13px; font-weight: 600; color: #9aa0ac;
+      border-bottom: 2.5px solid transparent;
+      transition: color .15s, border-color .15s;
+    }
+    .cw-tab:hover { color: ${pcDark}; }
+    .cw-tab.is-active { color: ${pcDark}; border-bottom-color: ${pc}; }
+
+    #cw-panel-chat, #cw-panel-faqs {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── FAQs ── */
+    #cw-faq-list { flex: 1; overflow-y: auto; overflow-x: hidden; background: #f5f6fa; padding: 8px 0; }
+    #cw-faq-list::-webkit-scrollbar { width: 0px; }
+    .cw-faq-item {
+      background: white; margin: 10px 12px; border-radius: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+    .cw-faq-item:first-child { margin-top: 12px; }
+    .cw-faq-question {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 14px 16px; cursor: pointer;
+      font-size: 13.5px; font-weight: 600; color: #1a1c23;
+      background: none; border: none; width: 100%; text-align: left;
+    }
+    .cw-faq-chevron { flex-shrink: 0; transition: transform .2s; color: #b8bcc8; }
+    .cw-faq-item.is-open .cw-faq-chevron { transform: rotate(180deg); color: ${pc}; }
+    .cw-faq-answer {
+      max-height: 0; overflow: hidden;
+      transition: max-height .25s ease;
+      font-size: 13px; line-height: 1.65; color: #5b5f6b;
+    }
+    .cw-faq-answer-inner { padding: 0 16px 14px; white-space: pre-wrap; }
+    .cw-faq-item.is-open .cw-faq-answer { max-height: 600px; }
 
     /* Quick replies */
     #cw-qr {
@@ -446,21 +557,41 @@
             </div>
           </div>
         </div>
+        <button class="cw-sound-btn" id="cw-sound-btn" aria-label="Mute sounds">
+          <svg class="cw-icon-sound-on" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 5 6 9H3v6h3l5 4V5z"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          </svg>
+          <svg class="cw-icon-sound-off" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 5 6 9H3v6h3l5 4V5z"/>
+            <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+          </svg>
+        </button>
         <button class="cw-close-btn" id="cw-close-btn" aria-label="Close chat">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
         </button>
       </div>
-      <div id="cw-messages" role="log" aria-live="polite"></div>
-      <div id="cw-qr"></div>
-      <div id="cw-input-bar">
-        <input type="text" id="cw-input" placeholder="Type a message..." autocomplete="off" aria-label="Chat message" />
-        <button id="cw-send" class="is-disabled" aria-label="Send">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-            <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/>
-          </svg>
-        </button>
+      <div id="cw-tabs" style="display:none;">
+        <button class="cw-tab is-active" id="cw-tab-chat" data-tab="chat">Chat</button>
+        <button class="cw-tab" id="cw-tab-faqs" data-tab="faqs">FAQs</button>
+      </div>
+      <div id="cw-panel-chat">
+        <div id="cw-messages" role="log" aria-live="polite"></div>
+        <div id="cw-qr"></div>
+        <div id="cw-input-bar">
+          <input type="text" id="cw-input" placeholder="Type a message..." autocomplete="off" aria-label="Chat message" />
+          <button id="cw-send" class="is-disabled" aria-label="Send">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+              <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div id="cw-panel-faqs" style="display:none;">
+        <div id="cw-faq-list"></div>
       </div>
       <div id="cw-footer">
         Powered by <a href="https://blueflowautomation.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;font-weight:600;">Blueflow</a> &nbsp;·&nbsp;
@@ -586,6 +717,8 @@
     msgs.appendChild(wrap);
     msgs.scrollTop = msgs.scrollHeight;
     history.push({ role: role === 'bot' ? 'assistant' : 'user', content: text });
+
+    if (role === 'user') playSendSound(); else playReceiveSound();
   }
 
   function showTyping() {
@@ -739,6 +872,71 @@
     isBusy = false;
   }
 
+  // ── FAQs ──
+  // Answered straight from the database — no AI/n8n round trip, so this
+  // costs nothing and never counts against a plan's message limit. The
+  // tab only ever appears if the business has actually added FAQ entries.
+  function switchTab(tab) {
+    const isChat = tab === 'chat';
+    $('cw-tab-chat').classList.toggle('is-active', isChat);
+    $('cw-tab-faqs').classList.toggle('is-active', !isChat);
+    $('cw-panel-chat').style.display = isChat ? 'flex' : 'none';
+    $('cw-panel-faqs').style.display = isChat ? 'none' : 'flex';
+  }
+
+  function renderFaqs(faqs) {
+    const list = $('cw-faq-list');
+    list.innerHTML = '';
+    faqs.forEach(faq => {
+      const item = document.createElement('div');
+      item.className = 'cw-faq-item';
+
+      const question = document.createElement('button');
+      question.className = 'cw-faq-question';
+      question.innerHTML = `<span>${faq.title}</span>` +
+        `<svg class="cw-faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
+      question.onclick = () => item.classList.toggle('is-open');
+
+      const answer = document.createElement('div');
+      answer.className = 'cw-faq-answer';
+      const answerInner = document.createElement('div');
+      answerInner.className = 'cw-faq-answer-inner';
+      answerInner.textContent = faq.content;
+      answer.appendChild(answerInner);
+
+      item.appendChild(question);
+      item.appendChild(answer);
+      list.appendChild(item);
+    });
+  }
+
+  async function loadFaqs() {
+    if (!cfg.clientId) return;
+    try {
+      const res = await fetch(`${cfg.apiBase}/widget/faqs?clientId=${encodeURIComponent(cfg.clientId)}`);
+      if (!res.ok) return;
+      const data = await res.json().catch(() => ({}));
+      const faqs = data.faqs || [];
+      if (!faqs.length) return;
+
+      renderFaqs(faqs);
+      $('cw-tabs').style.display = 'flex';
+      $('cw-tab-chat').addEventListener('click', () => switchTab('chat'));
+      $('cw-tab-faqs').addEventListener('click', () => switchTab('faqs'));
+    } catch (e) {
+      // FAQs are a bonus feature — a network hiccup here should never
+      // affect the core chat experience.
+    }
+  }
+
+  $('cw-sound-btn').classList.toggle('is-muted', soundMuted);
+  $('cw-sound-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    soundMuted = !soundMuted;
+    setSoundMuted(soundMuted);
+    $('cw-sound-btn').classList.toggle('is-muted', soundMuted);
+  });
+
   $('cw-bubble').addEventListener('click', toggle);
   $('cw-close-btn').addEventListener('click', toggle);
   $('cw-send').addEventListener('click', () => send());
@@ -756,6 +954,7 @@
   window.addEventListener('load', () => {
     setTimeout(() => { if (!isOpen) toggle(); }, cfg.autoOpenDelay ?? 1500);
   });
+  loadFaqs();
 
   window.ChatWidget = {
     toggle,

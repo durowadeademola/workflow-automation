@@ -79,6 +79,7 @@ class WidgetChatController extends Controller
                 'clientId' => $client->id,
                 'waNumber' => $validated['waNumber'] ?? null,
                 'sessionToken' => $validated['sessionToken'] ?? null,
+                'knowledgeBase' => $this->knowledgeBaseFor($client),
             ]);
 
             $data = $response->json() ?? [];
@@ -93,6 +94,35 @@ class WidgetChatController extends Controller
                 'reply' => "Sorry, I'm having a little trouble right now. Please try again shortly.",
             ], 502);
         }
+    }
+
+    /**
+     * Only "article" entries are sent here — "faq" entries are answered
+     * directly from the database via WidgetFaqController/the widget's FAQ
+     * tab instead, with no AI involved at all, so they're deliberately
+     * excluded from what reaches the model.
+     *
+     * Looked up fresh on every message (not baked into the embed snippet
+     * like systemPrompt is) so an edit takes effect immediately, and so the
+     * content never has to round-trip through the visitor's browser. This
+     * is handed to the AI alongside — not instead of — whatever RAG lookup
+     * the n8n workflow itself performs.
+     *
+     * @return array<int, array{type: string, title: string, content: string}>
+     */
+    private function knowledgeBaseFor(Client $client): array
+    {
+        return $client->knowledgeBaseEntries()
+            ->active()
+            ->where('type', 'article')
+            ->orderBy('sort_order')
+            ->get(['type', 'title', 'content'])
+            ->map(fn ($entry) => [
+                'type' => $entry->type,
+                'title' => $entry->title,
+                'content' => $entry->content,
+            ])
+            ->all();
     }
 
     /**

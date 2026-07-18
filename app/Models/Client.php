@@ -141,6 +141,11 @@ class Client extends Model
         return $this->hasMany(Message::class);
     }
 
+    public function knowledgeBaseEntries()
+    {
+        return $this->hasMany(KnowledgeBaseEntry::class);
+    }
+
     public function appointments()
     {
         return $this->hasMany(Appointment::class);

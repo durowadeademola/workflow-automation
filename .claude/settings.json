@@ -60,7 +60,10 @@
       "Bash(find / -path /proc -prune -o -iname \"CheckboxList.php\" -print 2>/dev/null)",
       "Bash(doctl version *)",
       "Bash(ssh -V)",
-      "Bash(grep -i -E \"^\\(user-check|fingerprint|id-card|user-round-check|contact\\)\\\\.js$\")"
+      "Bash(grep -i -E \"^\\(user-check|fingerprint|id-card|user-round-check|contact\\)\\\\.js$\")",
+      "Bash(xargs grep -l \"description\\\\|website\\\\|url\")",
+      "Bash(grep -n 'public function.*subscriptions\\\\|public function.*hasMany\\\\|protected $fillable\\\\|protected $casts\\\\|class Client' c:/laragon/www/blueflow/app/Models/Client.php)",
+      "Bash(php \"C:/Users/ADMINI~1/AppData/Local/Temp/claude/c--laragon-www-blueflow/7fc2a17b-37af-49ab-b32c-2b4992b877ea/scratchpad/patch_n8n.php\")"
     ]
   }
 }
