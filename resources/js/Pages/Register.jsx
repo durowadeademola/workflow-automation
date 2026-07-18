@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Head, Link } from "@inertiajs/react";
 import axios from "axios";
-import { CircleCheckBig } from "lucide-react";
+import { CircleCheckBig, Eye, EyeOff } from "lucide-react";
 import MainLayout from "@/Components/Layout/MainLayout";
 import PageHero from "@/Components/Layout/PageHero";
 
@@ -53,6 +53,8 @@ export default function Register() {
     });
     const [status, setStatus] = useState("idle"); // idle | submitting | success | error
     const [errors, setErrors] = useState({});
+    const [showPassword, setShowPassword] = useState(false);
+    const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
 
     function update(field) {
         return (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
@@ -234,28 +236,48 @@ export default function Register() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
                                     <label className="text-sm font-medium text-gray-700 mb-1 block">Password <span className="text-red-500">*</span></label>
-                                    <input
-                                        type="password"
-                                        required
-                                        minLength={8}
-                                        value={form.password}
-                                        onChange={update("password")}
-                                        className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            required
+                                            minLength={8}
+                                            value={form.password}
+                                            onChange={update("password")}
+                                            className="w-full rounded-xl border border-gray-200 px-4 py-2.5 pr-11 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword((v) => !v)}
+                                            className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600"
+                                            aria-label={showPassword ? "Hide password" : "Show password"}
+                                        >
+                                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                        </button>
+                                    </div>
                                     {errors.password && (
                                         <p className="text-red-600 text-xs mt-1">{errors.password[0]}</p>
                                     )}
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-gray-700 mb-1 block">Confirm Password <span className="text-red-500">*</span></label>
-                                    <input
-                                        type="password"
-                                        required
-                                        minLength={8}
-                                        value={form.password_confirmation}
-                                        onChange={update("password_confirmation")}
-                                        className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={showPasswordConfirmation ? "text" : "password"}
+                                            required
+                                            minLength={8}
+                                            value={form.password_confirmation}
+                                            onChange={update("password_confirmation")}
+                                            className="w-full rounded-xl border border-gray-200 px-4 py-2.5 pr-11 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPasswordConfirmation((v) => !v)}
+                                            className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600"
+                                            aria-label={showPasswordConfirmation ? "Hide password" : "Show password"}
+                                        >
+                                            {showPasswordConfirmation ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 

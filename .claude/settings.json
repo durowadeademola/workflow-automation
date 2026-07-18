@@ -57,7 +57,10 @@
       "Bash(sed -i 's|^APP_URL=.*|APP_URL=http://blueflow.test|' .env)",
       "Bash(curl -s -o /dev/null -w \"HTTP_STATUS:%{http_code}\\\\n\" \"http://blueflow.test/\")",
       "Bash(git stash *)",
-      "Bash(find / -path /proc -prune -o -iname \"CheckboxList.php\" -print 2>/dev/null)"
+      "Bash(find / -path /proc -prune -o -iname \"CheckboxList.php\" -print 2>/dev/null)",
+      "Bash(doctl version *)",
+      "Bash(ssh -V)",
+      "Bash(grep -i -E \"^\\(user-check|fingerprint|id-card|user-round-check|contact\\)\\\\.js$\")"
     ]
   }
 }

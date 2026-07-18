@@ -1,5 +1,5 @@
 import { Head, Link } from "@inertiajs/react";
-import { Bot, Palette, Users, Code2, BarChart3, MessagesSquare, MessageSquareText, CalendarCheck, Target } from "lucide-react";
+import { Bot, Palette, Users, Code2, BarChart3, MessagesSquare, MessageSquareText, CalendarCheck, Target, IdCard } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
 import IconTile from "@/Components/Icons/IconTile";
@@ -23,6 +23,7 @@ const features = [
     { icon: Palette, title: "Full Branding Control", description: "Set your assistant's name, brand color, greeting message, quick-reply buttons, and widget position — all from your dashboard." },
     { icon: Code2, title: "One-Snippet Install", description: "No developer needed. Copy your personalized embed code from Widget Settings and paste it before your site's closing </body> tag." },
     { icon: BarChart3, title: "Unified Conversation History", description: "Every visitor becomes a real customer record, with their full message history — same as WhatsApp and Telegram." },
+    { icon: IdCard, title: "Every Visitor Tracked", description: "Each visitor gets their own customer record from their very first message — even before they share their name — so no conversation or follow-up opportunity slips through the cracks." },
 ];
 
 const steps = [
