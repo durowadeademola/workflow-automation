@@ -7,15 +7,17 @@
         <title inertia>{{ config('app.name', 'Blueflow') }}</title>
 
         <!-- Applies the saved theme before first paint, so there's no
-             flash of the wrong theme. Default is light — dark is opt-in
+             flash of the wrong theme. Default is dark — light is opt-in
              only, never OS-preference-based. -->
         <script>
             (function () {
                 try {
-                    if (localStorage.getItem('theme') === 'dark') {
+                    if (localStorage.getItem('theme') !== 'light') {
                         document.documentElement.classList.add('dark');
                     }
-                } catch (e) {}
+                } catch (e) {
+                    document.documentElement.classList.add('dark');
+                }
             })();
         </script>
 
