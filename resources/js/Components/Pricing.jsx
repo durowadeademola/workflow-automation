@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "@inertiajs/react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
@@ -12,6 +13,9 @@ const allPlansInclude = [
 export default function Pricing({ plans = [] }) {
     const [headingRef, headingVisible] = useScrollAnimation(0.3);
     const [cardsRef, cardsVisible] = useScrollAnimation(0.1);
+    const [cycle, setCycle] = useState("monthly");
+    const isYearly = cycle === "yearly";
+    const anyYearlyDiscount = plans.some((p) => p.has_yearly_discount);
 
     return (
         <section id="pricing" className="py-20 bg-gray-50">
@@ -32,6 +36,25 @@ export default function Pricing({ plans = [] }) {
                         No hidden fees. No long-term contracts. Cancel anytime.
                     </p>
                 </div>
+
+                {plans.length > 0 && (
+                    <div className="flex items-center justify-center gap-3 mb-10">
+                        <span className={`text-sm font-medium ${!isYearly ? "text-gray-900" : "text-gray-400"}`}>Monthly</span>
+                        <button
+                            type="button"
+                            onClick={() => setCycle(isYearly ? "monthly" : "yearly")}
+                            className={`relative w-11 h-6 rounded-full transition-colors ${isYearly ? "bg-blue-600" : "bg-gray-200"}`}
+                            aria-label="Toggle yearly billing"
+                        >
+                            <span
+                                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${isYearly ? "translate-x-5" : "translate-x-0"}`}
+                            />
+                        </button>
+                        <span className={`text-sm font-medium ${isYearly ? "text-gray-900" : "text-gray-400"}`}>
+                            Yearly{anyYearlyDiscount && <span className="text-emerald-600 font-semibold"> (save more)</span>}
+                        </span>
+                    </div>
+                )}
 
                 {plans.length > 0 ? (
                     <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
@@ -57,9 +80,15 @@ export default function Pricing({ plans = [] }) {
                                     </div>
                                 )}
 
-                                {plan.has_active_promo && (
+                                {!isYearly && plan.has_active_promo && (
                                     <span className="absolute -top-4 right-4 bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-md">
                                         {plan.promo_percent}% off
+                                    </span>
+                                )}
+
+                                {isYearly && plan.has_yearly_discount && (
+                                    <span className="absolute -top-4 right-4 bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-md">
+                                        Save {plan.yearly_discount_percent}%
                                     </span>
                                 )}
 
@@ -71,7 +100,22 @@ export default function Pricing({ plans = [] }) {
                                 </div>
 
                                 <div className="mb-6">
-                                    {plan.has_active_promo ? (
+                                    {isYearly ? (
+                                        plan.has_yearly_discount ? (
+                                            <>
+                                                <span className="text-lg text-gray-400 line-through mr-2">
+                                                    ₦{Number(plan.yearly_regular_price).toLocaleString("en-NG")}
+                                                </span>
+                                                <span className="text-4xl font-extrabold text-red-600">
+                                                    ₦{Number(plan.yearly_effective_price).toLocaleString("en-NG")}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <span className="text-4xl font-extrabold text-gray-900">
+                                                ₦{Number(plan.yearly_effective_price).toLocaleString("en-NG")}
+                                            </span>
+                                        )
+                                    ) : plan.has_active_promo ? (
                                         <>
                                             <span className="text-lg text-gray-400 line-through mr-2">
                                                 ₦{Number(plan.amount).toLocaleString("en-NG")}
@@ -85,10 +129,10 @@ export default function Pricing({ plans = [] }) {
                                             ₦{Number(plan.amount).toLocaleString("en-NG")}
                                         </span>
                                     )}
-                                    <span className="text-gray-400 text-sm">/month</span>
+                                    <span className="text-gray-400 text-sm">/{isYearly ? "year" : "month"}</span>
                                 </div>
 
-                                {plan.has_active_promo && plan.promo_ends_at && (
+                                {!isYearly && plan.has_active_promo && plan.promo_ends_at && (
                                     <p className="text-xs text-red-600 -mt-4 mb-6">
                                         Offer ends {new Date(plan.promo_ends_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                                     </p>

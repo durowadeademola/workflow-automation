@@ -179,7 +179,7 @@ class Billing extends Page
             return 0;
         }
 
-        $messageLimit = $previous->planRecord?->message_limit;
+        $messageLimit = $client->messageLimitForSubscription($previous);
 
         if (! $messageLimit) {
             return 0;
@@ -191,7 +191,7 @@ class Billing extends Page
         return (int) round($unusedMessages * $creditPerMessage);
     }
 
-    public function getSwitchConfirmationMessage(string $planSlug): string
+    public function getSwitchConfirmationMessage(string $planSlug, string $cycle = 'monthly'): string
     {
         $planRecord = Plan::active()->forClient($this->getClient())->where('slug', $planSlug)->first();
         $credit = $this->getProratedCredit();
@@ -200,11 +200,12 @@ class Billing extends Page
             return "Switch to {$planRecord?->name}?";
         }
 
-        $finalCharge = max(0, $planRecord->effective_price - $credit);
+        $price = $cycle === 'yearly' ? $planRecord->yearly_effective_price : $planRecord->effective_price;
+        $finalCharge = max(0, $price - $credit);
 
         return "Your remaining time on your current plan is worth a ₦".number_format($credit)." credit. "
             .($finalCharge > 0
-                ? "You'll pay ₦".number_format($finalCharge)." today instead of ₦".number_format($planRecord->effective_price).'.'
+                ? "You'll pay ₦".number_format($finalCharge)." today instead of ₦".number_format($price).'.'
                 : "That fully covers {$planRecord->name} — you won't be charged anything today.");
     }
 
@@ -224,16 +225,16 @@ class Billing extends Page
                 $feeNote = 'Additional processing fees apply.';
 
                 if ($this->getCurrentSubscription()) {
-                    return $this->getSwitchConfirmationMessage($arguments['plan'] ?? '').' '.$feeNote;
+                    return $this->getSwitchConfirmationMessage($arguments['plan'] ?? '', $arguments['cycle'] ?? 'monthly').' '.$feeNote;
                 }
 
                 return $feeNote;
             })
             ->modalSubmitActionLabel('Proceed to payment')
-            ->action(fn (array $arguments) => $this->subscribe($arguments['plan']));
+            ->action(fn (array $arguments) => $this->subscribe($arguments['plan'], $arguments['cycle'] ?? 'monthly'));
     }
 
-    public function subscribe(string $plan)
+    public function subscribe(string $plan, string $cycle = 'monthly')
     {
         $client = $this->getClient();
 
@@ -249,12 +250,16 @@ class Billing extends Page
             return;
         }
 
+        $cycle = $cycle === 'yearly' ? 'yearly' : 'monthly';
+
         $planRecord = Plan::active()->forClient($client)->where('slug', $plan)->first();
 
         abort_unless($planRecord, 404);
 
+        $price = $cycle === 'yearly' ? $planRecord->yearly_effective_price : $planRecord->effective_price;
+
         $credit = $this->getProratedCredit();
-        $finalCharge = max(0, $planRecord->effective_price - $credit);
+        $finalCharge = max(0, $price - $credit);
 
         // Not currentSubscription() — by the time a client resubscribes,
         // the period being rolled over from has very often already expired
@@ -267,7 +272,8 @@ class Billing extends Page
             'client_id' => $client->id,
             'plan_id' => $planRecord->id,
             'plan' => $planRecord->slug,
-            'amount' => $planRecord->effective_price,
+            'billing_cycle' => $cycle,
+            'amount' => $price,
             'credit_applied' => $credit,
             'name' => $planRecord->name,
             'status' => 'pending',
@@ -299,6 +305,7 @@ class Billing extends Page
                     'subscription_id' => $subscription->id,
                     'client_id' => $client->id,
                     'plan' => $planRecord->slug,
+                    'cycle' => $cycle,
                 ],
             ]);
 

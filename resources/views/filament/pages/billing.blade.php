@@ -165,80 +165,148 @@
     </div>
 
     {{-- Plans --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        @foreach($this->getPlans() as $plan)
-            <div @class([
-                'rounded-2xl border p-6 bg-white dark:bg-gray-900 flex flex-col',
-                'border-primary-500 ring-2 ring-primary-500' => $plan->is_popular,
-                'border-gray-100 dark:border-gray-800' => ! $plan->is_popular,
-            ])>
-                <div class="flex items-center gap-2 flex-wrap mb-3">
-                    @if($plan->is_popular)
-                        <span class="text-[10px] font-semibold uppercase tracking-wide text-primary-700 bg-primary-100 rounded-full px-2 py-0.5 w-fit">
-                            Most Popular
-                        </span>
+    <div x-data="{ cycle: 'monthly' }">
+        {{-- Billing cycle toggle --}}
+        <div class="flex items-center justify-center gap-3 mb-6">
+            <span class="text-sm font-medium" :class="cycle === 'monthly' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400'">Monthly</span>
+            <button
+                type="button"
+                @click="cycle = cycle === 'monthly' ? 'yearly' : 'monthly'"
+                class="relative w-11 h-6 rounded-full transition-colors"
+                :class="cycle === 'yearly' ? 'bg-primary-600' : 'bg-gray-200 dark:bg-gray-700'"
+                aria-label="Toggle yearly billing"
+            >
+                <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform" :class="cycle === 'yearly' ? 'translate-x-5' : 'translate-x-0'"></span>
+            </button>
+            <span class="text-sm font-medium" :class="cycle === 'yearly' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400'">
+                Yearly
+                @if($this->getPlans()->contains('has_yearly_discount', true))
+                    <span class="text-[10px] font-semibold text-emerald-600">(save more)</span>
+                @endif
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            @foreach($this->getPlans() as $plan)
+                @php
+                    $isCurrentMonthly = $current && $current->plan === $plan->slug && $current->billing_cycle === 'monthly';
+                    $isCurrentYearly = $current && $current->plan === $plan->slug && $current->billing_cycle === 'yearly';
+                @endphp
+                <div @class([
+                    'rounded-2xl border p-6 bg-white dark:bg-gray-900 flex flex-col',
+                    'border-primary-500 ring-2 ring-primary-500' => $plan->is_popular,
+                    'border-gray-100 dark:border-gray-800' => ! $plan->is_popular,
+                ])>
+                    <div class="flex items-center gap-2 flex-wrap mb-3">
+                        @if($plan->is_popular)
+                            <span class="text-[10px] font-semibold uppercase tracking-wide text-primary-700 bg-primary-100 rounded-full px-2 py-0.5 w-fit">
+                                Most Popular
+                            </span>
+                        @endif
+                        @if($plan->has_active_promo)
+                            <span x-show="cycle === 'monthly'" class="text-[10px] font-semibold uppercase tracking-wide text-danger-700 bg-danger-100 rounded-full px-2 py-0.5 w-fit">
+                                {{ $plan->promo_percent }}% off
+                            </span>
+                        @endif
+                        @if($plan->has_yearly_discount)
+                            <span x-show="cycle === 'yearly'" x-cloak class="text-[10px] font-semibold uppercase tracking-wide text-danger-700 bg-danger-100 rounded-full px-2 py-0.5 w-fit">
+                                Save {{ $plan->yearly_discount_percent }}%
+                            </span>
+                        @endif
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $plan->name }}</h3>
+                    @if($plan->description)
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $plan->description }}</p>
                     @endif
-                    @if($plan->has_active_promo)
-                        <span class="text-[10px] font-semibold uppercase tracking-wide text-danger-700 bg-danger-100 rounded-full px-2 py-0.5 w-fit">
-                            {{ $plan->promo_percent }}% off
-                        </span>
+
+                    {{-- Monthly price --}}
+                    <div x-show="cycle === 'monthly'">
+                        @if($plan->has_active_promo)
+                            <p class="mt-2 mb-1">
+                                <span class="text-sm text-gray-400 line-through">₦{{ number_format($plan->amount) }}</span>
+                                <span class="text-2xl font-extrabold text-danger-600">₦{{ number_format($plan->promo_price) }}</span>
+                                <span class="text-sm font-normal text-gray-400">/month</span>
+                            </p>
+                            @if($plan->promo_ends_at)
+                                <p class="text-[11px] text-danger-600 mb-1">
+                                    Offer ends {{ $plan->promo_ends_at->format('M j, Y') }} ({{ $plan->promo_ends_at->diffForHumans() }})
+                                </p>
+                            @endif
+                        @else
+                            <p class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 mt-2 mb-1">
+                                ₦{{ number_format($plan->amount) }}<span class="text-sm font-normal text-gray-400">/month</span>
+                            </p>
+                        @endif
+                    </div>
+
+                    {{-- Yearly price --}}
+                    <div x-show="cycle === 'yearly'" x-cloak>
+                        @if($plan->has_yearly_discount)
+                            <p class="mt-2 mb-1">
+                                <span class="text-sm text-gray-400 line-through">₦{{ number_format($plan->yearly_regular_price) }}</span>
+                                <span class="text-2xl font-extrabold text-danger-600">₦{{ number_format($plan->yearly_effective_price) }}</span>
+                                <span class="text-sm font-normal text-gray-400">/year</span>
+                            </p>
+                        @else
+                            <p class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 mt-2 mb-1">
+                                ₦{{ number_format($plan->yearly_effective_price) }}<span class="text-sm font-normal text-gray-400">/year</span>
+                            </p>
+                        @endif
+                    </div>
+
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                        {{ $plan->appointment_limit ? number_format($plan->appointment_limit).' appointments/month' : 'Unlimited appointments' }}
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                        {{ $plan->lead_limit ? number_format($plan->lead_limit).' qualified leads/month' : 'Unlimited qualified leads' }}
+                    </p>
+
+                    @if($plan->features)
+                        <ul class="space-y-2 mb-6 flex-1">
+                            @foreach($plan->features as $feature)
+                                <li class="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-300">
+                                    <svg class="w-3.5 h-3.5 text-primary-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    {{ $feature }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+
+                    @if($isCurrentMonthly)
+                        <button x-show="cycle === 'monthly'" disabled class="mt-auto w-full text-center py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-400 text-sm font-semibold cursor-default">
+                            Current Plan
+                        </button>
+                    @else
+                        <button
+                            x-show="cycle === 'monthly'"
+                            @click="$wire.mountAction('subscribe', { plan: '{{ $plan->slug }}', cycle: 'monthly' })"
+                            wire:loading.attr="disabled"
+                            class="mt-auto w-full text-center py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold transition-colors"
+                        >
+                            {{ $current ? 'Switch to ' . $plan->name : 'Subscribe' }}
+                        </button>
+                    @endif
+
+                    @if($isCurrentYearly)
+                        <button x-show="cycle === 'yearly'" x-cloak disabled class="mt-auto w-full text-center py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-400 text-sm font-semibold cursor-default">
+                            Current Plan
+                        </button>
+                    @else
+                        <button
+                            x-show="cycle === 'yearly'"
+                            x-cloak
+                            @click="$wire.mountAction('subscribe', { plan: '{{ $plan->slug }}', cycle: 'yearly' })"
+                            wire:loading.attr="disabled"
+                            class="mt-auto w-full text-center py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold transition-colors"
+                        >
+                            {{ $current ? 'Switch to ' . $plan->name . ' (yearly)' : 'Subscribe yearly' }}
+                        </button>
                     @endif
                 </div>
-                <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $plan->name }}</h3>
-                @if($plan->description)
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $plan->description }}</p>
-                @endif
-                @if($plan->has_active_promo)
-                    <p class="mt-2 mb-1">
-                        <span class="text-sm text-gray-400 line-through">₦{{ number_format($plan->amount) }}</span>
-                        <span class="text-2xl font-extrabold text-danger-600">₦{{ number_format($plan->promo_price) }}</span>
-                        <span class="text-sm font-normal text-gray-400">/month</span>
-                    </p>
-                    @if($plan->promo_ends_at)
-                        <p class="text-[11px] text-danger-600 mb-1">
-                            Offer ends {{ $plan->promo_ends_at->format('M j, Y') }} ({{ $plan->promo_ends_at->diffForHumans() }})
-                        </p>
-                    @endif
-                @else
-                    <p class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 mt-2 mb-1">
-                        ₦{{ number_format($plan->amount) }}<span class="text-sm font-normal text-gray-400">/month</span>
-                    </p>
-                @endif
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">
-                    {{ $plan->appointment_limit ? number_format($plan->appointment_limit).' appointments/month' : 'Unlimited appointments' }}
-                </p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
-                    {{ $plan->lead_limit ? number_format($plan->lead_limit).' qualified leads/month' : 'Unlimited qualified leads' }}
-                </p>
-
-                @if($plan->features)
-                    <ul class="space-y-2 mb-6 flex-1">
-                        @foreach($plan->features as $feature)
-                            <li class="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-300">
-                                <svg class="w-3.5 h-3.5 text-primary-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                                </svg>
-                                {{ $feature }}
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
-
-                @if($current && $current->plan === $plan->slug)
-                    <button disabled class="mt-auto w-full text-center py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-400 text-sm font-semibold cursor-default">
-                        Current Plan
-                    </button>
-                @else
-                    <button
-                        wire:click="mountAction('subscribe', { plan: '{{ $plan->slug }}' })"
-                        wire:loading.attr="disabled"
-                        class="mt-auto w-full text-center py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold transition-colors"
-                    >
-                        {{ $current ? 'Switch to ' . $plan->name : 'Subscribe' }}
-                    </button>
-                @endif
-            </div>
-        @endforeach
+            @endforeach
+        </div>
     </div>
 
     {{-- History --}}

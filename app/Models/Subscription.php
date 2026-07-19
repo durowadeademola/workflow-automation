@@ -15,6 +15,7 @@ class Subscription extends Model
         'client_id',
         'plan_id',
         'plan',
+        'billing_cycle',
         'amount',
         'credit_applied',
         'name',

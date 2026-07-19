@@ -43,6 +43,12 @@ class PlansTable
                     ->dateTime()
                     ->placeholder('—')
                     ->toggleable(),
+                TextColumn::make('yearly_discount_percent')
+                    ->label('Yearly discount')
+                    ->suffix('%')
+                    ->placeholder('—')
+                    ->description(fn ($record) => $record->has_yearly_discount ? '₦'.number_format($record->yearly_effective_price).'/yr' : null)
+                    ->toggleable(),
                 TextColumn::make('message_limit')
                     ->label('Msg limit/mo')
                     ->placeholder('Unlimited')

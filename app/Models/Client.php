@@ -233,11 +233,38 @@ class Client extends Model
             return 0;
         }
 
+        return $this->messageLimitForSubscription($subscription);
+    }
+
+    /**
+     * Same as messageLimitForCurrentPlan(), but for any subscription —
+     * including one that's already ended (see appointmentLimitForSubscription()).
+     * Billing::calculateMessageProrationCredit() needs this exact scaled
+     * value too — reading planRecord->message_limit directly there would
+     * silently ignore the x12 yearly scaling and undercount unused capacity.
+     */
+    public function messageLimitForSubscription(Subscription $subscription): ?int
+    {
         if ($subscription->plan === 'trial') {
             return self::TRIAL_MESSAGE_LIMIT;
         }
 
-        return $subscription->planRecord?->message_limit;
+        return $this->scaleLimitForBillingCycle($subscription->planRecord?->message_limit, $subscription);
+    }
+
+    /**
+     * A plan's message/appointment/lead limits are set per month — a yearly
+     * subscription covers 12 of those months in one long period, so its cap
+     * needs to scale accordingly rather than being stuck at one month's
+     * worth of usage for the whole year. Unlimited (null) stays unlimited.
+     */
+    private function scaleLimitForBillingCycle(?int $limit, Subscription $subscription): ?int
+    {
+        if ($limit === null) {
+            return null;
+        }
+
+        return $subscription->billing_cycle === 'yearly' ? $limit * 12 : $limit;
     }
 
     /**
@@ -334,7 +361,7 @@ class Client extends Model
             return self::TRIAL_APPOINTMENT_LIMIT;
         }
 
-        $limit = $subscription->planRecord?->appointment_limit;
+        $limit = $this->scaleLimitForBillingCycle($subscription->planRecord?->appointment_limit, $subscription);
 
         // Unlimited stays unlimited — rollover only matters when there's an
         // actual cap to extend. Only ever carried in from the immediately
@@ -418,7 +445,7 @@ class Client extends Model
             return self::TRIAL_LEAD_LIMIT;
         }
 
-        $limit = $subscription->planRecord?->lead_limit;
+        $limit = $this->scaleLimitForBillingCycle($subscription->planRecord?->lead_limit, $subscription);
 
         return $limit === null ? null : $limit + $subscription->rolled_over_leads;
     }

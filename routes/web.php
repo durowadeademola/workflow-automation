@@ -15,7 +15,7 @@ Route::get('/', function () {
         // what's being sold today.
         'plans' => Plan::active()
             ->where('service', 'chat-widget')
-            ->get(['id', 'name', 'slug', 'amount', 'promo_price', 'promo_ends_at', 'description', 'features', 'is_popular', 'appointment_limit', 'lead_limit']),
+            ->get(['id', 'name', 'slug', 'amount', 'promo_price', 'promo_ends_at', 'yearly_discount_percent', 'description', 'features', 'is_popular', 'appointment_limit', 'lead_limit']),
         // Real client-submitted reviews, approved by an admin and explicitly
         // marked to show here — never anything fabricated.
         'reviews' => Review::featured()

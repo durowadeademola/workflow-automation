@@ -3,6 +3,8 @@
 namespace App\Providers\Filament;
 
 use Filament\Actions\Action;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
+use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Enums\ThemeMode;
 use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
@@ -44,6 +46,14 @@ class UserPanelProvider extends PanelProvider
             ->login()
             ->passwordReset()
             ->profile()
+            // Optional, per-user — isRequired defaults to false, so login
+            // isn't blocked for anyone who hasn't set this up. A user turns
+            // it on/off themselves from Settings (see Settings.php), and
+            // only gets challenged for a code at login once they have.
+            ->multiFactorAuthentication([
+                AppAuthentication::make()->recoverable(),
+                EmailAuthentication::make(),
+            ])
             ->userMenuItems([
                 // The default logout action renders as a real <form
                 // method="post"> (via ->url()->postToUrl()) that submits

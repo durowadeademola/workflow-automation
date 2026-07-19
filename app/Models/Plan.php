@@ -16,6 +16,7 @@ class Plan extends Model
         'amount',
         'promo_price',
         'promo_ends_at',
+        'yearly_discount_percent',
         'message_limit',
         'appointment_limit',
         'lead_limit',
@@ -31,15 +32,19 @@ class Plan extends Model
         'is_popular' => 'boolean',
         'is_active' => 'boolean',
         'promo_ends_at' => 'datetime',
+        'yearly_discount_percent' => 'integer',
     ];
 
     /**
      * Appended so the public pricing page and client billing cards — both
      * of which only ever see plans through JSON (Inertia props or Livewire)
-     * — get the computed promo state without needing to duplicate this
-     * logic in JS.
+     * — get the computed promo/yearly state without needing to duplicate
+     * this logic in JS.
      */
-    protected $appends = ['has_active_promo', 'effective_price', 'promo_percent'];
+    protected $appends = [
+        'has_active_promo', 'effective_price', 'promo_percent',
+        'has_yearly_discount', 'yearly_regular_price', 'yearly_effective_price',
+    ];
 
     public function subscriptions()
     {
@@ -78,6 +83,41 @@ class Plan extends Model
         }
 
         return (int) round((1 - $this->promo_price / $this->amount) * 100);
+    }
+
+    /**
+     * A standing discount for choosing annual billing — unlike promo_price,
+     * this never expires on its own (it's a billing-cycle choice, not a
+     * time-boxed promotion), so it's only ever off when the admin hasn't
+     * set a percentage at all.
+     */
+    public function getHasYearlyDiscountAttribute(): bool
+    {
+        return (int) $this->yearly_discount_percent > 0;
+    }
+
+    /**
+     * The "old price" shown struck through for yearly billing — twelve
+     * months at the plan's regular monthly rate. Deliberately based on the
+     * regular amount, not any active monthly promo, so the two discounts
+     * never stack into a confusing compounded price.
+     */
+    public function getYearlyRegularPriceAttribute(): int
+    {
+        return $this->amount * 12;
+    }
+
+    /**
+     * What a client actually pays for a full year up front. This is the
+     * only value Billing::subscribe() should ever charge for cycle=yearly.
+     */
+    public function getYearlyEffectivePriceAttribute(): int
+    {
+        if (! $this->has_yearly_discount) {
+            return $this->yearly_regular_price;
+        }
+
+        return (int) round($this->yearly_regular_price * (1 - $this->yearly_discount_percent / 100));
     }
 
     public function scopeActive($query)

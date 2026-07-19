@@ -54,6 +54,14 @@ class PlanForm
                             ->label('Promo ends at')
                             ->native(false)
                             ->helperText('Leave blank to run the promotion until you manually clear the promo price above.'),
+                        TextInput::make('yearly_discount_percent')
+                            ->label('Yearly billing discount')
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxValue(100)
+                            ->suffix('%')
+                            ->placeholder('No discount')
+                            ->helperText('A standing discount for paying for a whole year up front — clients see 12x the monthly price struck through, and this discounted total next to it, same as a promotion. Leave blank to still offer yearly billing at the full 12x price with no discount shown.'),
                         TextInput::make('message_limit')
                             ->label('Message limit / month')
                             ->numeric()

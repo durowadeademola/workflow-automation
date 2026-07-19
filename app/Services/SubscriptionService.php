@@ -62,7 +62,7 @@ class SubscriptionService
             'status' => 'active',
             'is_active' => true,
             'start_date' => now(),
-            'end_date' => now()->addDays(30),
+            'end_date' => now()->addDays($subscription->billing_cycle === 'yearly' ? 365 : 30),
         ];
 
         if (! empty($paystackData)) {

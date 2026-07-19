@@ -21,6 +21,10 @@ class DomainResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-globe-alt';
 
+    // Hidden from the sidebar per request — resource, routes, and pages are
+    // all still fully functional, just not linked from navigation.
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function canViewAny(): bool
     {
         return auth()->check() && auth()->user()?->is_admin;

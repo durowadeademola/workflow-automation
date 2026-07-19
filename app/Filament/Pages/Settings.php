@@ -5,12 +5,14 @@ namespace App\Filament\Pages;
 use App\Models\Client;
 use App\Models\User;
 use BackedEnum;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
@@ -93,6 +95,27 @@ class Settings extends Page
     public function defaultForm(Schema $schema): Schema
     {
         return $schema->statePath('data');
+    }
+
+    /**
+     * A separate schema (not part of the main form/save() flow) so each
+     * provider's own setup/disable actions — each with their own modal and
+     * state — never get tangled up with $this->form->getState() or the
+     * "Save Changes" button above. Loops over whatever's actually
+     * registered on the panel (AdminPanelProvider/UserPanelProvider) rather
+     * than hardcoding provider ids, so its config (recoverable(),
+     * codeExpiryMinutes(), etc.) can never drift from what's actually used
+     * to verify codes at login, and any future provider added to the panel
+     * shows up here automatically.
+     */
+    public function twoFactorAuthenticationSchema(Schema $schema): Schema
+    {
+        return $schema->components(
+            collect(Filament::getMultiFactorAuthenticationProviders())
+                ->map(fn ($provider) => Group::make($provider->getManagementSchemaComponents())->statePath($provider->getId()))
+                ->values()
+                ->all(),
+        );
     }
 
     public function form(Schema $schema): Schema
