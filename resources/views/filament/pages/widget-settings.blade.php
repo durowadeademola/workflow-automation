@@ -1,6 +1,6 @@
 <x-filament-panels::page>
     @if($this->isWidgetReady())
-        <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-6 mb-6 flex items-center justify-between gap-4">
+        <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 p-6 mb-6 flex items-center justify-between gap-4">
             <div>
                 <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Widget Status</h3>
                 <p class="text-xs text-gray-400 mt-0.5">
@@ -30,7 +30,7 @@
     @endif
 
     <form wire:submit="save" class="space-y-6">
-        <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-6">
+        <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 p-6">
             {{ $this->form }}
         </div>
 
@@ -51,7 +51,7 @@
                     setTimeout(() => (this.copied = false), 2000);
                 },
             }"
-            class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden mt-6"
+            class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden mt-6"
         >
             <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between gap-4">
                 <div>

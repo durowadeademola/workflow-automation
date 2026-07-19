@@ -4,7 +4,7 @@
     @endphp
 
     {{-- Current status --}}
-    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-6 mb-6">
+    <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 p-6 mb-6">
         @if($current && $current->cancelled_at)
             <div class="flex items-center justify-between flex-wrap gap-4">
                 <div>
@@ -193,7 +193,7 @@
                     $isCurrentYearly = $current && $current->plan === $plan->slug && $current->billing_cycle === 'yearly';
                 @endphp
                 <div @class([
-                    'rounded-2xl border p-6 bg-white dark:bg-gray-900 flex flex-col',
+                    'rounded-2xl border p-6 bg-white dark:bg-[#111827] flex flex-col',
                     'border-primary-500 ring-2 ring-primary-500' => $plan->is_popular,
                     'border-gray-100 dark:border-gray-800' => ! $plan->is_popular,
                 ])>
@@ -310,7 +310,7 @@
     </div>
 
     {{-- History --}}
-    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+    <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
         <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
             <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Billing History</h3>
         </div>

@@ -1,7 +1,7 @@
 <x-filament-panels::page>
     <div wire:poll.5s="$refresh" class="grid grid-cols-1 lg:grid-cols-3 gap-6" style="min-height: 60vh;">
         {{-- Conversation list --}}
-        <div class="lg:col-span-1 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+        <div class="lg:col-span-1 bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
             <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                 <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Conversations</h3>
             </div>
@@ -51,7 +51,7 @@
         </div>
 
         {{-- Thread --}}
-        <div class="lg:col-span-2 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 flex flex-col overflow-hidden">
+        <div class="lg:col-span-2 bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 flex flex-col overflow-hidden">
             @php($conversation = $this->getSelectedConversation())
 
             @if(! $conversation)
@@ -86,7 +86,7 @@
                     </div>
                 </div>
 
-                <div class="flex-1 flex flex-col space-y-3 p-4 bg-slate-50 dark:bg-gray-950 overflow-y-auto" style="max-height: 55vh;">
+                <div class="flex-1 flex flex-col space-y-3 p-4 bg-white dark:bg-[#111827] overflow-y-auto" style="max-height: 55vh;">
                     @forelse($conversation->messages()->orderBy('id')->get() as $msg)
                         <div class="flex w-full {{ $msg->sender_type === 'visitor' ? 'justify-start' : 'justify-end' }}">
                             <div @class([

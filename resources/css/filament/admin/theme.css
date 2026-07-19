@@ -77,6 +77,103 @@ body {
     background-color: rgb(248 250 252);
 }
 
+/* ── Cards, topbar, tables, stats, modals: same plain color as the
+     sidebar, instead of Filament's default white. ── */
+.fi-section:not(.fi-section-not-contained):not(.fi-aside):not(.fi-secondary) {
+    background-color: #ffffff;
+}
+
+.fi-section:not(.fi-section-not-contained).fi-aside:not(.fi-secondary) > .fi-section-content-ctn {
+    background-color: #ffffff;
+}
+
+.fi-topbar {
+    background-color: #ffffff;
+}
+
+/* Table container card on index/list pages — same treatment as .fi-section
+   above, just a different class since tables aren't built from Section. */
+.fi-ta-ctn {
+    background-color: #ffffff;
+}
+
+/* Dashboard stats-overview cards — again, a different class of its own. */
+.fi-wi-stats-overview-stat {
+    background-color: #ffffff;
+}
+
+/* Modals (create/edit/view/confirmation dialogs) — same treatment, including
+   the sticky header/footer variants, which set their own background on top
+   of the window's. */
+.fi-modal-window,
+.fi-modal-header,
+.fi-modal-footer {
+    background-color: #ffffff;
+}
+
+/* ── Dark mode equivalents of the overrides above, following Filament's
+     own gray-900/gray-950 + white/5 conventions so the toggle looks native
+     instead of leaving these custom bits stuck in their light colors. ── */
+:where(.dark, .dark *) .fi-sidebar {
+    background-color: rgb(17 24 39);
+    border-inline-end-color: rgba(255, 255, 255, 0.06);
+}
+
+:where(.dark, .dark *) .fi-sidebar-header {
+    border-block-end-color: rgba(255, 255, 255, 0.06);
+}
+
+:where(.dark, .dark *) .fi-sidebar-group-label {
+    color: rgb(148 163 184);
+}
+
+:where(.dark, .dark *) .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+:where(.dark, .dark *) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: rgb(96 165 250);
+}
+
+:where(.dark, .dark *) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-icon {
+    color: rgb(96 165 250);
+}
+
+:where(.dark, .dark *) .fi-sidebar-footer {
+    border-block-start-color: rgba(255, 255, 255, 0.06);
+}
+
+:where(.dark, .dark *) .fi-layout {
+    background-color: rgb(3 7 18);
+}
+
+:where(.dark, .dark *) .fi-section:not(.fi-section-not-contained):not(.fi-aside):not(.fi-secondary) {
+    background-color: rgb(17 24 39);
+}
+
+:where(.dark, .dark *) .fi-section:not(.fi-section-not-contained).fi-aside:not(.fi-secondary) > .fi-section-content-ctn {
+    background-color: rgb(17 24 39);
+}
+
+:where(.dark, .dark *) .fi-topbar {
+    background-color: rgb(17 24 39);
+}
+
+:where(.dark, .dark *) .fi-ta-ctn {
+    background-color: rgb(17 24 39);
+}
+
+:where(.dark, .dark *) .fi-wi-stats-overview-stat {
+    background-color: rgb(17 24 39);
+}
+
+:where(.dark, .dark *) .fi-modal-window,
+:where(.dark, .dark *) .fi-modal-header,
+:where(.dark, .dark *) .fi-modal-footer {
+    background-color: rgb(17 24 39);
+}
+
 /* Mobile drawer */
 @media (max-width: 1024px) {
     .fi-sidebar {

@@ -2,7 +2,7 @@
     @php($ticket = $this->record)
     @php($isAdmin = auth()->user()->is_admin)
 
-    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col" style="min-height: 60vh;">
+    <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col" style="min-height: 60vh;">
         <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between gap-4 flex-wrap">
             <div>
                 <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ $ticket->subject }}</h3>
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <div class="flex-1 flex flex-col space-y-3 p-4 bg-slate-50 dark:bg-gray-950 overflow-y-auto" style="max-height: 55vh;">
+        <div class="flex-1 flex flex-col space-y-3 p-4 bg-white dark:bg-[#111827] overflow-y-auto" style="max-height: 55vh;">
             @forelse($this->getThread() as $msg)
                 <div class="flex w-full {{ $msg->from_admin ? 'justify-end' : 'justify-start' }}">
                     <div @class([

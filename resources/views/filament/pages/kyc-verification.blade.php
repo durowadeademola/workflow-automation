@@ -3,7 +3,7 @@
         $latest = $this->getLatestSubmission();
     @endphp
 
-    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-6 mb-6">
+    <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 p-6 mb-6">
         @if(! $latest)
             <div class="text-center py-4">
                 <p class="text-sm text-gray-500">
@@ -48,7 +48,7 @@
 
     @if($this->canSubmit())
         <form wire:submit="submit" class="space-y-6">
-            <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-6">
+            <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 p-6">
                 {{ $this->form }}
             </div>
 

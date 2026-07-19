@@ -8,7 +8,9 @@
 
         <!-- Applies the saved theme before first paint, so there's no
              flash of the wrong theme. Default is dark — light is opt-in
-             only, never OS-preference-based. -->
+             only, never OS-preference-based. Shares the same "theme" key
+             Filament's /admin and /user panels use, so a toggle on either
+             side carries over to the other. -->
         <script>
             (function () {
                 try {

@@ -1,4 +1,4 @@
-<div class="flex flex-col space-y-4 p-4 antialiased bg-slate-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 shadow-inner"
+<div class="flex flex-col space-y-4 p-4 antialiased bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 shadow-inner"
 style="max-height: 500px; overflow-y: auto;">
     @forelse($messages as $msg)
         @php

@@ -1,7 +1,7 @@
 <x-filament-panels::page>
     @php($customer = $this->record->customer)
 
-    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+    <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
         <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between gap-4">
             <div>
                 <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-100">
@@ -13,7 +13,7 @@
             </div>
         </div>
 
-        <div class="flex flex-col space-y-1.5 p-4 bg-slate-50 dark:bg-gray-950 overflow-y-auto" style="max-height: 65vh;">
+        <div class="flex flex-col space-y-1.5 p-4 bg-white dark:bg-[#111827] overflow-y-auto" style="max-height: 65vh;">
             @forelse($this->getThread() as $msg)
                 <div class="flex w-full {{ $msg->from_customer ? 'justify-start' : 'justify-end' }}">
                     <div @class([

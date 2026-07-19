@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 
+// Same key Filament's own dark-mode JS reads/writes under /admin and /user
+// (vendor/filament/filament/resources/views/components/layout/base.blade.php).
+// Deliberately shared — toggling the theme here also carries over into
+// Filament (and a Filament toggle carries back here), so the whole site
+// feels like one unit rather than two independently-themed halves.
 const STORAGE_KEY = "theme";
 
 function getStoredTheme() {

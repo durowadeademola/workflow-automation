@@ -1,5 +1,5 @@
 <x-filament-panels::page>
-    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-6">
+    <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 p-6">
         <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
             <div class="flex items-center gap-3">
                 <a
@@ -36,14 +36,14 @@
 
         <div class="grid grid-cols-7 gap-px bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
             @foreach (['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as $label)
-                <div class="bg-gray-50 dark:bg-gray-800 px-2 py-2 text-center">{{ $label }}</div>
+                <div class="bg-white dark:bg-[#111827] px-2 py-2 text-center">{{ $label }}</div>
             @endforeach
         </div>
 
         <div class="grid grid-cols-7 gap-px bg-gray-100 dark:bg-gray-800 border-x border-b border-gray-100 dark:border-gray-800 rounded-b-lg overflow-hidden">
             @foreach ($this->getCalendarDays() as $day)
                 <div @class([
-                    'bg-white dark:bg-gray-900 min-h-[100px] p-2 align-top',
+                    'bg-white dark:bg-[#111827] min-h-[100px] p-2 align-top',
                     'bg-gray-50/60 dark:bg-gray-800/40' => ! $day['inMonth'],
                 ])>
                     <div @class([

@@ -91,7 +91,7 @@ class UserPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->brandName('Blueflow')
             ->widgets([])
-            ->darkMode(false)
+            ->darkMode()
             ->defaultThemeMode(ThemeMode::Light)
             ->middleware([
                 EncryptCookies::class,
