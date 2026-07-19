@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Manual, user-toggled dark mode (not OS-preference-based) — `dark:`
+   utilities activate whenever a `dark` class is present on <html> or an
+   ancestor, toggled by Navbar's theme switch and persisted in
+   localStorage. See app.blade.php for the inline script that applies this
+   class before first paint, so there's no flash of the wrong theme. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Matches the Inter font used in the Filament admin panel — loaded via the
    bunny fonts link in app.blade.php. Without this override, Tailwind's
    `font-sans` utility (used on <body>) falls back to the plain system-font

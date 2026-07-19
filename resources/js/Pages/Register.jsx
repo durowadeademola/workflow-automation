@@ -108,18 +108,18 @@ export default function Register() {
                 }
             />
 
-            <section className="py-16 bg-white">
+            <section className="py-16 bg-white dark:bg-gray-900">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                     {status === "success" ? (
-                        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-10 text-center">
-                            <div className="w-14 h-14 mx-auto mb-4 bg-emerald-100 rounded-2xl flex items-center justify-center">
-                                <CircleCheckBig className="w-7 h-7 text-emerald-600" strokeWidth={1.75} />
+                        <div className="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-10 text-center">
+                            <div className="w-14 h-14 mx-auto mb-4 bg-emerald-100 dark:bg-emerald-900/40 rounded-2xl flex items-center justify-center">
+                                <CircleCheckBig className="w-7 h-7 text-emerald-600 dark:text-emerald-400" strokeWidth={1.75} />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">Account created!</h3>
-                            <p className="text-gray-600">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Account created!</h3>
+                            <p className="text-gray-600 dark:text-gray-300">
                                 Your business is pending approval. We'll email you as soon as an admin approves your
                                 account — you'll then be able to{" "}
-                                <Link href="/user/login" className="text-blue-700 font-semibold hover:underline">
+                                <Link href="/user/login" className="text-blue-700 dark:text-blue-400 font-semibold hover:underline">
                                     log in
                                 </Link>{" "}
                                 and set up your chat widget and subscription.
@@ -128,7 +128,7 @@ export default function Register() {
                     ) : (
                         <form
                             onSubmit={handleSubmit}
-                            className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 space-y-5"
+                            className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6 sm:p-8 space-y-5"
                         >
                             {/* Honeypot field — hidden from real users */}
                             <input
@@ -142,71 +142,71 @@ export default function Register() {
                             />
 
                             <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1 block">Business Name <span className="text-red-500">*</span></label>
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 block">Business Name <span className="text-red-500 dark:text-red-400">*</span></label>
                                 <input
                                     type="text"
                                     required
                                     value={form.business_name}
                                     onChange={update("business_name")}
-                                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
                                 />
                                 {errors.business_name && (
-                                    <p className="text-red-600 text-xs mt-1">{errors.business_name[0]}</p>
+                                    <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.business_name[0]}</p>
                                 )}
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
-                                    <label className="text-sm font-medium text-gray-700 mb-1 block">Email <span className="text-red-500">*</span></label>
+                                    <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 block">Email <span className="text-red-500 dark:text-red-400">*</span></label>
                                     <input
                                         type="email"
                                         required
                                         value={form.email}
                                         onChange={update("email")}
-                                        className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
                                     />
-                                    {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email[0]}</p>}
+                                    {errors.email && <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.email[0]}</p>}
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-gray-700 mb-1 block">Phone / WhatsApp</label>
+                                    <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 block">Phone / WhatsApp</label>
                                     <input
                                         type="tel"
                                         value={form.telephone}
                                         onChange={update("telephone")}
-                                        className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1 block">Business Type <span className="text-red-500">*</span></label>
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 block">Business Type <span className="text-red-500 dark:text-red-400">*</span></label>
                                 <select
                                     required
                                     value={form.type}
                                     onChange={update("type")}
-                                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                                    className="w-full rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 dark:text-white"
                                 >
                                     <option value="" disabled>Select your industry</option>
                                     {BUSINESS_TYPES.map((t) => (
                                         <option key={t.value} value={t.value}>{t.label}</option>
                                     ))}
                                 </select>
-                                {errors.type && <p className="text-red-600 text-xs mt-1">{errors.type[0]}</p>}
+                                {errors.type && <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.type[0]}</p>}
                             </div>
 
                             <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1 block">Which services are you interested in? <span className="text-red-500">*</span></label>
-                                <p className="text-xs text-gray-400 mb-2">This decides what shows up in your dashboard — you can change it later.</p>
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 block">Which services are you interested in? <span className="text-red-500 dark:text-red-400">*</span></label>
+                                <p className="text-xs text-gray-400 dark:text-gray-500 mb-2">This decides what shows up in your dashboard — you can change it later.</p>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     {SERVICES.map((s) => (
                                         <label
                                             key={s.value}
                                             className={`flex items-start gap-2.5 text-sm rounded-xl border px-3.5 py-2.5 transition-colors ${
                                                 s.comingSoon
-                                                    ? "border-gray-100 bg-gray-50 cursor-not-allowed opacity-60"
+                                                    ? "border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 cursor-not-allowed opacity-60"
                                                     : form.features.includes(s.value)
-                                                        ? "border-blue-500 bg-blue-50 cursor-pointer"
-                                                        : "border-gray-200 hover:border-gray-300 cursor-pointer"
+                                                        ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30 cursor-pointer"
+                                                        : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 cursor-pointer"
                                             }`}
                                         >
                                             <input
@@ -214,28 +214,28 @@ export default function Register() {
                                                 checked={form.features.includes(s.value)}
                                                 onChange={() => toggleFeature(s.value)}
                                                 disabled={s.comingSoon}
-                                                className="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:cursor-not-allowed"
+                                                className="mt-0.5 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-blue-600 focus:ring-blue-500 disabled:cursor-not-allowed"
                                             />
                                             <span>
-                                                <span className="flex items-center gap-1.5 font-medium text-gray-800">
+                                                <span className="flex items-center gap-1.5 font-medium text-gray-800 dark:text-gray-100">
                                                     {s.label}
                                                     {s.comingSoon && (
-                                                        <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 bg-gray-200 rounded-full px-1.5 py-0.5">
+                                                        <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 bg-gray-200 dark:bg-gray-700 rounded-full px-1.5 py-0.5">
                                                             Coming soon
                                                         </span>
                                                     )}
                                                 </span>
-                                                <span className="block text-xs text-gray-400">{s.description}</span>
+                                                <span className="block text-xs text-gray-400 dark:text-gray-500">{s.description}</span>
                                             </span>
                                         </label>
                                     ))}
                                 </div>
-                                {errors.features && <p className="text-red-600 text-xs mt-1">{errors.features[0]}</p>}
+                                {errors.features && <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.features[0]}</p>}
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
-                                    <label className="text-sm font-medium text-gray-700 mb-1 block">Password <span className="text-red-500">*</span></label>
+                                    <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 block">Password <span className="text-red-500 dark:text-red-400">*</span></label>
                                     <div className="relative">
                                         <input
                                             type={showPassword ? "text" : "password"}
@@ -243,23 +243,23 @@ export default function Register() {
                                             minLength={8}
                                             value={form.password}
                                             onChange={update("password")}
-                                            className="w-full rounded-xl border border-gray-200 px-4 py-2.5 pr-11 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-2.5 pr-11 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword((v) => !v)}
-                                            className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600"
+                                            className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
                                             aria-label={showPassword ? "Hide password" : "Show password"}
                                         >
                                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                         </button>
                                     </div>
                                     {errors.password && (
-                                        <p className="text-red-600 text-xs mt-1">{errors.password[0]}</p>
+                                        <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.password[0]}</p>
                                     )}
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-gray-700 mb-1 block">Confirm Password <span className="text-red-500">*</span></label>
+                                    <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 block">Confirm Password <span className="text-red-500 dark:text-red-400">*</span></label>
                                     <div className="relative">
                                         <input
                                             type={showPasswordConfirmation ? "text" : "password"}
@@ -267,12 +267,12 @@ export default function Register() {
                                             minLength={8}
                                             value={form.password_confirmation}
                                             onChange={update("password_confirmation")}
-                                            className="w-full rounded-xl border border-gray-200 px-4 py-2.5 pr-11 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-2.5 pr-11 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowPasswordConfirmation((v) => !v)}
-                                            className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600"
+                                            className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
                                             aria-label={showPasswordConfirmation ? "Hide password" : "Show password"}
                                         >
                                             {showPasswordConfirmation ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -282,33 +282,33 @@ export default function Register() {
                             </div>
 
                             <div>
-                                <label className="flex items-start gap-2.5 text-sm text-gray-600 cursor-pointer">
+                                <label className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-gray-300 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         required
                                         checked={form.terms_accepted}
                                         onChange={updateCheckbox("terms_accepted")}
-                                        className="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                        className="mt-0.5 rounded border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-blue-600 focus:ring-blue-500"
                                     />
                                     <span>
                                         By continuing, I agree to Blueflow's{" "}
-                                        <Link href="/terms-of-service" target="_blank" className="text-blue-700 font-semibold hover:underline">
+                                        <Link href="/terms-of-service" target="_blank" className="text-blue-700 dark:text-blue-400 font-semibold hover:underline">
                                             Terms of Service
                                         </Link>{" "}
                                         and{" "}
-                                        <Link href="/privacy-policy" target="_blank" className="text-blue-700 font-semibold hover:underline">
+                                        <Link href="/privacy-policy" target="_blank" className="text-blue-700 dark:text-blue-400 font-semibold hover:underline">
                                             Privacy Policy
                                         </Link>
-                                        . <span className="text-red-500">*</span>
+                                        . <span className="text-red-500 dark:text-red-400">*</span>
                                     </span>
                                 </label>
                                 {errors.terms_accepted && (
-                                    <p className="text-red-600 text-xs mt-1">{errors.terms_accepted[0]}</p>
+                                    <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.terms_accepted[0]}</p>
                                 )}
                             </div>
 
                             {status === "error" && !Object.keys(errors).length && (
-                                <p className="text-red-600 text-sm">
+                                <p className="text-red-600 dark:text-red-400 text-sm">
                                     Something went wrong. Please try again or message us on WhatsApp.
                                 </p>
                             )}
@@ -321,9 +321,9 @@ export default function Register() {
                                 {status === "submitting" ? "Creating account..." : "Create Account"}
                             </button>
 
-                            <p className="text-center text-xs text-gray-400">
+                            <p className="text-center text-xs text-gray-400 dark:text-gray-500">
                                 Already registered?{" "}
-                                <Link href="/user/login" className="text-blue-700 font-semibold hover:underline">
+                                <Link href="/user/login" className="text-blue-700 dark:text-blue-400 font-semibold hover:underline">
                                     Log in
                                 </Link>
                             </p>

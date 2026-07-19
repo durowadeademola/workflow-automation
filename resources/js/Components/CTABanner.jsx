@@ -75,7 +75,7 @@ export default function CTABanner({ ctaReview = null }) {
                 >
                     <Link
                         href="/contact"
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-blue-700 font-bold px-8 py-3.5 rounded-xl hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-blue-700 dark:bg-gray-900 dark:text-blue-400 font-bold px-8 py-3.5 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
                     >
                         Schedule Free Demo
                     </Link>

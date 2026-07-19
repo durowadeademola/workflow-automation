@@ -58,11 +58,11 @@ function StepRow({ step, idx }) {
             }}
         >
             {/* Card */}
-            <div className="flex-1 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow w-full">
-                <h3 className="font-bold text-gray-900 text-lg mb-2">{step.title}</h3>
-                <p className="text-gray-500 text-sm mb-4">{step.description}</p>
+            <div className="flex-1 bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow w-full">
+                <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-2">{step.title}</h3>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">{step.description}</p>
                 <div className="flex items-center gap-4 text-xs">
-                    <span className="flex items-center gap-1.5 text-gray-400">
+                    <span className="flex items-center gap-1.5 text-gray-400 dark:text-gray-500">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -93,7 +93,7 @@ export default function HowItWorks() {
     const [ctaRef, ctaVisible] = useScrollAnimation(0.2);
 
     return (
-        <section id="how-it-works" className="py-20 bg-gray-50">
+        <section id="how-it-works" className="py-20 bg-gray-50 dark:bg-gray-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div
                     ref={headingRef}
@@ -104,17 +104,17 @@ export default function HowItWorks() {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
                         How It Works
                     </h2>
-                    <p className="text-gray-500 max-w-xl mx-auto">
+                    <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
                         From signing up to full automation in just 7-10 days. Here's our proven process.
                     </p>
                 </div>
 
                 <div className="relative">
                     {/* Vertical connector line (desktop) */}
-                    <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-blue-100 -translate-x-1/2 z-0" />
+                    <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-blue-100 dark:bg-blue-900/50 -translate-x-1/2 z-0" />
 
                     <div className="space-y-8 relative z-10">
                         {steps.map((step, idx) => (
@@ -141,7 +141,7 @@ export default function HowItWorks() {
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link
                             href="/register"
-                            className="bg-white text-blue-700 font-semibold px-6 py-3 rounded-xl hover:bg-blue-50 transition-colors"
+                            className="bg-white dark:bg-gray-900 text-blue-700 dark:text-blue-400 font-semibold px-6 py-3 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/40 transition-colors"
                         >
                             Create Account
                         </Link>

@@ -52,7 +52,7 @@ export default function TrustSignals() {
     const [cardsRef, cardsVisible] = useScrollAnimation(0.05);
 
     return (
-        <section className="py-20 bg-gray-50">
+        <section className="py-20 bg-gray-50 dark:bg-gray-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div
                     ref={headingRef}
@@ -63,10 +63,10 @@ export default function TrustSignals() {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
                         Why Nigerian Businesses Trust Us
                     </h2>
-                    <p className="text-gray-500 max-w-xl mx-auto">
+                    <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
                         We are not just a automation company. We are your technology partner committed to your success.
                     </p>
                 </div>
@@ -75,7 +75,7 @@ export default function TrustSignals() {
                     {trustItems.map((item, i) => (
                         <div
                             key={item.title}
-                            className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow hover:-translate-y-0.5"
+                            className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow hover:-translate-y-0.5"
                             style={{
                                 opacity: cardsVisible ? 1 : 0,
                                 transform: cardsVisible ? "translateY(0)" : "translateY(50px)",
@@ -83,8 +83,8 @@ export default function TrustSignals() {
                             }}
                         >
                             <IconTile icon={item.icon} color="blue" size="md" className="mb-3" />
-                            <h3 className="font-bold text-gray-900 text-sm mb-2">{item.title}</h3>
-                            <p className="text-xs text-gray-500 leading-relaxed">{item.description}</p>
+                            <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-2">{item.title}</h3>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{item.description}</p>
                         </div>
                     ))}
                 </div>
@@ -97,12 +97,12 @@ export default function TrustSignals() {
                         transition: "opacity 0.6s ease 700ms",
                     }}
                 >
-                    <p className="text-sm font-medium text-gray-400 mb-4">Trusted by leading Nigerian businesses:</p>
+                    <p className="text-sm font-medium text-gray-400 dark:text-gray-500 mb-4">Trusted by leading Nigerian businesses:</p>
                     <div className="flex flex-wrap justify-center gap-3">
                         {industries.map((ind, i) => (
-                            <span key={ind} className="flex items-center gap-2 text-sm text-gray-500">
+                            <span key={ind} className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                                 {ind}
-                                {i < industries.length - 1 && <span className="text-gray-300">•</span>}
+                                {i < industries.length - 1 && <span className="text-gray-300 dark:text-gray-600">•</span>}
                             </span>
                         ))}
                     </div>

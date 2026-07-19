@@ -11,11 +11,11 @@ export default function PrivacyPolicy() {
 
             <PageHero title="Privacy Policy" subtitle="Last updated: July 9, 2026" />
 
-            <section className="py-16 bg-white">
+            <section className="py-16 bg-white dark:bg-gray-900">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 prose prose-blue">
-                    <div className="space-y-10 text-gray-600 leading-relaxed text-sm sm:text-base">
+                    <div className="space-y-10 text-gray-600 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">1. Information We Collect</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">1. Information We Collect</h2>
                             <p>
                                 We collect information you provide directly to us, such as when you fill out our
                                 contact form, message us on WhatsApp, or interact with an AI chat widget we've built
@@ -27,7 +27,7 @@ export default function PrivacyPolicy() {
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">2. How We Use Your Information</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">2. How We Use Your Information</h2>
                             <p>
                                 We use the information we collect to respond to inquiries, provide and improve our
                                 automation services, operate the systems we build for our clients, and communicate
@@ -37,7 +37,7 @@ export default function PrivacyPolicy() {
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">3. Data Sharing</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">3. Data Sharing</h2>
                             <p>
                                 We share data only with the service providers necessary to operate our platform —
                                 for example, our hosting provider, payment processors (such as Paystack or
@@ -48,7 +48,7 @@ export default function PrivacyPolicy() {
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">4. Cookies</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">4. Cookies</h2>
                             <p>
                                 Our website uses minimal cookies required for the site to function correctly (such
                                 as session cookies). We do not use third-party advertising trackers. If this
@@ -57,7 +57,7 @@ export default function PrivacyPolicy() {
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">5. Data Security</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">5. Data Security</h2>
                             <p>
                                 We take reasonable technical and organisational measures to protect your data,
                                 including encrypted connections (SSL/TLS) and access controls on our systems.
@@ -67,25 +67,25 @@ export default function PrivacyPolicy() {
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">6. Your Rights</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">6. Your Rights</h2>
                             <p>
                                 You may request access to, correction of, or deletion of your personal data at any
                                 time by contacting us at{" "}
-                                <a href="mailto:hello@blueflowautomation.com" className="text-blue-700 font-semibold hover:underline">
+                                <a href="mailto:hello@blueflowautomation.com" className="text-blue-700 dark:text-blue-400 font-semibold hover:underline">
                                     hello@blueflowautomation.com
                                 </a>. We will respond within a reasonable timeframe.
                             </p>
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">7. Contact Us</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">7. Contact Us</h2>
                             <p>
                                 If you have any questions about this Privacy Policy, reach us at{" "}
-                                <a href="mailto:hello@blueflowautomation.com" className="text-blue-700 font-semibold hover:underline">
+                                <a href="mailto:hello@blueflowautomation.com" className="text-blue-700 dark:text-blue-400 font-semibold hover:underline">
                                     hello@blueflowautomation.com
                                 </a>{" "}
                                 or via WhatsApp at{" "}
-                                <a href="https://wa.me/2347064706193" target="_blank" rel="noreferrer" className="text-blue-700 font-semibold hover:underline">
+                                <a href="https://wa.me/2347064706193" target="_blank" rel="noreferrer" className="text-blue-700 dark:text-blue-400 font-semibold hover:underline">
                                     +234 706 470 6193
                                 </a>.
                             </p>

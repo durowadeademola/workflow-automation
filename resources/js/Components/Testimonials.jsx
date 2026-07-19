@@ -14,9 +14,9 @@ function Stars({ count = 5 }) {
 
 function ReviewCard({ r }) {
     return (
-        <div className="w-[300px] sm:w-[360px] shrink-0 bg-gray-50 rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
+        <div className="w-[300px] sm:w-[360px] shrink-0 bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow flex flex-col">
             <Stars count={r.rating} />
-            <p className="text-gray-700 text-sm leading-relaxed italic flex-1 mb-5">
+            <p className="text-gray-700 dark:text-gray-200 text-sm leading-relaxed italic flex-1 mb-5">
                 "{r.description}"
             </p>
             <div className="flex items-center gap-3">
@@ -24,8 +24,8 @@ function ReviewCard({ r }) {
                     {r.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                    <p className="font-semibold text-gray-900 text-sm">{r.name}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="font-semibold text-gray-900 dark:text-white text-sm">{r.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                         {[r.job_title, r.company].filter(Boolean).join(", ")}
                         {r.location ? ` • ${r.location}` : ""}
                     </p>
@@ -49,7 +49,7 @@ export default function Testimonials({ reviews = [] }) {
     const duration = Math.max(20, reviews.length * 6);
 
     return (
-        <section className="py-20 bg-white overflow-hidden">
+        <section className="py-20 bg-white dark:bg-gray-900 overflow-hidden">
             <style>{`
                 @keyframes testimonialsScroll {
                     from { transform: translateX(0); }
@@ -78,10 +78,10 @@ export default function Testimonials({ reviews = [] }) {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
                         What Our Clients Say
                     </h2>
-                    <p className="text-gray-500 max-w-xl mx-auto">
+                    <p className="text-gray-400 max-w-xl mx-auto">
                         Feedbacks from some of our happy customers
                     </p>
                 </div>

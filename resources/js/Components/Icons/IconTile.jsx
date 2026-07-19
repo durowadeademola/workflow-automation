@@ -1,9 +1,9 @@
 const COLORS = {
-    blue: "bg-blue-100 text-blue-600",
-    emerald: "bg-emerald-100 text-emerald-600",
-    red: "bg-red-50 text-red-600",
-    amber: "bg-amber-100 text-amber-600",
-    white: "bg-white text-blue-600 shadow-sm ring-1 ring-black/5",
+    blue: "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400",
+    emerald: "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400",
+    red: "bg-red-50 dark:bg-red-900/40 text-red-600 dark:text-red-400",
+    amber: "bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400",
+    white: "bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm ring-1 ring-black/5 dark:ring-white/10",
     solid: "bg-blue-600 text-white",
 };
 

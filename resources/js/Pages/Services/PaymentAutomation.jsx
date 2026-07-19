@@ -44,18 +44,18 @@ export default function PaymentAutomation() {
                     content="Stop chasing payments manually. Blueflow automates invoicing, payment links, reminders, and reconciliation for Nigerian businesses."
                 />
             </Head>
-            <div className="min-h-screen bg-white">
+            <div className="min-h-screen bg-white dark:bg-gray-900">
                 <Navbar />
                 <main>
                     {/* Overview */}
-                    <section className="py-20 bg-white">
+                    <section className="py-20 bg-white dark:bg-gray-900">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                                 <div>
-                                    <h2 className="text-3xl font-extrabold text-gray-900 mb-5">
+                                    <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-5">
                                         Get Paid Faster Without the Back-and-Forth
                                     </h2>
-                                    <p className="text-gray-600 leading-relaxed mb-6">
+                                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                                         Chasing payments is one of the biggest time drains for Nigerian businesses.
                                         Between sending invoices manually, following up on overdue balances, and
                                         reconciling bank transfers, hours disappear every week. Blueflow's Payment
@@ -64,7 +64,7 @@ export default function PaymentAutomation() {
                                     </p>
                                     <ul className="space-y-3">
                                         {highlights.map((h) => (
-                                            <li key={h} className="flex items-start gap-3 text-gray-700 text-sm">
+                                            <li key={h} className="flex items-start gap-3 text-gray-700 dark:text-gray-200 text-sm">
                                                 <span className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                                                     <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -81,15 +81,15 @@ export default function PaymentAutomation() {
                     </section>
 
                     {/* Features */}
-                    <section className="py-20 bg-gray-50">
+                    <section className="py-20 bg-gray-50 dark:bg-gray-800">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">Everything Included</h2>
+                            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white text-center mb-14">Everything Included</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
-                                    <div key={f.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                    <div key={f.title} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
                                         <IconTile icon={f.icon} color="blue" size="md" className="mb-3" />
-                                        <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
-                                        <p className="text-sm text-gray-500">{f.description}</p>
+                                        <h3 className="font-bold text-gray-900 dark:text-white mb-2">{f.title}</h3>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">{f.description}</p>
                                     </div>
                                 ))}
                             </div>
@@ -97,9 +97,9 @@ export default function PaymentAutomation() {
                     </section>
 
                     {/* How it works */}
-                    <section className="py-20 bg-white">
+                    <section className="py-20 bg-white dark:bg-gray-900">
                         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-14">How It Works</h2>
+                            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white text-center mb-14">How It Works</h2>
                             <div className="space-y-6">
                                 {steps.map((step, i) => (
                                     <div key={step.title} className="flex items-start gap-5">
@@ -107,8 +107,8 @@ export default function PaymentAutomation() {
                                             {i + 1}
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-gray-900 mb-1">{step.title}</h3>
-                                            <p className="text-sm text-gray-500">{step.description}</p>
+                                            <h3 className="font-bold text-gray-900 dark:text-white mb-1">{step.title}</h3>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">{step.description}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -131,17 +131,17 @@ export default function PaymentAutomation() {
                     </section>
 
                     {/* CTA */}
-                    <section className="py-20 bg-gray-50">
+                    <section className="py-20 bg-gray-50 dark:bg-gray-800">
                         <div className="max-w-3xl mx-auto px-4 text-center">
-                            <h2 className="text-3xl font-extrabold text-gray-900 mb-4">Ready to Get Paid Faster?</h2>
-                            <p className="text-gray-500 mb-8">
+                            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4">Ready to Get Paid Faster?</h2>
+                            <p className="text-gray-500 dark:text-gray-400 mb-8">
                                 Book a free demo and see how Payment Automation can clean up your cash flow from day one.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Schedule Free Demo
                                 </Link>
-                                <Link href="/#pricing" className="border-2 border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-all">
+                                <Link href="/#pricing" className="border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-all">
                                     View Pricing
                                 </Link>
                             </div>

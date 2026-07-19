@@ -20,13 +20,13 @@ function AnimatedResult({ value, label, highlight, trigger }) {
             className={`rounded-2xl p-4 border ${
                 highlight
                     ? "bg-blue-600 text-white border-blue-600 col-span-2"
-                    : "bg-white text-gray-900 border-gray-100"
+                    : "bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-100 dark:border-gray-800"
             }`}
         >
-            <p className={`text-xs font-medium mb-1 ${highlight ? "text-blue-100" : "text-gray-500"}`}>
+            <p className={`text-xs font-medium mb-1 ${highlight ? "text-blue-100" : "text-gray-500 dark:text-gray-400"}`}>
                 {label}
             </p>
-            <p className={`text-2xl font-extrabold ${highlight ? "text-white" : "text-gray-900"}`}>
+            <p className={`text-2xl font-extrabold ${highlight ? "text-white" : "text-gray-900 dark:text-white"}`}>
                 {displayValue}
             </p>
         </div>
@@ -63,7 +63,7 @@ export default function ROICalculator() {
     const [calcRef, calcVisible] = useScrollAnimation(0.1);
 
     return (
-        <section id="roi-calculator" className="py-20 bg-white">
+        <section id="roi-calculator" className="py-20 bg-white dark:bg-gray-900">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div
                     ref={headingRef}
@@ -74,17 +74,17 @@ export default function ROICalculator() {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
                         Calculate Your ROI
                     </h2>
-                    <p className="text-gray-500 max-w-xl mx-auto">
+                    <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
                         See exactly how much Blueflow can save your business every month
                     </p>
                 </div>
 
                 <div
                     ref={calcRef}
-                    className="grid grid-cols-1 lg:grid-cols-2 gap-10 bg-gradient-to-br from-blue-50 to-emerald-50 rounded-3xl p-8 md:p-12 border border-blue-100"
+                    className="grid grid-cols-1 lg:grid-cols-2 gap-10 bg-gradient-to-br from-blue-50 to-emerald-50 dark:from-blue-950/40 dark:to-emerald-950/40 rounded-3xl p-8 md:p-12 border border-blue-100 dark:border-blue-900/50"
                     style={{
                         opacity: calcVisible ? 1 : 0,
                         transform: calcVisible ? "translateY(0)" : "translateY(50px)",
@@ -93,69 +93,69 @@ export default function ROICalculator() {
                 >
                     {/* Inputs */}
                     <div>
-                        <h3 className="font-bold text-gray-900 text-lg mb-6">Your Business Numbers</h3>
+                        <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-6">Your Business Numbers</h3>
                         <div className="space-y-6">
                             <div>
-                                <label className="text-sm font-medium text-gray-700 flex justify-between mb-1">
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-200 flex justify-between mb-1">
                                     <span>Monthly Sales Revenue</span>
-                                    <span className="text-blue-700 font-semibold">{formatNaira(revenue)}</span>
+                                    <span className="text-blue-700 dark:text-blue-400 font-semibold">{formatNaira(revenue)}</span>
                                 </label>
                                 <input type="range" min={50000} max={5000000} step={50000} value={revenue}
                                     onChange={(e) => setRevenue(Number(e.target.value))}
                                     className="w-full accent-blue-600 cursor-pointer" />
-                                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                                <div className="flex justify-between text-xs text-gray-400 dark:text-gray-500 mt-1">
                                     <span>₦50K</span><span>₦5M</span>
                                 </div>
                             </div>
 
                             <div>
-                                <label className="text-sm font-medium text-gray-700 flex justify-between mb-1">
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-200 flex justify-between mb-1">
                                     <span>Estimated Missed Calls</span>
-                                    <span className="text-blue-700 font-semibold">{missedCallsPct}%</span>
+                                    <span className="text-blue-700 dark:text-blue-400 font-semibold">{missedCallsPct}%</span>
                                 </label>
                                 <input type="range" min={0} max={100} step={5} value={missedCallsPct}
                                     onChange={(e) => setMissedCallsPct(Number(e.target.value))}
                                     className="w-full accent-blue-600 cursor-pointer" />
-                                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                                <div className="flex justify-between text-xs text-gray-400 dark:text-gray-500 mt-1">
                                     <span>0%</span><span>100%</span>
                                 </div>
                             </div>
 
                             <div>
-                                <label className="text-sm font-medium text-gray-700 flex justify-between mb-1">
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-200 flex justify-between mb-1">
                                     <span>Average Order Value</span>
-                                    <span className="text-blue-700 font-semibold">{formatNaira(avgOrderValue)}</span>
+                                    <span className="text-blue-700 dark:text-blue-400 font-semibold">{formatNaira(avgOrderValue)}</span>
                                 </label>
                                 <input type="range" min={500} max={100000} step={500} value={avgOrderValue}
                                     onChange={(e) => setAvgOrderValue(Number(e.target.value))}
                                     className="w-full accent-blue-600 cursor-pointer" />
-                                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                                <div className="flex justify-between text-xs text-gray-400 dark:text-gray-500 mt-1">
                                     <span>₦500</span><span>₦100K</span>
                                 </div>
                             </div>
 
                             <div>
-                                <label className="text-sm font-medium text-gray-700 flex justify-between mb-1">
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-200 flex justify-between mb-1">
                                     <span>Staff Hours on Manual Tasks (per week)</span>
-                                    <span className="text-blue-700 font-semibold">{staffHours} hrs</span>
+                                    <span className="text-blue-700 dark:text-blue-400 font-semibold">{staffHours} hrs</span>
                                 </label>
                                 <input type="range" min={1} max={80} step={1} value={staffHours}
                                     onChange={(e) => setStaffHours(Number(e.target.value))}
                                     className="w-full accent-blue-600 cursor-pointer" />
-                                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                                <div className="flex justify-between text-xs text-gray-400 dark:text-gray-500 mt-1">
                                     <span>1 hr</span><span>80 hrs</span>
                                 </div>
                             </div>
 
                             <div>
-                                <label className="text-sm font-medium text-gray-700 flex justify-between mb-1">
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-200 flex justify-between mb-1">
                                     <span>Average Hourly Wage</span>
-                                    <span className="text-blue-700 font-semibold">{formatNaira(hourlyWage)}</span>
+                                    <span className="text-blue-700 dark:text-blue-400 font-semibold">{formatNaira(hourlyWage)}</span>
                                 </label>
                                 <input type="range" min={500} max={10000} step={250} value={hourlyWage}
                                     onChange={(e) => setHourlyWage(Number(e.target.value))}
                                     className="w-full accent-blue-600 cursor-pointer" />
-                                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                                <div className="flex justify-between text-xs text-gray-400 dark:text-gray-500 mt-1">
                                     <span>₦500</span><span>₦10K</span>
                                 </div>
                             </div>
@@ -164,7 +164,7 @@ export default function ROICalculator() {
 
                     {/* Results */}
                     <div>
-                        <h3 className="font-bold text-gray-900 text-lg mb-6">Your Potential Savings</h3>
+                        <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-6">Your Potential Savings</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                             {[
                                 { label: "Monthly Savings", value: results.monthlySavings, highlight: true },
@@ -184,9 +184,9 @@ export default function ROICalculator() {
                             ))}
                         </div>
 
-                        <p className="text-xs text-gray-400 mb-6">
+                        <p className="text-xs text-gray-400 dark:text-gray-500 mb-6">
                             Based on your numbers, Blueflow could save your business{" "}
-                            <span className="text-blue-700 font-semibold">{formatNaira(results.annualSavings)}</span> per year.
+                            <span className="text-blue-700 dark:text-blue-400 font-semibold">{formatNaira(results.annualSavings)}</span> per year.
                         </p>
 
                         <Link
@@ -195,7 +195,7 @@ export default function ROICalculator() {
                         >
                             Get Your Custom Quote
                         </Link>
-                        <p className="text-xs text-center text-gray-400 mt-3">
+                        <p className="text-xs text-center text-gray-400 dark:text-gray-500 mt-3">
                             * Results are estimates based on industry averages. Actual results may vary.
                         </p>
                     </div>

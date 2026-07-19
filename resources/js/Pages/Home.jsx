@@ -25,7 +25,7 @@ export default function Home({ plans, reviews, ctaReview }) {
                 />
             </Head>
 
-            <div className="min-h-screen bg-white">
+            <div className="min-h-screen bg-white dark:bg-gray-900">
                 <Navbar />
 
                 <main>

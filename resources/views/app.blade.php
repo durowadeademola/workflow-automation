@@ -6,6 +6,19 @@
 
         <title inertia>{{ config('app.name', 'Blueflow') }}</title>
 
+        <!-- Applies the saved theme before first paint, so there's no
+             flash of the wrong theme. Default is light — dark is opt-in
+             only, never OS-preference-based. -->
+        <script>
+            (function () {
+                try {
+                    if (localStorage.getItem('theme') === 'dark') {
+                        document.documentElement.classList.add('dark');
+                    }
+                } catch (e) {}
+            })();
+        </script>
+
         <!-- Favicon -->
         <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
         <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
@@ -33,7 +46,7 @@
                 agentName:    'Blueflow Assistant',
                 primaryColor: '#2563EB',
                 waNumber:     '2347064706193',
-                greeting:     '👋 Hello! Welcome, How can I help you today?',
+                greeting:     '👋 Hello! How can I help you today?',
                 systemPrompt: 'We build ai chat widgets, whatsapp automation, payment automation, email automation, custom automation and many more. Be friendly and concise. if the user asks for something not related to the automation, politely let them know you can only assist with automation-related inquiries. If they ask for a human agent, provide the contact information.',
                 quickReplies: ["Services", "Pricing"],
             };

@@ -30,7 +30,7 @@ export default function PainPoints() {
     const [cardsRef, cardsVisible] = useScrollAnimation(0.15);
 
     return (
-        <section className="py-20 bg-gray-50">
+        <section className="py-20 bg-gray-50 dark:bg-gray-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div
                     ref={headingRef}
@@ -41,7 +41,7 @@ export default function PainPoints() {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
                         Running a Business Shouldn't Be This Hard
                     </h2>
                 </div>
@@ -50,7 +50,7 @@ export default function PainPoints() {
                     {painPoints.map((item, i) => (
                         <div
                             key={item.title}
-                            className="bg-white rounded-2xl p-6 border border-red-100 shadow-sm hover:shadow-md transition-shadow"
+                            className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-red-100 dark:border-red-900/50 shadow-sm hover:shadow-md transition-shadow"
                             style={{
                                 opacity: cardsVisible ? 1 : 0,
                                 transform: cardsVisible ? "translateY(0)" : "translateY(50px)",
@@ -58,10 +58,10 @@ export default function PainPoints() {
                             }}
                         >
                             <IconTile icon={item.icon} color="red" size="lg" className="mb-4" />
-                            <h3 className="font-bold text-gray-900 mb-2 text-base leading-snug">
+                            <h3 className="font-bold text-gray-900 dark:text-white mb-2 text-base leading-snug">
                                 {item.title}
                             </h3>
-                            <p className="text-sm text-gray-500">{item.description}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">{item.description}</p>
                         </div>
                     ))}
                 </div>

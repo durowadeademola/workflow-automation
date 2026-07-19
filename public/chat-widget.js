@@ -534,15 +534,6 @@
     }
     #cw-footer a { color: #25d366; text-decoration: none; font-weight: 500; }
 
-    /* Date divider */
-    .cw-divider {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 11px; color: #b8bcc8; margin: 4px 0;
-    }
-    .cw-divider::before, .cw-divider::after {
-      content: ''; flex: 1; height: 0.5px; background: rgba(0,0,0,0.08);
-    }
-
     @media (prefers-reduced-motion: reduce) {
       #cw-root *, #cw-root *::before, #cw-root *::after {
         animation-duration: 0.001ms !important;
@@ -656,17 +647,8 @@
   }
 
   function greet() {
-    addDivider('Today');
     appendMsg('bot', cfg.greeting);
     if (cfg.quickReplies.length) renderQR(cfg.quickReplies);
-  }
-
-  function addDivider(label) {
-    const msgs = $('cw-messages');
-    const d = document.createElement('div');
-    d.className = 'cw-divider';
-    d.textContent = label;
-    msgs.appendChild(d);
   }
 
   function renderQR(items) {

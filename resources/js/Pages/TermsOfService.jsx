@@ -11,11 +11,11 @@ export default function TermsOfService() {
 
             <PageHero title="Terms of Service" subtitle="Last updated: July 9, 2026" />
 
-            <section className="py-16 bg-white">
+            <section className="py-16 bg-white dark:bg-gray-900">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="space-y-10 text-gray-600 leading-relaxed text-sm sm:text-base">
+                    <div className="space-y-10 text-gray-600 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">1. Acceptance of Terms</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">1. Acceptance of Terms</h2>
                             <p>
                                 By accessing this website or engaging Blueflow Automation for automation services,
                                 you agree to be bound by these Terms of Service. If you do not agree, please do not
@@ -24,7 +24,7 @@ export default function TermsOfService() {
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">2. Our Services</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">2. Our Services</h2>
                             <p>
                                 Blueflow Automation designs and implements business automation — including WhatsApp
                                 automation, Chat Widget integration, CRM integration, email and payment automation, and custom workflow
@@ -34,7 +34,7 @@ export default function TermsOfService() {
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">3. Client Responsibilities</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">3. Client Responsibilities</h2>
                             <p>
                                 To deliver our services, we may require access to your business tools and accounts
                                 (e.g. WhatsApp Business, payment gateways, CRMs). You are responsible for ensuring
@@ -44,7 +44,7 @@ export default function TermsOfService() {
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">4. Payment &amp; Cancellation</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">4. Payment &amp; Cancellation</h2>
                             <p>
                                 Subscription plans are billed monthly unless otherwise agreed in writing. You may
                                 cancel a subscription at any time; cancellation takes effect at the end of the
@@ -55,7 +55,7 @@ export default function TermsOfService() {
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">5. Acceptable Use</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">5. Acceptable Use</h2>
                             <p>
                                 You agree not to use our services to send unsolicited spam, engage in fraudulent
                                 activity, or violate WhatsApp's, Meta's, or any other integrated platform's terms of
@@ -64,7 +64,7 @@ export default function TermsOfService() {
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">6. Limitation of Liability</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">6. Limitation of Liability</h2>
                             <p>
                                 We work to keep the systems we build reliable, but we do not guarantee uninterrupted
                                 or error-free operation. To the maximum extent permitted by law, Blueflow Automation
@@ -74,7 +74,7 @@ export default function TermsOfService() {
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">7. Changes to These Terms</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">7. Changes to These Terms</h2>
                             <p>
                                 We may update these terms from time to time. Continued use of our website or
                                 services after changes are posted constitutes acceptance of the updated terms.
@@ -82,17 +82,17 @@ export default function TermsOfService() {
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">8. Governing Law</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">8. Governing Law</h2>
                             <p>
                                 These terms are governed by the laws of the Federal Republic of Nigeria.
                             </p>
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">9. Contact Us</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">9. Contact Us</h2>
                             <p>
                                 Questions about these terms can be sent to{" "}
-                                <a href="mailto:hello@blueflowautomation.com" className="text-blue-700 font-semibold hover:underline">
+                                <a href="mailto:hello@blueflowautomation.com" className="text-blue-700 dark:text-blue-400 font-semibold hover:underline">
                                     hello@blueflowautomation.com
                                 </a>.
                             </p>

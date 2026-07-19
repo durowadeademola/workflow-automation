@@ -13,7 +13,7 @@ function StatCard({ value, suffix, label, isDecimal, delay, trigger }) {
 
     return (
         <div
-            className="bg-white rounded-2xl px-6 py-5 shadow-md border border-gray-100 hover:shadow-lg transition-shadow"
+            className="bg-white dark:bg-gray-900 rounded-2xl px-6 py-5 shadow-md border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-shadow"
             style={{
                 opacity: trigger ? 1 : 0,
                 transform: trigger ? "translateY(0)" : "translateY(40px)",
@@ -23,7 +23,7 @@ function StatCard({ value, suffix, label, isDecimal, delay, trigger }) {
             <p className="text-3xl font-extrabold text-blue-600 mb-1">
                 {display}{suffix}
             </p>
-            <p className="text-sm text-gray-500 font-medium">{label}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{label}</p>
         </div>
     );
 }
@@ -34,11 +34,11 @@ export default function Hero() {
     return (
         <section
             ref={ref}
-            className="relative bg-gradient-to-br from-blue-50 via-white to-emerald-50 pt-32 pb-20 overflow-hidden"
+            className="relative bg-gradient-to-br from-blue-50 via-white to-emerald-50 dark:from-blue-950/40 dark:via-gray-900 dark:to-emerald-950/40 pt-32 pb-20 overflow-hidden"
         >
             {/* Background decorative blobs */}
-            <div className="absolute top-20 right-0 w-96 h-96 bg-blue-100 rounded-full opacity-40 blur-3xl -z-0" />
-            <div className="absolute bottom-10 left-0 w-72 h-72 bg-emerald-100 rounded-full opacity-30 blur-3xl -z-0" />
+            <div className="absolute top-20 right-0 w-96 h-96 bg-blue-100 dark:bg-blue-900 rounded-full opacity-40 blur-3xl -z-0" />
+            <div className="absolute bottom-10 left-0 w-72 h-72 bg-emerald-100 dark:bg-emerald-900 rounded-full opacity-30 blur-3xl -z-0" />
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 {/* Headline */}
@@ -48,7 +48,7 @@ export default function Hero() {
                         transform: isVisible ? "translateY(0)" : "translateY(32px)",
                         transition: "opacity 0.6s ease 100ms, transform 0.6s ease 100ms",
                     }}
-                    className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 max-w-4xl mx-auto"
+                    className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight mb-6 max-w-4xl mx-auto"
                 >
                     Automate Everything.{" "}
                     <span className="text-blue-600">Grow Faster.</span>
@@ -61,7 +61,7 @@ export default function Hero() {
                         transform: isVisible ? "translateY(0)" : "translateY(32px)",
                         transition: "opacity 0.6s ease 200ms, transform 0.6s ease 200ms",
                     }}
-                    className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed"
+                    className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed"
                 >
                     Transform your business operations with AI-powered automation.
                     Save time, reduce costs, and scale effortlessly.
@@ -86,7 +86,7 @@ export default function Hero() {
                     </Link>
                     <a
                         href="#how-it-works"
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-gray-700 font-semibold px-8 py-3.5 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:text-blue-700 transition-all hover:-translate-y-0.5"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-gray-700 dark:text-gray-200 font-semibold px-8 py-3.5 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 hover:text-blue-700 dark:hover:text-blue-300 transition-all hover:-translate-y-0.5"
                     >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />

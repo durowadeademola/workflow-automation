@@ -34,7 +34,7 @@ function FAQItem({ question, answer, delay, visible }) {
     const [open, setOpen] = useState(false);
     return (
         <div
-            className="border-b border-gray-100 last:border-0"
+            className="border-b border-gray-100 dark:border-gray-800 last:border-0"
             style={{
                 opacity: visible ? 1 : 0,
                 transform: visible ? "translateX(0)" : "translateX(-30px)",
@@ -45,19 +45,19 @@ function FAQItem({ question, answer, delay, visible }) {
                 onClick={() => setOpen(!open)}
                 className="w-full flex items-center justify-between py-5 text-left group"
             >
-                <span className="font-semibold text-gray-900 text-sm pr-4 group-hover:text-blue-700 transition-colors">
+                <span className="font-semibold text-gray-900 dark:text-white text-sm pr-4 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
                     {question}
                 </span>
                 <span className={`flex-shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
-                    open ? "bg-blue-600 border-blue-600 rotate-45" : "border-gray-300 group-hover:border-blue-500"
+                    open ? "bg-blue-600 border-blue-600 rotate-45" : "border-gray-300 dark:border-gray-600 group-hover:border-blue-500"
                 }`}>
-                    <svg className={`w-3 h-3 ${open ? "text-white" : "text-gray-400"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className={`w-3 h-3 ${open ? "text-white" : "text-gray-400 dark:text-gray-500"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
                     </svg>
                 </span>
             </button>
             {open && (
-                <div className="pb-5 text-sm text-gray-600 leading-relaxed pr-10">{answer}</div>
+                <div className="pb-5 text-sm text-gray-600 dark:text-gray-300 leading-relaxed pr-10">{answer}</div>
             )}
         </div>
     );
@@ -68,7 +68,7 @@ export default function FAQ() {
     const [faqRef, faqVisible] = useScrollAnimation(0.05);
 
     return (
-        <section id="faq" className="py-20 bg-white">
+        <section id="faq" className="py-20 bg-white dark:bg-gray-900">
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div
                     ref={headingRef}
@@ -79,13 +79,13 @@ export default function FAQ() {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
                         Frequently Asked Questions
                     </h2>
-                    <p className="text-gray-500">Got questions? We have got answers.</p>
+                    <p className="text-gray-500 dark:text-gray-400">Got questions? We have got answers.</p>
                 </div>
 
-                <div ref={faqRef} className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 divide-y divide-gray-100 mb-10">
+                <div ref={faqRef} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm px-6 divide-y divide-gray-100 dark:divide-gray-800 mb-10">
                     {faqs.map((faq, i) => (
                         <FAQItem
                             key={faq.question}
@@ -97,15 +97,15 @@ export default function FAQ() {
                 </div>
 
                 <div
-                    className="bg-gray-50 rounded-2xl p-8 text-center border border-gray-100"
+                    className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 text-center border border-gray-100 dark:border-gray-800"
                     style={{
                         opacity: faqVisible ? 1 : 0,
                         transform: faqVisible ? "translateY(0)" : "translateY(30px)",
                         transition: "opacity 0.6s ease 500ms, transform 0.6s ease 500ms",
                     }}
                 >
-                    <h3 className="font-bold text-gray-900 mb-2">Still have questions?</h3>
-                    <p className="text-sm text-gray-500 mb-6">
+                    <h3 className="font-bold text-gray-900 dark:text-white mb-2">Still have questions?</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
                         We are here to help. Talk to our team and get answers in minutes, not days.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -122,7 +122,7 @@ export default function FAQ() {
                         </a>
                         <Link
                             href="/contact"
-                            className="inline-flex items-center gap-2 border-2 border-gray-200 text-gray-700 font-semibold px-5 py-2.5 rounded-xl hover:border-blue-500 hover:text-blue-700 transition-colors text-sm"
+                            className="inline-flex items-center gap-2 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold px-5 py-2.5 rounded-xl hover:border-blue-500 hover:text-blue-700 dark:hover:text-blue-400 transition-colors text-sm"
                         >
                             Send a Message
                         </Link>

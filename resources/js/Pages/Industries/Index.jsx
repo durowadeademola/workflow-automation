@@ -60,21 +60,21 @@ export default function IndustriesIndex() {
                 subtitle="Pre-built automation solutions designed specifically for Nigerian businesses in your sector."
             />
 
-            <section className="py-20 bg-white">
+            <section className="py-20 bg-white dark:bg-gray-900">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {industries.map((industry) => (
                             <div
                                 key={industry.title}
-                                className="relative bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 flex flex-col"
+                                className="relative bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 flex flex-col"
                             >
                                 <IconTile icon={industry.icon} color="blue" size="lg" className="mb-4" />
-                                <h3 className="font-bold text-gray-900 text-lg mb-2">{industry.title}</h3>
-                                <p className="text-sm text-gray-500 mb-4">{industry.description}</p>
+                                <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-2">{industry.title}</h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{industry.description}</p>
 
                                 <ul className="space-y-2 mb-6 flex-1">
                                     {industry.features.map((f) => (
-                                        <li key={f} className="flex items-center gap-2 text-sm text-gray-600">
+                                        <li key={f} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                                             <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                                             </svg>
@@ -85,7 +85,7 @@ export default function IndustriesIndex() {
 
                                 <Link
                                     href={industry.href}
-                                    className="inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors mt-auto"
+                                    className="inline-flex items-center gap-1 text-sm font-semibold text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors mt-auto"
                                 >
                                     Learn More
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -106,7 +106,7 @@ export default function IndustriesIndex() {
                     </p>
                     <Link
                         href="/contact"
-                        className="inline-flex items-center gap-2 bg-white text-blue-700 font-semibold px-6 py-3 rounded-xl hover:bg-blue-50 transition-colors text-sm"
+                        className="inline-flex items-center gap-2 bg-white dark:bg-gray-900 text-blue-700 dark:text-blue-400 font-semibold px-6 py-3 rounded-xl hover:bg-blue-50 transition-colors text-sm"
                     >
                         Talk to Our Team →
                     </Link>
