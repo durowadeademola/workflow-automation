@@ -19,6 +19,12 @@ class Message extends Model
         'content',
         'source',
         'from_customer',
+        'counts_toward_limit',
+    ];
+
+    protected $casts = [
+        'from_customer' => 'boolean',
+        'counts_toward_limit' => 'boolean',
     ];
 
     public function client()

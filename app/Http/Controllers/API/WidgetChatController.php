@@ -68,7 +68,7 @@ class WidgetChatController extends Controller
             ], 429);
         }
 
-        $customer = $this->logInboundMessage($client->id, $validated);
+        [$customer, $inboundMessage] = $this->logInboundMessage($client->id, $validated);
 
         try {
             $response = Http::timeout(20)->post($client->webhook_url, [
@@ -84,16 +84,34 @@ class WidgetChatController extends Controller
 
             $data = $response->json() ?? [];
 
-            $this->logOutboundReply($client->id, $customer, $data);
+            $replied = $this->logOutboundReply($client->id, $customer, $data);
+
+            if (! $replied) {
+                $this->excludeFromLimit($inboundMessage);
+            }
 
             return response()->json($data, $response->status());
         } catch (\Throwable $e) {
             Log::warning('Widget chat proxy failed to reach n8n', ['client_id' => $client->id, 'error' => $e->getMessage()]);
 
+            $this->excludeFromLimit($inboundMessage);
+
             return response()->json([
                 'reply' => "Sorry, I'm having a little trouble right now. Please try again shortly.",
             ], 502);
         }
+    }
+
+    /**
+     * n8n being unreachable, or replying with nothing usable, still gets a
+     * friendly fallback message back to the visitor — but that's not a real
+     * AI answer, so it shouldn't cost the client part of their plan's
+     * message limit. Only the widget's own inbound log is ever adjusted
+     * this way; every other channel's messages are untouched.
+     */
+    private function excludeFromLimit(?Message $message): void
+    {
+        $message?->update(['counts_toward_limit' => false]);
     }
 
     /**
@@ -130,17 +148,24 @@ class WidgetChatController extends Controller
      * same way a Telegram/WhatsApp chat is identified by its chat id — so
      * the website shows up in Customers/Messages exactly like every other
      * channel. Logging failures here must never break the actual chat.
+     *
+     * Logged unconditionally (before we know if n8n will actually answer)
+     * so the visitor's question is never lost from the conversation
+     * history even on failure — it just gets excluded from the plan's
+     * message count afterward if nothing came back, via excludeFromLimit().
+     *
+     * @return array{0: ?Customer, 1: ?Message}
      */
-    private function logInboundMessage(int $clientId, array $validated): ?Customer
+    private function logInboundMessage(int $clientId, array $validated): array
     {
         if (empty($validated['sessionToken'])) {
-            return null;
+            return [null, null];
         }
 
         try {
             $customer = Customer::findOrCreateForChannel($clientId, 'Website', $validated['sessionToken']);
 
-            Message::create([
+            $message = Message::create([
                 'client_id' => $clientId,
                 'customer_id' => $customer->id,
                 'content' => $validated['message'],
@@ -148,24 +173,24 @@ class WidgetChatController extends Controller
                 'from_customer' => true,
             ]);
 
-            return $customer;
+            return [$customer, $message];
         } catch (\Throwable $e) {
             Log::warning('Failed to log widget chat message', ['client_id' => $clientId, 'error' => $e->getMessage()]);
 
-            return null;
+            return [null, null];
         }
     }
 
-    private function logOutboundReply(int $clientId, ?Customer $customer, array $data): void
+    private function logOutboundReply(int $clientId, ?Customer $customer, array $data): bool
     {
         if (! $customer) {
-            return;
+            return false;
         }
 
         $reply = $data['reply'] ?? $data['message'] ?? $data['output'] ?? null;
 
         if (! $reply) {
-            return;
+            return false;
         }
 
         try {
@@ -176,8 +201,12 @@ class WidgetChatController extends Controller
                 'source' => 'Website',
                 'from_customer' => false,
             ]);
+
+            return true;
         } catch (\Throwable $e) {
             Log::warning('Failed to log widget chat reply', ['client_id' => $clientId, 'error' => $e->getMessage()]);
+
+            return false;
         }
     }
 }

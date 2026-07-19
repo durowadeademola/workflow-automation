@@ -126,17 +126,19 @@
     return audioCtx;
   }
 
-  function playTone(freq, duration, delay = 0, volume = 0.16) {
+  // A short, percussive "pop" — a fast pitch sweep rather than a held note,
+  // which reads as a tactile click instead of a notification chime.
+  function playPop(startFreq, endFreq, duration, delay = 0, volume = 0.18) {
     if (soundMuted) return;
     const ctx = getAudioCtx();
     if (!ctx) return;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
-    osc.frequency.value = freq;
     const startTime = ctx.currentTime + delay;
-    gain.gain.setValueAtTime(0, startTime);
-    gain.gain.linearRampToValueAtTime(volume, startTime + 0.015);
+    osc.frequency.setValueAtTime(startFreq, startTime);
+    osc.frequency.exponentialRampToValueAtTime(endFreq, startTime + duration);
+    gain.gain.setValueAtTime(volume, startTime);
     gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
     osc.connect(gain);
     gain.connect(ctx.destination);
@@ -144,8 +146,10 @@
     osc.stop(startTime + duration + 0.02);
   }
 
-  function playSendSound() { playTone(620, 0.09); }
-  function playReceiveSound() { playTone(720, 0.09); playTone(960, 0.11, 0.09); }
+  // Send sweeps down (outgoing), receive sweeps up (incoming) — opposite
+  // directions make the two distinguishable by ear without looking.
+  function playSendSound() { playPop(700, 220, 0.07); }
+  function playReceiveSound() { playPop(500, 900, 0.09); }
 
   const style = document.createElement('style');
   style.textContent = `
@@ -236,18 +240,13 @@
       opacity: 1; pointer-events: all;
     }
 
-    /* Mobile fullscreen */
+    /* Mobile: same bottom-right floating card, just noticeably smaller */
     @media (max-width: 520px) {
-      #cw-root { ${cfg.position}: 0; bottom: 0; width: 100%; }
-      #cw-bubble { ${cfg.position}: 16px; bottom: 16px; position: fixed; }
-      #cw-notif { ${cfg.position}: 14px; top: 12px; }
       #cw-window {
-        position: fixed;
-        bottom: 0; left: 0; right: 0;
-        width: 100%; height: 92vh;
-        border-radius: 24px 24px 0 0;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
+        width: calc(100vw - 64px);
+        max-width: 320px;
+        height: calc(100vh - 180px);
+        max-height: 480px;
       }
     }
 
@@ -477,7 +476,7 @@
     .cw-qr {
       background: white; color: ${pcDark};
       border: 1.5px solid ${pc}30;
-      border-radius: 24px; padding: 16px 30px;
+      border-radius: 24px; padding: 7px 16px;
       font-size: 13px; font-weight: 500; cursor: pointer;
       transition: all .18s; white-space: nowrap;
       box-shadow: 0 1px 4px rgba(0,0,0,0.06);

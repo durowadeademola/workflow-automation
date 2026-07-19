@@ -269,7 +269,13 @@ class Client extends Model
             return 0;
         }
 
-        $query = $this->messages()->where('created_at', '>=', $subscription->start_date);
+        // Excludes messages the widget logged but the AI never actually
+        // answered (n8n unreachable, or returned nothing usable) — see
+        // WidgetChatController, which is the only place this is ever set
+        // to false. A failed attempt shouldn't eat into the plan limit.
+        $query = $this->messages()
+            ->where('counts_toward_limit', true)
+            ->where('created_at', '>=', $subscription->start_date);
 
         if ($subscription->end_date) {
             $query->where('created_at', '<=', $subscription->end_date->copy()->endOfDay());
