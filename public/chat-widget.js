@@ -171,6 +171,20 @@
       ${cfg.position}: 20px;
       bottom: 20px;
       z-index: 2147483647;
+      transition: bottom .25s ease;
+    }
+    /* Set by a cookie-consent banner (see CookieConsent.jsx) so the two
+       never fight over the same corner — the widget just moves clear of
+       it rather than either one covering the other. */
+    body.cw-cookie-banner-visible #cw-root { bottom: 100px; }
+    /* Mobile screens are too tight to safely nudge the widget up by a fixed
+       pixel amount — a mobile browser's own bottom chrome (address bar,
+       Safari's floating search pill, etc.) already eats into that space
+       unpredictably, so instead of guessing an offset, just step aside
+       entirely until the banner's answered. It reappears immediately once
+       cw-cookie-banner-visible is removed. */
+    @media (max-width: 520px) {
+      body.cw-cookie-banner-visible #cw-root { display: none; }
     }
 
     /* ── Bubble ── */
@@ -950,8 +964,21 @@
       $('cw-bubble').classList.remove('is-open');
     }
   });
+  // Deferred, not skipped — a first-time visitor always has the cookie
+  // banner up, so silently dropping auto-open here would mean it basically
+  // never fires for anyone except returning visitors. Instead, wait for
+  // CookieConsent.jsx's "cookie-consent-updated" event (dispatched the
+  // moment they answer it) and open right after, still once per page load.
+  function attemptAutoOpen() {
+    if (isOpen) return;
+    if (document.body.classList.contains('cw-cookie-banner-visible')) {
+      window.addEventListener('cookie-consent-updated', attemptAutoOpen, { once: true });
+      return;
+    }
+    toggle();
+  }
   window.addEventListener('load', () => {
-    setTimeout(() => { if (!isOpen) toggle(); }, cfg.autoOpenDelay ?? 1500);
+    setTimeout(attemptAutoOpen, cfg.autoOpenDelay ?? 1500);
   });
   loadFaqs();
 

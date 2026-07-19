@@ -5,6 +5,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 const allPlansInclude = [
     "14-day free trial",
     "Cancel anytime",
+    "Refund policy",
     "Free training",
     "Regular updates",
     "Nigerian payment options",

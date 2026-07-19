@@ -12,16 +12,62 @@ function Stars({ count = 5 }) {
     );
 }
 
+function ReviewCard({ r }) {
+    return (
+        <div className="w-[300px] sm:w-[360px] shrink-0 bg-gray-50 rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
+            <Stars count={r.rating} />
+            <p className="text-gray-700 text-sm leading-relaxed italic flex-1 mb-5">
+                "{r.description}"
+            </p>
+            <div className="flex items-center gap-3">
+                <div className="w-9 h-9 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
+                    {r.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                    <p className="font-semibold text-gray-900 text-sm">{r.name}</p>
+                    <p className="text-xs text-gray-500">
+                        {[r.job_title, r.company].filter(Boolean).join(", ")}
+                        {r.location ? ` • ${r.location}` : ""}
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function Testimonials({ reviews = [] }) {
     const [headingRef, headingVisible] = useScrollAnimation(0.3);
-    const [cardsRef, cardsVisible] = useScrollAnimation(0.05);
 
     if (reviews.length === 0) {
         return null;
     }
 
+    // Speed scales with how many reviews there are so the pace feels the
+    // same whether there are 2 or 20. The track is rendered twice back to
+    // back and animated exactly halfway (-50%), so the loop point lands on
+    // an identical copy and reads as an endless, seamless scroll.
+    const duration = Math.max(20, reviews.length * 6);
+
     return (
-        <section className="py-20 bg-white">
+        <section className="py-20 bg-white overflow-hidden">
+            <style>{`
+                @keyframes testimonialsScroll {
+                    from { transform: translateX(0); }
+                    to { transform: translateX(-50%); }
+                }
+                .testimonials-track {
+                    animation: testimonialsScroll ${duration}s linear infinite;
+                }
+                .testimonials-track:hover {
+                    animation-play-state: paused;
+                }
+                @media (prefers-reduced-motion: reduce) {
+                    .testimonials-track {
+                        animation: none;
+                    }
+                }
+            `}</style>
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div
                     ref={headingRef}
@@ -39,35 +85,18 @@ export default function Testimonials({ reviews = [] }) {
                         Feedbacks from some of our happy customers
                     </p>
                 </div>
+            </div>
 
-                <div ref={cardsRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {reviews.map((r, i) => (
-                        <div
-                            key={i}
-                            className="bg-gray-50 rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-shadow flex flex-col"
-                            style={{
-                                opacity: cardsVisible ? 1 : 0,
-                                transform: cardsVisible ? "translateY(0)" : "translateY(50px)",
-                                transition: `opacity 0.6s ease ${i * 90}ms, transform 0.6s ease ${i * 90}ms`,
-                            }}
-                        >
-                            <Stars count={r.rating} />
-                            <p className="text-gray-700 text-sm leading-relaxed italic flex-1 mb-5">
-                                "{r.description}"
-                            </p>
-                            <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
-                                    {r.name.charAt(0).toUpperCase()}
-                                </div>
-                                <div>
-                                    <p className="font-semibold text-gray-900 text-sm">{r.name}</p>
-                                    <p className="text-xs text-gray-500">
-                                        {[r.job_title, r.company].filter(Boolean).join(", ")}
-                                        {r.location ? ` • ${r.location}` : ""}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+            <div
+                className="w-full"
+                style={{
+                    maskImage: "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
+                    WebkitMaskImage: "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
+                }}
+            >
+                <div className="testimonials-track flex gap-6 w-max px-4 sm:px-6">
+                    {[...reviews, ...reviews].map((r, i) => (
+                        <ReviewCard key={i} r={r} />
                     ))}
                 </div>
             </div>

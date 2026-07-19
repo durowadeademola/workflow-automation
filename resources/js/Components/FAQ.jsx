@@ -6,7 +6,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 const faqs = [
     {
         question: "How long does implementation take?",
-        answer: "Most businesses are up and running within 7-10 days. Here's the breakdown: Sign up (2 min), Solution design (2-3 days), Development & setup (3-5 days), Training & launch (1 day). We handle all the technical work — you just need to show up for the training.",
+        answer: "There's no long onboarding queue. Sign up and choose the service(s) you need — about two minutes — then share your requirements and preferences right in your dashboard. Our team configures everything behind the scenes and lets you know the moment it's ready to go live.",
     },
     {
         question: "Do I need any technical skills to use Blueflow?",
@@ -14,19 +14,19 @@ const faqs = [
     },
     {
         question: "What happens if I need to cancel?",
-        answer: "You can cancel anytime with no penalties or hidden fees. We operate on a monthly basis, so your subscription simply won't renew. We'll also help export your data so you don't lose anything.",
+        answer: "You can cancel anytime with no penalties or hidden fees, whether you're on a monthly or yearly plan. By default you keep access until your current billing period ends and it simply won't renew — or if you'd rather stop right away, you can request a refund for the unused portion instead.",
     },
     {
         question: "Can I integrate Blueflow with my existing systems?",
-        answer: "Yes. Blueflow integrates with popular Nigerian tools like Paystack, Flutterwave, and most POS systems. We also support major CRMs, email platforms, and can build custom integrations for your specific stack.",
+        answer: "Our AI Chat Widget works seamlessly on any website today. We're also continuously expanding what Blueflow can automate — WhatsApp, Email, Payments, CRM, and internal workflows — so reach out and we'll walk you through exactly what's available for your specific setup.",
     },
     {
         question: "Is my data safe and secure?",
-        answer: "Absolutely. We use 256-bit SSL encryption — the same standard used by Nigerian banks. Your data is stored securely on Nigerian-compliant servers, and we never sell or share your customer data.",
+        answer: "Yes. Your connection to Blueflow is encrypted end to end, and we never sell or share your customer data.",
     },
     {
         question: "What kind of support do you offer?",
-        answer: "All subscriptions include email or phone support support.",
+        answer: "Every subscription includes support via WhatsApp, phone, and email — plus an in-app Support Tickets section right in your dashboard, where our team replies directly and you're notified the moment we respond.",
     },
 ];
 
