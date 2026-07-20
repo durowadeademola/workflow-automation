@@ -42,6 +42,27 @@ class WidgetConversationController extends Controller
             abort(429, 'This client has reached its message limit for this billing period.');
         }
 
+        // No agent ticket gets created outside working hours — nobody would
+        // ever pick it up anyway, and it would page an assigned agent for
+        // nothing. WidgetChatController::send() independently guarantees
+        // the visitor never sees a "connecting you" message or enters
+        // handoff mode in this case, regardless of what n8n's workflow
+        // does with this response.
+        //
+        // Deliberately a 200, not an error status — n8n's "Request Human
+        // Handoff" node has no error handling configured, so a 4xx/5xx here
+        // would halt the workflow early instead of reaching Build Handoff
+        // Response (which doesn't check status anyway). A plain 200 lets
+        // it proceed as normal; send()'s override still corrects the
+        // outcome regardless of what n8n does with this.
+        if (! $client->isWithinWorkingHours()) {
+            return response()->json([
+                'status' => 'outside_hours',
+                'message' => 'Our team is currently offline. Please reach out to us on WhatsApp and we\'ll get back to you as soon as possible.',
+                'wa_number' => $client->widget_wa_number,
+            ], 200);
+        }
+
         // Same identity as WidgetChatController — reuses the customer the
         // AI phase already created, and fills in their name once known.
         Customer::findOrCreateForChannel(
@@ -69,6 +90,8 @@ class WidgetConversationController extends Controller
                 $conversation->update([
                     'agent_id' => $assignedAgent?->id,
                     'status' => 'waiting',
+                    'waiting_since' => now(),
+                    'nudge_sent_at' => null,
                 ]);
             } else {
                 $conversation = WidgetConversation::create([
@@ -77,6 +100,7 @@ class WidgetConversationController extends Controller
                     'session_token' => $validated['session_token'],
                     'visitor_name' => $validated['visitor_name'] ?? null,
                     'status' => 'waiting',
+                    'waiting_since' => now(),
                 ]);
             }
 
@@ -89,7 +113,23 @@ class WidgetConversationController extends Controller
                 ]);
             }
 
+            // Captured before the confirmation message below is created, so
+            // the widget's first poll (which starts *after* this id) picks
+            // that message up instead of missing it as "already seen".
+            $lastMessageId = $conversation->messages()->max('id') ?? 0;
+
+            $handoffMessage = "Standby while you're been connected with a member of our team - they'll be right with you shortly.";
+
+            $conversation->messages()->create([
+                'sender_type' => 'agent',
+                'content' => $handoffMessage,
+            ]);
+
+            self::mirrorToMessages($conversation, $handoffMessage, fromCustomer: false);
+
             $conversation->update(['last_message_at' => now()]);
+        } else {
+            $lastMessageId = $conversation->messages()->max('id') ?? 0;
         }
 
         return response()->json([
@@ -98,9 +138,7 @@ class WidgetConversationController extends Controller
                 'conversation_id' => $conversation->id,
                 'session_token' => $conversation->session_token,
                 'status' => $conversation->status,
-                // Widget starts polling *after* this id, so the transcript
-                // just seeded above isn't re-shown as if it were new.
-                'last_message_id' => $conversation->messages()->max('id') ?? 0,
+                'last_message_id' => $lastMessageId,
             ],
         ], 201);
     }
@@ -113,6 +151,8 @@ class WidgetConversationController extends Controller
         $this->authorizeToken($request, $conversation);
         $this->assertClientActive($conversation);
 
+        $this->nudgeIfStalled($conversation);
+
         $afterId = (int) $request->query('after_id', 0);
 
         $messages = $conversation->messages()
@@ -124,6 +164,43 @@ class WidgetConversationController extends Controller
             'status' => $conversation->status,
             'messages' => $messages,
         ]);
+    }
+
+    /**
+     * If a conversation has sat in 'waiting' for too long with no agent
+     * reply, nudges the visitor once with an apology and a WhatsApp
+     * fallback — inserted as a normal message, so the widget's existing
+     * poll loop picks it up with no client-side changes needed. Runs
+     * inline on every poll rather than via a scheduled job, since the
+     * widget already polls every few seconds regardless.
+     */
+    private function nudgeIfStalled(WidgetConversation $conversation): void
+    {
+        if ($conversation->status !== 'waiting') {
+            return;
+        }
+
+        if (! $conversation->waiting_since || $conversation->nudge_sent_at) {
+            return;
+        }
+
+        if ($conversation->waiting_since->diffInMinutes(now()) < 20) {
+            return;
+        }
+
+        $waNumber = $conversation->client?->widget_wa_number;
+        $nudgeMessage = $waNumber
+            ? "Sorry for the wait — an agent will be with you as soon as possible. If you'd rather not wait, you can reach us directly on WhatsApp: https://wa.me/{$waNumber}"
+            : "Sorry for the wait — an agent will be with you as soon as possible.";
+
+        $conversation->messages()->create([
+            'sender_type' => 'agent',
+            'content' => $nudgeMessage,
+        ]);
+
+        self::mirrorToMessages($conversation, $nudgeMessage, fromCustomer: false);
+
+        $conversation->update(['nudge_sent_at' => now()]);
     }
 
     /**
@@ -173,7 +250,7 @@ class WidgetConversationController extends Controller
      * WidgetChatController, so only post-handoff traffic needs mirroring
      * here (and from LiveChat's reply/return-to-AI actions).
      */
-    public static function mirrorToMessages(WidgetConversation $conversation, string $content, bool $fromCustomer): void
+    public static function mirrorToMessages(WidgetConversation $conversation, string $content, bool $fromCustomer, ?string $senderName = null): void
     {
         try {
             $customer = Customer::findOrCreateForChannel(
@@ -189,6 +266,7 @@ class WidgetConversationController extends Controller
                 'content' => $content,
                 'source' => 'Website',
                 'from_customer' => $fromCustomer,
+                'sender_name' => $senderName,
             ]);
         } catch (\Throwable $e) {
             Log::warning('Failed to mirror widget message', [

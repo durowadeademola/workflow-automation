@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Http\Controllers\API\WidgetConversationController;
 use App\Models\WidgetConversation;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
@@ -95,7 +96,7 @@ class LiveChat extends Page
             'last_message_at' => now(),
         ]);
 
-        WidgetConversationController::mirrorToMessages($conversation, $this->replyContent, fromCustomer: false);
+        WidgetConversationController::mirrorToMessages($conversation, $this->replyContent, fromCustomer: false, senderName: $user->name);
 
         $this->replyContent = '';
     }
@@ -138,5 +139,28 @@ class LiveChat extends Page
         WidgetConversationController::mirrorToMessages($conversation, $handoffMessage, fromCustomer: false);
 
         $this->selectedConversationId = null;
+    }
+
+    public function closeConversationAction(): Action
+    {
+        return Action::make('closeConversation')
+            ->label('Close conversation')
+            ->color('danger')
+            ->requiresConfirmation()
+            ->modalHeading('Close conversation?')
+            ->modalDescription('The visitor will need to start a new conversation to reach an agent again.')
+            ->modalSubmitActionLabel('Close conversation')
+            ->action(fn () => $this->closeConversation());
+    }
+
+    public function returnToAIAction(): Action
+    {
+        return Action::make('returnToAI')
+            ->label('Return to AI')
+            ->requiresConfirmation()
+            ->modalHeading('Hand this conversation back to the AI assistant?')
+            ->modalDescription('The visitor will keep chatting, but with the AI instead of you.')
+            ->modalSubmitActionLabel('Return to AI')
+            ->action(fn () => $this->returnToAI());
     }
 }

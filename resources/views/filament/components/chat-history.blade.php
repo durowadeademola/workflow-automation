@@ -1,14 +1,14 @@
-<div class="flex flex-col space-y-4 p-4 antialiased bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 shadow-inner"
-style="max-height: 500px; overflow-y: auto;">
+<div class="flex flex-col space-y-2 p-3 antialiased bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 shadow-inner"
+style="max-height: 340px; overflow-y: auto;">
     @forelse($messages as $msg)
         @php
             // Logic to determine if message is from the customer or the business/agent
-            $isCustomer = $msg->from_customer; 
+            $isCustomer = $msg->from_customer;
         @endphp
 
         <div class="flex w-full {{ $isCustomer ? 'justify-start' : 'justify-end' }}">
             <div @class([
-                'max-w-[85%] px-4 py-2.5 shadow-sm',
+                'max-w-[75%] px-3 py-2 shadow-sm',
                 'rounded-2xl rounded-tl-none bg-white text-gray-800 border border-gray-200' => $isCustomer,
                 'rounded-2xl rounded-tr-none bg-primary-600 text-white' => !$isCustomer,
             ])>

@@ -342,8 +342,13 @@
       display: flex; flex-direction: column; gap: 14px;
       background: #f5f6fa;
       scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.2) transparent;
     }
-    #cw-messages::-webkit-scrollbar { width: 0px; }
+    #cw-messages::-webkit-scrollbar { width: 6px; }
+    #cw-messages::-webkit-scrollbar-track { background: transparent; }
+    #cw-messages::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 3px; }
+    #cw-messages::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.32); }
 
     .cw-msg { display: flex; flex-direction: column; max-width: 86%; }
     .cw-msg.cw-bot { align-self: flex-start; }
@@ -458,8 +463,15 @@
     }
 
     /* ── FAQs ── */
-    #cw-faq-list { flex: 1; overflow-y: auto; overflow-x: hidden; background: #f5f6fa; padding: 8px 0; }
-    #cw-faq-list::-webkit-scrollbar { width: 0px; }
+    #cw-faq-list {
+      flex: 1; overflow-y: auto; overflow-x: hidden; background: #f5f6fa; padding: 8px 0;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.2) transparent;
+    }
+    #cw-faq-list::-webkit-scrollbar { width: 6px; }
+    #cw-faq-list::-webkit-scrollbar-track { background: transparent; }
+    #cw-faq-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 3px; }
+    #cw-faq-list::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.32); }
     .cw-faq-item {
       background: white; margin: 10px 12px; border-radius: 14px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
@@ -924,6 +936,39 @@
     }
   }
 
+  // Rebuilds the visible conversation from the server on every page
+  // load/reload — the widget itself keeps no state beyond the
+  // sessionToken, so without this a reload made the entire chat (visitor,
+  // AI, and any agent) look like it never happened, even though it was
+  // never actually lost server-side.
+  async function loadHistory() {
+    if (!cfg.clientId || !sessionToken) return;
+    try {
+      const url = `${cfg.apiBase}/widget/history?clientId=${encodeURIComponent(cfg.clientId)}`
+        + `&sessionToken=${encodeURIComponent(sessionToken)}`;
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const data = await res.json().catch(() => ({}));
+
+      (data.messages || []).forEach(m => {
+        appendMsg(m.role === 'user' ? 'user' : 'bot', m.content, {}, m.senderName);
+        history.push({ role: m.role, content: m.content });
+      });
+
+      if ((data.messages || []).length) {
+        // A restored conversation already has its own context — showing
+        // the generic greeting on top of it would look like a non sequitur.
+        greeted = true;
+      }
+
+      if (data.handoff && data.handoff.conversationId) {
+        enterHandoffMode(data.handoff.conversationId, data.handoff.lastMessageId);
+      }
+    } catch (e) {
+      // No history available — the widget just starts fresh, same as before.
+    }
+  }
+
   $('cw-sound-btn').classList.toggle('is-muted', soundMuted);
   $('cw-sound-btn').addEventListener('click', (e) => {
     e.stopPropagation();
@@ -963,6 +1008,7 @@
     setTimeout(attemptAutoOpen, cfg.autoOpenDelay ?? 1500);
   });
   loadFaqs();
+  loadHistory();
 
   window.ChatWidget = {
     toggle,

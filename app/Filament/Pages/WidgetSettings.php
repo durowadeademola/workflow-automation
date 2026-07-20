@@ -4,13 +4,17 @@ namespace App\Filament\Pages;
 
 use App\Models\Client;
 use BackedEnum;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
@@ -46,8 +50,20 @@ class WidgetSettings extends Page
                 Client::WIDGET_DEFAULTS,
                 array_filter(
                     $client->only(array_keys(Client::WIDGET_DEFAULTS)),
-                    fn ($value) => $value !== null,
+                    // Matches Client::getWidgetConfig()'s own filter — an
+                    // empty array (e.g. a client who cleared their quick
+                    // replies without adding new ones) falls back to the
+                    // default here too, so this form never shows something
+                    // different from what the live widget actually renders.
+                    fn ($value) => $value !== null && $value !== [],
                 ),
+                // Deliberately excluded from the fallback above: the three
+                // baseline quick replies are always appended live by
+                // Client::getWidgetConfig(), never stored on the client
+                // itself, so this field shows only what the client has
+                // actually added — never the defaults, which aren't real,
+                // editable/removable rows here.
+                ['widget_quick_replies' => $client->widget_quick_replies ?? []],
             ));
         }
     }
@@ -96,13 +112,45 @@ class WidgetSettings extends Page
                     )
                     ->reorderable()
                     ->addActionLabel('Add quick reply')
-                    ->helperText('Short buttons shown under the greeting, e.g. "Pricing", "Book a call".'),
+                    ->helperText('Short buttons shown under the greeting, e.g. "Pricing", "Book a call". "Book an appointment", "Chat with a staff member", and "Register with us" always show too, after whatever you add here.'),
                 TextInput::make('widget_auto_open_delay')
                     ->label('Auto-open delay')
                     ->numeric()
                     ->minValue(0)
                     ->suffix('ms')
                     ->helperText('How long after the page loads before the widget pops open on its own.'),
+
+                Section::make('Agent handoff hours')
+                    ->description('Controls when the AI is allowed to hand a visitor off to a human agent. Outside these hours, it tells them the team is offline and points them to WhatsApp instead.')
+                    ->schema([
+                        Toggle::make('working_hours_enabled')
+                            ->label('Restrict agent handoff to working hours')
+                            ->live()
+                            ->helperText('Off by default — the AI can hand off to an agent any time.'),
+                        Select::make('timezone')
+                            ->label('Timezone')
+                            ->options(array_combine(
+                                \DateTimeZone::listIdentifiers(),
+                                \DateTimeZone::listIdentifiers(),
+                            ))
+                            ->searchable()
+                            ->visible(fn ($get) => $get('working_hours_enabled')),
+                        CheckboxList::make('working_days')
+                            ->label('Working days')
+                            ->options(Client::WORKING_DAYS)
+                            ->columns(4)
+                            ->visible(fn ($get) => $get('working_hours_enabled')),
+                        TimePicker::make('working_hours_start')
+                            ->label('Start time')
+                            ->seconds(false)
+                            ->visible(fn ($get) => $get('working_hours_enabled')),
+                        TimePicker::make('working_hours_end')
+                            ->label('End time')
+                            ->seconds(false)
+                            ->visible(fn ($get) => $get('working_hours_enabled')),
+                    ])
+                    ->columns(2)
+                    ->columnSpan('full'),
             ]);
     }
 

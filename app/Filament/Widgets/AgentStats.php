@@ -5,6 +5,7 @@ namespace App\Filament\Widgets;
 use App\Models\Appointment;
 use App\Models\Customer;
 use App\Models\WidgetConversation;
+use App\Models\WidgetMessage;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -47,6 +48,16 @@ class AgentStats extends BaseWidget
             ->where('is_qualified_lead', true)
             ->count();
 
+        // sender_name is only ever set for a genuine agent reply (see
+        // LiveChat::sendReply()) — auto-inserted system messages like the
+        // handoff confirmation and stall nudge leave it null, so this
+        // doesn't inflate the count with those.
+        $messagesHandledToday = WidgetMessage::whereHas('conversation', fn ($query) => $query->where('client_id', $clientId))
+            ->where('sender_type', 'agent')
+            ->whereNotNull('sender_name')
+            ->whereDate('created_at', today())
+            ->count();
+
         return [
             Stat::make('Waiting for a Reply', $waiting)
                 ->description($waiting > 0 ? 'Visitors asked for a human' : 'Nothing waiting')
@@ -74,6 +85,12 @@ class AgentStats extends BaseWidget
                 ->description('Total qualified leads')
                 ->icon('heroicon-o-user-plus')
                 ->url('/user/customers'),
+
+            Stat::make('Messages Handled Today', $messagesHandledToday)
+                ->description('Agent replies sent today')
+                ->icon('heroicon-o-chat-bubble-left-ellipsis')
+                ->color('primary')
+                ->url('/user/live-chat'),
         ];
     }
 }

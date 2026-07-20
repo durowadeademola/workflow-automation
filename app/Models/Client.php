@@ -33,6 +33,11 @@ class Client extends Model
         'widget_position',
         'widget_quick_replies',
         'widget_auto_open_delay',
+        'working_hours_enabled',
+        'working_days',
+        'working_hours_start',
+        'working_hours_end',
+        'timezone',
     ];
 
     protected $casts = [
@@ -41,6 +46,8 @@ class Client extends Model
         'widget_ready' => 'boolean',
         'widget_ready_at' => 'datetime',
         'widget_enabled' => 'boolean',
+        'working_hours_enabled' => 'boolean',
+        'working_days' => 'array',
     ];
 
     /**
@@ -107,9 +114,57 @@ class Client extends Model
         'widget_wa_number' => '',
         'widget_system_prompt' => 'You are a helpful AI assistant for this business. Be concise, friendly, and helpful.',
         'widget_position' => 'right',
-        'widget_quick_replies' => [],
+        // Present in every client's widget unless they explicitly customize
+        // it — gives visitors an explicit, discoverable set of next steps,
+        // and gives the AI an unambiguous signal of intent when clicked.
+        'widget_quick_replies' => ['Book an appointment', 'Chat with a staff member', 'Register with us'],
         'widget_auto_open_delay' => 1500,
+        'working_hours_enabled' => false,
+        'working_days' => ['mon', 'tue', 'wed', 'thu', 'fri'],
+        'working_hours_start' => '09:00',
+        'working_hours_end' => '17:00',
+        'timezone' => 'Africa/Lagos',
     ];
+
+    public const WORKING_DAYS = [
+        'mon' => 'Monday',
+        'tue' => 'Tuesday',
+        'wed' => 'Wednesday',
+        'thu' => 'Thursday',
+        'fri' => 'Friday',
+        'sat' => 'Saturday',
+        'sun' => 'Sunday',
+    ];
+
+    /**
+     * Whether the AI is currently allowed to hand this client's visitors
+     * off to a human agent. `working_hours_enabled` is off by default, so
+     * an unconfigured client behaves exactly as before — always available.
+     */
+    public function isWithinWorkingHours(): bool
+    {
+        if (! $this->working_hours_enabled) {
+            return true;
+        }
+
+        $timezone = $this->timezone ?: 'Africa/Lagos';
+        $now = now($timezone);
+
+        $today = strtolower($now->format('D'));
+
+        if (! in_array($today, $this->working_days ?? [], true)) {
+            return false;
+        }
+
+        if (! $this->working_hours_start || ! $this->working_hours_end) {
+            return true;
+        }
+
+        $start = $now->copy()->setTimeFromTimeString($this->working_hours_start);
+        $end = $now->copy()->setTimeFromTimeString($this->working_hours_end);
+
+        return $now->between($start, $end);
+    }
 
     public function agents()
     {
@@ -512,10 +567,21 @@ class Client extends Model
             fn ($value) => $value !== null && $value !== [],
         );
 
-        return array_merge(self::WIDGET_DEFAULTS, $stored, [
+        $config = array_merge(self::WIDGET_DEFAULTS, $stored, [
             'client_id' => $this->id,
             'business_name' => $this->name,
         ]);
+
+        // The three baseline quick replies always show — appended after
+        // whatever the client has added themselves, not replaced by it.
+        // (array_merge above would otherwise let a client's own list wipe
+        // these out entirely, since it's the same array key.)
+        $config['widget_quick_replies'] = array_values(array_unique(array_merge(
+            $stored['widget_quick_replies'] ?? [],
+            self::WIDGET_DEFAULTS['widget_quick_replies'],
+        )));
+
+        return $config;
     }
 
     /**

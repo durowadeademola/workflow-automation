@@ -14,7 +14,10 @@
             "name": "Webhook",
             "type": "n8n-nodes-base.webhook",
             "typeVersion": 2,
-            "position": [256, 0],
+            "position": [
+                256,
+                0
+            ],
             "webhookId": "chat-widget-rag"
         },
         {
@@ -25,17 +28,23 @@
             "name": "Parse Request",
             "type": "n8n-nodes-base.code",
             "typeVersion": 2,
-            "position": [560, 0]
+            "position": [
+                560,
+                0
+            ]
         },
         {
             "parameters": {
-                "jsCode": "const item = $input.first().json;\nconst parsed = $('Parse Request').first().json;\nconst hasContext = Array.isArray(item.results) && item.results.length > 0;\n\nlet context = '';\nlet sourceUrl = '';\n\nif (hasContext) {\n  context = item.results\n    .map((chunk, i) => `[Source ${i + 1} - ${chunk.url}]\\n${chunk.content}`)\n    .join('\\n\\n');\n\n  // Use the most relevant source URL (first result)\n  sourceUrl = item.results[0].url || '';\n}\n\nconst historyText = (parsed.history || [])\n  .slice(-6)\n  .map(m => `${m.role === 'assistant' ? 'Assistant' : 'User'}: ${m.content}`)\n  .join('\\n');\n\nconst baseKnowledge = parsed.systemPrompt || '';\n\n// Client-authored FAQs/knowledge-base entries - curated directly by the\n// business, so the model is told to trust this over the scraped website\n// context below whenever the two disagree. Present regardless of whether\n// the RAG lookup above found anything, so the business's own answers never\n// depend entirely on what the crawler happened to pick up.\nconst kbEntries = parsed.knowledgeBase || [];\nconst knowledgeBaseText = kbEntries.length > 0\n  ? kbEntries\n      .map(e => e.type === 'faq' ? `Q: ${e.title}\\nA: ${e.content}` : `${e.title}\\n${e.content}`)\n      .join('\\n\\n')\n  : '';\nconst knowledgeBaseBlock = knowledgeBaseText\n  ? `--- BUSINESS KNOWLEDGE BASE (provided directly by the business - always trust this over the website content below if they ever conflict) ---\\n${knowledgeBaseText}\\n--- END KNOWLEDGE BASE ---\\n`\n  : '';\n\n// Every prompt variant ends with the same handoff instruction so the model\n// always knows how to signal \"this visitor wants a human\" - Extract Reply\n// looks for this exact marker and turns it into a real handoff request to\n// Laravel, regardless of whether we answered from website knowledge or not.\nconst handoffInstruction = `- If the visitor explicitly asks to speak with a human, a real person, an agent, support staff, or similar, OR seems frustrated and unable to get what they need from you, OR you genuinely don't know the answer to their question even after trying your best (both from the website knowledge and your general knowledge), respond warmly letting them know you're connecting them with the team right now, then on its own new line add exactly: HANDOFF:REQUESTED`;\n\n// Same idea as the handoff marker: the model collects what it needs through\n// plain conversation, then emits one exact line with a JSON payload once it\n// truly has everything - Extract Reply parses this out and Laravel turns it\n// into a real booking (or a graceful conflict/limit-reached message read\n// back to the visitor).\nconst today = new Date().toISOString().slice(0, 10);\nconst appointmentInstruction = `- If the visitor wants to book an appointment, meeting, or consultation, collect their full name and an exact date and time through natural conversation, asking for anything missing one thing at a time. Today's date is ${today} - use it to resolve relative dates like \"tomorrow\" or \"next Monday\" yourself; never ask the visitor to do that math. Never invent a date/time they didn't actually give you. Once you have BOTH their name AND a specific date and time, confirm the details back to them in your reply, then on its own new line add exactly (with real values, valid JSON, 24-hour time): APPOINTMENT:BOOK {\"name\":\"<full name>\",\"scheduled_at\":\"<YYYY-MM-DD HH:MM:SS>\",\"reason\":\"<brief reason if they gave one, else empty string>\"}`;\n\n// Picked up naturally during conversation, not via a checklist of questions.\n// Extract Reply parses this marker and Laravel flags the matching Customer\n// as a qualified lead so the client knows who's worth following up with.\nconst leadInstruction = `- While chatting, naturally notice what the visitor seems interested in (their intent), and if they mention it, their budget or timeline. Don't interrogate them with a checklist - just note what comes up naturally. Once you have a reasonably clear sense of their intent, on its own new line add exactly once (valid JSON): LEAD:QUALIFIED {\"intent\":\"<what they're interested in, brief>\",\"budget\":\"<their budget if mentioned, else empty string>\",\"timeline\":\"<their timeline if mentioned, else empty string>\"}`;\n\nconst systemPrompt = hasContext\n  ? `You are a helpful AI assistant for ${parsed.businessName}.\n${baseKnowledge}\n${knowledgeBaseBlock}Use the following information from the business website to answer the visitor's question as accurately as possible:\n--- WEBSITE KNOWLEDGE ---\n${context}\n--- END KNOWLEDGE ---\nGuidelines:\n- Answer naturally and conversationally\n- If the context partially answers the question, use what you have and be helpful\n- Never say \"I don't have information\" - instead offer to connect them with the team\n- If unsure, say \"Based on what I know, ...\" and give your best answer\n- Keep replies concise - 2-3 sentences max unless detail is needed\n- Always end with an offer to help further\n${handoffInstruction}\n${appointmentInstruction}\n${leadInstruction}\n- At the end of your response add exactly this on a new line: SOURCE:${sourceUrl}`\n  : `You are a helpful AI assistant for ${parsed.businessName}.\n${baseKnowledge}\n${knowledgeBaseBlock}You don't have specific website content for this question, but use your general knowledge about this type of business to give a helpful response.\nGuidelines:\n- Be genuinely helpful even without specific context\n- Answer general questions about the business type naturally\n- For specific details like exact prices or availability, suggest they contact the team directly\n- Never say \"I don't have that information\" bluntly - always offer an alternative\n- Keep replies concise and friendly\n${handoffInstruction}\n${appointmentInstruction}\n${leadInstruction}`;\n\nconst userMessage = historyText\n  ? `${historyText}\\nUser: ${parsed.message}`\n  : parsed.message;\n\nreturn [{\n  json: {\n    systemPrompt,\n    userMessage,\n    businessName: parsed.businessName,\n    chunksFound: hasContext ? item.results.length : 0,\n    sourceUrl\n  }\n}];"
+                "jsCode": "const item = $input.first().json;\nconst parsed = $('Parse Request').first().json;\nconst hasContext = Array.isArray(item.results) && item.results.length > 0;\n\nlet context = '';\nlet sourceUrl = '';\n\nif (hasContext) {\n  context = item.results\n    .map((chunk, i) => `[Source ${i + 1} - ${chunk.url}]\\n${chunk.content}`)\n    .join('\\n\\n');\n\n  // Use the most relevant source URL (first result)\n  sourceUrl = item.results[0].url || '';\n}\n\nconst historyText = (parsed.history || [])\n  .slice(-6)\n  .map(m => `${m.role === 'assistant' ? 'Assistant' : 'User'}: ${m.content}`)\n  .join('\\n');\n\nconst baseKnowledge = parsed.systemPrompt || '';\n\n// Client-authored FAQs/knowledge-base entries - curated directly by the\n// business, so the model is told to trust this over the scraped website\n// context below whenever the two disagree. Present regardless of whether\n// the RAG lookup above found anything, so the business's own answers never\n// depend entirely on what the crawler happened to pick up.\nconst kbEntries = parsed.knowledgeBase || [];\nconst knowledgeBaseText = kbEntries.length > 0\n  ? kbEntries\n      .map(e => e.type === 'faq' ? `Q: ${e.title}\\nA: ${e.content}` : `${e.title}\\n${e.content}`)\n      .join('\\n\\n')\n  : '';\nconst knowledgeBaseBlock = knowledgeBaseText\n  ? `--- BUSINESS KNOWLEDGE BASE (provided directly by the business - always trust this over the website content below if they ever conflict) ---\\n${knowledgeBaseText}\\n--- END KNOWLEDGE BASE ---\\n`\n  : '';\n\n// Every prompt variant ends with the same handoff instruction so the model\n// always knows how to signal \"this visitor wants a human\" - Extract Reply\n// looks for this exact marker and turns it into a real handoff request to\n// Laravel, regardless of whether we answered from website knowledge or not.\nconst handoffInstruction = `- If the visitor explicitly asks to speak with a human, a real person, an agent, support staff, or similar, OR seems frustrated and unable to get what they need from you, OR you genuinely don't know the answer to their question even after trying your best (both from the website knowledge and your general knowledge), respond warmly letting them know you're connecting them with the team right now, then on its own new line add exactly: HANDOFF:REQUESTED`;\n\n// Same idea as the handoff marker: the model collects what it needs through\n// plain conversation, then emits one exact line with a JSON payload once it\n// truly has everything - Extract Reply parses this out and Laravel turns it\n// into a real booking (or a graceful conflict/limit-reached message read\n// back to the visitor).\nconst today = new Date().toISOString().slice(0, 10);\nconst appointmentInstruction = `- If the visitor wants to book an appointment, meeting, or consultation, collect their full name and an exact date and time through natural conversation, asking for anything missing one thing at a time. Today's date is ${today} - use it to resolve relative dates like \"tomorrow\" or \"next Monday\" yourself; never ask the visitor to do that math. Never invent a date/time they didn't actually give you. Once you have BOTH their name AND a specific date and time, confirm the details back to them in your reply, then on its own new line add exactly (with real values, valid JSON, 24-hour time): APPOINTMENT:BOOK {\"name\":\"<full name>\",\"scheduled_at\":\"<YYYY-MM-DD HH:MM:SS>\",\"reason\":\"<brief reason if they gave one, else empty string>\"}`;\n\n// Picked up naturally during conversation, not via a checklist of questions.\n// Extract Reply parses this marker and Laravel flags the matching Customer\n// as a qualified lead so the client knows who's worth following up with.\nconst leadInstruction = `- While chatting, naturally notice what the visitor seems interested in (their intent), and if they mention it, their budget or timeline. Don't interrogate them with a checklist - just note what comes up naturally. Once you have a reasonably clear sense of their intent, on its own new line add exactly once (valid JSON): LEAD:QUALIFIED {\"intent\":\"<what they're interested in, brief>\",\"budget\":\"<their budget if mentioned, else empty string>\",\"timeline\":\"<their timeline if mentioned, else empty string>\"}`;\n\n// Triggered when the visitor clicks the \"Register with us\" quick reply, or\n// otherwise explicitly asks to leave their contact info/register/sign up.\n// Distinct from the appointment/lead markers above: this needs a name PLUS\n// at least one of email/phone (interest is optional, just useful context\n// for whoever follows up) before it's considered complete.\nconst registerInstruction = `- If the visitor wants to register, sign up, or leave their details (including if they click a \"Register with us\" quick reply), collect their full name and at least one of email or phone through natural conversation, asking for anything missing one thing at a time. You may also ask what they're interested in, but don't insist on it. Once you have their full name AND at least one contact method, confirm the details back to them in your reply, then on its own new line add exactly (with real values, valid JSON): REGISTER:DETAILS {\"name\":\"<full name>\",\"email\":\"<email if given, else empty string>\",\"phone\":\"<phone if given, else empty string>\",\"interest\":\"<brief interest if mentioned, else empty string>\"}`;\n\nconst systemPrompt = hasContext\n  ? `You are a helpful AI assistant for ${parsed.businessName}.\n${baseKnowledge}\n${knowledgeBaseBlock}Use the following information from the business website to answer the visitor's question as accurately as possible:\n--- WEBSITE KNOWLEDGE ---\n${context}\n--- END KNOWLEDGE ---\nGuidelines:\n- Answer naturally and conversationally\n- If the context partially answers the question, use what you have and be helpful\n- Never say \"I don't have information\" - instead offer to connect them with the team\n- If unsure, say \"Based on what I know, ...\" and give your best answer\n- Keep replies concise - 2-3 sentences max unless detail is needed\n- Always end with an offer to help further\n${handoffInstruction}\n${appointmentInstruction}\n${leadInstruction}\n${registerInstruction}\n- At the end of your response add exactly this on a new line: SOURCE:${sourceUrl}`\n  : `You are a helpful AI assistant for ${parsed.businessName}.\n${baseKnowledge}\n${knowledgeBaseBlock}You don't have specific website content for this question, but use your general knowledge about this type of business to give a helpful response.\nGuidelines:\n- Be genuinely helpful even without specific context\n- Answer general questions about the business type naturally\n- For specific details like exact prices or availability, suggest they contact the team directly\n- Never say \"I don't have that information\" bluntly - always offer an alternative\n- Keep replies concise and friendly\n${handoffInstruction}\n${appointmentInstruction}\n${leadInstruction}\n${registerInstruction}`;\n\nconst userMessage = historyText\n  ? `${historyText}\\nUser: ${parsed.message}`\n  : parsed.message;\n\nreturn [{\n  json: {\n    systemPrompt,\n    userMessage,\n    businessName: parsed.businessName,\n    chunksFound: hasContext ? item.results.length : 0,\n    sourceUrl\n  }\n}];"
             },
             "id": "30318eaf-b18f-49c0-a78d-e35f9141fcd5",
             "name": "Build RAG Prompt",
             "type": "n8n-nodes-base.code",
             "typeVersion": 2,
-            "position": [1136, 0]
+            "position": [
+                1136,
+                0
+            ]
         },
         {
             "parameters": {
@@ -54,7 +63,10 @@
             "name": "Basic LLM Chain",
             "type": "@n8n/n8n-nodes-langchain.chainLlm",
             "typeVersion": 1.9,
-            "position": [1392, 0]
+            "position": [
+                1392,
+                0
+            ]
         },
         {
             "parameters": {
@@ -68,7 +80,10 @@
             "name": "Groq Chat Model",
             "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
             "typeVersion": 1,
-            "position": [1680, 256],
+            "position": [
+                1680,
+                256
+            ],
             "credentials": {
                 "groqApi": {
                     "id": "QSxmM7qUb4IRgQVp",
@@ -79,13 +94,16 @@
         },
         {
             "parameters": {
-                "jsCode": "const output = $input.first().json;\nconst parsed = $('Parse Request').first().json;\n\nlet reply = output.text || output.response || output.output ||\n  'Sorry, I could not respond right now.';\n\n// Extract SOURCE URL if present\nlet sourceUrl = '';\nconst sourceMatch = reply.match(/SOURCE:(https?:\\/\\/[^\\s]+)/);\nif (sourceMatch) {\n  sourceUrl = sourceMatch[1];\n  // Remove the SOURCE line from the reply text\n  reply = reply.replace(/\\nSOURCE:https?:\\/\\/[^\\s]+/, '').trim();\n}\n\n// Detect the handoff marker the system prompt asked the model to emit\n// when a visitor wants a human. Strip it out of what the visitor sees.\nlet wantsHandoff = false;\nif (/HANDOFF:\\s*REQUESTED/i.test(reply)) {\n  wantsHandoff = true;\n  reply = reply.replace(/\\n?HANDOFF:\\s*REQUESTED/i, '').trim();\n}\n\n// Detect the appointment-booking marker: APPOINTMENT:BOOK {...json...}.\n// A malformed/missing JSON payload from the model is treated as \"didn't\n// really finish collecting details\" rather than crashing the workflow.\nlet wantsAppointment = false;\nlet appointmentDetails = null;\nconst appointmentMatch = reply.match(/APPOINTMENT:BOOK\\s*(\\{[\\s\\S]*?\\})/i);\nif (appointmentMatch) {\n  try {\n    appointmentDetails = JSON.parse(appointmentMatch[1]);\n    wantsAppointment = true;\n  } catch (e) {\n    wantsAppointment = false;\n  }\n  reply = reply.replace(/\\n?APPOINTMENT:BOOK\\s*\\{[\\s\\S]*?\\}/i, '').trim();\n}\n\n// Detect the lead-qualification marker: LEAD:QUALIFIED {...json...}. Like\n// the appointment marker, a malformed/missing payload is treated as \"the\n// model didn't actually finish\" rather than crashing the workflow.\nlet wantsLeadCapture = false;\nlet leadDetails = null;\nconst leadMatch = reply.match(/LEAD:QUALIFIED\\s*(\\{[\\s\\S]*?\\})/i);\nif (leadMatch) {\n  try {\n    leadDetails = JSON.parse(leadMatch[1]);\n    wantsLeadCapture = !!(leadDetails && leadDetails.intent);\n  } catch (e) {\n    wantsLeadCapture = false;\n  }\n  reply = reply.replace(/\\n?LEAD:QUALIFIED\\s*\\{[\\s\\S]*?\\}/i, '').trim();\n}\n\n// The full transcript so far, for Laravel to seed the agent's inbox with\n// context if this turns into a handoff.\nconst transcript = [\n  ...(parsed.history || []),\n  { role: 'user', content: parsed.message },\n  { role: 'assistant', content: reply }\n];\n\nreturn [{\n  json: {\n    reply: reply.trim(),\n    sourceUrl,\n    wantsHandoff,\n    wantsAppointment,\n    appointmentDetails,\n    wantsLeadCapture,\n    leadDetails,\n    clientId: parsed.clientId,\n    sessionToken: parsed.sessionToken,\n    businessName: parsed.businessName,\n    transcript\n  }\n}];"
+                "jsCode": "const output = $input.first().json;\nconst parsed = $('Parse Request').first().json;\n\nlet reply = output.text || output.response || output.output ||\n  'Sorry, I could not respond right now.';\n\n// Extract SOURCE URL if present\nlet sourceUrl = '';\nconst sourceMatch = reply.match(/SOURCE:(https?:\\/\\/[^\\s]+)/);\nif (sourceMatch) {\n  sourceUrl = sourceMatch[1];\n  // Remove the SOURCE line from the reply text\n  reply = reply.replace(/\\nSOURCE:https?:\\/\\/[^\\s]+/, '').trim();\n}\n\n// Detect the handoff marker the system prompt asked the model to emit\n// when a visitor wants a human. Strip it out of what the visitor sees.\nlet wantsHandoff = false;\nif (/HANDOFF:\\s*REQUESTED/i.test(reply)) {\n  wantsHandoff = true;\n  reply = reply.replace(/\\n?HANDOFF:\\s*REQUESTED/i, '').trim();\n}\n\n// Detect the appointment-booking marker: APPOINTMENT:BOOK {...json...}.\n// A malformed/missing JSON payload from the model is treated as \"didn't\n// really finish collecting details\" rather than crashing the workflow.\nlet wantsAppointment = false;\nlet appointmentDetails = null;\nconst appointmentMatch = reply.match(/APPOINTMENT:BOOK\\s*(\\{[\\s\\S]*?\\})/i);\nif (appointmentMatch) {\n  try {\n    appointmentDetails = JSON.parse(appointmentMatch[1]);\n    wantsAppointment = true;\n  } catch (e) {\n    wantsAppointment = false;\n  }\n  reply = reply.replace(/\\n?APPOINTMENT:BOOK\\s*\\{[\\s\\S]*?\\}/i, '').trim();\n}\n\n// Detect the lead-qualification marker: LEAD:QUALIFIED {...json...}. Like\n// the appointment marker, a malformed/missing payload is treated as \"the\n// model didn't actually finish\" rather than crashing the workflow.\nlet wantsLeadCapture = false;\nlet leadDetails = null;\nconst leadMatch = reply.match(/LEAD:QUALIFIED\\s*(\\{[\\s\\S]*?\\})/i);\nif (leadMatch) {\n  try {\n    leadDetails = JSON.parse(leadMatch[1]);\n    wantsLeadCapture = !!(leadDetails && leadDetails.intent);\n  } catch (e) {\n    wantsLeadCapture = false;\n  }\n  reply = reply.replace(/\\n?LEAD:QUALIFIED\\s*\\{[\\s\\S]*?\\}/i, '').trim();\n}\n\n// Detect the registration marker: REGISTER:DETAILS {...json...}. Same\n// malformed/missing-payload handling as the markers above - name plus at\n// least one contact method is required, or it's treated as incomplete.\nlet wantsRegistration = false;\nlet registrationDetails = null;\nconst registerMatch = reply.match(/REGISTER:DETAILS\\s*(\\{[\\s\\S]*?\\})/i);\nif (registerMatch) {\n  try {\n    registrationDetails = JSON.parse(registerMatch[1]);\n    wantsRegistration = !!(registrationDetails && registrationDetails.name && (registrationDetails.email || registrationDetails.phone));\n  } catch (e) {\n    wantsRegistration = false;\n  }\n  reply = reply.replace(/\\n?REGISTER:DETAILS\\s*\\{[\\s\\S]*?\\}/i, '').trim();\n}\n\n// The full transcript so far, for Laravel to seed the agent's inbox with\n// context if this turns into a handoff.\nconst transcript = [\n  ...(parsed.history || []),\n  { role: 'user', content: parsed.message },\n  { role: 'assistant', content: reply }\n];\n\nreturn [{\n  json: {\n    reply: reply.trim(),\n    sourceUrl,\n    wantsHandoff,\n    wantsAppointment,\n    appointmentDetails,\n    wantsLeadCapture,\n    leadDetails,\n    wantsRegistration,\n    registrationDetails,\n    clientId: parsed.clientId,\n    sessionToken: parsed.sessionToken,\n    businessName: parsed.businessName,\n    transcript\n  }\n}];"
             },
             "id": "4aa0275a-10a5-4f4f-a6b2-57bdbe301e2b",
             "name": "Extract Reply",
             "type": "n8n-nodes-base.code",
             "typeVersion": 2,
-            "position": [1776, 0]
+            "position": [
+                1776,
+                0
+            ]
         },
         {
             "parameters": {
@@ -114,7 +132,10 @@
             "name": "Respond to Widget",
             "type": "n8n-nodes-base.respondToWebhook",
             "typeVersion": 1.1,
-            "position": [2800, 0]
+            "position": [
+                2800,
+                0
+            ]
         },
         {
             "parameters": {
@@ -145,7 +166,10 @@
             },
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.4,
-            "position": [832, 0],
+            "position": [
+                832,
+                0
+            ],
             "id": "df38b5b8-eedd-452f-a968-1e4e4c9ca7cc",
             "name": "Embed and Search"
         },
@@ -159,7 +183,10 @@
             },
             "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
             "typeVersion": 1,
-            "position": [1504, 256],
+            "position": [
+                1504,
+                256
+            ],
             "id": "ff493584-45d7-4ed9-8fcb-2572c228c759",
             "name": "OpenRouter Chat Model",
             "credentials": {
@@ -198,7 +225,10 @@
             "name": "Wants Handoff?",
             "type": "n8n-nodes-base.if",
             "typeVersion": 2.2,
-            "position": [2032, 0]
+            "position": [
+                2032,
+                0
+            ]
         },
         {
             "parameters": {
@@ -222,7 +252,10 @@
             "name": "Request Human Handoff",
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.4,
-            "position": [2288, -180]
+            "position": [
+                2288,
+                -180
+            ]
         },
         {
             "parameters": {
@@ -232,7 +265,10 @@
             "name": "Build Handoff Response",
             "type": "n8n-nodes-base.code",
             "typeVersion": 2,
-            "position": [2544, -180]
+            "position": [
+                2544,
+                -180
+            ]
         },
         {
             "parameters": {
@@ -244,7 +280,10 @@
             "name": "Sticky Note",
             "type": "n8n-nodes-base.stickyNote",
             "typeVersion": 1,
-            "position": [2260, -560]
+            "position": [
+                2260,
+                -560
+            ]
         },
         {
             "parameters": {
@@ -275,7 +314,10 @@
             "name": "Wants Appointment?",
             "type": "n8n-nodes-base.if",
             "typeVersion": 2.2,
-            "position": [2032, 220]
+            "position": [
+                2032,
+                220
+            ]
         },
         {
             "parameters": {
@@ -299,17 +341,23 @@
             "name": "Book Appointment",
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.4,
-            "position": [2288, 220]
+            "position": [
+                2288,
+                220
+            ]
         },
         {
             "parameters": {
-                "jsCode": "// $json here is Laravel's response from POST /api/widget/appointments:\n// success  -> { status: 'success', data: { id, scheduled_at, scheduled_at_human } }\n// conflict / limit_reached / unavailable -> { status, message }\nconst result = $input.first().json;\nconst prior = $('Extract Reply').first().json;\n\nlet reply = prior.reply || '';\n\nif (result.status === 'success') {\n  reply = `${reply}\\n\\nYou're all set for ${result.data.scheduled_at_human}. We look forward to seeing you!`;\n} else if (result.message) {\n  // conflict / limit_reached / unavailable all come with a message written\n  // to be read straight back to the visitor.\n  reply = `${reply}\\n\\n${result.message}`;\n}\n\nreturn [{\n  json: {\n    reply: reply.trim(),\n    sourceUrl: prior.sourceUrl || '',\n    appointmentStatus: result.status\n  }\n}];"
+                "jsCode": "// $json here is Laravel's response from POST /api/widget/appointments:\n// success  -> { status: 'success', data: { id, scheduled_at, scheduled_at_human } }\n// conflict / limit_reached / unavailable -> { status, message }\nconst result = $input.first().json;\nconst prior = $('Extract Reply').first().json;\n\n// prior.reply already confirms the booking as if it succeeded - the model\n// writes that BEFORE the actual attempt happens (see appointmentInstruction\n// in Build RAG Prompt), since it doesn't know the outcome yet. That's fine\n// on success, but on conflict/limit_reached/unavailable it would otherwise\n// show a confirmed appointment immediately followed by \"actually, that\n// time is taken\" - confusing, and result.message is written in the third\n// person for internal use (\"Ask the visitor...\"), not meant to be shown\n// verbatim. So anything other than success REPLACES the premature\n// confirmation entirely with an honest, visitor-facing message instead of\n// appending to it.\nlet reply;\n\nif (result.status === 'success') {\n  reply = `${prior.reply || ''}\\n\\nYou're all set for ${result.data.scheduled_at_human}. We look forward to seeing you!`;\n} else if (result.status === 'conflict') {\n  reply = \"That time slot is already booked for someone else - could you give me a different date or time?\";\n} else if (result.status === 'limit_reached') {\n  reply = \"We've reached our appointment booking limit for right now, so a team member will need to book this one manually - don't worry, you won't be charged twice for it.\";\n} else if (result.status === 'unavailable') {\n  reply = \"Sorry, we can't book appointments online right now - please reach out to us directly and we'll get this sorted.\";\n} else {\n  reply = result.message || prior.reply || '';\n}\n\nreturn [{\n  json: {\n    reply: reply.trim(),\n    sourceUrl: prior.sourceUrl || '',\n    appointmentStatus: result.status\n  }\n}];"
             },
             "id": "b8c9d0e1-7a8b-9c0d-4e5f-6a7b8c9d0e1f",
             "name": "Build Appointment Response",
             "type": "n8n-nodes-base.code",
             "typeVersion": 2,
-            "position": [2544, 220]
+            "position": [
+                2544,
+                220
+            ]
         },
         {
             "parameters": {
@@ -321,7 +369,10 @@
             "name": "Sticky Note1",
             "type": "n8n-nodes-base.stickyNote",
             "typeVersion": 1,
-            "position": [2260, 340]
+            "position": [
+                2260,
+                340
+            ]
         },
         {
             "parameters": {
@@ -352,7 +403,10 @@
             "name": "Wants Lead Info?",
             "type": "n8n-nodes-base.if",
             "typeVersion": 2.2,
-            "position": [2032, 460]
+            "position": [
+                2032,
+                460
+            ]
         },
         {
             "parameters": {
@@ -376,7 +430,10 @@
             "name": "Capture Lead",
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.4,
-            "position": [2288, 460]
+            "position": [
+                2288,
+                460
+            ]
         },
         {
             "parameters": {
@@ -386,7 +443,10 @@
             "name": "Build Lead Response",
             "type": "n8n-nodes-base.code",
             "typeVersion": 2,
-            "position": [2544, 460]
+            "position": [
+                2544,
+                460
+            ]
         },
         {
             "parameters": {
@@ -398,7 +458,84 @@
             "name": "Sticky Note2",
             "type": "n8n-nodes-base.stickyNote",
             "typeVersion": 1,
-            "position": [2260, 580]
+            "position": [
+                2260,
+                580
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "0590cac4-78fc-4198-9c10-4cdb2b644bf1",
+                            "leftValue": "={{ $json.wantsRegistration }}",
+                            "rightValue": true,
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "true",
+                                "singleValue": true
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "id": "2dab2ebd-28dd-4130-8521-9d8e22831e9b",
+            "name": "Wants Registration?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                2032,
+                700
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://YOUR-BLUEFLOW-DOMAIN.example/api/widget/register",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "X-Webhook-Secret",
+                            "value": "YOUR_N8N_WEBHOOK_SECRET"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ JSON.stringify({ client_id: $json.clientId, session_token: $json.sessionToken, name: $json.registrationDetails.name, email: $json.registrationDetails.email || null, phone: $json.registrationDetails.phone || null, interest: $json.registrationDetails.interest || null }) }}",
+                "options": {}
+            },
+            "id": "7d83f588-9b0b-4ba2-83ee-569b3f27aca0",
+            "name": "Capture Registration",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.4,
+            "position": [
+                2288,
+                700
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// $json here is Laravel's response from POST /api/widget/register: { status: 'success' } or { status: 'invalid' }.\n// Either way this never changes what the visitor sees - registration is a\n// silent CRM save, not something that should interrupt their chat (the AI\n// already confirmed the details back to them in its own reply text).\nconst prior = $('Extract Reply').first().json;\n\nreturn [{\n  json: {\n    reply: prior.reply || '',\n    sourceUrl: prior.sourceUrl || ''\n  }\n}];"
+            },
+            "id": "4f6b1a2c-3d5e-4f70-8091-2a3b4c5d6e7f",
+            "name": "Build Registration Response",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                2544,
+                700
+            ]
         }
     ],
     "pinData": {},
@@ -527,7 +664,7 @@
                 ],
                 [
                     {
-                        "node": "Respond to Widget",
+                        "node": "Wants Registration?",
                         "type": "main",
                         "index": 0
                     }
@@ -579,7 +716,9 @@
             ]
         },
         "Groq Chat Model": {
-            "ai_languageModel": [[]]
+            "ai_languageModel": [
+                []
+            ]
         },
         "Embed and Search": {
             "main": [
@@ -598,6 +737,46 @@
                     {
                         "node": "Basic LLM Chain",
                         "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wants Registration?": {
+            "main": [
+                [
+                    {
+                        "node": "Capture Registration",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Respond to Widget",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Capture Registration": {
+            "main": [
+                [
+                    {
+                        "node": "Build Registration Response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Build Registration Response": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to Widget",
+                        "type": "main",
                         "index": 0
                     }
                 ]

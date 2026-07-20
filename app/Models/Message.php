@@ -20,6 +20,7 @@ class Message extends Model
         'source',
         'from_customer',
         'counts_toward_limit',
+        'sender_name',
     ];
 
     protected $casts = [

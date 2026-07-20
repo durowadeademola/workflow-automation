@@ -33,6 +33,13 @@ class CustomersTable
                 TextColumn::make('display_name')
                     ->label('Name')
                     ->searchable(query: fn ($query, $search) => $query->orWhere('name', 'like', "%{$search}%")),
+                TextColumn::make('email')
+                    ->placeholder('—')
+                    ->searchable(),
+                TextColumn::make('phone')
+                    ->label('Telephone')
+                    ->placeholder('—')
+                    ->searchable(),
                 IconColumn::make('is_qualified_lead')
                     ->label('Qualified lead')
                     ->boolean(),

@@ -47,6 +47,8 @@ class RecentMessages extends TableWidget
             ->columns([
                 TextColumn::make('customer.display_name')
                     ->label('Customer ID / Name')
+                    ->getStateUsing(fn (Message $record) => $record->customer?->name
+                        ?: ($record->customer ? "{$record->source} Visitor #{$record->customer->id}" : null))
                     ->searchable(query: fn ($query, $search) => $query->orWhereHas(
                         'customer',
                         fn ($q) => $q->where('name', 'like', "%{$search}%"),
@@ -78,7 +80,8 @@ class RecentMessages extends TableWidget
                 \Filament\Actions\Action::make('viewHistory')
                     ->label('Chat history')
                     ->icon('heroicon-m-chat-bubble-left-right')
-                    ->modalHeading(fn (Message $record) => 'Chat with '.($record->customer?->display_name ?? 'User'))
+                    ->modalHeading(fn (Message $record) => 'Chat with '.($record->customer?->name
+                        ?: ($record->customer ? "{$record->source} Visitor #{$record->customer->id}" : 'User')))
                     ->modalSubmitAction(false) // Hide the save button since it's read-only
                     ->modalWidth('xl')
                     ->schema(function (Message $record) {

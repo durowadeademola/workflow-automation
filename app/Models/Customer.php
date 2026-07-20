@@ -19,6 +19,8 @@ class Customer extends Model
         'agent_id',
         'item_id',
         'name',
+        'email',
+        'phone',
         'username',
         'chat_id',
         'state',
@@ -34,9 +36,11 @@ class Customer extends Model
         'lead_budget',
         'lead_timeline',
         'qualified_at',
+        'registered_at',
     ];
 
     protected $casts = [
+        'registered_at' => 'datetime',
         'is_qualified_lead' => 'boolean',
         'qualified_at' => 'datetime',
     ];

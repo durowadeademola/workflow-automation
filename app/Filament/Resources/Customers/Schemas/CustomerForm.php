@@ -30,6 +30,13 @@ class CustomerForm
                                     $component->state($record->display_name);
                                 }
                             }),
+                        TextInput::make('email')
+                            ->email()
+                            ->placeholder('Enter customer email'),
+                        TextInput::make('phone')
+                            ->label('Telephone')
+                            ->tel()
+                            ->placeholder('Enter customer telephone'),
                         Select::make('platform')->options([
                             'Telegram' => 'Telegram',
                             'WhatsApp' => 'WhatsApp',

@@ -69,16 +69,14 @@
                     <div class="flex items-center gap-2">
                         @if($conversation->status !== 'closed')
                             <button
-                                wire:click="returnToAI"
-                                wire:confirm="Hand this conversation back to the AI assistant?"
+                                wire:click="mountAction('returnToAI')"
                                 class="text-xs font-semibold text-gray-500 hover:text-primary-600 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-1.5 transition-colors"
                             >
                                 Return to AI
                             </button>
                         @endif
                         <button
-                            wire:click="closeConversation"
-                            wire:confirm="Mark this conversation as closed?"
+                            wire:click="mountAction('closeConversation')"
                             class="text-xs font-semibold text-gray-500 hover:text-danger-600 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-1.5 transition-colors"
                         >
                             Close conversation
@@ -86,11 +84,11 @@
                     </div>
                 </div>
 
-                <div class="flex-1 flex flex-col space-y-3 p-4 bg-white dark:bg-[#111827] overflow-y-auto" style="max-height: 55vh;">
+                <div class="flex-1 flex flex-col space-y-2 p-3 bg-white dark:bg-[#111827] overflow-y-auto" style="max-height: 38vh;">
                     @forelse($conversation->messages()->orderBy('id')->get() as $msg)
                         <div class="flex w-full {{ $msg->sender_type === 'visitor' ? 'justify-start' : 'justify-end' }}">
                             <div @class([
-                                'max-w-[80%] px-4 py-2.5 rounded-2xl shadow-sm text-sm whitespace-pre-wrap',
+                                'max-w-[75%] px-3 py-2 rounded-2xl shadow-sm text-sm whitespace-pre-wrap',
                                 'bg-white text-gray-800 border border-gray-200 rounded-tl-none' => $msg->sender_type === 'visitor',
                                 'bg-primary-600 text-white rounded-tr-none' => $msg->sender_type === 'agent',
                                 'bg-gray-200 text-gray-600 rounded-tr-none' => $msg->sender_type === 'ai',

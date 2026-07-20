@@ -5,7 +5,7 @@
         <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between gap-4">
             <div>
                 <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-100">
-                    {{ $customer?->display_name ?? 'Unknown customer' }}
+                    {{ $customer?->name ?: ($customer ? $this->record->source.' Visitor #'.$customer->id : 'Unknown customer') }}
                 </h3>
                 <p class="text-xs text-gray-400 mt-0.5">
                     {{ $customer?->username ? '@'.$customer->username.' · ' : '' }}{{ $this->record->source }}
@@ -13,11 +13,11 @@
             </div>
         </div>
 
-        <div class="flex flex-col space-y-1.5 p-4 bg-white dark:bg-[#111827] overflow-y-auto" style="max-height: 65vh;">
+        <div class="flex flex-col space-y-1 p-3 bg-white dark:bg-[#111827] overflow-y-auto" style="max-height: 42vh;">
             @forelse($this->getThread() as $msg)
                 <div class="flex w-full {{ $msg->from_customer ? 'justify-start' : 'justify-end' }}">
                     <div @class([
-                        'max-w-[92%] px-2.5 py-1 rounded-xl shadow-sm text-sm leading-snug whitespace-pre-wrap',
+                        'max-w-[75%] px-2 py-1 rounded-xl shadow-sm text-sm leading-snug whitespace-pre-wrap',
                         'bg-white text-gray-800 border border-gray-200' => $msg->from_customer,
                         'bg-primary-600 text-white' => ! $msg->from_customer,
                     ])>

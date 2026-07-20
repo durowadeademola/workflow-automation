@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Customer;
 use App\Models\Message;
+use App\Models\WidgetConversation;
 use App\Services\MessageLimitService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -14,6 +15,60 @@ use Illuminate\Validation\Rule;
 
 class WidgetChatController extends Controller
 {
+    /**
+     * Called once when the widget first loads, so a returning visitor (or
+     * just a page reload) sees their prior conversation instead of a blank
+     * slate — the widget itself keeps no state of its own beyond the
+     * sessionToken, everything visible is reconstructed from here.
+     *
+     * `Message` is the unified log every channel mirrors into (see
+     * WidgetConversationController::mirrorToMessages()), so this alone
+     * covers both the AI phase and anything said during a human handoff.
+     * `handoff` is additionally returned so the widget can resume polling
+     * the right conversation instead of routing the visitor's next message
+     * back through the AI while a human is actually already handling them.
+     */
+    public function history(Request $request)
+    {
+        $validated = $request->validate([
+            'clientId' => ['required', Rule::exists('clients', 'id')],
+            'sessionToken' => ['required', 'string', 'max:100'],
+        ]);
+
+        $customer = Customer::where('client_id', $validated['clientId'])
+            ->where('platform', 'Website')
+            ->where('chat_id', $validated['sessionToken'])
+            ->first();
+
+        $messages = $customer
+            ? Message::where('customer_id', $customer->id)
+                ->orderBy('created_at')
+                ->get(['content', 'from_customer', 'sender_name', 'created_at'])
+                ->map(fn (Message $message) => [
+                    'role' => $message->from_customer ? 'user' : 'assistant',
+                    'content' => $message->content,
+                    // Only ever set for a human agent's own reply — left out
+                    // for AI/system messages so the widget falls back to
+                    // whatever the assistant is CURRENTLY named.
+                    'senderName' => $message->sender_name,
+                ])
+                ->all()
+            : [];
+
+        $conversation = WidgetConversation::where('client_id', $validated['clientId'])
+            ->where('session_token', $validated['sessionToken'])
+            ->whereIn('status', ['waiting', 'active'])
+            ->first();
+
+        return response()->json([
+            'messages' => $messages,
+            'handoff' => $conversation ? [
+                'conversationId' => $conversation->id,
+                'lastMessageId' => $conversation->messages()->max('id') ?? 0,
+            ] : null,
+        ]);
+    }
+
     /**
      * The chat widget calls this instead of hitting n8n directly. This is
      * the single enforcement point for "stop working if unpaid" — the
@@ -83,6 +138,20 @@ class WidgetChatController extends Controller
             ]);
 
             $data = $response->json() ?? [];
+
+            // The definitive, self-contained guarantee that a visitor is
+            // never actually connected to a human outside working hours —
+            // independent of whatever n8n's own workflow decided to do.
+            // WidgetConversationController::store() also refuses to create
+            // an agent ticket in this window, but this is what the visitor
+            // actually sees, so it can't rely on n8n cooperating.
+            if (($data['handoff'] ?? false) && ! $client->isWithinWorkingHours()) {
+                $data['reply'] = $client->widget_wa_number
+                    ? "Our team is currently offline, but I've noted your request. You can reach us directly on WhatsApp any time: https://wa.me/{$client->widget_wa_number}"
+                    : "Our team is currently offline right now, but feel free to reach out directly and we'll get back to you as soon as we're back.";
+                $data['handoff'] = false;
+                unset($data['conversationId'], $data['lastMessageId']);
+            }
 
             $replied = $this->logOutboundReply($client->id, $customer, $data);
 

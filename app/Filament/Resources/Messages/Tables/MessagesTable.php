@@ -22,6 +22,8 @@ class MessagesTable
             ->columns([
                 TextColumn::make('customer.display_name')
                     ->label('Customer ID / Name')
+                    ->getStateUsing(fn (Message $record) => $record->customer?->name
+                        ?: ($record->customer ? "{$record->source} Visitor #{$record->customer->id}" : null))
                     ->placeholder('—')
                     ->searchable(query: fn ($query, $search) => $query->orWhereHas(
                         'customer',

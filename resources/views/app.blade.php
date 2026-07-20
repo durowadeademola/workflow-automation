@@ -40,20 +40,12 @@
     <body class="font-sans antialiased">
         @inertia
 
-        <script>
-            window.ChatWidgetConfig = {
-                clientId:     4,
-                apiBase:      '{{ url('/api') }}',
-                businessName: 'Blueflow Automation',
-                agentName:    'Blueflow Assistant',
-                primaryColor: '#2563EB',
-                waNumber:     '2347064706193',
-                greeting:     '👋 Hello! How can I help you today?',
-                systemPrompt: 'We build ai chat widgets, whatsapp automation, payment automation, email automation, custom automation and many more. Be friendly and concise. if the user asks for something not related to the automation, politely let them know you can only assist with automation-related inquiries. If they ask for a human agent, provide the contact information.',
-                quickReplies: ["Services", "Pricing"],
-            };
-        </script>
-            {{-- https://blueflowautomation.com/chat-widget.js --}}
-            <script src="{{ asset('chat-widget.js') }}?v={{ file_exists(public_path('chat-widget.js')) ? filemtime(public_path('chat-widget.js')) : time() }}"></script>
+        {{-- Blueflow's own site uses client_id 4 ("Blueflow Automation
+             (Internal)") for its own chat widget — generated the exact
+             same way any other client's embed snippet is, straight from
+             their actual dashboard-configured Widget Settings, so this
+             never drifts out of sync with what's actually stored there
+             (agent name, quick replies, working hours, anything else). --}}
+        {!! \App\Models\Client::find(4)?->getWidgetEmbedSnippet() !!}
     </body>
 </html>

@@ -11,6 +11,7 @@ use App\Http\Controllers\API\WidgetChatController;
 use App\Http\Controllers\API\WidgetConversationController;
 use App\Http\Controllers\API\WidgetFaqController;
 use App\Http\Controllers\API\WidgetLeadController;
+use App\Http\Controllers\API\WidgetRegistrationController;
 use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\API\VulnerabilityController;
@@ -27,6 +28,8 @@ Route::middleware('webhook.secret')->group(function () {
     Route::post('/widget/appointments', [WidgetAppointmentController::class, 'store'])->name('widget.appointments.store');
     // Called by n8n only, once the AI has picked up on what a visitor is interested in.
     Route::post('/widget/lead', [WidgetLeadController::class, 'store'])->name('widget.lead.store');
+    // Called by n8n only, once the AI has collected a visitor's name plus at least one contact method.
+    Route::post('/widget/register', [WidgetRegistrationController::class, 'store'])->name('widget.register.store');
 });
 
 // Called directly by the embedded chat widget in the visitor's browser.
@@ -34,6 +37,7 @@ Route::middleware('webhook.secret')->group(function () {
 // unguessable per-conversation session token instead of the webhook secret.
 Route::middleware('throttle:30,1')->group(function () {
     Route::post('/widget/chat', [WidgetChatController::class, 'send'])->name('widget.chat');
+    Route::get('/widget/history', [WidgetChatController::class, 'history'])->name('widget.history');
     Route::get('/widget/conversations/{conversation}/messages', [WidgetConversationController::class, 'messages'])->name('widget.conversations.messages');
     Route::post('/widget/conversations/{conversation}/messages', [WidgetConversationController::class, 'send'])->name('widget.conversations.send');
     Route::get('/widget/faqs', [WidgetFaqController::class, 'index'])->name('widget.faqs');

@@ -8,8 +8,8 @@ use App\Filament\Widgets\ClientsChart;
 use App\Filament\Widgets\ClientStats;
 use App\Filament\Widgets\CustomersChart;
 use App\Filament\Widgets\OrdersChart;
+use App\Filament\Widgets\RecentAppointments;
 use App\Filament\Widgets\RecentMessages;
-use App\Filament\Widgets\RecentOrders;
 use App\Filament\Widgets\SubscriptionsChart;
 use BackedEnum;
 use Filament\Pages\Dashboard as BaseDashboard;
@@ -30,7 +30,7 @@ class Dashboard extends BaseDashboard
             CustomersChart::class,
             OrdersChart::class,
             RecentMessages::class,
-            RecentOrders::class,
+            RecentAppointments::class,
         ];
     }
 }

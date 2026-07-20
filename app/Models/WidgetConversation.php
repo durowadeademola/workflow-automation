@@ -13,10 +13,14 @@ class WidgetConversation extends Model
         'visitor_name',
         'status',
         'last_message_at',
+        'waiting_since',
+        'nudge_sent_at',
     ];
 
     protected $casts = [
         'last_message_at' => 'datetime',
+        'waiting_since' => 'datetime',
+        'nudge_sent_at' => 'datetime',
     ];
 
     public function client()
