@@ -7,19 +7,17 @@
         <title inertia>{{ config('app.name', 'Blueflow') }}</title>
 
         <!-- Applies the saved theme before first paint, so there's no
-             flash of the wrong theme. Default is dark — light is opt-in
+             flash of the wrong theme. Default is light — dark is opt-in
              only, never OS-preference-based. Shares the same "theme" key
              Filament's /admin and /user panels use, so a toggle on either
              side carries over to the other. -->
         <script>
             (function () {
                 try {
-                    if (localStorage.getItem('theme') !== 'light') {
+                    if (localStorage.getItem('theme') === 'dark') {
                         document.documentElement.classList.add('dark');
                     }
-                } catch (e) {
-                    document.documentElement.classList.add('dark');
-                }
+                } catch (e) {}
             })();
         </script>
 

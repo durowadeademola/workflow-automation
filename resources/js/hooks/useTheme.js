@@ -9,9 +9,9 @@ const STORAGE_KEY = "theme";
 
 function getStoredTheme() {
     try {
-        return localStorage.getItem(STORAGE_KEY) === "light" ? "light" : "dark";
+        return localStorage.getItem(STORAGE_KEY) === "dark" ? "dark" : "light";
     } catch {
-        return "dark";
+        return "light";
     }
 }
 
