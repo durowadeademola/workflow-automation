@@ -58,7 +58,7 @@ class WidgetConversationController extends Controller
         if (! $client->isWithinWorkingHours()) {
             return response()->json([
                 'status' => 'outside_hours',
-                'message' => 'Our team is currently offline. Please reach out to us on WhatsApp and we\'ll get back to you as soon as possible.',
+                'message' => 'Our team is currently offline. Ask for their name and phone number so an agent can reach them once back online, and let them know they can also reach us on WhatsApp any time.',
                 'wa_number' => $client->widget_wa_number,
             ], 200);
         }
@@ -118,7 +118,7 @@ class WidgetConversationController extends Controller
             // that message up instead of missing it as "already seen".
             $lastMessageId = $conversation->messages()->max('id') ?? 0;
 
-            $handoffMessage = "Standby while you're been connected with a member of our team - they'll be right with you shortly.";
+            $handoffMessage = "Stand by while you're being connected with a member of our team - they'll be right with you shortly.";
 
             $conversation->messages()->create([
                 'sender_type' => 'agent',
@@ -188,10 +188,15 @@ class WidgetConversationController extends Controller
             return;
         }
 
+        // Asks for a name + contact method so whoever picks this up can
+        // follow up even if the visitor doesn't wait around — this is a
+        // plain message an agent reads directly from the conversation
+        // later, not parsed/saved anywhere automatically (unlike the
+        // registration flow, which only runs through the AI chat turn).
         $waNumber = $conversation->client?->widget_wa_number;
         $nudgeMessage = $waNumber
-            ? "Sorry for the wait — an agent will be with you as soon as possible. If you'd rather not wait, you can reach us directly on WhatsApp: https://wa.me/{$waNumber}"
-            : "Sorry for the wait — an agent will be with you as soon as possible.";
+            ? "Sorry for the wait — an agent will be with you as soon as possible. In the meantime, could you leave your name and phone number so we can follow up if you head off? You're also welcome to reach us directly on WhatsApp: https://wa.me/{$waNumber}"
+            : "Sorry for the wait — an agent will be with you as soon as possible. In the meantime, could you leave your name and phone number so we can follow up if you head off?";
 
         $conversation->messages()->create([
             'sender_type' => 'agent',

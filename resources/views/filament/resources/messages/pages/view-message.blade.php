@@ -17,15 +17,10 @@
             @forelse($this->getThread() as $msg)
                 <div class="flex w-full {{ $msg->from_customer ? 'justify-start' : 'justify-end' }}">
                     <div @class([
-                        'max-w-[75%] px-2 py-1 rounded-xl shadow-sm text-sm leading-snug whitespace-pre-wrap',
+                        'max-w-[75%] px-2 py-1 rounded-xl shadow-sm text-sm leading-snug',
                         'bg-white text-gray-800 border border-gray-200' => $msg->from_customer,
                         'bg-primary-600 text-white' => ! $msg->from_customer,
-                    ])>
-                        <span class="block text-[9px] font-semibold uppercase tracking-wide opacity-70">
-                            {{ $msg->from_customer ? 'Customer' : 'Business' }}
-                        </span>
-                        {{ $msg->content }}
-                        <span class="block text-[9px] opacity-60 mt-0.5">{{ $msg->created_at->format('M j, g:i A') }}</span>
+                    ])><span class="block text-[9px] font-semibold uppercase tracking-wide opacity-70">{{ $msg->from_customer ? 'Customer' : 'Business' }}</span><span class="whitespace-pre-wrap">{{ $msg->content }}</span><span class="block text-[9px] opacity-60 mt-0.5">{{ $msg->created_at->format('M j, g:i A') }}</span>
                     </div>
                 </div>
             @empty

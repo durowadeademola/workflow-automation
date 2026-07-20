@@ -84,22 +84,16 @@
                     </div>
                 </div>
 
-                <div class="flex-1 flex flex-col space-y-2 p-3 bg-white dark:bg-[#111827] overflow-y-auto" style="max-height: 38vh;">
+                <div class="flex-1 flex flex-col space-y-1.5 p-2 bg-white dark:bg-[#111827] overflow-y-auto" style="max-height: 38vh;">
                     @forelse($conversation->messages()->orderBy('id')->get() as $msg)
                         <div class="flex w-full {{ $msg->sender_type === 'visitor' ? 'justify-start' : 'justify-end' }}">
                             <div @class([
-                                'max-w-[75%] px-3 py-2 rounded-2xl shadow-sm text-sm whitespace-pre-wrap',
+                                'max-w-[60%] px-2 py-1 rounded-lg shadow-sm text-[11px] leading-snug',
                                 'bg-white text-gray-800 border border-gray-200 rounded-tl-none' => $msg->sender_type === 'visitor',
                                 'bg-primary-600 text-white rounded-tr-none' => $msg->sender_type === 'agent',
                                 'bg-gray-200 text-gray-600 rounded-tr-none' => $msg->sender_type === 'ai',
                             ])>
-                                @if($msg->sender_type !== 'visitor')
-                                    <span class="block text-[10px] font-semibold uppercase tracking-wide opacity-70 mb-1">
-                                        {{ $msg->sender_name ?: ($msg->sender_type === 'ai' ? 'AI Assistant' : 'Agent') }}
-                                    </span>
-                                @endif
-                                {{ $msg->content }}
-                                <span class="block text-[10px] opacity-60 mt-1">{{ $msg->created_at->format('g:i A') }}</span>
+                                @if($msg->sender_type !== 'visitor')<span class="block text-[8px] font-semibold uppercase tracking-wide opacity-70 mb-0.5">{{ $msg->sender_name ?: ($msg->sender_type === 'ai' ? 'AI Assistant' : 'Agent') }}</span>@endif<span class="whitespace-pre-wrap">{{ $msg->content }}</span><span class="block text-[8px] opacity-60 mt-0.5">{{ $msg->created_at->format('g:i A') }}</span>
                             </div>
                         </div>
                     @empty

@@ -14,11 +14,11 @@ use Illuminate\Validation\Rule;
 class WidgetRegistrationController extends Controller
 {
     /**
-     * Called by n8n once the AI has collected a visitor's name plus at
-     * least one contact method — a lightweight "leave your details" path,
-     * distinct from booking a specific appointment slot. Idempotent, same
-     * as lead capture: re-firing for the same customer just updates the
-     * same row, and only the first submission notifies the client.
+     * Called by n8n once the AI has collected a visitor's name plus phone
+     * number — a lightweight "leave your details" path, distinct from
+     * booking a specific appointment slot. Idempotent, same as lead
+     * capture: re-firing for the same customer just updates the same row,
+     * and only the first submission notifies the client.
      */
     public function store(Request $request)
     {
@@ -26,15 +26,19 @@ class WidgetRegistrationController extends Controller
             'client_id' => ['required', Rule::exists('clients', 'id')],
             'session_token' => ['required', 'string', 'max:100'],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
+            'email' => ['nullable', 'email', 'max:255'],
             'interest' => ['nullable', 'string', 'max:500'],
         ]);
 
-        if (empty($validated['email']) && empty($validated['phone'])) {
+        // A graceful 200, not a validation error — n8n's "Capture
+        // Registration" node has no error handling configured, so a 422
+        // here would halt the workflow instead of letting the AI's own
+        // reply (already written assuming success) through as-is.
+        if (empty($validated['phone'])) {
             return response()->json([
                 'status' => 'invalid',
-                'message' => 'At least one of email or phone is required to register — ask the visitor for one.',
+                'message' => 'A phone number is required to register — ask the visitor for one.',
             ], 200);
         }
 

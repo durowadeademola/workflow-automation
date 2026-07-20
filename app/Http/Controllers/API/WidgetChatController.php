@@ -146,9 +146,14 @@ class WidgetChatController extends Controller
             // an agent ticket in this window, but this is what the visitor
             // actually sees, so it can't rely on n8n cooperating.
             if (($data['handoff'] ?? false) && ! $client->isWithinWorkingHours()) {
+                // Asks for name + a contact method rather than just saying
+                // "we're offline" — the visitor's reply flows back through
+                // the normal AI chat turn above, where registerInstruction
+                // (see Build RAG Prompt) picks it up and saves it via the
+                // existing registration flow, no separate plumbing needed.
                 $data['reply'] = $client->widget_wa_number
-                    ? "Our team is currently offline, but I've noted your request. You can reach us directly on WhatsApp any time: https://wa.me/{$client->widget_wa_number}"
-                    : "Our team is currently offline right now, but feel free to reach out directly and we'll get back to you as soon as we're back.";
+                    ? "Our team is currently offline right now. Could you share your name and phone number so an agent can reach you once we're back online? You're also welcome to reach us directly on WhatsApp any time: https://wa.me/{$client->widget_wa_number}"
+                    : "Our team is currently offline right now. Could you share your name and phone number so an agent can reach you once we're back online?";
                 $data['handoff'] = false;
                 unset($data['conversationId'], $data['lastMessageId']);
             }

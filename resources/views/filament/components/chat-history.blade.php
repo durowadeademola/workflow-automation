@@ -23,7 +23,7 @@ style="max-height: 340px; overflow-y: auto;">
                     'text-gray-400' => $isCustomer,
                     'text-primary-100' => !$isCustomer,
                 ])>
-                    {{ $msg->created_at->format('d-m-y g:i A') }}: <span class="text-sm text-danger leading-relaxed whitespace-pre-wrap"> {{ $msg->content }}</span> 
+                    {{ $msg->created_at->format('d-m-y g:i A') }}: <span class="text-sm text-danger leading-relaxed whitespace-pre-wrap">{{ $msg->content }}</span>
                     @if(!$isCustomer)
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     @endif
