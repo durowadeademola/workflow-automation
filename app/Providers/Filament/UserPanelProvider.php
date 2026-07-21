@@ -20,6 +20,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 /**
@@ -90,6 +91,14 @@ class UserPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->brandName('Blueflow')
+            // Same "BA" badge as the marketing site's navbar logo, so the
+            // login screen doesn't feel like a completely separate product.
+            // Linked back to the marketing homepage — the standard way an
+            // auth screen offers a way back out, without adding a full nav.
+            ->brandLogo(new HtmlString(
+                '<a href="/"><div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"><span class="text-white font-bold text-sm">BA</span></div></a>'
+            ))
+            ->brandLogoHeight('2rem')
             ->widgets([])
             ->darkMode()
             ->defaultThemeMode(ThemeMode::Light)

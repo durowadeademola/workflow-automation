@@ -675,7 +675,7 @@
     });
   }
 
-  function appendMsg(role, text, data = {}, senderLabel) {
+  function appendMsg(role, text, data = {}, senderLabel, silent = false) {
     const msgs = $('cw-messages');
     const wrap = document.createElement('div');
     wrap.className = `cw-msg cw-${role}`;
@@ -725,7 +725,9 @@
     msgs.scrollTop = msgs.scrollHeight;
     history.push({ role: role === 'bot' ? 'assistant' : 'user', content: text });
 
-    if (role === 'user') playSendSound(); else playReceiveSound();
+    if (!silent) {
+      if (role === 'user') playSendSound(); else playReceiveSound();
+    }
   }
 
   function showTyping() {
@@ -951,7 +953,7 @@
       const data = await res.json().catch(() => ({}));
 
       (data.messages || []).forEach(m => {
-        appendMsg(m.role === 'user' ? 'user' : 'bot', m.content, {}, m.senderName);
+        appendMsg(m.role === 'user' ? 'user' : 'bot', m.content, {}, m.senderName, true);
         history.push({ role: m.role, content: m.content });
       });
 

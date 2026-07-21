@@ -2,6 +2,7 @@
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
+@source '../../../../app/Providers/Filament/**/*';
 
 /* Slightly more compact UI density across the panel. */
 html {
@@ -172,6 +173,62 @@ body {
 :where(.dark, .dark *) .fi-modal-header,
 :where(.dark, .dark *) .fi-modal-footer {
     background-color: rgb(17 24 39);
+}
+
+/* ── Login/auth pages: same soft blue-to-emerald gradient as the frontend's
+     PageHero (Register.jsx etc.), instead of Filament's default flat gray,
+     so /admin/login and /user/login feel on-brand with the marketing site. ── */
+.fi-simple-layout {
+    background: linear-gradient(135deg, #eff6ff 0%, #ffffff 50%, #ecfdf5 100%);
+}
+
+:where(.dark, .dark *) .fi-simple-layout {
+    background: linear-gradient(135deg, #0f1a33 0%, #111827 50%, #06231b 100%);
+}
+
+/* ── Login/auth form fields: same visual style as the frontend's
+     Register.jsx form — solid gray border + rounded-xl + blue focus ring —
+     instead of Filament's default subtle ring-only look. Scoped to
+     .fi-simple-main so only auth pages are affected, not the rest of the
+     panel's forms. ── */
+.fi-simple-main .fi-input-wrp {
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: none;
+    background-color: #ffffff;
+}
+
+.fi-simple-main .fi-input-wrp:focus-within {
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #3b82f6;
+}
+
+.fi-simple-main .fi-input {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+}
+
+.fi-simple-main .fi-fo-field-label-content {
+    color: rgb(55 65 81);
+}
+
+.fi-simple-main button[type='submit'].fi-btn {
+    width: 100%;
+    border-radius: 0.75rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+:where(.dark, .dark *) .fi-simple-main .fi-input-wrp {
+    border-color: #374151;
+    background-color: #1f2937;
+}
+
+:where(.dark, .dark *) .fi-simple-main .fi-fo-field-label-content {
+    color: rgb(229 231 235);
 }
 
 /* Mobile drawer */
