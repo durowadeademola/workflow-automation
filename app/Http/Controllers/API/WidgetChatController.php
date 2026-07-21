@@ -51,6 +51,7 @@ class WidgetChatController extends Controller
                     // for AI/system messages so the widget falls back to
                     // whatever the assistant is CURRENTLY named.
                     'senderName' => $message->sender_name,
+                    'createdAt' => $message->created_at,
                 ])
                 ->all()
             : [];

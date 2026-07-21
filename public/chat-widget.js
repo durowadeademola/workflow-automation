@@ -55,8 +55,32 @@
   }, window.ChatWidgetConfig || {});
 
   const $ = id => document.getElementById(id);
-  const now = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const isMobile = () => window.innerWidth <= 520;
+
+  // ── Date dividers ──
+  // A day-boundary pill ("Today" / "Yesterday" / "Monday" / "Jul 16") shown
+  // once between groups of messages, same convention as WhatsApp/Telegram,
+  // so a restored history makes it obvious how old each message actually is
+  // instead of only showing a bare time-of-day next to it.
+  function startOfDay(d) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+
+  function dateDividerLabel(d) {
+    const day = startOfDay(d);
+    const today = startOfDay(new Date());
+    const diffDays = Math.round((today - day) / 86400000);
+
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays > 1 && diffDays < 7) return d.toLocaleDateString([], { weekday: 'long' });
+
+    return d.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      year: d.getFullYear() !== today.getFullYear() ? 'numeric' : undefined,
+    });
+  }
 
   // ── Theme: derive a two-tone gradient from the single configured brand
   // colour, so every installation gets a premium look without needing to
@@ -350,6 +374,14 @@
     #cw-messages::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 3px; }
     #cw-messages::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.32); }
 
+    .cw-date-divider {
+      align-self: center;
+      font-size: 11px; font-weight: 600; color: #9297a6;
+      background: rgba(0,0,0,0.045);
+      padding: 4px 12px; border-radius: 20px;
+      letter-spacing: .02em;
+    }
+
     .cw-msg { display: flex; flex-direction: column; max-width: 86%; }
     .cw-msg.cw-bot { align-self: flex-start; }
     .cw-msg.cw-user { align-self: flex-end; }
@@ -636,6 +668,7 @@
   let history = [];
   let greeted = false;
   let handoff = null; // { conversationId, afterId, pollTimer } once a human has taken over
+  let lastDividerDay = null; // startOfDay() of the most recently appended message's date
 
   const TICK_SVG = `<svg class="cw-tick" width="14" height="10" viewBox="0 0 16 11" fill="none"><path d="M1 5.5L4.5 9L10 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 5.5L9.5 9L15 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
@@ -653,8 +686,21 @@
     if (isOpen) {
       const notif = $('cw-notif');
       if (notif) notif.remove();
-      if (!greeted) { setTimeout(greet, 300); greeted = true; }
+      maybeGreet();
       setTimeout(() => $('cw-input').focus(), 350);
+    }
+  }
+
+  // Waits for the history fetch to finish (and, if it found a prior
+  // conversation, flip `greeted` to true) before deciding whether to show
+  // the generic greeting — otherwise an auto-open firing before a slow
+  // history fetch resolves would append the greeting first, then the real
+  // restored messages after it, leaving it stuck at the top of the log.
+  async function maybeGreet() {
+    await historyPromise;
+    if (!greeted) {
+      greeted = true;
+      setTimeout(greet, 300);
     }
   }
 
@@ -675,8 +721,19 @@
     });
   }
 
-  function appendMsg(role, text, data = {}, senderLabel, silent = false) {
+  function appendMsg(role, text, data = {}, senderLabel, silent = false, createdAt) {
     const msgs = $('cw-messages');
+    const msgDate = createdAt ? new Date(createdAt) : new Date();
+    const msgDay = startOfDay(msgDate).getTime();
+
+    if (msgDay !== lastDividerDay) {
+      const divider = document.createElement('div');
+      divider.className = 'cw-date-divider';
+      divider.textContent = dateDividerLabel(msgDate);
+      msgs.appendChild(divider);
+      lastDividerDay = msgDay;
+    }
+
     const wrap = document.createElement('div');
     wrap.className = `cw-msg cw-${role}`;
 
@@ -716,9 +773,11 @@
       wrap.appendChild(bub);
     }
 
+    const timeLabel = msgDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
     const t = document.createElement('div');
     t.className = 'cw-msg-time';
-    t.innerHTML = role === 'user' ? `${now()} ${TICK_SVG}` : now();
+    t.innerHTML = role === 'user' ? `${timeLabel} ${TICK_SVG}` : timeLabel;
     wrap.appendChild(t);
 
     msgs.appendChild(wrap);
@@ -800,7 +859,7 @@
       (data.messages || []).forEach(m => {
         handoff.afterId = m.id;
         if (m.sender_type === 'agent') {
-          appendMsg('bot', m.content, {}, m.sender_name);
+          appendMsg('bot', m.content, {}, m.sender_name, false, m.created_at);
           if (!isOpen) showNotifBadge();
         }
       });
@@ -948,12 +1007,25 @@
     try {
       const url = `${cfg.apiBase}/widget/history?clientId=${encodeURIComponent(cfg.clientId)}`
         + `&sessionToken=${encodeURIComponent(sessionToken)}`;
-      const res = await fetch(url);
+
+      // maybeGreet() waits on this call before deciding whether to show the
+      // generic greeting, so an unbounded fetch here would mean a slow or
+      // hung network leaves the widget showing nothing at all rather than
+      // just falling back to the greeting. This caps that wait instead of
+      // blocking on it indefinitely.
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      let res;
+      try {
+        res = await fetch(url, { signal: controller.signal });
+      } finally {
+        clearTimeout(timeoutId);
+      }
       if (!res.ok) return;
       const data = await res.json().catch(() => ({}));
 
       (data.messages || []).forEach(m => {
-        appendMsg(m.role === 'user' ? 'user' : 'bot', m.content, {}, m.senderName, true);
+        appendMsg(m.role === 'user' ? 'user' : 'bot', m.content, {}, m.senderName, true, m.createdAt);
         history.push({ role: m.role, content: m.content });
       });
 
@@ -1010,7 +1082,7 @@
     setTimeout(attemptAutoOpen, cfg.autoOpenDelay ?? 1500);
   });
   loadFaqs();
-  loadHistory();
+  const historyPromise = loadHistory();
 
   window.ChatWidget = {
     toggle,
