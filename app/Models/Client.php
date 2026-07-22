@@ -19,6 +19,7 @@ class Client extends Model
         'telephone',
         'type',
         'status',
+        'bypass_plan_limits',
         'rejection_reason',
         'features',
         'webhook_url',
@@ -46,6 +47,7 @@ class Client extends Model
         'widget_ready' => 'boolean',
         'widget_ready_at' => 'datetime',
         'widget_enabled' => 'boolean',
+        'bypass_plan_limits' => 'boolean',
         'working_hours_enabled' => 'boolean',
         'working_days' => 'array',
     ];
@@ -235,6 +237,10 @@ class Client extends Model
      */
     public function hasActiveSubscription(): bool
     {
+        if ($this->bypass_plan_limits) {
+            return true;
+        }
+
         return $this->subscriptions()
             ->where('status', 'active')
             ->where('end_date', '>=', now()->startOfDay())
@@ -377,6 +383,10 @@ class Client extends Model
 
     public function hasReachedMessageLimit(): bool
     {
+        if ($this->bypass_plan_limits) {
+            return false;
+        }
+
         $limit = $this->messageLimitForCurrentPlan();
 
         if ($limit === null) {
@@ -465,6 +475,10 @@ class Client extends Model
 
     public function hasReachedAppointmentLimit(): bool
     {
+        if ($this->bypass_plan_limits) {
+            return false;
+        }
+
         $limit = $this->appointmentLimitForCurrentPlan();
 
         if ($limit === null) {
@@ -546,6 +560,10 @@ class Client extends Model
 
     public function hasReachedLeadLimit(): bool
     {
+        if ($this->bypass_plan_limits) {
+            return false;
+        }
+
         $limit = $this->leadLimitForCurrentPlan();
 
         if ($limit === null) {

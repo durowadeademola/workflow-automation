@@ -65,6 +65,10 @@ class ClientForm
                             ->rows(2)
                             ->visible(fn ($record) => $record?->status === 'rejected')
                             ->columnSpanFull(),
+                        Toggle::make('bypass_plan_limits')
+                            ->label('Unrestricted (bypass plan limits)')
+                            ->helperText('Ignores subscription status and message/appointment/lead limits entirely for this client — the widget, appointments, and lead capture all behave as if always subscribed with unlimited quota. Use for internal/demo/testing accounts only, not real customers.')
+                            ->columnSpanFull(),
                         CheckboxList::make('features')
                             ->label('Services / dashboard access')
                             ->options(Client::FEATURES)
