@@ -135,16 +135,26 @@ export default function WorkflowAutomation() {
                     <section className="py-20 bg-gray-50 dark:bg-gray-800">
                         <div className="max-w-3xl mx-auto px-4 text-center">
                             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4">Ready to Automate Your Operations?</h2>
-                            <p className="text-gray-500 dark:text-gray-400 mb-8">
-                                Book a free workflow audit and we'll identify exactly where automation can save your business the most time.
+                            <p className="text-gray-500 dark:text-gray-400 mb-4">
+                                Every workflow automation is custom-built for your business — tell us what you need and we'll scope it out together.
+                            </p>
+                            <p className="text-sm text-gray-400 dark:text-gray-500 mb-2">
+                                No sign-up required — just fill in a few details and we'll get back to you.
+                            </p>
+                            <p className="text-sm text-gray-400 dark:text-gray-500 mb-8">
+                                Need something broader — custom dashboards, AI features, legacy integrations?{" "}
+                                <Link href="/services/custom-solutions" className="text-blue-600 dark:text-blue-400 hover:underline">
+                                    See Custom Solutions
+                                </Link>
+                                .
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
-                                    Schedule Free Demo
+                                <Link href="/contact?interest=Workflow%20Automation" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
+                                    Request a Custom Quote
                                 </Link>
-                                <Link href="/#pricing" className="border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-all">
-                                    View Pricing
-                                </Link>
+                                <a href="https://wa.me/2347064706193" target="_blank" rel="noreferrer" className="border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-all">
+                                    WhatsApp Us
+                                </a>
                             </div>
                         </div>
                     </section>

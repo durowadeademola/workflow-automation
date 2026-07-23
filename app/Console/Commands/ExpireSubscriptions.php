@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Subscription;
 use App\Models\User;
+use App\Notifications\ClientSubscriptionExpired;
 use App\Notifications\SubscriptionExpired;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Notification;
@@ -42,6 +43,12 @@ class ExpireSubscriptions extends Command
 
             if ($recipients->isNotEmpty()) {
                 Notification::send($recipients, new SubscriptionExpired($subscription));
+            }
+
+            $admins = User::where('is_admin', true)->get();
+
+            if ($admins->isNotEmpty()) {
+                Notification::send($admins, new ClientSubscriptionExpired($subscription));
             }
         }
 

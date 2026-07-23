@@ -160,17 +160,24 @@ export default function CustomSolutions() {
                     <section className="py-20 bg-white dark:bg-gray-900">
                         <div className="max-w-3xl mx-auto px-4 text-center">
                             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4">Have a Complex Problem to Solve?</h2>
-                            <p className="text-gray-500 dark:text-gray-400 mb-8">
+                            <p className="text-gray-500 dark:text-gray-400 mb-4">
                                 Tell us what you're trying to automate. If it's possible, we'll build it —
                                 and give you a clear scope and timeline before any work begins.
+                            </p>
+                            <p className="text-sm text-gray-400 dark:text-gray-500 mb-8">
+                                Just need to connect tools you already use?{" "}
+                                <Link href="/services/workflow-automation" className="text-blue-600 dark:text-blue-400 hover:underline">
+                                    See Workflow Automation
+                                </Link>{" "}
+                                instead — it's a faster, more focused fit for that.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Discuss Your Project
                                 </Link>
-                                <Link href="/#pricing" className="border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-all">
-                                    View Pricing
-                                </Link>
+                                <a href="https://wa.me/2347064706193" target="_blank" rel="noreferrer" className="border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-all">
+                                    WhatsApp Us
+                                </a>
                             </div>
                         </div>
                     </section>

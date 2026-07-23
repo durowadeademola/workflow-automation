@@ -10,6 +10,13 @@ const services = [
         popular: true,
     },
     {
+        title: "Workflow Automation",
+        description: "Connect your tools and automate repetitive business processes",
+        features: ["Multi-tool integration", "Custom workflows", "Data processing", "Scheduling"],
+        href: "/services/workflow-automation",
+        custom: true,
+    },
+    {
         title: "WhatsApp Automation",
         description: "Transform WhatsApp into your 24/7 sales, support, and booking assistant",
         features: ["Order processing", "Booking management", "Customer support", "Payment integration"],
@@ -35,13 +42,6 @@ const services = [
         description: "Seamless payment processing, invoicing, and reconciliation",
         features: ["Paystack integration", "Auto-invoicing", "Payment tracking", "Refunds"],
         href: "/services/payment-automation",
-        comingSoon: true,
-    },
-    {
-        title: "Workflow Automation",
-        description: "Connect your tools and automate repetitive business processes",
-        features: ["Multi-tool integration", "Custom workflows", "Data processing", "Scheduling"],
-        href: "/services/workflow-automation",
         comingSoon: true,
     },
 ];
@@ -94,6 +94,11 @@ export default function Services() {
                             {service.comingSoon && (
                                 <span className="absolute -top-3 left-6 bg-gray-400 text-white text-xs font-semibold px-3 py-1 rounded-full">
                                     Coming Soon
+                                </span>
+                            )}
+                            {service.custom && (
+                                <span className="absolute -top-3 left-6 bg-violet-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                                    Custom Quote
                                 </span>
                             )}
                             <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-2">{service.title}</h3>

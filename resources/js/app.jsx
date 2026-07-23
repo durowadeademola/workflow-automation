@@ -5,6 +5,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import CookieConsent from './Components/CookieConsent';
+import SmoothScroll from './Components/SmoothScroll';
 
 document.addEventListener('inertia:invalid', (event) => {
     event.preventDefault()
@@ -32,6 +33,7 @@ createInertiaApp({
 
         root.render(
             <>
+                <SmoothScroll />
                 <App {...props} />
                 <CookieConsent />
             </>,

@@ -591,7 +591,7 @@
   const root = document.createElement('div');
   root.id = 'cw-root';
   root.innerHTML = `
-    <div id="cw-window" role="dialog" aria-label="Chat with ${cfg.agentName}">
+    <div id="cw-window" role="dialog" aria-label="Chat with ${cfg.agentName}" data-lenis-prevent>
       <div class="cw-header">
         <div class="cw-header-left">
           <div class="cw-avatar-wrap">

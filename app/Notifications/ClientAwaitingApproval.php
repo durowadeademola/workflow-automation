@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\Client;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class ClientAwaitingApproval extends Notification
@@ -16,7 +17,18 @@ class ClientAwaitingApproval extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return $notifiable->email_notifications_enabled
+            ? ['mail', 'database']
+            : ['database'];
+    }
+
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject('New business awaiting approval')
+            ->greeting("Hi {$notifiable->name},")
+            ->line("{$this->client->name} just self-registered on Blueflow and can't log in until you approve them.")
+            ->action('Review Application', url("/admin/clients/{$this->client->id}/edit"));
     }
 
     /**

@@ -14,6 +14,14 @@ const services = [
         icon: MessageSquareText,
     },
     {
+        title: "Workflow Automation",
+        description: "Connect your tools and automate repetitive business processes end-to-end.",
+        features: ["100+ app integrations", "Visual builder", "Approval workflows", "Data sync"],
+        href: "/services/workflow-automation",
+        icon: Workflow,
+        custom: true,
+    },
+    {
         title: "WhatsApp Automation",
         description: "Turn WhatsApp into your 24/7 sales, support, and booking assistant. Never miss a customer message again.",
         features: ["Order processing", "Booking management", "Customer support", "Payment integration"],
@@ -43,14 +51,6 @@ const services = [
         features: ["Auto invoicing", "Payment reminders", "Paystack & Flutterwave", "Financial reports"],
         href: "/services/payment-automation",
         icon: CreditCard,
-        comingSoon: true,
-    },
-    {
-        title: "Workflow Automation",
-        description: "Connect your tools and automate repetitive business processes end-to-end.",
-        features: ["100+ app integrations", "Visual builder", "Approval workflows", "Data sync"],
-        href: "/services/workflow-automation",
-        icon: Workflow,
         comingSoon: true,
     },
 ];
@@ -86,6 +86,11 @@ export default function Services() {
                                 {service.comingSoon && (
                                     <span className="absolute -top-3 left-6 bg-gray-400 text-white text-xs font-semibold px-3 py-1 rounded-full">
                                         Coming Soon
+                                    </span>
+                                )}
+                                {service.custom && (
+                                    <span className="absolute -top-3 left-6 bg-violet-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                                        Custom Quote
                                     </span>
                                 )}
 

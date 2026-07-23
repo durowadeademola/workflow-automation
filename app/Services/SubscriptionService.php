@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Subscription;
+use App\Notifications\ClientSubscribed;
 use App\Notifications\SubscriptionInvoice;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
@@ -97,6 +98,19 @@ class SubscriptionService
                 'subscription_id' => $subscription->id,
                 'error' => $e->getMessage(),
             ]);
+        }
+
+        $admins = User::where('is_admin', true)->get();
+
+        if ($admins->isNotEmpty()) {
+            try {
+                Notification::send($admins, new ClientSubscribed($subscription));
+            } catch (\Throwable $e) {
+                Log::warning('Failed to notify admins of new subscription', [
+                    'subscription_id' => $subscription->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
     }
 }
