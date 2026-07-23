@@ -44,15 +44,10 @@
             @forelse($this->getThread() as $msg)
                 <div class="flex w-full {{ $msg->from_admin ? 'justify-end' : 'justify-start' }}">
                     <div @class([
-                        'max-w-[80%] px-4 py-2.5 rounded-2xl shadow-sm text-sm whitespace-pre-wrap',
+                        'max-w-[80%] px-4 py-2.5 rounded-2xl shadow-sm text-sm',
                         'bg-white text-gray-800 border border-gray-200 rounded-tl-none' => ! $msg->from_admin,
                         'bg-primary-600 text-white rounded-tr-none' => $msg->from_admin,
-                    ])>
-                        <span class="block text-[10px] font-semibold uppercase tracking-wide opacity-70 mb-1">
-                            {{ $msg->from_admin ? 'Support Team' : ($msg->user?->name ?? 'Client') }}
-                        </span>
-                        {{ $msg->content }}
-                        <span class="block text-[10px] opacity-60 mt-1">{{ $msg->created_at->format('M j, g:i A') }}</span>
+                    ])><span class="block text-[10px] font-semibold uppercase tracking-wide opacity-70 mb-1">{{ $msg->from_admin ? 'Support Team' : ($msg->user?->name ?? 'Client') }}</span><span class="whitespace-pre-wrap">{{ $msg->content }}</span><span class="block text-[10px] opacity-60 mt-1">{{ $msg->created_at->format('M j, g:i A') }}</span>
                     </div>
                 </div>
             @empty

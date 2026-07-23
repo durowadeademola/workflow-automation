@@ -10,3 +10,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('app:expire-subscriptions')->hourly();
 Schedule::command('app:cancel-stale-pending-subscriptions')->hourly();
+Schedule::command('app:remind-expiring-subscriptions')->hourly();

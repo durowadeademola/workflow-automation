@@ -46,6 +46,7 @@ class UserPanelProvider extends PanelProvider
             ->favicon(asset('favicon-32x32.png'))
             ->login()
             ->passwordReset()
+            ->emailVerification()
             ->profile()
             // Optional, per-user — isRequired defaults to false, so login
             // isn't blocked for anyone who hasn't set this up. A user turns
@@ -91,14 +92,12 @@ class UserPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->brandName('Blueflow')
-            // Same "BA" badge as the marketing site's navbar logo, so the
-            // login screen doesn't feel like a completely separate product.
-            // Linked back to the marketing homepage — the standard way an
-            // auth screen offers a way back out, without adding a full nav.
-            ->brandLogo(new HtmlString(
-                '<a href="/"><div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"><span class="text-white font-bold text-sm">BA</span></div></a>'
-            ))
-            ->brandLogoHeight('2rem')
+            // Plain "Blueflow" wordmark (picks up .fi-logo's own font-bold
+            // text-xl styling automatically) rather than the marketing
+            // site's "BA" badge — just linked back to the marketing
+            // homepage, the standard way an auth/panel screen offers a way
+            // back out without adding a full nav.
+            ->brandLogo(new HtmlString('<a href="/">Blueflow</a>'))
             ->widgets([])
             ->darkMode()
             ->defaultThemeMode(ThemeMode::Light)

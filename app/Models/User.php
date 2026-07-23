@@ -9,20 +9,22 @@ use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Auth\MultiFactor\Email\Concerns\InteractsWithEmailAuthentication;
 use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
+use Filament\Auth\Notifications\VerifyEmail;
 use Filament\Facades\Filament;
 use Filament\Models\Contracts\FilamentUser;
 // use Filament\Models\Contracts\HasDatabaseNotifications;
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasEmailAuthentication
+class User extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasEmailAuthentication, MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, InteractsWithAppAuthentication, InteractsWithAppAuthenticationRecovery, InteractsWithEmailAuthentication, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, InteractsWithAppAuthentication, InteractsWithAppAuthenticationRecovery, InteractsWithEmailAuthentication, MustVerifyEmailTrait, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -89,6 +91,30 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
         $url = Filament::getResetPasswordUrl($token, $this);
 
         $this->notify(new ResetPasswordNotification($url));
+    }
+
+    /**
+     * Same reasoning as sendPasswordResetNotification() above: Laravel's own
+     * MustVerifyEmail trait builds its link via route('verification.verify',
+     * ...), which doesn't exist here — every login is through the Filament
+     * panel, whose verify route is namespaced under the panel id instead.
+     *
+     * Deliberately resolves the 'user' panel by id rather than calling
+     * Filament::getVerifyEmailUrl($this) — that helper builds the URL for
+     * whichever panel the CURRENT request happens to be in, which is wrong
+     * here: this fires from ClientObserver/UserObserver, often while an
+     * admin (in the /admin panel) is the one approving/creating the
+     * account, not the client/agent it's actually for. Only clients/agents
+     * ever go through email verification at all (see UserPanelProvider),
+     * so the 'user' panel is always the right one regardless of who/what
+     * triggered this.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        $notification = app(VerifyEmail::class);
+        $notification->url = Filament::getPanel('user')->getVerifyEmailUrl($this);
+
+        $this->notify($notification);
     }
 
     /**

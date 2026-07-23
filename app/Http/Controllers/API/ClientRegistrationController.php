@@ -5,8 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\User;
+use App\Notifications\ClientRegistered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
@@ -26,11 +28,11 @@ class ClientRegistrationController extends Controller
             'type' => ['required', 'string', 'max:255'],
             'features' => ['required', 'array', 'min:1'],
             'features.*' => ['string', Rule::in(Client::SELF_REGISTRATION_FEATURES)],
-            'password' => ['required', 'confirmed', Password::min(8)],
+            'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
             'terms_accepted' => ['accepted'],
         ]);
 
-        $client = DB::transaction(function () use ($validated) {
+        [$client, $user] = DB::transaction(function () use ($validated) {
             $client = Client::create([
                 'name' => $validated['business_name'],
                 'email' => $validated['email'],
@@ -40,7 +42,7 @@ class ClientRegistrationController extends Controller
                 'status' => 'pending',
             ]);
 
-            User::create([
+            $user = User::create([
                 'client_id' => $client->id,
                 'name' => $validated['business_name'],
                 'email' => $validated['email'],
@@ -50,8 +52,10 @@ class ClientRegistrationController extends Controller
                 'is_agent' => false,
             ]);
 
-            return $client;
+            return [$client, $user];
         });
+
+        Notification::send($user, new ClientRegistered($client));
 
         return response()->json([
             'status' => 'success',

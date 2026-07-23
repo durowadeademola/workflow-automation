@@ -152,7 +152,7 @@ export default function Navbar() {
                             <Link href="/register"
                                 className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                             >
-                                Get Started
+                                Sign Up
                             </Link>
                         </div>
 
@@ -235,7 +235,7 @@ export default function Navbar() {
                             className="block text-center py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700"
                             onClick={() => setMobileOpen(false)}
                         >
-                            Get Started
+                            Sign Up
                         </Link>
                     </div>
                 </div>

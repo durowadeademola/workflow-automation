@@ -19,7 +19,7 @@ class ClientApproved extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject("You're approved — welcome to Blueflow")
+            ->subject("You're approved — Welcome to Blueflow")
             ->greeting("Hi {$notifiable->name},")
             ->line('Good news — your business has been approved and your dashboard is now active.')
             ->action('Log In', url('/user/login'))

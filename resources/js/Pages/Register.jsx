@@ -254,8 +254,10 @@ export default function Register() {
                                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                         </button>
                                     </div>
-                                    {errors.password && (
+                                    {errors.password ? (
                                         <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.password[0]}</p>
+                                    ) : (
+                                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">At least 8 characters, with uppercase, lowercase, a number, and a symbol.</p>
                                     )}
                                 </div>
                                 <div>

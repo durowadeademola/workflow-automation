@@ -7,6 +7,8 @@ use App\Models\Subscription;
 use App\Models\User;
 use App\Notifications\ClientApproved;
 use App\Notifications\ClientAwaitingApproval;
+use App\Notifications\TrialStarted;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Notification;
 
 class ClientObserver
@@ -65,6 +67,12 @@ class ClientObserver
         }
 
         Notification::send($recipients, new ClientApproved());
+
+        // Only reachable now that the client is active — see
+        // UserObserver::created() and User::sendEmailVerificationNotification().
+        foreach ($recipients as $recipient) {
+            event(new Registered($recipient));
+        }
     }
 
     /**
@@ -80,7 +88,7 @@ class ClientObserver
             return;
         }
 
-        Subscription::create([
+        $subscription = Subscription::create([
             'client_id' => $client->id,
             'plan' => 'trial',
             'name' => 'Free Trial',
@@ -90,5 +98,18 @@ class ClientObserver
             'start_date' => now(),
             'end_date' => now()->addDays(14),
         ]);
+
+        // Only ever reaches anyone here for the self-registered-then-approved
+        // path, where the client's users already exist by this point — for a
+        // client created "active" directly by an admin, there's usually no
+        // user yet at all, so UserObserver::created() sends this instead,
+        // the moment that first user actually shows up.
+        $recipients = User::where('client_id', $client->id)
+            ->where(fn ($query) => $query->where('is_client', true)->orWhere('is_agent', true))
+            ->get();
+
+        if ($recipients->isNotEmpty()) {
+            Notification::send($recipients, new TrialStarted($subscription));
+        }
     }
 }
