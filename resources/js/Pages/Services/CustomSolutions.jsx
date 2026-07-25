@@ -35,12 +35,6 @@ const metrics = [
     { value: "Ongoing", label: "Support Included" },
 ];
 
-const useCases = [
-    { title: "Multi-branch inventory sync", description: "A retail chain needed real-time stock visibility across 12 locations. We built a custom sync layer between their POS systems and a central dashboard." },
-    { title: "Automated loan processing", description: "A microfinance firm reduced loan approval time from 3 days to 4 hours with a custom document verification and credit scoring workflow." },
-    { title: "Hospital patient flow system", description: "A private clinic automated patient check-in, doctor assignment, and billing — eliminating paper-based bottlenecks across all departments." },
-];
-
 export default function CustomSolutions() {
     return (
         <>
@@ -116,26 +110,6 @@ export default function CustomSolutions() {
                                             <h3 className="font-bold text-gray-900 dark:text-white mb-1">{step.title}</h3>
                                             <p className="text-sm text-gray-500 dark:text-gray-400">{step.description}</p>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Use Cases */}
-                    <section className="py-20 bg-gray-50 dark:bg-gray-800">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white text-center mb-14">Real Problems We've Solved</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {useCases.map((u) => (
-                                    <div key={u.title} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm">
-                                        <div className="w-8 h-8 bg-blue-600 rounded-lg mb-4 flex items-center justify-center">
-                                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                            </svg>
-                                        </div>
-                                        <h3 className="font-bold text-gray-900 dark:text-white mb-2">{u.title}</h3>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">{u.description}</p>
                                     </div>
                                 ))}
                             </div>

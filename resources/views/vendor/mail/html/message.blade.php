@@ -2,14 +2,12 @@
 {{-- Header --}}
 <x-slot:header>
 <x-mail::header :url="config('app.url')">
-{{-- A remote asset() URL would point at whatever APP_URL happens to be
-     (often a local-only dev domain like blueflow.test) — unreachable from a
-     real recipient's mail client, so the logo would just be a broken image
-     for anyone outside this machine. Embedded as a real inline attachment
-     instead (see AppServiceProvider's MessageSending listener, which
-     attaches the logo under this exact Content-ID), so it always renders
-     regardless of domain or whether remote images are blocked. --}}
-<img src="cid:blueflow-logo@blueflow" class="logo" alt="{{ config('app.name') }}">
+{{-- Plain text rather than a logo image: a remote asset() URL would be
+     broken for real recipients until the production domain is actually
+     live, and embedding it as an inline attachment (tried previously) made
+     Gmail's mobile app show a paperclip/attachment icon on every email even
+     though there's nothing to actually download. --}}
+{{ config('app.name') }}
 </x-mail::header>
 </x-slot:header>
 
