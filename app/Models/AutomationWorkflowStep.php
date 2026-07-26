@@ -13,6 +13,7 @@ class AutomationWorkflowStep extends Model
         'type',
         'config',
         'run_if',
+        'canvas_position',
         'order',
     ];
 
@@ -21,6 +22,7 @@ class AutomationWorkflowStep extends Model
         return [
             'config' => 'array',
             'run_if' => 'array',
+            'canvas_position' => 'array',
         ];
     }
 
