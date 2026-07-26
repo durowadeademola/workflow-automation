@@ -152,10 +152,21 @@ class WorkflowExecutor
             'completed_at' => now(),
         ]);
 
-        $admins = User::where('is_admin', true)->get();
+        // The alert is best-effort — if sending it fails too (e.g. a mail
+        // outage), that must never surface as if the workflow run itself
+        // failed differently, or mask the real error above with an
+        // unrelated one about the notification.
+        try {
+            $admins = User::where('is_admin', true)->get();
 
-        if ($admins->isNotEmpty()) {
-            Notification::send($admins, new WorkflowRunFailedNotification($run->fresh()));
+            if ($admins->isNotEmpty()) {
+                Notification::send($admins, new WorkflowRunFailedNotification($run->fresh()));
+            }
+        } catch (Throwable $e) {
+            Log::error('Failed to send workflow-run-failed alert', [
+                'workflow_run_id' => $run->id,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 
