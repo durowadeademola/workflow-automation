@@ -39,6 +39,18 @@ return [
         'webhook_secret' => env('N8N_WEBHOOK_SECRET'),
     ],
 
+    'groq' => [
+        'key' => env('GROQ_API_KEY'),
+    ],
+
+    'openrouter' => [
+        'key' => env('OPENROUTER_API_KEY'),
+    ],
+
+    'embedding_server' => [
+        'url' => env('EMBEDDING_SERVER_URL', 'http://127.0.0.1:5000'),
+    ],
+
     'paystack' => [
         'secret_key' => env('PAYSTACK_SECRET_KEY'),
         'public_key' => env('PAYSTACK_PUBLIC_KEY'),

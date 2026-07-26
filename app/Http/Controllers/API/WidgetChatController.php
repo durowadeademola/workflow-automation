@@ -126,26 +126,28 @@ class WidgetChatController extends Controller
 
         [$customer, $inboundMessage] = $this->logInboundMessage($client->id, $validated);
 
-        try {
-            $response = Http::timeout(20)->post($client->webhook_url, [
-                'message' => $validated['message'],
-                'history' => $validated['history'] ?? [],
-                'systemPrompt' => $validated['systemPrompt'] ?? null,
-                'businessName' => $validated['businessName'] ?? null,
-                'clientId' => $client->id,
-                'waNumber' => $validated['waNumber'] ?? null,
-                'sessionToken' => $validated['sessionToken'] ?? null,
-                'knowledgeBase' => $this->knowledgeBaseFor($client),
-            ]);
+        $payload = [
+            'message' => $validated['message'],
+            'history' => $validated['history'] ?? [],
+            'systemPrompt' => $validated['systemPrompt'] ?? null,
+            'businessName' => $validated['businessName'] ?? null,
+            'clientId' => $client->id,
+            'waNumber' => $validated['waNumber'] ?? null,
+            'sessionToken' => $validated['sessionToken'] ?? null,
+            'knowledgeBase' => $this->knowledgeBaseFor($client),
+        ];
 
-            $data = $response->json() ?? [];
+        try {
+            [$data, $statusCode] = config('workflow.widget_chat_engine') === 'native'
+                ? $this->runNativeEngine($payload)
+                : $this->callN8n($client, $payload);
 
             // The definitive, self-contained guarantee that a visitor is
             // never actually connected to a human outside working hours —
-            // independent of whatever n8n's own workflow decided to do.
+            // independent of whatever the chat engine itself decided to do.
             // WidgetConversationController::store() also refuses to create
             // an agent ticket in this window, but this is what the visitor
-            // actually sees, so it can't rely on n8n cooperating.
+            // actually sees, so it can't rely on the engine cooperating.
             if (($data['handoff'] ?? false) && ! $client->isWithinWorkingHours()) {
                 // Asks for name + a contact method rather than just saying
                 // "we're offline" — the visitor's reply flows back through
@@ -165,9 +167,9 @@ class WidgetChatController extends Controller
                 $this->excludeFromLimit($inboundMessage);
             }
 
-            return response()->json($data, $response->status());
+            return response()->json($data, $statusCode);
         } catch (\Throwable $e) {
-            Log::warning('Widget chat proxy failed to reach n8n', ['client_id' => $client->id, 'error' => $e->getMessage()]);
+            Log::warning('Widget chat engine failed to produce a reply', ['client_id' => $client->id, 'error' => $e->getMessage()]);
 
             $this->excludeFromLimit($inboundMessage);
 
@@ -175,6 +177,37 @@ class WidgetChatController extends Controller
                 'reply' => "Sorry, I'm having a little trouble right now. Please try again shortly.",
             ], 502);
         }
+    }
+
+    /**
+     * @return array{0: array<string, mixed>, 1: int}
+     */
+    private function callN8n(Client $client, array $payload): array
+    {
+        $response = Http::timeout(20)->post($client->webhook_url, $payload);
+
+        return [$response->json() ?? [], $response->status()];
+    }
+
+    /**
+     * Runs the same pipeline through Blueflow's own AutomationWorkflow
+     * engine (app/Workflow/) instead of n8n — opt-in via
+     * WIDGET_CHAT_ENGINE=native, off by default so live traffic is
+     * unaffected. See the "chat-widget-reply" workflow seeded by migration
+     * for the exact steps this runs.
+     *
+     * @return array{0: array<string, mixed>, 1: int}
+     */
+    private function runNativeEngine(array $payload): array
+    {
+        $workflow = \App\Models\AutomationWorkflow::where('slug', 'chat-widget-reply')->firstOrFail();
+        $run = app(\App\Workflow\WorkflowExecutor::class)->run($workflow, $payload);
+
+        if ($run->status !== 'completed') {
+            throw new \RuntimeException($run->error ?? 'Native chat workflow run did not complete');
+        }
+
+        return [$run->context['steps']['respond'] ?? [], 200];
     }
 
     /**

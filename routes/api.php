@@ -12,6 +12,7 @@ use App\Http\Controllers\API\WidgetConversationController;
 use App\Http\Controllers\API\WidgetFaqController;
 use App\Http\Controllers\API\WidgetLeadController;
 use App\Http\Controllers\API\WidgetRegistrationController;
+use App\Http\Controllers\API\WorkflowTriggerController;
 use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\API\VulnerabilityController;
@@ -30,6 +31,8 @@ Route::middleware('webhook.secret')->group(function () {
     Route::post('/widget/lead', [WidgetLeadController::class, 'store'])->name('widget.lead.store');
     // Called by n8n only, once the AI has collected a visitor's name plus at least one contact method.
     Route::post('/widget/register', [WidgetRegistrationController::class, 'store'])->name('widget.register.store');
+    // Generic entry point for any AutomationWorkflow with trigger_type=webhook.
+    Route::post('/workflows/{slug}/trigger', [WorkflowTriggerController::class, 'trigger'])->name('workflows.trigger');
 });
 
 // Called directly by the embedded chat widget in the visitor's browser.

@@ -11,3 +11,8 @@ Artisan::command('inspire', function () {
 Schedule::command('app:expire-subscriptions')->hourly();
 Schedule::command('app:cancel-stale-pending-subscriptions')->hourly();
 Schedule::command('app:remind-expiring-subscriptions')->hourly();
+
+// Dispatches every active AutomationWorkflow with trigger_type=scheduled
+// whose own cron expression (trigger_config.cron) is due — new scheduled
+// workflows just need that config, not a new Schedule::command() entry here.
+Schedule::command('workflows:run-scheduled')->everyMinute();
