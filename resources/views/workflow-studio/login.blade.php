@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Workflow Studio</title>
+    <!-- Matches the Inter font used in the Filament admin panel and the main site -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
     <style>
         * { box-sizing: border-box; }
         body {
@@ -13,7 +16,7 @@
             align-items: center;
             justify-content: center;
             background: #0f172a;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         .card {
             width: 100%;
@@ -79,7 +82,7 @@
 <body>
     <div class="card">
         <h1>Workflow Studio</h1>
-        <p class="sub">Blueflow's native automation builder.</p>
+        <p class="sub">Native Workflow Engine</p>
 
         @if ($errors->any())
             <div class="error">{{ $errors->first() }}</div>
