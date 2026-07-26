@@ -12,6 +12,7 @@ class AutomationWorkflowRunStep extends Model
         'automation_workflow_step_id',
         'key',
         'status',
+        'attempts',
         'input',
         'output',
         'error',

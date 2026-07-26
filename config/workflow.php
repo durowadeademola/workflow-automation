@@ -29,6 +29,7 @@ return [
     */
 
     'steps' => [
+        //Blueflow Chat Widget Steps
         'rag_search' => \App\Workflow\Steps\ChatWidget\RagSearchStep::class,
         'chat_prompt_builder' => \App\Workflow\Steps\ChatWidget\ChatPromptBuilderStep::class,
         'llm_call' => \App\Workflow\Steps\ChatWidget\LlmCallStep::class,
@@ -38,6 +39,14 @@ return [
         'dispatch_lead' => \App\Workflow\Steps\ChatWidget\DispatchLeadStep::class,
         'dispatch_registration' => \App\Workflow\Steps\ChatWidget\DispatchRegistrationStep::class,
         'chat_response_builder' => \App\Workflow\Steps\ChatWidget\ChatResponseBuilderStep::class,
+        
+        //Blueflow Crawler Steps
+        'delete_old_chunks' => \App\Workflow\Steps\Crawler\DeleteOldChunksStep::class,
+        'fetch_pages' => \App\Workflow\Steps\Crawler\FetchPagesStep::class,
+        'extract_and_chunk' => \App\Workflow\Steps\Crawler\ExtractAndChunkStep::class,
+        'generate_embeddings' => \App\Workflow\Steps\Crawler\GenerateEmbeddingsStep::class,
+        'store_chunks' => \App\Workflow\Steps\Crawler\StoreChunksStep::class,
+        'crawl_summary' => \App\Workflow\Steps\Crawler\CrawlSummaryStep::class,
     ],
 
 ];

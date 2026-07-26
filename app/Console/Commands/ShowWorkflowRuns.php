@@ -129,7 +129,8 @@ class ShowWorkflowRuns extends Command
                 default => 'gray',
             };
 
-            $this->line("  <fg={$color}>[{$step->status}]</> {$step->key}" . ($step->duration_ms !== null ? " ({$step->duration_ms}ms)" : ''));
+            $attemptsSuffix = $step->attempts > 1 ? ", {$step->attempts} attempts" : '';
+            $this->line("  <fg={$color}>[{$step->status}]</> {$step->key}" . ($step->duration_ms !== null ? " ({$step->duration_ms}ms{$attemptsSuffix})" : ''));
 
             if ($step->output) {
                 $this->line('    output: ' . json_encode($step->output));

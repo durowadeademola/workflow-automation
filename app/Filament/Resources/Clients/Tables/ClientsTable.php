@@ -120,7 +120,9 @@ class ClientsTable
                         && $record->hasFeature('chat-widget')
                         && ! $record->widget_ready)
                     ->requiresConfirmation()
-                    ->modalDescription('This tells the client their widget is ready to embed and go live — make sure the n8n workflow and webhook URL are actually wired up first.')
+                    ->modalDescription(fn ($record) => $record->usesNativeChatEngine()
+                        ? 'This tells the client their widget is ready to embed and go live — make sure the "chat-widget-reply" native workflow is actually configured for this client first.'
+                        : 'This tells the client their widget is ready to embed and go live — make sure the n8n workflow and webhook URL are actually wired up first.')
                     ->action(function ($record) {
                         $record->update([
                             'widget_ready' => true,

@@ -12,6 +12,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class ClientForm
@@ -75,17 +76,30 @@ class ClientForm
                             ->helperText('Which dashboard menus this client (and their agents) can see — e.g. no "Chat Widget" means no Widget Settings or Live Chat. Blank/unset means unrestricted (legacy clients).')
                             ->columns(2)
                             ->columnSpanFull(),
-                        TextInput::make('webhook_url')
-                            ->label('n8n Webhook URL')
-                            ->helperText('Where the chat widget\'s messages are forwarded once this client has an active subscription.')
-                            ->url()
+                        Select::make('chat_engine')
+                            ->label('Chat engine')
+                            ->options([
+                                'n8n' => 'n8n (webhook)',
+                                'native' => 'Native (Blueflow AutomationWorkflow)',
+                            ])
+                            ->default('n8n')
+                            ->required()
+                            ->helperText('Which engine actually processes this client\'s chat messages. Switching to "Native" runs everything in-process via the "chat-widget-reply" AutomationWorkflow instead of the n8n webhook below — see Workflow Studio to inspect or edit it.')
+                            ->live()
                             ->columnSpanFull()
                             ->visible(fn (?Client $record) => $record?->hasFeature('chat-widget')),
+                        TextInput::make('webhook_url')
+                            ->label('n8n Webhook URL')
+                            ->helperText('Where the chat widget\'s messages are forwarded once this client has an active subscription. Only used while Chat engine is set to "n8n" above.')
+                            ->url()
+                            ->required(fn (Get $get) => $get('chat_engine') !== 'native')
+                            ->columnSpanFull()
+                            ->visible(fn (?Client $record, Get $get) => $record?->hasFeature('chat-widget') && $get('chat_engine') !== 'native'),
                     ])->columns(2)
                     ->columnSpan('full'),
 
                 Section::make('Widget Configuration')
-                    ->description('What this client has configured from their dashboard. These exact values are sent to the n8n webhook above with every message — use them to build or debug that client\'s workflow.')
+                    ->description('What this client has configured from their dashboard. These exact values are sent to whichever chat engine is selected above (n8n webhook or the native workflow) with every message — use them to build or debug that client\'s workflow.')
                     ->schema([
                         Toggle::make('widget_ready')
                             ->label('Ready to go live')
@@ -123,7 +137,7 @@ class ClientForm
                             ->maxLength(500)
                             ->columnSpanFull(),
                         Textarea::make('widget_system_prompt')
-                            ->label('AI instructions (sent to n8n as systemPrompt)')
+                            ->label('AI instructions (sent to the chat engine as systemPrompt)')
                             ->rows(4)
                             ->maxLength(2000)
                             ->columnSpanFull(),

@@ -13,6 +13,11 @@ export default function StepNode({ data, selected }) {
                     if {step.run_if.field} == {String(step.run_if.equals)}
                 </div>
             )}
+            {step.max_attempts > 1 && (
+                <div className="badge badge-retry">
+                    retries x{step.max_attempts}
+                </div>
+            )}
             <Handle type="source" position={Position.Bottom} />
         </div>
     );

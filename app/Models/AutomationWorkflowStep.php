@@ -14,6 +14,8 @@ class AutomationWorkflowStep extends Model
         'config',
         'run_if',
         'canvas_position',
+        'max_attempts',
+        'retry_delay_ms',
         'order',
     ];
 

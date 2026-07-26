@@ -106,7 +106,9 @@ class WidgetChatController extends Controller
             ], 402);
         }
 
-        if (! $client->webhook_url) {
+        // The native engine doesn't need a webhook at all — it runs
+        // in-process — so this is only a requirement for clients still on n8n.
+        if (! $client->usesNativeChatEngine() && ! $client->webhook_url) {
             Log::warning('Client has an active subscription but no webhook_url configured', ['client_id' => $client->id]);
 
             return response()->json([
@@ -138,7 +140,7 @@ class WidgetChatController extends Controller
         ];
 
         try {
-            [$data, $statusCode] = config('workflow.widget_chat_engine') === 'native'
+            [$data, $statusCode] = $client->usesNativeChatEngine()
                 ? $this->runNativeEngine($payload)
                 : $this->callN8n($client, $payload);
 
@@ -191,10 +193,11 @@ class WidgetChatController extends Controller
 
     /**
      * Runs the same pipeline through Blueflow's own AutomationWorkflow
-     * engine (app/Workflow/) instead of n8n — opt-in via
-     * WIDGET_CHAT_ENGINE=native, off by default so live traffic is
-     * unaffected. See the "chat-widget-reply" workflow seeded by migration
-     * for the exact steps this runs.
+     * engine (app/Workflow/) instead of n8n — per-client opt-in via
+     * Client::chat_engine (see usesNativeChatEngine()), so clients can be
+     * migrated one at a time while everyone else stays on n8n. See the
+     * "chat-widget-reply" workflow seeded by migration for the exact steps
+     * this runs.
      *
      * @return array{0: array<string, mixed>, 1: int}
      */

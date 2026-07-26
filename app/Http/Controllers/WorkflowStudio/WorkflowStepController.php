@@ -18,6 +18,8 @@ class WorkflowStepController extends Controller
             'config' => ['nullable', 'array'],
             'run_if' => ['nullable', 'array'],
             'canvas_position' => ['nullable', 'array'],
+            'max_attempts' => ['nullable', 'integer', 'min:1', 'max:10'],
+            'retry_delay_ms' => ['nullable', 'integer', 'min:0', 'max:60000'],
         ]);
 
         $validated['order'] = ($workflow->steps()->max('order') ?? 0) + 1;
@@ -35,6 +37,8 @@ class WorkflowStepController extends Controller
             'config' => ['sometimes', 'nullable', 'array'],
             'run_if' => ['sometimes', 'nullable', 'array'],
             'canvas_position' => ['sometimes', 'nullable', 'array'],
+            'max_attempts' => ['sometimes', 'integer', 'min:1', 'max:10'],
+            'retry_delay_ms' => ['sometimes', 'integer', 'min:0', 'max:60000'],
             'order' => ['sometimes', 'integer', 'min:1'],
         ]);
 
