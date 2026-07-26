@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Workflow\Steps;
+namespace App\Workflow\Steps\ChatWidget;
 
 use App\Workflow\Contracts\StepHandler;
 use App\Workflow\WorkflowContext;

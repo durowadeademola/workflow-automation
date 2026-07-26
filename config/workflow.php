@@ -29,15 +29,15 @@ return [
     */
 
     'steps' => [
-        'rag_search' => \App\Workflow\Steps\RagSearchStep::class,
-        'chat_prompt_builder' => \App\Workflow\Steps\ChatPromptBuilderStep::class,
-        'llm_call' => \App\Workflow\Steps\LlmCallStep::class,
-        'extract_markers' => \App\Workflow\Steps\ExtractMarkersStep::class,
-        'dispatch_handoff' => \App\Workflow\Steps\DispatchHandoffStep::class,
-        'dispatch_appointment' => \App\Workflow\Steps\DispatchAppointmentStep::class,
-        'dispatch_lead' => \App\Workflow\Steps\DispatchLeadStep::class,
-        'dispatch_registration' => \App\Workflow\Steps\DispatchRegistrationStep::class,
-        'chat_response_builder' => \App\Workflow\Steps\ChatResponseBuilderStep::class,
+        'rag_search' => \App\Workflow\Steps\ChatWidget\RagSearchStep::class,
+        'chat_prompt_builder' => \App\Workflow\Steps\ChatWidget\ChatPromptBuilderStep::class,
+        'llm_call' => \App\Workflow\Steps\ChatWidget\LlmCallStep::class,
+        'extract_markers' => \App\Workflow\Steps\ChatWidget\ExtractMarkersStep::class,
+        'dispatch_handoff' => \App\Workflow\Steps\ChatWidget\DispatchHandoffStep::class,
+        'dispatch_appointment' => \App\Workflow\Steps\ChatWidget\DispatchAppointmentStep::class,
+        'dispatch_lead' => \App\Workflow\Steps\ChatWidget\DispatchLeadStep::class,
+        'dispatch_registration' => \App\Workflow\Steps\ChatWidget\DispatchRegistrationStep::class,
+        'chat_response_builder' => \App\Workflow\Steps\ChatWidget\ChatResponseBuilderStep::class,
     ],
 
 ];
