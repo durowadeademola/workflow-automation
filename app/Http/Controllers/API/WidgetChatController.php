@@ -84,9 +84,6 @@ class WidgetChatController extends Controller
             'history' => ['array'],
             'history.*.role' => ['required_with:history', 'in:user,assistant'],
             'history.*.content' => ['required_with:history', 'string'],
-            'systemPrompt' => ['nullable', 'string'],
-            'businessName' => ['nullable', 'string', 'max:255'],
-            'waNumber' => ['nullable', 'string', 'max:50'],
             'sessionToken' => ['nullable', 'string', 'max:100'],
         ]);
 
@@ -131,10 +128,16 @@ class WidgetChatController extends Controller
         $payload = [
             'message' => $validated['message'],
             'history' => $validated['history'] ?? [],
-            'systemPrompt' => $validated['systemPrompt'] ?? null,
-            'businessName' => $validated['businessName'] ?? null,
+            // Authoritative from the client record actually looked up by
+            // clientId, not whatever the widget happened to send — a
+            // visitor tampering with their own browser's request could
+            // otherwise override their own conversation's business name or
+            // AI instructions. Same reasoning as knowledgeBase below,
+            // which was already done this way.
+            'systemPrompt' => $client->widget_system_prompt,
+            'businessName' => $client->name,
             'clientId' => $client->id,
-            'waNumber' => $validated['waNumber'] ?? null,
+            'waNumber' => $client->widget_wa_number,
             'sessionToken' => $validated['sessionToken'] ?? null,
             'knowledgeBase' => $this->knowledgeBaseFor($client),
         ];
