@@ -23,7 +23,7 @@ class Client extends Model
         'rejection_reason',
         'features',
         'webhook_url',
-        'chat_engine',
+        'workflow_engine',
         'widget_ready',
         'widget_ready_at',
         'widget_enabled',
@@ -95,11 +95,11 @@ class Client extends Model
      * Per-client, not a global switch — lets individual clients be moved
      * onto Blueflow's own AutomationWorkflow engine (app/Workflow/) one at a
      * time, independent of every other client, which stays on n8n until its
-     * own chat_engine is switched too. See WidgetChatController::send().
+     * own workflow_engine is switched too. See WidgetChatController::send().
      */
-    public function usesNativeChatEngine(): bool
+    public function usesNativeWorkflowEngine(): bool
     {
-        return $this->chat_engine === 'native';
+        return $this->workflow_engine === 'native';
     }
 
     /**

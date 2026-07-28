@@ -35,6 +35,7 @@ class ClientForm
                             ->placeholder('Enter client telephone number'),
                         Select::make('type')
                             ->options([
+                                'internal' => 'Internal',
                                 'commercial-bank' => 'Commercial Bank',
                                 'ecommerce' => 'Ecommerce',
                                 'fintech' => 'Fintech',
@@ -76,11 +77,11 @@ class ClientForm
                             ->helperText('Which dashboard menus this client (and their agents) can see — e.g. no "Chat Widget" means no Widget Settings or Live Chat. Blank/unset means unrestricted (legacy clients).')
                             ->columns(2)
                             ->columnSpanFull(),
-                        Select::make('chat_engine')
-                            ->label('Chat engine')
+                        Select::make('workflow_engine')
+                            ->label('Workflow engine')
                             ->options([
                                 'n8n' => 'n8n (webhook)',
-                                'native' => 'Native (Blueflow AutomationWorkflow)',
+                                'native' => 'Native (Blueflow Engine)',
                             ])
                             ->default('n8n')
                             ->required()
@@ -90,11 +91,11 @@ class ClientForm
                             ->visible(fn (?Client $record) => $record?->hasFeature('chat-widget')),
                         TextInput::make('webhook_url')
                             ->label('n8n Webhook URL')
-                            ->helperText('Where the chat widget\'s messages are forwarded once this client has an active subscription. Only used while Chat engine is set to "n8n" above.')
+                            ->helperText('Where the chat widget\'s messages are forwarded once this client has an active subscription. Only used while Workflow engine is set to "n8n" above.')
                             ->url()
-                            ->required(fn (Get $get) => $get('chat_engine') !== 'native')
+                            ->required(fn (Get $get) => $get('workflow_engine') !== 'native')
                             ->columnSpanFull()
-                            ->visible(fn (?Client $record, Get $get) => $record?->hasFeature('chat-widget') && $get('chat_engine') !== 'native'),
+                            ->visible(fn (?Client $record, Get $get) => $record?->hasFeature('chat-widget') && $get('workflow_engine') !== 'native'),
                     ])->columns(2)
                     ->columnSpan('full'),
 

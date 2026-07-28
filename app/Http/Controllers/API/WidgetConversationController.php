@@ -63,6 +63,21 @@ class WidgetConversationController extends Controller
             ], 200);
         }
 
+        // Same reasoning as the outside_hours branch above: no ticket gets
+        // created (and no admin gets paged as a fallback) when this client
+        // simply has no active agent at all — nobody's going to pick it up
+        // regardless of the hour. WidgetChatController::send() independently
+        // guarantees the visitor sees a "please register your details"
+        // prompt instead of a handoff in this case too.
+        $assignedAgent = AgentAssignmentService::pickAgentFor((int) $validated['client_id']);
+
+        if (! $assignedAgent) {
+            return response()->json([
+                'status' => 'no_agent_available',
+                'message' => 'This client has no active agent to receive the handoff. Ask for their name and phone number so an agent can reach them once available.',
+            ], 200);
+        }
+
         // Same identity as WidgetChatController — reuses the customer the
         // AI phase already created, and fills in their name once known.
         Customer::findOrCreateForChannel(
@@ -84,11 +99,9 @@ class WidgetConversationController extends Controller
         $needsSeeding = ! $conversation || in_array($conversation->status, ['closed', 'returned_to_ai']);
 
         if ($needsSeeding) {
-            $assignedAgent = AgentAssignmentService::pickAgentFor((int) $validated['client_id']);
-
             if ($conversation) {
                 $conversation->update([
-                    'agent_id' => $assignedAgent?->id,
+                    'agent_id' => $assignedAgent->id,
                     'status' => 'waiting',
                     'waiting_since' => now(),
                     'nudge_sent_at' => null,
@@ -96,7 +109,7 @@ class WidgetConversationController extends Controller
             } else {
                 $conversation = WidgetConversation::create([
                     'client_id' => $validated['client_id'],
-                    'agent_id' => $assignedAgent?->id,
+                    'agent_id' => $assignedAgent->id,
                     'session_token' => $validated['session_token'],
                     'visitor_name' => $validated['visitor_name'] ?? null,
                     'status' => 'waiting',

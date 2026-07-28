@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Customer;
 use App\Models\Message;
 use App\Models\WidgetConversation;
+use App\Services\AgentAssignmentService;
 use App\Services\MessageLimitService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -105,7 +106,7 @@ class WidgetChatController extends Controller
 
         // The native engine doesn't need a webhook at all — it runs
         // in-process — so this is only a requirement for clients still on n8n.
-        if (! $client->usesNativeChatEngine() && ! $client->webhook_url) {
+        if (! $client->usesNativeWorkflowEngine() && ! $client->webhook_url) {
             Log::warning('Client has an active subscription but no webhook_url configured', ['client_id' => $client->id]);
 
             return response()->json([
@@ -143,25 +144,31 @@ class WidgetChatController extends Controller
         ];
 
         try {
-            [$data, $statusCode] = $client->usesNativeChatEngine()
+            [$data, $statusCode] = $client->usesNativeWorkflowEngine()
                 ? $this->runNativeEngine($payload)
                 : $this->callN8n($client, $payload);
 
             // The definitive, self-contained guarantee that a visitor is
-            // never actually connected to a human outside working hours —
-            // independent of whatever the chat engine itself decided to do.
-            // WidgetConversationController::store() also refuses to create
-            // an agent ticket in this window, but this is what the visitor
-            // actually sees, so it can't rely on the engine cooperating.
-            if (($data['handoff'] ?? false) && ! $client->isWithinWorkingHours()) {
+            // never actually connected to a human outside working hours, or
+            // when this client simply has no active agent to receive the
+            // handoff at all — independent of whatever the chat engine
+            // itself decided to do. WidgetConversationController::store()
+            // also refuses to create an agent ticket in either case, but
+            // this is what the visitor actually sees, so it can't rely on
+            // the engine cooperating.
+            $noOneAvailable = ! $client->isWithinWorkingHours()
+                || ! AgentAssignmentService::pickAgentFor($client->id);
+
+            if (($data['handoff'] ?? false) && $noOneAvailable) {
                 // Asks for name + a contact method rather than just saying
-                // "we're offline" — the visitor's reply flows back through
-                // the normal AI chat turn above, where registerInstruction
-                // (see Build RAG Prompt) picks it up and saves it via the
-                // existing registration flow, no separate plumbing needed.
+                // "no one's available" — the visitor's reply flows back
+                // through the normal AI chat turn above, where
+                // registerInstruction (see Build RAG Prompt) picks it up and
+                // saves it via the existing registration flow, no separate
+                // plumbing needed.
                 $data['reply'] = $client->widget_wa_number
-                    ? "Our team is currently offline right now. Could you share your name and phone number so an agent can reach you once we're back online? You're also welcome to reach us directly on WhatsApp any time: https://wa.me/{$client->widget_wa_number}"
-                    : "Our team is currently offline right now. Could you share your name and phone number so an agent can reach you once we're back online?";
+                    ? "Our team isn't available to chat right now. Could you share your name and phone number so an agent can reach you once available? You're also welcome to reach us directly on WhatsApp any time: https://wa.me/{$client->widget_wa_number}"
+                    : "Our team isn't available to chat right now. Could you share your name and phone number so an agent can reach you once available?";
                 $data['handoff'] = false;
                 unset($data['conversationId'], $data['lastMessageId']);
             }
@@ -197,7 +204,7 @@ class WidgetChatController extends Controller
     /**
      * Runs the same pipeline through Blueflow's own AutomationWorkflow
      * engine (app/Workflow/) instead of n8n — per-client opt-in via
-     * Client::chat_engine (see usesNativeChatEngine()), so clients can be
+     * Client::workflow_engine (see usesNativeWorkflowEngine()), so clients can be
      * migrated one at a time while everyone else stays on n8n. See the
      * "chat-widget-reply" workflow seeded by migration for the exact steps
      * this runs.
