@@ -34,7 +34,9 @@ createInertiaApp({
         root.render(
             <>
                 <SmoothScroll />
-                <App {...props} />
+                <div id="scroll-content">
+                    <App {...props} />
+                </div>
                 <CookieConsent />
             </>,
         );
