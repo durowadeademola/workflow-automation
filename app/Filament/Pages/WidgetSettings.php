@@ -120,8 +120,8 @@ class WidgetSettings extends Page
                     ->suffix('ms')
                     ->helperText('How long after the page loads before the widget pops open on its own.'),
 
-                Section::make('Agent handoff hours')
-                    ->description('Controls when the AI is allowed to hand a visitor off to a human agent. Outside these hours, it tells them the team is offline and points them to WhatsApp instead.')
+                Section::make('Working hours')
+                    ->description('Controls when the AI is allowed to hand a visitor off to a human agent, and lets the AI itself correctly answer "are you open?" questions. Outside these hours, it tells visitors the team is offline and points them to WhatsApp instead.')
                     ->schema([
                         Toggle::make('working_hours_enabled')
                             ->label('Restrict agent handoff to working hours')

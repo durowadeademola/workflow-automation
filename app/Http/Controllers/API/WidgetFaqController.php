@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\KnowledgeBaseEntry;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -35,5 +36,27 @@ class WidgetFaqController extends Controller
             ->get(['id', 'title', 'content']);
 
         return response()->json(['faqs' => $faqs]);
+    }
+
+    /**
+     * Fired once by the widget when a visitor actually opens an FAQ item —
+     * not on every list load, so this reflects genuine engagement, not just
+     * impressions. Scoped to clientId (not just the entry's own id) so
+     * nothing lets a visitor on one client's widget inflate another
+     * client's counts.
+     */
+    public function recordView(Request $request, KnowledgeBaseEntry $faq)
+    {
+        $validated = $request->validate([
+            'clientId' => ['required', Rule::exists('clients', 'id')],
+        ]);
+
+        if ((int) $validated['clientId'] !== $faq->client_id || $faq->type !== 'faq') {
+            return response()->json(['status' => 'not_found'], 404);
+        }
+
+        $faq->increment('views');
+
+        return response()->json(['status' => 'ok']);
     }
 }

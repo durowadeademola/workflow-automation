@@ -667,6 +667,9 @@
   let isBusy = false;
   let history = [];
   let greeted = false;
+  // Counts a view once per FAQ per page load — opening/closing the same one
+  // repeatedly shouldn't inflate its count.
+  const viewedFaqs = new Set();
   let handoff = null; // { conversationId, afterId, pollTimer } once a human has taken over
   let lastDividerDay = null; // startOfDay() of the most recently appended message's date
 
@@ -963,7 +966,11 @@
       question.className = 'cw-faq-question';
       question.innerHTML = `<span>${faq.title}</span>` +
         `<svg class="cw-faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
-      question.onclick = () => item.classList.toggle('is-open');
+      question.onclick = () => {
+        const opening = !item.classList.contains('is-open');
+        item.classList.toggle('is-open');
+        if (opening) recordFaqView(faq.id);
+      };
 
       const answer = document.createElement('div');
       answer.className = 'cw-faq-answer';
@@ -976,6 +983,18 @@
       item.appendChild(answer);
       list.appendChild(item);
     });
+  }
+
+  function recordFaqView(faqId) {
+    if (viewedFaqs.has(faqId)) return;
+    viewedFaqs.add(faqId);
+    // Fire-and-forget — a view counter is a nice-to-have, never worth
+    // blocking or erroring the widget over.
+    fetch(`${cfg.apiBase}/widget/faqs/${faqId}/view`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientId: cfg.clientId }),
+    }).catch(() => {});
   }
 
   async function loadFaqs() {

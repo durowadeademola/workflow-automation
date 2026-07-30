@@ -180,6 +180,41 @@ class Client extends Model
         return $now->between($start, $end);
     }
 
+    /**
+     * A human-readable summary of this client's configured hours, for
+     * feeding into the AI's own prompt — so it can correctly answer "are
+     * you open right now?" itself, rather than the answer only ever
+     * surfacing indirectly via WidgetChatController's post-handoff
+     * override. Null when working_hours_enabled is off, matching
+     * isWithinWorkingHours()'s "always available" default.
+     */
+    public function workingHoursDescription(): ?string
+    {
+        if (! $this->working_hours_enabled) {
+            return null;
+        }
+
+        $days = collect($this->working_days ?? [])
+            ->map(fn ($day) => self::WORKING_DAYS[$day] ?? null)
+            ->filter()
+            ->implode(', ');
+
+        if ($days === '') {
+            return null;
+        }
+
+        $timezone = $this->timezone ?: 'Africa/Lagos';
+
+        if (! $this->working_hours_start || ! $this->working_hours_end) {
+            return "{$days} ({$timezone})";
+        }
+
+        $start = \Illuminate\Support\Carbon::parse($this->working_hours_start)->format('g:i A');
+        $end = \Illuminate\Support\Carbon::parse($this->working_hours_end)->format('g:i A');
+
+        return "{$days}, {$start}–{$end} ({$timezone})";
+    }
+
     public function agents()
     {
         return $this->hasMany(Agent::class);

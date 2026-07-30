@@ -42,6 +42,17 @@ class WidgetRegistrationController extends Controller
             ], 200);
         }
 
+        // The reason they're reaching out is required too — a deliberate
+        // change beyond n8n's original "optional, don't insist" behaviour,
+        // so a registration can no longer be saved with no context at all
+        // for whoever follows up with them.
+        if (empty($validated['interest'])) {
+            return response()->json([
+                'status' => 'invalid',
+                'message' => 'A reason for reaching out is required to register — ask the visitor why they\'re getting in touch.',
+            ], 200);
+        }
+
         $client = Client::findOrFail($validated['client_id']);
 
         $customer = Customer::findOrCreateForChannel(

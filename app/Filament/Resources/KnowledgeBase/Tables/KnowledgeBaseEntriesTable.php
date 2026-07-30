@@ -38,6 +38,17 @@ class KnowledgeBaseEntriesTable
                 IconColumn::make('is_active')
                     ->label('Active')
                     ->boolean(),
+                TextColumn::make('views')
+                    ->label('Views')
+                    ->numeric()
+                    ->sortable()
+                    ->alignEnd()
+                    // Articles are only ever used for RAG lookups, never
+                    // opened directly by a visitor the way an FAQ is, so a
+                    // count for them would just always read 0 — showing a
+                    // dash instead makes clear it isn't a meaningful metric
+                    // here rather than implying nobody's looked at it.
+                    ->formatStateUsing(fn ($state, $record) => $record->type === 'faq' ? $state : '—'),
                 TextColumn::make('created_at')
                     ->dateTime('M j, Y h:i A')
                     ->sortable()

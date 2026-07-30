@@ -54,7 +54,15 @@ class ExtractMarkersStep implements StepHandler
         $registrationDetails = null;
         if (preg_match('/REGISTER:DETAILS\s*(\{[\s\S]*?\})/i', $reply, $m)) {
             $decoded = json_decode($m[1], true);
-            if (json_last_error() === JSON_ERROR_NONE && ! empty($decoded['name']) && (! empty($decoded['email']) || ! empty($decoded['phone']))) {
+            // `interest` (the reason they're reaching out) is required here,
+            // not just name + a contact method — a deliberate change beyond
+            // the literal n8n port, since the reason is now a required part
+            // of the registration prompt instruction too (see
+            // ChatPromptBuilderStep).
+            if (json_last_error() === JSON_ERROR_NONE
+                && ! empty($decoded['name'])
+                && (! empty($decoded['email']) || ! empty($decoded['phone']))
+                && ! empty($decoded['interest'])) {
                 $registrationDetails = $decoded;
                 $wantsRegistration = true;
             }

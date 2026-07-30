@@ -92,14 +92,14 @@ class WidgetChatController extends Controller
 
         if (! $client->widget_enabled) {
             return response()->json([
-                'reply' => "This assistant is currently turned off. Please reach out to us directly and we'll get back to you.",
+                'reply' => "This assistant is currently unavailable. Please reach out to us directly and we'll get back to you.",
                 'blocked' => true,
             ], 403);
         }
 
         if (! $client->hasActiveSubscription()) {
             return response()->json([
-                'reply' => "This assistant is temporarily unavailable. Please reach out to us directly and we'll get back to you.",
+                'reply' => "This assistant is currently unavailable. Please reach out to us directly and we'll get back to you.",
                 'blocked' => true,
             ], 402);
         }
@@ -110,7 +110,7 @@ class WidgetChatController extends Controller
             Log::warning('Client has an active subscription but no webhook_url configured', ['client_id' => $client->id]);
 
             return response()->json([
-                'reply' => "This assistant isn't fully set up yet. Please reach out to us directly.",
+                'reply' => "This assistant is currently unavailable. Please reach out to us directly.",
                 'blocked' => true,
             ], 502);
         }
@@ -119,7 +119,7 @@ class WidgetChatController extends Controller
             app(MessageLimitService::class)->notifyOnceIfLimitReached($client);
 
             return response()->json([
-                'reply' => "This assistant has reached its message limit for this month. Please reach out to us directly, or ask the business to upgrade their plan.",
+                'reply' => "This assistant is currently unavailable. Please reach out to us directly.",
                 'blocked' => true,
             ], 429);
         }
@@ -141,6 +141,13 @@ class WidgetChatController extends Controller
             'waNumber' => $client->widget_wa_number,
             'sessionToken' => $validated['sessionToken'] ?? null,
             'knowledgeBase' => $this->knowledgeBaseFor($client),
+            // So the AI can correctly answer "are you open right now?"
+            // itself, rather than the answer only ever surfacing indirectly
+            // through the post-handoff override below. Null/false when
+            // working_hours_enabled is off, matching the "always available"
+            // default everywhere else.
+            'workingHours' => $client->workingHoursDescription(),
+            'isWithinWorkingHours' => $client->isWithinWorkingHours(),
         ];
 
         try {
@@ -186,7 +193,7 @@ class WidgetChatController extends Controller
             $this->excludeFromLimit($inboundMessage);
 
             return response()->json([
-                'reply' => "Sorry, I'm having a little trouble right now. Please try again shortly.",
+                'reply' => "Sorry, I'm having currently unavailable. Please try again shortly.",
             ], 502);
         }
     }

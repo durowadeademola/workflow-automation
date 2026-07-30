@@ -44,6 +44,7 @@ Route::middleware('throttle:30,1')->group(function () {
     Route::get('/widget/conversations/{conversation}/messages', [WidgetConversationController::class, 'messages'])->name('widget.conversations.messages');
     Route::post('/widget/conversations/{conversation}/messages', [WidgetConversationController::class, 'send'])->name('widget.conversations.send');
     Route::get('/widget/faqs', [WidgetFaqController::class, 'index'])->name('widget.faqs');
+    Route::post('/widget/faqs/{faq}/view', [WidgetFaqController::class, 'recordView'])->name('widget.faqs.view');
 });
 
 Route::post('/leads', [LeadController::class, 'store'])->middleware('throttle:5,1')->name('leads.store');
