@@ -20,12 +20,17 @@ const SPRING_DURATION = 550;
  * like Semrush's homepage) — purely decorative, layered on top of Lenis
  * rather than replacing it.
  *
- * Deliberately uses margin-top, not transform, for the bounce: the site's
- * Navbar is `position: fixed`, and a `transform` on any ancestor turns that
- * ancestor into the containing block for fixed descendants (a real CSS
- * behavior, not a bug) — which would make the fixed navbar move with the
- * bounce instead of staying pinned to the viewport. margin-top has no such
- * side effect.
+ * Uses a CSS transform for the bounce, not margin: margin-top/margin-bottom
+ * change the document's actual scrollHeight, which only reveals a real gap
+ * at the TOP (scrollY=0 is a hard floor, so pushing content down is "free").
+ * At the BOTTOM, shrinking/growing height instead makes the browser
+ * re-clamp scrollY to match in the same frame — content and viewport shrink
+ * together and no gap is ever visible. transform sidesteps this entirely
+ * (it's paint-only, doesn't touch layout/scrollHeight), so both ends behave
+ * the same way. This is safe from the usual "transform on an ancestor
+ * becomes the containing block for fixed descendants" trap because Navbar
+ * renders through a portal to document.body (see Navbar.jsx) — it's a React
+ * child of each page, but not a DOM descendant of #scroll-content.
  *
  * Mounted once at the app root (see app.jsx) so it persists across Inertia
  * page swaps instead of being torn down and rebuilt on every navigation.
@@ -77,9 +82,13 @@ export default function SmoothScroll() {
 
         function setOffset(value, { animate }) {
             content.style.transition = animate
-                ? `margin-top ${SPRING_DURATION}ms ${SPRING_EASING}`
+                ? `transform ${SPRING_DURATION}ms ${SPRING_EASING}`
                 : 'none';
-            content.style.marginTop = value === 0 ? '' : `${value}px`;
+            // Positive value (top) pushes content down, revealing space
+            // above it; negative value (bottom) pulls content up, revealing
+            // space below it — symmetric, since transform never touches
+            // scrollHeight/scroll position the way margin would.
+            content.style.transform = value === 0 ? '' : `translateY(${value}px)`;
         }
 
         function springBack() {
@@ -124,7 +133,7 @@ export default function SmoothScroll() {
             clearTimeout(settleTimer);
             if (content) {
                 content.style.transition = '';
-                content.style.marginTop = '';
+                content.style.transform = '';
             }
             lenis.destroy();
         };

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "@inertiajs/react";
 import { useTheme } from "@/hooks/useTheme";
 
@@ -96,7 +97,7 @@ export default function Navbar() {
         { label: "About", href: "/about" },
     ];
 
-    return (
+    return createPortal(
         <>
             <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-100 dark:border-gray-800 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -240,6 +241,7 @@ export default function Navbar() {
                     </div>
                 </div>
             )}
-        </>
+        </>,
+        document.body,
     );
 }

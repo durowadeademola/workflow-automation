@@ -37,7 +37,12 @@
         @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
         @inertiaHead
     </head>
-    <body class="font-sans antialiased">
+    {{-- bg-gray-900 matches Footer's own (always-dark, no light-mode
+         variant) background — body's background is otherwise never visible
+         during normal use, it only shows through in the gap the bottom
+         overscroll bounce reveals below the footer, so this keeps that gap
+         blending in instead of showing a mismatched white seam. --}}
+    <body class="font-sans antialiased bg-gray-900">
         @inertia
 
         {{-- Blueflow's own site uses client_id 4 ("Blueflow Automation
