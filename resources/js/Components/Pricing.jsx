@@ -142,8 +142,11 @@ export default function Pricing({ plans = [] }) {
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
                                     {plan.appointment_limit ? `${Number(plan.appointment_limit).toLocaleString("en-NG")} appointments/month` : "Unlimited appointments"}
                                 </p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-6">
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
                                     {plan.lead_limit ? `${Number(plan.lead_limit).toLocaleString("en-NG")} qualified leads/month` : "Unlimited qualified leads"}
+                                </p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-6">
+                                    {plan.faq_limit ? `${Number(plan.faq_limit).toLocaleString("en-NG")} FAQs` : "Unlimited FAQs"}
                                 </p>
 
                                 {plan.features?.length > 0 && (

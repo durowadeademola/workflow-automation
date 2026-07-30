@@ -621,6 +621,51 @@ class Client extends Model
     }
 
     /**
+     * Unlike message/appointment/lead limits, this isn't a per-billing-period
+     * usage rate — it's a standing cap on how many FAQ entries can exist at
+     * once, since FAQs answer instantly from the database with no AI/n8n
+     * call involved (see WidgetFaqController) and so don't cost anything per
+     * use the way a chat message does. No rollover concept applies for the
+     * same reason.
+     */
+    public const TRIAL_FAQ_LIMIT = 5;
+
+    public function faqLimitForCurrentPlan(): ?int
+    {
+        $subscription = $this->currentSubscription();
+
+        if (! $subscription) {
+            return 0;
+        }
+
+        if ($subscription->plan === 'trial') {
+            return self::TRIAL_FAQ_LIMIT;
+        }
+
+        return $subscription->planRecord?->faq_limit;
+    }
+
+    public function faqsUsedCount(): int
+    {
+        return $this->knowledgeBaseEntries()->where('type', 'faq')->count();
+    }
+
+    public function hasReachedFaqLimit(): bool
+    {
+        if ($this->bypass_plan_limits) {
+            return false;
+        }
+
+        $limit = $this->faqLimitForCurrentPlan();
+
+        if ($limit === null) {
+            return false;
+        }
+
+        return $this->faqsUsedCount() >= $limit;
+    }
+
+    /**
      * The widget's live config, with stored per-client customization layered
      * over the shared defaults. Used to render both the copyable embed
      * snippet and the admin's read-only preview, so the two can never drift.

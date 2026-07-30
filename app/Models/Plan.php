@@ -20,6 +20,7 @@ class Plan extends Model
         'message_limit',
         'appointment_limit',
         'lead_limit',
+        'faq_limit',
         'description',
         'features',
         'is_popular',

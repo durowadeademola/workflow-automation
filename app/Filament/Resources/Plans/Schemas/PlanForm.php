@@ -80,6 +80,12 @@ class PlanForm
                             ->minValue(1)
                             ->placeholder('Unlimited')
                             ->helperText('Visitors the AI can flag as a qualified lead per billing period on this plan. Leave blank for unlimited.'),
+                        TextInput::make('faq_limit')
+                            ->label('FAQ limit')
+                            ->numeric()
+                            ->minValue(1)
+                            ->placeholder('Unlimited')
+                            ->helperText('Total FAQ entries a client on this plan can have at once — not per month, since FAQs answer instantly with no AI call involved. Leave blank for unlimited.'),
                         Textarea::make('description')
                             ->rows(2)
                             ->columnSpanFull(),

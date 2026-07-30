@@ -10,6 +10,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class KnowledgeBaseEntryForm
@@ -28,13 +29,29 @@ class KnowledgeBaseEntryForm
                             ->options(Client::pluck('name', 'id'))
                             ->searchable()
                             ->required()
+                            ->live()
                         : Hidden::make('client_id')->default(auth()->user()?->client_id),
                     Select::make('type')
                         ->label('Type')
                         ->options(KnowledgeBaseEntry::TYPES)
                         ->default('faq')
                         ->required()
-                        ->helperText('FAQ: shown as a tappable question in the widget\'s FAQ tab, answered instantly from here — the AI is never involved. Article: not shown directly to visitors, but given to the AI as background knowledge for any conversation.'),
+                        ->helperText(function (Get $get) {
+                            $base = 'FAQ: shown as a tappable question in the widget\'s FAQ tab, answered instantly from here — the AI is never involved. Article: not shown directly to visitors, but given to the AI as background knowledge for any conversation.';
+
+                            $client = Client::find($get('client_id'));
+
+                            if (! $client) {
+                                return $base;
+                            }
+
+                            $limit = $client->faqLimitForCurrentPlan();
+                            $usage = $limit === null
+                                ? "{$client->faqsUsedCount()} FAQs used, unlimited on this plan"
+                                : "{$client->faqsUsedCount()} of {$limit} FAQs used on this plan";
+
+                            return "{$base}\n\n{$usage}.";
+                        }),
                     TextInput::make('title')
                         ->label('Title / Question')
                         ->required()

@@ -5,7 +5,7 @@ const services = [
     {
         title: "Chat Widget",
         description: "An AI assistant embedded on your website that answers visitors instantly, 24/7",
-        features: ["Trained on your website content", "Hands off to a human on request", "Fully customizable branding", "Live agent inbox", "Appointment booking", "Lead qualification"],
+        features: ["Trained on your website content", "Hands off to a human on request", "Fully customizable branding", "Live agent inbox", "Appointment booking", "Lead qualification", "FAQs and knowledge base"],
         href: "/services/chat-widget",
         popular: true,
     },

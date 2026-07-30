@@ -63,6 +63,11 @@ class PlansTable
                     ->placeholder('Unlimited')
                     ->numeric()
                     ->toggleable(),
+                TextColumn::make('faq_limit')
+                    ->label('FAQ limit')
+                    ->placeholder('Unlimited')
+                    ->numeric()
+                    ->toggleable(),
                 TextColumn::make('subscriptions_count')
                     ->label('Subscribers')
                     ->counts('subscriptions'),
