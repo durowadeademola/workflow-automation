@@ -45,7 +45,7 @@ const trustItems = [
     },
 ];
 
-const industries = ["Restaurants", "E-commerce", "Hotels", "Healthcare", "Real Estate", "Professional Services"];
+const industries = ["Healthcare","Real Estate", "E-commerce", "Hotels", "Restaurants", "Professional Services"];
 
 export default function TrustSignals() {
     const [headingRef, headingVisible] = useScrollAnimation(0.3);

@@ -14,11 +14,11 @@ const servicesLinks = [
 ];
 
 const industriesLinks = [
-    { label: "Restaurants & Cafés", href: "/industries/restaurants" },
-    { label: "E-commerce & Retail", href: "/industries/ecommerce" },
-    { label: "Hotels & Hospitality", href: "/industries/hospitality" },
     { label: "Healthcare & Clinics", href: "/industries/healthcare" },
     { label: "Real Estate", href: "/industries/real-estate" },
+    { label: "E-commerce & Retail", href: "/industries/ecommerce" },
+    { label: "Hotels & Hospitality", href: "/industries/hospitality" },
+    { label: "Restaurants & Cafés", href: "/industries/restaurants" },
     { label: "Professional Services", href: "/industries/professional-services" },
 ];
 
