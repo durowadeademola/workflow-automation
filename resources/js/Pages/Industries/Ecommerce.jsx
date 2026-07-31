@@ -1,45 +1,39 @@
 import { Head, Link } from "@inertiajs/react";
-import { ShoppingCart, BookOpen, CheckCircle2, CreditCard, Truck, Target, BarChart3, Quote } from "lucide-react";
+import { ShoppingCart, HelpCircle, Target, ClipboardList, UserCheck, BookOpen, BarChart3 } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
 import IconTile from "@/Components/Icons/IconTile";
 import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
-    "Answer product questions and process orders automatically — even at midnight",
-    "Send payment links and confirm purchases without any manual follow-up",
-    "Automated delivery updates keep customers informed at every step",
-    "Reorder sequences that bring customers back before they go to a competitor",
+    "Shoppers get instant answers on stock, pricing, and policies any time of day",
+    "AI notices genuine buying intent and automatically flags it as a qualified lead",
+    "New inquiries captured automatically, along with what the customer wants",
+    "Handoff to a real person when the AI can't answer — WhatsApp fallback after hours",
 ];
 
 const features = [
-    { icon: BookOpen, title: "WhatsApp Product Catalog", description: "Customers browse your full catalog with images, pricing, and variants directly on WhatsApp — no app download, no website visit required." },
-    { icon: CheckCircle2, title: "Auto Order Processing", description: "Orders placed, confirmed, and sent to fulfilment automatically. Your team gets notified without touching a single message." },
-    { icon: CreditCard, title: "Instant Payment Collection", description: "Paystack and Flutterwave payment links sent automatically at checkout. Payments confirmed and receipts issued in seconds." },
-    { icon: Truck, title: "Delivery Tracking Updates", description: "Customers receive automatic status updates at every stage — order confirmed, dispatched, out for delivery, delivered." },
-    { icon: Target, title: "Abandoned Cart Recovery", description: "Customers who enquired but didn't complete their order get a timed follow-up message — recovering sales you'd otherwise lose." },
-    { icon: BarChart3, title: "Sales & Customer Reports", description: "Daily reports showing top-selling products, peak order times, best customers, and revenue trends — sent straight to your phone." },
+    { icon: HelpCircle, title: "Instant FAQ Answers", description: "Questions about stock, pricing, and store policies are answered instantly from your own FAQ list — with zero AI cost and zero wait." },
+    { icon: Target, title: "Automatic Lead Qualification", description: "The AI notices genuine purchase intent during a conversation and flags it as a qualified lead automatically — no checklist, no interrogation." },
+    { icon: ClipboardList, title: "Inquiry Capture", description: "When a shopper wants to leave their details, the AI collects their name, contact info, and the reason they're reaching out." },
+    { icon: UserCheck, title: "Working-Hours-Aware Handoff", description: "The AI knows your real store hours — handing off to a real person when you're open, and gracefully pointing to WhatsApp when you're closed." },
+    { icon: BookOpen, title: "Your Own Knowledge Base", description: "Add details about your products, shipping, and return policies so the AI answers with your actual information, not generic guesses." },
+    { icon: BarChart3, title: "FAQ View Analytics", description: "See exactly what shoppers ask most, so you always know what to clarify or add." },
 ];
 
 const steps = [
-    { title: "Connect your product catalog", description: "We import your products, pricing, and inventory into the WhatsApp automation system — however many SKUs you have." },
-    { title: "Build your sales and payment flows", description: "We configure your ordering conversation, payment links, and confirmation messages tailored to how your store works." },
-    { title: "Integrate logistics and inventory", description: "We connect your delivery partner and stock management system so orders flow end-to-end without manual handoffs." },
-    { title: "Launch and scale automatically", description: "Go live within days. Every order, update, and follow-up runs on its own — freeing you to focus on sourcing and growth." },
+    { title: "Add the chat widget to your store's website", description: "Embed Blueflow's widget on your site and set your assistant's name, greeting, and real working hours." },
+    { title: "Add your FAQs and product knowledge", description: "Enter your most common shopper questions — stock, pricing, shipping, returns — and any other background the AI should know." },
+    { title: "The AI starts answering and qualifying leads", description: "Shoppers ask questions and the AI notices genuine buying intent automatically, any time of day." },
+    { title: "Refine as you go", description: "Check which FAQs get the most views, add details for anything the AI couldn't answer, and adjust hours any time from your dashboard." },
 ];
 
 const metrics = [
-    { value: "3x", label: "Higher Conversion Rate" },
-    { value: "6hrs", label: "Saved Daily" },
-    { value: "₦800K", label: "Avg Extra Monthly Sales" },
-    { value: "35%", label: "Repeat Purchase Rate" },
+    { value: "24/7", label: "AI Availability" },
+    { value: "0", label: "Forms To Fill Out" },
+    { value: "Instant", label: "FAQ Answers" },
+    { value: "Auto", label: "Lead Qualification" },
 ];
-
-const testimonial = {
-    quote: "Our WhatsApp used to be overwhelming — hundreds of messages and no way to keep up. Now it's our number one sales channel and we barely touch it. Blueflow handles everything automatically.",
-    name: "Aisha Bello",
-    role: "Founder, Lagos Style Boutique",
-};
 
 export default function Ecommerce() {
     return (
@@ -47,7 +41,7 @@ export default function Ecommerce() {
             <Head title="Automation for E-commerce & Retail">
                 <meta
                     name="description"
-                    content="Automate orders, payments, delivery updates, and customer follow-ups for your online store. Blueflow helps Nigerian e-commerce businesses sell more with less effort."
+                    content="Give shoppers instant answers and let the AI notice genuine buying intent automatically. Blueflow helps Nigerian online stores respond faster and never miss a lead."
                 />
             </Head>
             <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -62,14 +56,14 @@ export default function Ecommerce() {
                                         E-commerce & Retail
                                     </span>
                                     <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-5">
-                                        Sell More Without Being Glued to Your Phone
+                                        Instant Answers. Automatic Lead Capture.
                                     </h2>
                                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
-                                        Running an online store in Nigeria means managing hundreds of WhatsApp
-                                        messages daily, manually sending payment links, updating customers on
-                                        deliveries, and chasing repeat orders — all while trying to source new
-                                        products. Blueflow automates your entire sales process so every customer
-                                        gets a fast, professional experience and no order ever slips through the cracks.
+                                        Running an online store means answering the same stock, pricing, and
+                                        policy questions all day, and losing track of who was actually serious
+                                        about buying. Blueflow's AI chat widget answers those questions instantly,
+                                        notices genuine buying intent automatically, and only hands off to a real
+                                        person when a conversation genuinely needs one.
                                     </p>
                                     <ul className="space-y-3">
                                         {highlights.map((h) => (
@@ -138,18 +132,6 @@ export default function Ecommerce() {
                                     </div>
                                 ))}
                             </div>
-                        </div>
-                    </section>
-
-                    {/* Testimonial */}
-                    <section className="py-20 bg-gray-50 dark:bg-gray-800">
-                        <div className="max-w-3xl mx-auto px-4 text-center">
-                            <div className="w-12 h-12 mx-auto mb-6 bg-blue-50 dark:bg-blue-900/40 rounded-2xl flex items-center justify-center"><Quote className="w-6 h-6 text-blue-600" strokeWidth={1.75} /></div>
-                            <blockquote className="text-xl font-medium text-gray-800 dark:text-gray-100 leading-relaxed mb-6">
-                                "{testimonial.quote}"
-                            </blockquote>
-                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{testimonial.name}</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
                         </div>
                     </section>
 

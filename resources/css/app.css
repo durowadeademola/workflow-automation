@@ -19,6 +19,12 @@
 /* --- Fix root font-size so 1rem = 16px --- */
 html {
     font-size: 16px !important;
+    /* Without this, the browser's own native rubber-band/glow overscroll
+       effect fires at the scroll boundary and competes with (or entirely
+       masks) the custom bounce effect in SmoothScroll.jsx, which relies on
+       being the only thing visibly reacting when you scroll past the top
+       or bottom. */
+    overscroll-behavior-y: none;
 }
 
 /* Optional: force body to use 1rem */

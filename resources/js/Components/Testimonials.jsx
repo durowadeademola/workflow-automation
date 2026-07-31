@@ -78,10 +78,10 @@ export default function Testimonials({ reviews = [] }) {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
                         What Our Clients Say
                     </h2>
-                    <p className="text-gray-400 max-w-xl mx-auto">
+                    <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
                         Feedbacks from some of our happy customers
                     </p>
                 </div>

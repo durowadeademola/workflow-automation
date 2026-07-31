@@ -1,45 +1,39 @@
 import { Head, Link } from "@inertiajs/react";
-import { HeartPulse, CalendarCheck, BellRing, ClipboardList, TestTube, Pill, Star, Quote } from "lucide-react";
+import { HeartPulse, CalendarCheck, HelpCircle, ClipboardList, UserCheck, BookOpen, BarChart3 } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
 import IconTile from "@/Components/Icons/IconTile";
 import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
-    "Patients book, reschedule, and cancel appointments via WhatsApp — no phone calls needed",
-    "Automated reminders sent 24 hours and 1 hour before every appointment",
-    "Post-visit follow-up messages with care instructions sent automatically",
-    "Lab result notifications and prescription refill reminders without staff involvement",
+    "Patients get instant answers to common questions any time of day — no phone calls needed",
+    "AI books appointments directly through natural conversation, with automatic conflict checking",
+    "New patient inquiries captured automatically, along with the reason they're reaching out",
+    "Handoff to a real staff member during working hours — WhatsApp fallback when the clinic is closed",
 ];
 
 const features = [
-    { icon: CalendarCheck, title: "WhatsApp Appointment Booking", description: "Patients check doctor availability and book appointments directly on WhatsApp at any time of day — your reception desk handles only complex cases." },
-    { icon: BellRing, title: "Automated Reminder Sequences", description: "Every patient gets a reminder 24 hours before and again 1 hour before their appointment — drastically cutting no-shows without any manual effort." },
-    { icon: ClipboardList, title: "Digital Intake Forms", description: "New patients complete their medical history, symptoms, and insurance details via WhatsApp before they arrive — saving time at the desk and in the consultation." },
-    { icon: TestTube, title: "Lab Results Notifications", description: "Patients are automatically notified when their results are ready for collection or review — no more calling the clinic repeatedly to check." },
-    { icon: Pill, title: "Medication & Follow-Up Reminders", description: "Scheduled reminders for prescriptions, follow-up appointments, and chronic condition check-ins sent automatically based on each patient's care plan." },
-    { icon: Star, title: "Patient Feedback Collection", description: "Automated satisfaction surveys sent after every visit help you identify issues early and build a strong reputation with consistent positive reviews." },
+    { icon: CalendarCheck, title: "AI Appointment Booking", description: "Patients book appointments directly through natural conversation with the AI — no forms, no phone tag. Conflicts are checked automatically so no slot is ever double-booked." },
+    { icon: HelpCircle, title: "Instant FAQ Answers", description: "Common questions about hours, services, and policies are answered instantly from your own FAQ list — with zero AI cost and zero wait." },
+    { icon: ClipboardList, title: "New Patient Inquiry Capture", description: "When a visitor wants to register or leave their details, the AI collects their name, contact info, and the reason they're reaching out — so your team has real context before calling back." },
+    { icon: UserCheck, title: "Working-Hours-Aware Handoff", description: "The AI knows your actual clinic hours. During working hours with staff available, it hands off complex questions to a real person; outside them, it asks for contact details instead of pretending someone's there." },
+    { icon: BookOpen, title: "Your Own Knowledge Base", description: "Add articles about your services, policies, and procedures so the AI answers with your clinic's specific information, not generic guesses." },
+    { icon: BarChart3, title: "FAQ View Analytics", description: "See exactly which FAQs patients view most, so you know what to clarify or expand before they even need to ask." },
 ];
 
 const steps = [
-    { title: "Connect your WhatsApp Business number", description: "We link your clinic's number to Blueflow and configure your doctors, consultation types, and available appointment slots." },
-    { title: "Build your booking and reminder flows", description: "We design conversation flows for new and returning patients, appointment confirmations, reminders, and rescheduling requests." },
-    { title: "Set up your follow-up sequences", description: "We configure post-visit messages, lab result alerts, prescription reminders, and any chronic care follow-up schedules your clinic needs." },
-    { title: "Launch and reduce no-shows immediately", description: "Go live within days. Appointment reminders alone typically cut no-shows by 50–60% in the first month." },
+    { title: "Add the chat widget to your website", description: "Embed Blueflow's widget on your clinic's site and set your assistant's name, greeting, and real working hours." },
+    { title: "Add your FAQs and knowledge", description: "Enter your most common patient questions and any background information the AI should know about your clinic." },
+    { title: "The AI starts answering and booking", description: "Patients ask questions and book appointments directly through conversation — automatically, any time of day." },
+    { title: "Refine as you go", description: "Check which FAQs get the most views, add articles for anything the AI couldn't answer, and adjust working hours any time from your dashboard." },
 ];
 
 const metrics = [
-    { value: "60%", label: "Fewer No-Shows" },
-    { value: "₦300K", label: "Revenue Recovered Monthly" },
-    { value: "3hrs", label: "Less Admin Daily" },
-    { value: "4.9★", label: "Patient Satisfaction" },
+    { value: "24/7", label: "AI Availability" },
+    { value: "0", label: "Forms To Fill Out" },
+    { value: "Auto", label: "Conflict-Free Booking" },
+    { value: "Live", label: "Working-Hours Awareness" },
 ];
-
-const testimonial = {
-    quote: "Our no-show rate dropped by more than half within the first six weeks. The reception team used to spend half their day on the phone chasing appointments. Now that time goes into actually helping patients when they arrive.",
-    name: "Dr. Emeka Nwosu",
-    role: "Medical Director, Greenleaf Clinic — Abuja",
-};
 
 export default function Healthcare() {
     return (
@@ -47,7 +41,7 @@ export default function Healthcare() {
             <Head title="Automation for Healthcare & Clinics">
                 <meta
                     name="description"
-                    content="Reduce no-shows, automate appointment reminders, and streamline patient communications for your clinic. Blueflow helps Nigerian healthcare providers run more efficiently."
+                    content="Give patients instant answers and automatic appointment booking with Blueflow's AI chat widget. Built for Nigerian clinics and healthcare providers."
                 />
             </Head>
             <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -62,15 +56,14 @@ export default function Healthcare() {
                                         Healthcare & Clinics
                                     </span>
                                     <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-5">
-                                        Fewer No-Shows. Less Admin. Better Patient Care.
+                                        Instant Answers. Automatic Booking. Better Patient Care.
                                     </h2>
                                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
-                                        Nigerian clinics lose hundreds of thousands of naira every month to
-                                        no-shows, while reception staff spend most of their day answering calls,
-                                        scheduling appointments, and chasing patients manually. Blueflow
-                                        automates the entire patient communication journey — from booking to
-                                        reminders to post-visit follow-ups — so your team can focus on delivering
-                                        quality care instead of managing logistics.
+                                        Nigerian clinics lose time and patients to missed calls and slow replies.
+                                        Blueflow's AI chat widget answers common patient questions instantly, books
+                                        appointments through natural conversation with automatic conflict checking,
+                                        and only hands off to a real staff member when a conversation genuinely
+                                        needs one — so your team can focus on care, not logistics.
                                     </p>
                                     <ul className="space-y-3">
                                         {highlights.map((h) => (
@@ -142,23 +135,11 @@ export default function Healthcare() {
                         </div>
                     </section>
 
-                    {/* Testimonial */}
-                    <section className="py-20 bg-gray-50 dark:bg-gray-800">
-                        <div className="max-w-3xl mx-auto px-4 text-center">
-                            <div className="w-12 h-12 mx-auto mb-6 bg-blue-50 dark:bg-blue-900/40 rounded-2xl flex items-center justify-center"><Quote className="w-6 h-6 text-blue-600" strokeWidth={1.75} /></div>
-                            <blockquote className="text-xl font-medium text-gray-800 dark:text-gray-100 leading-relaxed mb-6">
-                                "{testimonial.quote}"
-                            </blockquote>
-                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{testimonial.name}</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
-                        </div>
-                    </section>
-
                     {/* CTA */}
                     <section className="py-20 bg-white dark:bg-gray-900">
                         <div className="max-w-3xl mx-auto px-4 text-center">
                             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4">
-                                Ready to Reduce No-Shows and Free Up Your Team?
+                                Ready to Give Patients Instant Answers?
                             </h2>
                             <p className="text-gray-500 dark:text-gray-400 mb-8">
                                 Book a free demo and we'll show you exactly how Blueflow works for clinics and healthcare providers like yours.

@@ -1,45 +1,39 @@
 import { Head, Link } from "@inertiajs/react";
-import { Home, Bot, Building2, CalendarCheck, Camera, RefreshCw, BarChart3, Quote } from "lucide-react";
+import { Home, Target, HelpCircle, ClipboardList, UserCheck, BookOpen, BarChart3 } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
 import IconTile from "@/Components/Icons/IconTile";
 import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
-    "AI chatbot qualifies every lead automatically before an agent gets involved",
-    "Property listings with photos and pricing sent instantly to interested prospects",
-    "Viewing appointments booked via WhatsApp without any back-and-forth",
-    "Automated follow-up sequences keep prospects warm until they are ready to buy",
+    "Prospects get instant answers about listings and process questions any time of day",
+    "AI notices genuine buyer interest and automatically flags it as a qualified lead",
+    "New inquiries captured automatically, along with what the prospect is looking for",
+    "Handoff to an agent when a conversation genuinely needs a real person",
 ];
 
 const features = [
-    { icon: Bot, title: "Lead Qualification Bot", description: "Every enquiry is automatically screened for budget, location preference, property type, and timeline — so agents only spend time on serious buyers." },
-    { icon: Building2, title: "Property Listing Broadcasts", description: "Send new listings with photos, pricing, and key details to all interested prospects the moment a property becomes available." },
-    { icon: CalendarCheck, title: "Viewing Appointment Scheduler", description: "Prospects book property viewings directly via WhatsApp based on agent availability — no phone tag, no missed opportunities." },
-    { icon: Camera, title: "Virtual Tour & Media Delivery", description: "Automatically send photo galleries, video walkthroughs, floor plans, and location links to interested buyers on request." },
-    { icon: RefreshCw, title: "Follow-Up Sequences", description: "Timed follow-up messages keep prospects engaged at every stage of their decision — from first enquiry all the way to signing." },
-    { icon: BarChart3, title: "Lead Pipeline Dashboard", description: "See every lead, their current stage, interest level, last contact date, and projected deal value — all in one clear view." },
+    { icon: Target, title: "Automatic Lead Qualification", description: "The AI notices genuine buyer interest during a conversation and flags it as a qualified lead automatically — no checklist, no interrogation." },
+    { icon: HelpCircle, title: "Instant FAQ Answers", description: "Common questions about listings, pricing, and process are answered instantly from your own FAQ list — with zero AI cost and zero wait." },
+    { icon: ClipboardList, title: "Prospect Inquiry Capture", description: "When a visitor wants to leave their details, the AI collects their name, contact info, and what they're looking for." },
+    { icon: UserCheck, title: "Working-Hours-Aware Handoff", description: "The AI knows your real office hours — handing off to an agent when one's available, and gracefully pointing to WhatsApp otherwise." },
+    { icon: BookOpen, title: "Your Own Knowledge Base", description: "Add details about your listings, areas, and process so the AI answers with your agency's actual information, not generic guesses." },
+    { icon: BarChart3, title: "FAQ View Analytics", description: "See exactly what prospects ask most, so you always know what to clarify or add." },
 ];
 
 const steps = [
-    { title: "Connect your WhatsApp Business number", description: "We link your agency's number to Blueflow and configure your property types, locations, price ranges, and agent availability." },
-    { title: "Build your lead qualification flow", description: "We design a conversation that screens every new enquiry for budget, timeline, and preferences before routing to the right agent." },
-    { title: "Set up your listing and follow-up sequences", description: "We configure automated property matching, media delivery, viewing scheduling, and the follow-up cadence that keeps leads from going cold." },
-    { title: "Launch and let agents focus on closing", description: "Go live within days. Agents stop answering repetitive questions and start spending their time on qualified prospects ready to move." },
+    { title: "Add the chat widget to your website", description: "Embed Blueflow's widget on your agency's site and set your assistant's name, greeting, and real working hours." },
+    { title: "Add your FAQs and listing knowledge", description: "Enter your most common prospect questions — pricing, areas, process — and any other background the AI should know." },
+    { title: "The AI starts answering and qualifying leads", description: "Prospects ask questions and the AI notices genuine buyer interest automatically, any time of day." },
+    { title: "Refine as you go", description: "Check which FAQs get the most views, add details for anything the AI couldn't answer, and adjust hours any time from your dashboard." },
 ];
 
 const metrics = [
-    { value: "2x", label: "More Qualified Leads" },
-    { value: "70%", label: "Less Admin Time" },
-    { value: "15+", label: "Extra Deals Monthly" },
-    { value: "< 1min", label: "Lead Response Time" },
+    { value: "24/7", label: "AI Availability" },
+    { value: "0", label: "Forms To Fill Out" },
+    { value: "Auto", label: "Lead Qualification" },
+    { value: "Live", label: "Working-Hours Awareness" },
 ];
-
-const testimonial = {
-    quote: "Before Blueflow, our agents were spending most of the day answering the same basic questions over and over. Now the bot handles all of that and only passes over leads who are genuinely ready to view. Our close rate has never been higher.",
-    name: "Tobi Adeyemi",
-    role: "CEO, Lekki Properties — Lagos",
-};
 
 export default function RealEstate() {
     return (
@@ -47,7 +41,7 @@ export default function RealEstate() {
             <Head title="Automation for Real Estate Agents">
                 <meta
                     name="description"
-                    content="Qualify leads automatically, send property listings, and book viewings via WhatsApp. Blueflow helps Nigerian real estate agents close more deals with less admin."
+                    content="Give prospects instant answers and let the AI notice genuine buyer interest automatically. Blueflow helps Nigerian real estate agents never lose a lead to a slow reply."
                 />
             </Head>
             <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -62,16 +56,13 @@ export default function RealEstate() {
                                         Real Estate
                                     </span>
                                     <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-5">
-                                        Close More Deals. Spend Less Time on Admin.
+                                        Instant Answers. Automatic Lead Capture.
                                     </h2>
                                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
-                                        Real estate agents in Nigeria are losing deals every day — not because
-                                        of bad properties or bad pricing, but because leads go cold while agents
-                                        are busy answering basic questions, sending listings manually, and
-                                        trying to schedule viewings over the phone. Blueflow automates every
-                                        step of the lead journey from first enquiry to booked viewing, so your
-                                        agents can focus entirely on what they do best: building relationships
-                                        and closing deals.
+                                        Real estate agents lose deals when a lead goes cold waiting for a reply.
+                                        Blueflow's AI chat widget answers common listing and process questions
+                                        instantly, notices genuine buyer interest automatically, and only hands
+                                        off to an agent when a conversation genuinely needs one.
                                     </p>
                                     <ul className="space-y-3">
                                         {highlights.map((h) => (
@@ -140,18 +131,6 @@ export default function RealEstate() {
                                     </div>
                                 ))}
                             </div>
-                        </div>
-                    </section>
-
-                    {/* Testimonial */}
-                    <section className="py-20 bg-gray-50 dark:bg-gray-800">
-                        <div className="max-w-3xl mx-auto px-4 text-center">
-                            <div className="w-12 h-12 mx-auto mb-6 bg-blue-50 dark:bg-blue-900/40 rounded-2xl flex items-center justify-center"><Quote className="w-6 h-6 text-blue-600" strokeWidth={1.75} /></div>
-                            <blockquote className="text-xl font-medium text-gray-800 dark:text-gray-100 leading-relaxed mb-6">
-                                "{testimonial.quote}"
-                            </blockquote>
-                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{testimonial.name}</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
                         </div>
                     </section>
 

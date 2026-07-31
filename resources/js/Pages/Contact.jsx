@@ -126,7 +126,7 @@ export default function Contact() {
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                     <div>
-                                        <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 block">Full Name *</label>
+                                        <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 block">Full Name <span className="text-red-600 dark:text-red-400">*</span></label>
                                         <input
                                             type="text"
                                             required
@@ -149,7 +149,7 @@ export default function Contact() {
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                     <div>
-                                        <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 block">Email *</label>
+                                        <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1 block">Email <span className="text-red-600 dark:text-red-400">*</span></label>
                                         <input
                                             type="email"
                                             required

@@ -1,45 +1,39 @@
 import { Head, Link } from "@inertiajs/react";
-import { UtensilsCrossed, CalendarCheck, CreditCard, Star, Megaphone, BarChart3, Quote } from "lucide-react";
+import { UtensilsCrossed, CalendarCheck, HelpCircle, ClipboardList, UserCheck, BookOpen, BarChart3 } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
 import IconTile from "@/Components/Icons/IconTile";
 import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
-    "Take orders and reservations automatically via WhatsApp — even at 2am",
-    "Send payment links and confirm instantly without manual follow-up",
-    "Automated feedback collection after every visit to protect your reputation",
-    "Loyalty reminders and promo blasts that bring customers back consistently",
+    "Diners get instant answers about menu, hours, and location any time of day",
+    "AI collects booking requests through natural conversation, with automatic conflict checking",
+    "New inquiries captured automatically, along with what the customer actually wants",
+    "Handoff to staff during service hours — WhatsApp fallback when you're closed",
 ];
 
 const features = [
-    { icon: UtensilsCrossed, title: "WhatsApp Order Taking", description: "Customers send their order via WhatsApp. The system confirms, calculates the total, and sends a payment link — all without staff involvement." },
-    { icon: CalendarCheck, title: "Table & Delivery Booking", description: "Automated reservation management with confirmation messages, reminders 1 hour before, and instant rescheduling." },
-    { icon: CreditCard, title: "Instant Payment Collection", description: "Paystack and Flutterwave payment links sent automatically at checkout. No more waiting for transfers or handling cash disputes." },
-    { icon: Star, title: "Review & Feedback Automation", description: "Every customer gets a follow-up message after their visit asking for a Google review or quick feedback — building your reputation on autopilot." },
-    { icon: Megaphone, title: "Promo & Loyalty Campaigns", description: "Send targeted WhatsApp blasts for new menu items, weekend specials, or loyalty rewards to customers who haven't visited in a while." },
-    { icon: BarChart3, title: "Sales & Peak Hour Reports", description: "Daily and weekly reports showing your busiest hours, top-selling items, and revenue trends — delivered straight to your phone." },
+    { icon: CalendarCheck, title: "AI Booking Requests", description: "Customers request a table or reservation directly through conversation with the AI — no forms, no phone tag. Conflicts are checked automatically." },
+    { icon: HelpCircle, title: "Instant FAQ Answers", description: "Menu, hours, and location questions answered instantly from your own FAQ list — with zero AI cost and zero wait." },
+    { icon: ClipboardList, title: "Inquiry Capture", description: "When a visitor wants to leave their details, the AI collects their name, contact info, and what they're reaching out about." },
+    { icon: UserCheck, title: "Working-Hours-Aware Handoff", description: "The AI knows your real service hours — handing off to staff when you're open, and gracefully pointing to WhatsApp when you're closed." },
+    { icon: BookOpen, title: "Your Own Knowledge Base", description: "Add details about your menu, specials, and policies so the AI answers with your actual information, not generic guesses." },
+    { icon: BarChart3, title: "FAQ View Analytics", description: "See exactly what customers ask most, so you always know what to clarify or add." },
 ];
 
 const steps = [
-    { title: "Connect your WhatsApp Business number", description: "We link your existing number to Blueflow and configure your digital menu, pricing, and order flow." },
-    { title: "Set up your payment and booking flows", description: "We integrate Paystack or Flutterwave and configure your reservation system with your table capacity and hours." },
-    { title: "Build your customer database", description: "Every customer who orders or books is captured automatically — building a list you can market to again and again." },
-    { title: "Launch and start filling seats", description: "Go live in days. Your restaurant runs smoother, your staff focus on service, and revenue grows without extra headcount." },
+    { title: "Add the chat widget to your website", description: "Embed Blueflow's widget on your site and set your assistant's name, greeting, and real service hours." },
+    { title: "Add your FAQs and menu details", description: "Enter your most common customer questions — menu, hours, location, specials — and any other background the AI should know." },
+    { title: "The AI starts answering and taking requests", description: "Customers ask questions and request bookings directly through conversation — automatically, any time of day." },
+    { title: "Refine as you go", description: "Check which FAQs get the most views, add details for anything the AI couldn't answer, and adjust hours any time from your dashboard." },
 ];
 
 const metrics = [
-    { value: "3x", label: "More Repeat Customers" },
-    { value: "0", label: "Missed Orders" },
-    { value: "< 1s", label: "Response Time" },
-    { value: "5hrs", label: "Staff Time Saved Daily" },
+    { value: "24/7", label: "AI Availability" },
+    { value: "0", label: "Forms To Fill Out" },
+    { value: "Instant", label: "FAQ Answers" },
+    { value: "Live", label: "Working-Hours Awareness" },
 ];
-
-const testimonial = {
-    quote: "We used to miss orders when the line got busy. Now WhatsApp handles everything automatically and we've grown our repeat customer base significantly.",
-    name: "Adaeze O.",
-    role: "Owner, Lagos Restaurant",
-};
 
 export default function RestaurantsCafes() {
     return (
@@ -47,7 +41,7 @@ export default function RestaurantsCafes() {
             <Head title="Automation for Restaurants & Cafés">
                 <meta
                     name="description"
-                    content="Automate orders, bookings, payments, and customer follow-ups for your restaurant or café. Blueflow helps Nigerian food businesses run smarter and serve more customers."
+                    content="Give diners instant answers and let the AI collect booking requests, any time of day. Blueflow helps Nigerian restaurants and cafés respond faster."
                 />
             </Head>
             <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -62,14 +56,15 @@ export default function RestaurantsCafes() {
                                         Restaurants & Cafés
                                     </span>
                                     <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-5">
-                                        Serve More Customers Without Hiring More Staff
+                                        Instant Answers. Automatic Booking Requests.
                                     </h2>
                                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
-                                        Running a restaurant in Nigeria means managing orders on WhatsApp, handling
-                                        cash and transfers, chasing reviews, and keeping regulars coming back —
-                                        all while trying to keep food quality high. Blueflow automates the
-                                        operational side so your team can focus entirely on delivering a great
-                                        experience. More orders processed, fewer errors, happier customers.
+                                        Running a restaurant means answering the same menu and hours questions
+                                        over and over, often while the kitchen is at its busiest. Blueflow's AI
+                                        chat widget answers those questions instantly, collects booking requests
+                                        through natural conversation, and only hands off to staff when a
+                                        conversation genuinely needs a person — so your team can focus on the
+                                        food, not the phone.
                                     </p>
                                     <ul className="space-y-3">
                                         {highlights.map((h) => (
@@ -136,18 +131,6 @@ export default function RestaurantsCafes() {
                                     </div>
                                 ))}
                             </div>
-                        </div>
-                    </section>
-
-                    {/* Testimonial */}
-                    <section className="py-20 bg-gray-50 dark:bg-gray-800">
-                        <div className="max-w-3xl mx-auto px-4 text-center">
-                            <div className="w-12 h-12 mx-auto mb-6 bg-blue-50 dark:bg-blue-900/40 rounded-2xl flex items-center justify-center"><Quote className="w-6 h-6 text-blue-600" strokeWidth={1.75} /></div>
-                            <blockquote className="text-xl font-medium text-gray-800 dark:text-gray-100 leading-relaxed mb-6">
-                                "{testimonial.quote}"
-                            </blockquote>
-                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{testimonial.name}</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
                         </div>
                     </section>
 

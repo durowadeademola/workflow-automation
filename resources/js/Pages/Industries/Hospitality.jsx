@@ -1,45 +1,39 @@
 import { Head, Link } from "@inertiajs/react";
-import { Hotel, ClipboardList, BellRing, Gift, Star, BarChart3, Quote } from "lucide-react";
+import { Hotel, CalendarCheck, HelpCircle, ClipboardList, UserCheck, BookOpen, BarChart3 } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
 import IconTile from "@/Components/Icons/IconTile";
 import SectionIllustration from "@/Components/Icons/SectionIllustration";
 
 const highlights = [
-    "Accept direct bookings via WhatsApp 24/7 — no OTA commission on any reservation",
-    "Automated confirmation, check-in reminders, and guest info sent without staff involvement",
-    "Upsell room upgrades, airport pickup, and dining reservations automatically",
-    "Post-stay review requests sent at the perfect moment to boost your ratings",
+    "Guests get instant answers on availability, rates, and amenities any time of day",
+    "AI collects booking requests through natural conversation, with automatic conflict checking",
+    "New inquiries captured automatically, along with what the guest actually wants",
+    "Handoff to front desk staff during working hours — WhatsApp fallback outside them",
 ];
 
 const features = [
-    { icon: Hotel, title: "Direct WhatsApp Booking", description: "Guests check availability, see room options with photos and pricing, and confirm their booking directly on WhatsApp — no commission, no middlemen." },
-    { icon: ClipboardList, title: "Booking Confirmations & Reminders", description: "Professional confirmation messages sent instantly on every booking, followed by a reminder 24 hours before arrival with directions and check-in details." },
-    { icon: BellRing, title: "In-Stay Guest Requests", description: "Guests request room service, housekeeping, extra towels, or report issues via WhatsApp. Staff get instant notifications with no phone calls needed." },
-    { icon: Gift, title: "Upsell Automation", description: "Automatically offer room upgrades, spa bookings, restaurant reservations, and airport transfers at the right moment during the guest journey." },
-    { icon: Star, title: "Review Collection", description: "Every guest receives a follow-up message after checkout asking for a Google or TripAdvisor review — building your reputation consistently." },
-    { icon: BarChart3, title: "Occupancy & Revenue Dashboard", description: "Real-time view of room occupancy, revenue per booking, channel performance, and your busiest seasons — all in one place." },
+    { icon: CalendarCheck, title: "AI Booking Requests", description: "Guests request a room or check availability directly through conversation with the AI — no forms, no phone tag. Conflicts are checked automatically." },
+    { icon: HelpCircle, title: "Instant FAQ Answers", description: "Questions about rates, amenities, and policies are answered instantly from your own FAQ list — with zero AI cost and zero wait." },
+    { icon: ClipboardList, title: "Guest Inquiry Capture", description: "When a visitor wants to leave their details, the AI collects their name, contact info, and what they're reaching out about." },
+    { icon: UserCheck, title: "Working-Hours-Aware Handoff", description: "The AI knows your real front desk hours — handing off to staff when they're available, and gracefully pointing to WhatsApp otherwise." },
+    { icon: BookOpen, title: "Your Own Knowledge Base", description: "Add details about your rooms, amenities, and policies so the AI answers with your property's actual information, not generic guesses." },
+    { icon: BarChart3, title: "FAQ View Analytics", description: "See exactly what guests ask most, so you always know what to clarify or add." },
 ];
 
 const steps = [
-    { title: "Connect your WhatsApp Business number", description: "We link your hotel's number to Blueflow and configure your room types, availability calendar, and pricing tiers." },
-    { title: "Build your booking and guest journey flows", description: "We design conversation flows for enquiries, confirmations, check-in instructions, in-stay requests, and post-stay follow-ups." },
-    { title: "Integrate your payment and property systems", description: "We connect Paystack or Flutterwave for deposits, and link your existing property management system if you have one." },
-    { title: "Launch and start filling rooms directly", description: "Go live in days. Every booking, guest message, and follow-up is handled automatically — your staff focus on delivering a great stay." },
+    { title: "Add the chat widget to your website", description: "Embed Blueflow's widget on your property's site and set your assistant's name, greeting, and real front desk hours." },
+    { title: "Add your FAQs and property knowledge", description: "Enter your most common guest questions — rates, amenities, policies — and any other background the AI should know." },
+    { title: "The AI starts answering and taking requests", description: "Guests ask questions and request bookings directly through conversation — automatically, any time of day." },
+    { title: "Refine as you go", description: "Check which FAQs get the most views, add details for anything the AI couldn't answer, and adjust hours any time from your dashboard." },
 ];
 
 const metrics = [
-    { value: "25%", label: "Higher Occupancy" },
-    { value: "0%", label: "OTA Commission" },
-    { value: "40%", label: "Direct Bookings" },
-    { value: "4.9★", label: "Avg Guest Rating" },
+    { value: "24/7", label: "AI Availability" },
+    { value: "0", label: "Forms To Fill Out" },
+    { value: "Auto", label: "Conflict-Free Booking" },
+    { value: "Live", label: "Working-Hours Awareness" },
 ];
-
-const testimonial = {
-    quote: "We used to pay Booking.com on almost every reservation. Now most of our bookings come directly through WhatsApp. We kept all that commission and our guests actually prefer the experience.",
-    name: "Mrs. Funke Adeleke",
-    role: "General Manager, Grandeur Hotel — Port Harcourt",
-};
 
 export default function Hotels() {
     return (
@@ -47,7 +41,7 @@ export default function Hotels() {
             <Head title="Automation for Hotels & Hospitality">
                 <meta
                     name="description"
-                    content="Automate bookings, guest communications, upsells, and reviews for your hotel. Blueflow helps Nigerian hospitality businesses fill more rooms and earn more per guest."
+                    content="Give guests instant answers and let the AI collect booking requests, any time of day. Blueflow helps Nigerian hotels and guesthouses respond faster."
                 />
             </Head>
             <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -62,15 +56,14 @@ export default function Hotels() {
                                         Hotels & Hospitality
                                     </span>
                                     <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-5">
-                                        Fill More Rooms and Stop Paying OTA Commissions
+                                        Instant Answers. Automatic Booking Requests.
                                     </h2>
                                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
-                                        Nigerian hotels are losing 15–30% of every booking to Booking.com,
-                                        Jumia Travel, and other platforms. Meanwhile, guests are already on
-                                        WhatsApp — the simplest booking channel you have. Blueflow turns your
-                                        WhatsApp number into a direct booking engine that handles enquiries,
-                                        confirmations, guest requests, and reviews automatically, so your team
-                                        can focus on delivering an exceptional stay.
+                                        Guests expect a fast reply, whatever time they reach out. Blueflow's AI
+                                        chat widget answers questions about availability, rates, and amenities
+                                        instantly, collects booking requests through natural conversation, and
+                                        only hands off to front desk staff when a conversation genuinely needs
+                                        one — so your team can focus on the stay, not the phone.
                                     </p>
                                     <ul className="space-y-3">
                                         {highlights.map((h) => (
@@ -139,18 +132,6 @@ export default function Hotels() {
                                     </div>
                                 ))}
                             </div>
-                        </div>
-                    </section>
-
-                    {/* Testimonial */}
-                    <section className="py-20 bg-gray-50 dark:bg-gray-800">
-                        <div className="max-w-3xl mx-auto px-4 text-center">
-                            <div className="w-12 h-12 mx-auto mb-6 bg-blue-50 dark:bg-blue-900/40 rounded-2xl flex items-center justify-center"><Quote className="w-6 h-6 text-blue-600" strokeWidth={1.75} /></div>
-                            <blockquote className="text-xl font-medium text-gray-800 dark:text-gray-100 leading-relaxed mb-6">
-                                "{testimonial.quote}"
-                            </blockquote>
-                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{testimonial.name}</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
                         </div>
                     </section>
 

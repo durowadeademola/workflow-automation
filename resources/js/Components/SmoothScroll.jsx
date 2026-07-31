@@ -14,6 +14,12 @@ const SETTLE_DELAY = 110;
 const SPRING_EASING = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 const SPRING_DURATION = 550;
 
+// Lenis's eased/momentum scrolling is disabled for now — flip this back to
+// true to re-enable it (the setup below is left intact rather than removed).
+// The boundary bounce effect further down does not depend on Lenis and keeps
+// working off native scroll either way.
+const SMOOTH_SCROLL_ENABLED = false;
+
 /**
  * Site-wide eased/momentum scrolling, plus a stylized elastic bounce at the
  * very top/bottom (the "you've reached the end" push effect seen on sites
@@ -45,35 +51,48 @@ export default function SmoothScroll() {
             return;
         }
 
-        const lenis = new Lenis({
-            duration: 1.6,
-            // Each wheel/trackpad tick travels less distance, on top of the
-            // longer duration above — the combination is what actually
-            // reads as "slower" rather than just "delayed."
-            wheelMultiplier: 0.8,
-            smoothWheel: true,
-            // Without this, Lenis hijacks wheel/touch scrolling even over
-            // nested scrollable elements (the chat widget's message list,
-            // its FAQ tab, any future modal) and applies it to the page
-            // instead — this auto-detects those and lets them scroll
-            // natively, which Lenis's own docs call the most reliable fix
-            // (more so than the data-lenis-prevent attribute alone).
-            allowNestedScroll: true,
-        });
-
+        let lenis = null;
         let frameId;
-        function raf(time) {
-            lenis.raf(time);
-            frameId = requestAnimationFrame(raf);
-        }
-        frameId = requestAnimationFrame(raf);
+        let removeListener = () => {};
 
-        // Inertia swaps pages client-side (no real page load), so the
-        // browser never resets scroll on its own — without this, Lenis
-        // would carry the old page's scroll position into the new one.
-        const removeListener = router.on('navigate', () => {
-            lenis.scrollTo(0, { immediate: true });
-        });
+        if (SMOOTH_SCROLL_ENABLED) {
+            lenis = new Lenis({
+                duration: 1.25,
+                // Lenis's default easing is an exponential ease-out with a long,
+                // gradual tail — most of the motion happens early, then it keeps
+                // gliding almost imperceptibly for a while after, which reads as
+                // "slippery"/never quite stopping. easeOutCubic (a steeper curve)
+                // fixed that but removed the glide entirely, feeling too rigid.
+                // easeOutQuad splits the difference: still a bit of drag/momentum
+                // after the input stops, but bounded — it settles in well under a
+                // second rather than coasting indefinitely.
+                easing: (t) => 1 - (1 - t) * (1 - t),
+                // Each wheel/trackpad tick travels a bit further, on top of the
+                // duration/easing above — restoring some of the glide feel.
+                wheelMultiplier: 0.85,
+                smoothWheel: true,
+                // Without this, Lenis hijacks wheel/touch scrolling even over
+                // nested scrollable elements (the chat widget's message list,
+                // its FAQ tab, any future modal) and applies it to the page
+                // instead — this auto-detects those and lets them scroll
+                // natively, which Lenis's own docs call the most reliable fix
+                // (more so than the data-lenis-prevent attribute alone).
+                allowNestedScroll: true,
+            });
+
+            function raf(time) {
+                lenis.raf(time);
+                frameId = requestAnimationFrame(raf);
+            }
+            frameId = requestAnimationFrame(raf);
+
+            // Inertia swaps pages client-side (no real page load), so the
+            // browser never resets scroll on its own — without this, Lenis
+            // would carry the old page's scroll position into the new one.
+            removeListener = router.on('navigate', () => {
+                lenis.scrollTo(0, { immediate: true });
+            });
+        }
 
         // ── Boundary bounce ──
         const content = document.getElementById('scroll-content');
@@ -81,14 +100,27 @@ export default function SmoothScroll() {
         let settleTimer = null;
 
         function setOffset(value, { animate }) {
-            content.style.transition = animate
+            const transition = animate
                 ? `transform ${SPRING_DURATION}ms ${SPRING_EASING}`
                 : 'none';
+
+            content.style.transition = transition;
             // Positive value (top) pushes content down, revealing space
             // above it; negative value (bottom) pulls content up, revealing
             // space below it — symmetric, since transform never touches
             // scrollHeight/scroll position the way margin would.
             content.style.transform = value === 0 ? '' : `translateY(${value}px)`;
+
+            // The cookie-consent banner is fixed to the viewport bottom and
+            // sits directly on top of the strip of background a bottom bounce
+            // reveals — without moving it too, the whole effect is invisible
+            // behind the banner until it's dismissed. Move it in lockstep so
+            // the reveal stays visible just above/below it either way.
+            const cookieBanner = document.querySelector('[aria-label="Cookie consent"]');
+            if (cookieBanner) {
+                cookieBanner.style.transition = transition;
+                cookieBanner.style.transform = value < 0 ? `translateY(${value}px)` : '';
+            }
         }
 
         function springBack() {
@@ -99,10 +131,18 @@ export default function SmoothScroll() {
         function handleWheel(event) {
             if (!content) return;
 
-            const scroll = lenis.animatedScroll ?? lenis.scroll ?? window.scrollY;
-            const limit = lenis.limit ?? (document.documentElement.scrollHeight - window.innerHeight);
-            const atTop = scroll <= 0.5;
-            const atBottom = scroll >= limit - 0.5;
+            const nativeLimit = document.documentElement.scrollHeight - window.innerHeight;
+            const scroll = lenis ? (lenis.animatedScroll ?? lenis.scroll ?? window.scrollY) : window.scrollY;
+            const limit = lenis ? (lenis.limit ?? nativeLimit) : nativeLimit;
+            // A tight sub-pixel tolerance here only ever gets hit reliably on
+            // short pages. Non-100% OS display scaling (125%/150%, common on
+            // Windows laptops) introduces subpixel rounding in scrollHeight
+            // that compounds across a long, many-section page like the
+            // homepage, so real scrollY can land a few px shy of the exact
+            // computed limit even when the user is genuinely at the bottom.
+            const BOUNDARY_TOLERANCE = 3;
+            const atTop = scroll <= BOUNDARY_TOLERANCE;
+            const atBottom = scroll >= limit - BOUNDARY_TOLERANCE;
 
             const pullingUpPastTop = atTop && event.deltaY < 0;
             const pullingDownPastBottom = atBottom && event.deltaY > 0;
@@ -127,15 +167,22 @@ export default function SmoothScroll() {
         window.addEventListener('wheel', handleWheel, { passive: true });
 
         return () => {
-            cancelAnimationFrame(frameId);
-            removeListener();
             window.removeEventListener('wheel', handleWheel);
             clearTimeout(settleTimer);
             if (content) {
                 content.style.transition = '';
                 content.style.transform = '';
             }
-            lenis.destroy();
+            const cookieBanner = document.querySelector('[aria-label="Cookie consent"]');
+            if (cookieBanner) {
+                cookieBanner.style.transition = '';
+                cookieBanner.style.transform = '';
+            }
+            if (SMOOTH_SCROLL_ENABLED) {
+                cancelAnimationFrame(frameId);
+                removeListener();
+                lenis.destroy();
+            }
         };
     }, []);
 
