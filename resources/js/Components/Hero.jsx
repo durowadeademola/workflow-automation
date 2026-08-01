@@ -1,5 +1,6 @@
 import { Link } from "@inertiajs/react";
 import { useScrollAnimation, useCountUp } from "@/hooks/useScrollAnimation";
+import HeroDashboardPreview from "@/Components/HeroDashboardPreview";
 
 const stats = [
     { value: 100, suffix: "+", label: "Businesses Automated" },
@@ -40,72 +41,114 @@ export default function Hero() {
             <div className="absolute top-20 right-0 w-96 h-96 bg-blue-100 dark:bg-blue-900 rounded-full opacity-40 blur-3xl -z-0" />
             <div className="absolute bottom-10 left-0 w-72 h-72 bg-emerald-100 dark:bg-emerald-900 rounded-full opacity-30 blur-3xl -z-0" />
 
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                {/* Headline */}
-                <h1
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="lg:max-w-md xl:max-w-lg 2xl:max-w-xl">
+                    {/* Text content */}
+                    <div className="text-center lg:text-left">
+                        {/* Headline */}
+                        <h1
+                            style={{
+                                opacity: isVisible ? 1 : 0,
+                                transform: isVisible ? "translateY(0)" : "translateY(32px)",
+                                transition: "opacity 0.6s ease 100ms, transform 0.6s ease 100ms",
+                            }}
+                            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight mb-6"
+                        >
+                            Automate Everything.{" "}
+                            <span className="text-blue-600">Grow Faster.</span>
+                        </h1>
+
+                        {/* Subheadline */}
+                        <p
+                            style={{
+                                opacity: isVisible ? 1 : 0,
+                                transform: isVisible ? "translateY(0)" : "translateY(32px)",
+                                transition: "opacity 0.6s ease 200ms, transform 0.6s ease 200ms",
+                            }}
+                            className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0"
+                        >
+                            Transform your business operations with AI-powered automation.
+                            Save time, reduce costs, and scale effortlessly.
+                        </p>
+
+                        {/* CTA Buttons */}
+                        <div
+                            style={{
+                                opacity: isVisible ? 1 : 0,
+                                transform: isVisible ? "translateY(0)" : "translateY(32px)",
+                                transition: "opacity 0.6s ease 300ms, transform 0.6s ease 300ms",
+                            }}
+                            className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-16"
+                        >
+                           <Link href="/register"
+                                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-0.5"
+                            >
+                                Get Started Free
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </Link>
+                            <a
+                                href="#how-it-works"
+                                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-gray-700 dark:text-gray-200 font-semibold px-8 py-3.5 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 hover:text-blue-700 dark:hover:text-blue-300 transition-all hover:-translate-y-0.5"
+                            >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                See How It Works
+                            </a>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto lg:mx-0">
+                            {stats.map((stat, i) => (
+                                <StatCard
+                                    key={stat.label}
+                                    {...stat}
+                                    delay={400 + i * 120}
+                                    trigger={isVisible}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Dashboard preview — bleeds off the right edge of the viewport on
+                large screens, like the reference layout, instead of sitting
+                inside the centered max-w-7xl container. Clipped to the right
+                half of the viewport (left-1/2 + overflow-hidden) so that at
+                narrower "lg" widths it crops instead of overlapping the text
+                column — the natural width * scale can otherwise exceed the
+                space actually left of the text. Positioning/scale and the
+                reveal animation each need their own element since both use
+                the `transform` property and an inline style would otherwise
+                silently clobber the Tailwind transform classes. */}
+            <div className="hidden lg:flex absolute z-10 top-24 xl:top-28 left-1/2 xl:left-[44%] 2xl:left-[42%] right-0 bottom-0 overflow-hidden justify-end items-start pt-8">
+                <div
                     style={{
                         opacity: isVisible ? 1 : 0,
-                        transform: isVisible ? "translateY(0)" : "translateY(32px)",
-                        transition: "opacity 0.6s ease 100ms, transform 0.6s ease 100ms",
+                        transform: isVisible ? "translateX(0)" : "translateX(48px)",
+                        transition: "opacity 0.7s ease 250ms, transform 0.7s ease 250ms",
                     }}
-                    className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight mb-6 max-w-4xl mx-auto"
                 >
-                    Automate Everything.{" "}
-                    <span className="text-blue-600">Grow Faster.</span>
-                </h1>
+                    <div className="origin-top-right xl:scale-[1.45] 2xl:scale-[1.65]">
+                        <HeroDashboardPreview />
+                    </div>
+                </div>
+            </div>
 
-                {/* Subheadline */}
-                <p
-                    style={{
-                        opacity: isVisible ? 1 : 0,
-                        transform: isVisible ? "translateY(0)" : "translateY(32px)",
-                        transition: "opacity 0.6s ease 200ms, transform 0.6s ease 200ms",
-                    }}
-                    className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed"
-                >
-                    Transform your business operations with AI-powered automation.
-                    Save time, reduce costs, and scale effortlessly.
-                </p>
-
-                {/* CTA Buttons */}
+            {/* Mobile/tablet: shown inline below the text instead, at natural size */}
+            <div className="lg:hidden relative z-10 max-w-7xl mx-auto px-4 sm:px-8 mt-4">
                 <div
                     style={{
                         opacity: isVisible ? 1 : 0,
                         transform: isVisible ? "translateY(0)" : "translateY(32px)",
-                        transition: "opacity 0.6s ease 300ms, transform 0.6s ease 300ms",
+                        transition: "opacity 0.7s ease 250ms, transform 0.7s ease 250ms",
                     }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
                 >
-                   <Link href="/register"
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-0.5"
-                    >
-                        Get Started Free
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                    </Link>
-                    <a
-                        href="#how-it-works"
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-gray-700 dark:text-gray-200 font-semibold px-8 py-3.5 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 hover:text-blue-700 dark:hover:text-blue-300 transition-all hover:-translate-y-0.5"
-                    >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        See How It Works
-                    </a>
-                </div>
-
-                {/* Stats */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
-                    {stats.map((stat, i) => (
-                        <StatCard
-                            key={stat.label}
-                            {...stat}
-                            delay={400 + i * 120}
-                            trigger={isVisible}
-                        />
-                    ))}
+                    <HeroDashboardPreview />
                 </div>
             </div>
         </section>

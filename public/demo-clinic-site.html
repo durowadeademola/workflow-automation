@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sunrise Family Clinic — Lekki, Lagos</title>
+<style>
+    :root { --brand: #2563eb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, "Segoe UI", Inter, Arial, sans-serif; color: #1f2937; background: #fff; }
+    header { background: var(--brand); color: #fff; padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; }
+    header .brand { font-weight: 700; font-size: 20px; }
+    header nav a { color: #fff; text-decoration: none; margin-left: 28px; font-size: 14px; opacity: .9; }
+    .hero { background: linear-gradient(135deg, #eff6ff, #ffffff); padding: 90px 40px; text-align: center; }
+    .hero h1 { font-size: 42px; margin: 0 0 16px; color: #111827; }
+    .hero p { font-size: 18px; color: #4b5563; max-width: 640px; margin: 0 auto 28px; }
+    .hero .cta { display: inline-block; background: var(--brand); color: #fff; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 600; }
+    section.services { padding: 70px 40px; max-width: 1000px; margin: 0 auto; }
+    section.services h2 { text-align: center; font-size: 28px; margin-bottom: 40px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+    .card { border: 1px solid #e5e7eb; border-radius: 14px; padding: 24px; }
+    .card h3 { margin: 0 0 8px; font-size: 17px; }
+    .card p { margin: 0; font-size: 14px; color: #6b7280; line-height: 1.5; }
+    footer { background: #111827; color: #9ca3af; text-align: center; padding: 30px; font-size: 13px; }
+</style>
+</head>
+<body>
+    <header>
+        <div class="brand">🌅 Sunrise Family Clinic</div>
+        <nav>
+            <a href="#services">Services</a>
+            <a href="#hours">Hours</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <h1>Caring for your family, every day</h1>
+        <p>Sunrise Family Clinic offers general consultations, pediatrics, antenatal care, and more — right here in Lekki Phase 1, Lagos.</p>
+        <a class="cta" href="#contact">Book a visit</a>
+    </div>
+
+    <section class="services" id="services">
+        <h2>Our Services</h2>
+        <div class="grid">
+            <div class="card"><h3>General Consultation</h3><p>Same-day and walk-in consultations for the whole family.</p></div>
+            <div class="card"><h3>Pediatrics</h3><p>Routine check-ups and vaccinations for children of all ages.</p></div>
+            <div class="card"><h3>Antenatal Care</h3><p>Comprehensive care throughout every stage of pregnancy.</p></div>
+            <div class="card"><h3>Laboratory Testing</h3><p>On-site lab services with fast, reliable results.</p></div>
+        </div>
+    </section>
+
+    <section class="services" id="hours">
+        <h2>Visit Us</h2>
+        <div class="grid">
+            <div class="card"><h3>Opening Hours</h3><p>Monday – Saturday, 8:00 AM – 6:00 PM. Closed Sundays and public holidays.</p></div>
+            <div class="card" id="contact"><h3>Location</h3><p>14 Admiralty Way, Lekki Phase 1, Lagos. Free on-site parking.</p></div>
+        </div>
+    </section>
+
+    <footer>&copy; 2026 Sunrise Family Clinic — Demo site for Blueflow Automation</footer>
+
+    <script>
+        window.ChatWidgetConfig = {
+            clientId: 87,
+            apiBase: "http://blueflow.test/api",
+            businessName: "Sunrise Family Clinic (Demo)",
+            agentName: "Ada",
+            primaryColor: "#2563eb",
+            waNumber: "2348012345678",
+            greeting: "Hi there! Welcome to Sunrise Family Clinic. How can I help you today?",
+            systemPrompt: "You are the AI assistant for Sunrise Family Clinic, a family healthcare clinic in Lekki, Lagos. Be warm, professional, and concise.",
+            position: "right",
+            quickReplies: ["Book an appointment","Chat with a staff member","Register with us"],
+            autoOpenDelay: 4,
+        };
+    </script>
+    <script src="/chat-widget.js?v=demo"></script>
+</body>
+</html>
