@@ -42,8 +42,8 @@
 
   const cfg = Object.assign({
     apiBase: 'https://blueflowautomation.com/api',
-    businessName: 'AI Assistant',
-    agentName: 'AI Assistant',
+    businessName: 'Assistant',
+    agentName: 'Assistant',
     primaryColor: '#1D9E75',
     waNumber: '',
     greeting: '👋 Hello! Welcome, How can I help you today?',

@@ -33,6 +33,7 @@ Route::get('/', function () {
 //services
 Route::get('/services', fn() => inertia('Services/Index'))->name('services');
 Route::get('/services/chat-widget', fn() => inertia('Services/ChatWidget'));
+Route::get('/services/marketing-automation', fn() => inertia('Services/MarketingAutomation'));
 Route::get('/services/whatsapp-automation', fn() => inertia('Services/WhatsappAutomation'));
 Route::get('/services/crm-integration', fn() => inertia('Services/CRMIntegration'));
 Route::get('/services/email-automation', fn() => inertia('Services/EmailAutomation'));

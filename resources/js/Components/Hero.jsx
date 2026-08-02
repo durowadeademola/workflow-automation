@@ -134,7 +134,7 @@ export default function Hero() {
                     }}
                 >
                     <div className="origin-top-right xl:scale-[1.45] 2xl:scale-[1.65]">
-                        <HeroDashboardPreview />
+                        <HeroDashboardPreview trigger={isVisible} />
                     </div>
                 </div>
             </div>
@@ -148,7 +148,7 @@ export default function Hero() {
                         transition: "opacity 0.7s ease 250ms, transform 0.7s ease 250ms",
                     }}
                 >
-                    <HeroDashboardPreview />
+                    <HeroDashboardPreview trigger={isVisible} />
                 </div>
             </div>
         </section>

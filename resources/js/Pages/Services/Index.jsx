@@ -1,5 +1,5 @@
 import { Head, Link } from "@inertiajs/react";
-import { MessageSquareText, MessageCircle, Contact, Mail, CreditCard, Workflow } from "lucide-react";
+import { MessageSquareText, Megaphone, MessageCircle, Contact, Mail, CreditCard, Workflow } from "lucide-react";
 import MainLayout from "@/Components/Layout/MainLayout";
 import PageHero from "@/Components/Layout/PageHero";
 import IconTile from "@/Components/Icons/IconTile";
@@ -12,6 +12,13 @@ const services = [
         href: "/services/chat-widget",
         popular: true,
         icon: MessageSquareText,
+    },
+    {
+        title: "Marketing Automation",
+        description: "Run campaigns across email, WhatsApp, and phone that turn interest into paying customers.",
+        features: ["Campaign automation", "Segmentation", "A/B testing", "Analytics"],
+        href: "/services/marketing-automation",
+        icon: Megaphone,
     },
     {
         title: "Workflow Automation",
@@ -39,8 +46,8 @@ const services = [
     },
     {
         title: "Email Automation",
-        description: "Send the right message to the right customer at the right time — automatically.",
-        features: ["Campaign builder", "Smart segmentation", "Cart recovery", "A/B testing"],
+        description: "Automated operational emails — confirmations, receipts, and reports, sent the moment they're triggered.",
+        features: ["Appointment confirmations", "Billing & payment receipts", "Performance reports", "Real-time triggers"],
         href: "/services/email-automation",
         icon: Mail,
         comingSoon: true,

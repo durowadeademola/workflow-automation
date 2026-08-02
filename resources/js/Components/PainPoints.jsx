@@ -5,7 +5,7 @@ import IconTile from "@/Components/Icons/IconTile";
 const painPoints = [
     {
         icon: PhoneMissed,
-        title: "Missing 40-60% of customer calls",
+        title: "Missing 40-60% of customer calls or messages",
         description: "Customers can't reach you during busy hours",
     },
     {

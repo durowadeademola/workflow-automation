@@ -5,6 +5,7 @@ import { useTheme } from "@/hooks/useTheme";
 
 const servicesLinks = [
     { label: "Chat Widget", href: "/services/chat-widget" },
+    { label: "Marketing Automation", href: "/services/marketing-automation" },
     { label: "WhatsApp Automation", href: "/services/whatsapp-automation", comingSoon: true },
     { label: "CRM Integration", href: "/services/crm-integration", comingSoon: true },
     { label: "Email Automation", href: "/services/email-automation", comingSoon: true },

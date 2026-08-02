@@ -10,6 +10,13 @@ const services = [
         popular: true,
     },
     {
+        title: "Marketing Automation",
+        description: "Automated campaigns across email, WhatsApp, and phone that turn interest into customers",
+        features: ["Campaign automation", "Segmentation", "A/B testing", "Analytics"],
+        href: "/services/marketing-automation",
+        isNew: true,
+    },
+    {
         title: "Workflow Automation",
         description: "Connect your tools and automate repetitive business processes",
         features: ["Multi-tool integration", "Custom workflows", "Data processing", "Scheduling"],
@@ -24,16 +31,9 @@ const services = [
         comingSoon: true,
     },
     {
-        title: "CRM Integration",
-        description: "Centralize customer data and automate relationship management",
-        features: ["Data synchronization", "Lead management", "Pipeline automation", "Analytics"],
-        href: "/services/crm-integration",
-        comingSoon: true,
-    },
-    {
         title: "Email Automation",
-        description: "Automated email campaigns, follow-ups, and customer journeys",
-        features: ["Campaign automation", "Segmentation", "A/B testing", "Analytics"],
+        description: "Automated operational emails — confirmations, receipts, and reports, sent the moment they're triggered",
+        features: ["Appointment confirmations", "Billing & payment receipts", "Performance reports", "Real-time triggers"],
         href: "/services/email-automation",
         comingSoon: true,
     },
@@ -99,6 +99,11 @@ export default function Services() {
                             {service.custom && (
                                 <span className="absolute -top-3 left-6 bg-violet-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
                                     Custom Quote
+                                </span>
+                            )}
+                            {service.isNew && (
+                                <span className="absolute -top-3 left-6 bg-emerald-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                                    New
                                 </span>
                             )}
                             <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-2">{service.title}</h3>

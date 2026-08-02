@@ -6,7 +6,8 @@ import MainLayout from "@/Components/Layout/MainLayout";
 import PageHero from "@/Components/Layout/PageHero";
 
 const SERVICES = [
-    { value: "chat-widget", label: "Chat Widget", description: "AI assistant embedded on your website" },
+    { value: "chat-widget", label: "Chat Widget", description: "AI assistant embedded on your website, that answers visitors instantly, 24/7" },
+    { value: "marketing-automation", label: "Marketing Automation", description: "Automated campaigns across email, WhatsApp, and phone" },
     { value: "whatsapp-automation", label: "WhatsApp Automation", description: "Automated replies & workflows on WhatsApp", comingSoon: true },
     { value: "email-automation", label: "Email Automation", description: "Automated email sequences and replies", comingSoon: true },
     { value: "payment-automation", label: "Payment Automation", description: "Automated invoicing and payment collection", comingSoon: true },

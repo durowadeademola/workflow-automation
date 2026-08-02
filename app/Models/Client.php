@@ -74,7 +74,7 @@ class Client extends Model
      * more services ship. Admins can still assign any FEATURES slug to a
      * client manually via ClientForm.
      */
-    public const SELF_REGISTRATION_FEATURES = ['chat-widget'];
+    public const SELF_REGISTRATION_FEATURES = ['chat-widget', 'marketing-automation'];
 
     /**
      * `null` means this client predates the feature-selection system (or an
@@ -132,7 +132,7 @@ class Client extends Model
         // it — gives visitors an explicit, discoverable set of next steps,
         // and gives the AI an unambiguous signal of intent when clicked.
         'widget_quick_replies' => ['Book an appointment', 'Chat with a staff member', 'Register with us'],
-        'widget_auto_open_delay' => 1500,
+        'widget_auto_open_delay' => 10000,
         'working_hours_enabled' => false,
         'working_days' => ['mon', 'tue', 'wed', 'thu', 'fri'],
         'working_hours_start' => '09:00',

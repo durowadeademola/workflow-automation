@@ -2,6 +2,7 @@ import { Link } from "@inertiajs/react";
 
 const footerLinks = {
     Services: [
+        { label: "Marketing Automation", href: "/services/marketing-automation" },
         { label: "WhatsApp Automation", href: "/services/whatsapp-automation" },
         { label: "CRM Integration", href: "/services/crm-integration" },
         { label: "Email Automation", href: "/services/email-automation" },
