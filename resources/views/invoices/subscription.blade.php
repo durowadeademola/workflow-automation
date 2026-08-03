@@ -125,7 +125,7 @@
         <tbody>
             <tr>
                 <td>
-                    <strong>{{ $subscription->name }} Plan</strong><br>
+                    <strong>{{ $subscription->serviceLabel() }} — {{ $subscription->name }} Plan</strong><br>
                     @if($subscription->planRecord?->description)
                         <span class="muted">{{ $subscription->planRecord->description }}</span>
                     @endif

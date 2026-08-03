@@ -29,9 +29,9 @@ class SubscriptionInvoice extends Notification
         $pdf = Pdf::loadView('invoices.subscription', ['subscription' => $subscription])->output();
 
         return (new MailMessage)
-            ->subject("Invoice for your {$subscription->name} subscription")
+            ->subject("Invoice for your {$subscription->serviceLabel()} {$subscription->name} subscription")
             ->greeting("Hi {$notifiable->name},")
-            ->line("Thanks for your payment — your {$subscription->name} subscription is now active.")
+            ->line("Thanks for your payment — your {$subscription->serviceLabel()} {$subscription->name} subscription is now active.")
             ->line('Amount paid: ₦'.number_format($subscription->amount))
             ->line('Your invoice is attached for your records.')
             ->action('View Billing', url('/user/billing'))
@@ -49,7 +49,7 @@ class SubscriptionInvoice extends Notification
 
         return FilamentNotification::make()
             ->title('Payment received')
-            ->body("Your {$subscription->name} subscription is now active. An invoice has been sent to your email.")
+            ->body("Your {$subscription->serviceLabel()} {$subscription->name} subscription is now active. An invoice has been sent to your email.")
             ->success()
             ->getDatabaseMessage();
     }

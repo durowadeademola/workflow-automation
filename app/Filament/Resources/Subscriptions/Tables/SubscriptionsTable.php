@@ -28,6 +28,11 @@ class SubscriptionsTable
                     ->label('Client')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('service')
+                    ->label('Service')
+                    ->badge()
+                    ->color('gray')
+                    ->formatStateUsing(fn ($record) => $record->serviceLabel()),
                 TextColumn::make('name')
                     ->label('Plan'),
                 TextColumn::make('amount')
@@ -111,6 +116,11 @@ class SubscriptionsTable
                     ->relationship('client', 'name')
                     ->searchable()
                     ->preload(),
+                SelectFilter::make('service')
+                    ->options([
+                        'chat-widget' => 'Chat Widget',
+                        'marketing-automation' => 'Marketing Automation',
+                    ]),
                 SelectFilter::make('status')
                     ->options([
                         'pending' => 'Pending',

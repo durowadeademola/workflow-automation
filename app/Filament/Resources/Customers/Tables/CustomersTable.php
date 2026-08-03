@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Customers\Tables;
 
 use App\Filament\Exports\CustomerExporter;
+use App\Filament\Imports\CustomerImporter;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -10,9 +11,9 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
 use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\ImportAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\Select;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -26,12 +27,16 @@ class CustomersTable
     {
         return $table
             ->headerActions([
+                ImportAction::make()
+                    ->importer(CustomerImporter::class)
+                    ->options(fn () => ['client_id' => auth()->user()?->client_id]),
                 ExportAction::make()
                     ->exporter(CustomerExporter::class),
             ])
             ->columns([
                 TextColumn::make('display_name')
-                    ->label('Name')
+                    ->label('Name / ID')
+                    ->formatStateUsing(fn (string $state, $record): string => "{$state} (#{$record->id})")
                     ->searchable(query: fn ($query, $search) => $query->orWhere('name', 'like', "%{$search}%")),
                 TextColumn::make('email')
                     ->placeholder('—')
@@ -58,36 +63,9 @@ class CustomersTable
                         default => 'gray',
                     })
                     ->searchable(),
-                TextColumn::make('specs')
-                    ->label('Specs')
-                    ->placeholder('—')
-                    ->searchable(),
-                TextColumn::make('assigned_agent')
-                    ->label('Assigned Agent')
-                    ->placeholder('—')
-                    ->searchable(),
-                TextColumn::make('agent_email')
-                    ->label('Agent Email')
-                    ->placeholder('—')
-                    ->searchable(),
-                BadgeColumn::make('status')
-                    ->colors([
-                        'danger' => 'OPEN',
-                        'warning' => 'ASSIGNED',
-                        'success' => 'CLOSED',
-                    ])
-                    ->searchable(),
                 IconColumn::make('subscribed_to_marketing')
-                    ->label('Unsubscribed')
+                    ->label('Subscribed')
                     ->boolean()
-                    // Inverted on purpose — a marketing-uninvolved client
-                    // shouldn't have to parse a double-negative column just
-                    // to see who opted out.
-                    ->getStateUsing(fn ($record) => ! $record->subscribed_to_marketing)
-                    ->trueIcon('heroicon-o-x-circle')
-                    ->falseIcon('heroicon-o-check-circle')
-                    ->trueColor('danger')
-                    ->falseColor('success')
                     ->toggleable(),
             ])
             ->filters([
@@ -100,14 +78,10 @@ class CustomersTable
                 TernaryFilter::make('is_qualified_lead')
                     ->label('Qualified lead?'),
                 TernaryFilter::make('subscribed_to_marketing')
-                    ->label('Unsubscribed from marketing?')
-                    ->trueLabel('Unsubscribed')
-                    ->falseLabel('Subscribed')
-                    ->placeholder('All')
-                    ->queries(
-                        true: fn ($query) => $query->where('subscribed_to_marketing', false),
-                        false: fn ($query) => $query->where('subscribed_to_marketing', true),
-                    ),
+                    ->label('Subscribed to marketing?')
+                    ->trueLabel('Subscribed')
+                    ->falseLabel('Unsubscribed')
+                    ->placeholder('All'),
                 TrashedFilter::make(),
             ])
             ->recordActions([

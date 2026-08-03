@@ -35,7 +35,7 @@ class ClientSubscribed extends Notification
         return (new MailMessage)
             ->subject('New subscription payment')
             ->greeting("Hi {$notifiable->name},")
-            ->line("{$subscription->client?->name} just subscribed to the {$subscription->name} plan.")
+            ->line("{$subscription->client?->name} just subscribed to the {$subscription->serviceLabel()} {$subscription->name} plan.")
             ->line('Amount paid: ₦'.number_format($subscription->amount))
             ->action('View Subscription', url('/admin/subscriptions'));
     }
@@ -49,7 +49,7 @@ class ClientSubscribed extends Notification
 
         return FilamentNotification::make()
             ->title('New subscription payment')
-            ->body("{$subscription->client?->name} — {$subscription->name} — ₦".number_format($subscription->amount))
+            ->body("{$subscription->client?->name} — {$subscription->serviceLabel()} {$subscription->name} — ₦".number_format($subscription->amount))
             ->success()
             ->getDatabaseMessage();
     }

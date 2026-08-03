@@ -54,9 +54,19 @@ class SubscriptionService
             return;
         }
 
+        $service = $subscription->service ?? 'chat-widget';
+
         Subscription::where('client_id', $subscription->client_id)
             ->where('id', '!=', $subscription->id)
             ->where('status', 'active')
+            // Scoped to this same service — a client can have two
+            // concurrently-active subscriptions now (chat-widget and
+            // marketing-automation), so activating one must never expire
+            // the other's. Legacy rows (service = null, pre-migration) were
+            // always chat-widget, so they only get swept up when that's the
+            // service actually being activated here.
+            ->where(fn ($q) => $q->where('service', $service)
+                ->when($service === 'chat-widget', fn ($q) => $q->orWhereNull('service')))
             ->update(['status' => 'expired', 'is_active' => false]);
 
         $updates = [

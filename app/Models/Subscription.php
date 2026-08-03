@@ -77,4 +77,20 @@ class Subscription extends Model
             && $this->end_date
             && $this->end_date->isFuture();
     }
+
+    /**
+     * Human-readable service name — plan names alone are ambiguous now that
+     * more than one service exists (both chat-widget and marketing-automation
+     * have a "Professional" plan), so anywhere a subscription/invoice/email
+     * names its plan should pair it with this. Null (pre-migration legacy
+     * rows) was always chat-widget, back when it was the only service sold.
+     */
+    public function serviceLabel(): string
+    {
+        return match ($this->service ?? 'chat-widget') {
+            'chat-widget' => 'Chat Widget',
+            'marketing-automation' => 'Marketing Automation',
+            default => $this->service,
+        };
+    }
 }

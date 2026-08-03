@@ -19,6 +19,8 @@ class CustomerForm
                     ->schema([
                         Hidden::make('client_id')
                             ->default(auth()->user()?->client_id),
+                        Hidden::make('status')
+                            ->default('OPEN'),
                         TextInput::make('name')
                             ->label('Customer name')
                             ->placeholder('Enter customer full name or business name')
@@ -42,19 +44,6 @@ class CustomerForm
                             'WhatsApp' => 'WhatsApp',
                             'Website' => 'Website',
                         ]),
-                        TextInput::make('specs')
-                            ->placeholder('Enter customer specs'),
-                        TextInput::make('assigned_agent')
-                            ->placeholder('Enter the assigned agent'),
-                        TextInput::make('agent_email')
-                            ->email()
-                            ->placeholder('Enter agent email'),
-                        Select::make('status')->options([
-                            'OPEN' => 'OPEN',
-                            'ASSIGNED' => 'ASSIGNED',
-                            'CLOSED' => 'CLOSED',
-                        ])
-                            ->default('OPEN'),
                     ])->columns(2)
                     ->columnSpan('full'),
             ]);

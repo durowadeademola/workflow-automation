@@ -47,24 +47,76 @@ class Billing extends Page
         }
     }
 
+    /**
+     * Every service a business can actually subscribe to that has a real
+     * trial/plan offering — mirrors the list ClientObserver::grantTrialIfEligible()
+     * grants trials for, not the full Client::FEATURES (some of those exist
+     * for the data model/admin tooling ahead of time, not because billing
+     * for them exists yet).
+     */
+    private const BILLABLE_SERVICES = ['chat-widget', 'marketing-automation'];
+
+    private const SERVICE_LABELS = [
+        'chat-widget' => 'Chat Widget',
+        'marketing-automation' => 'Marketing Automation',
+    ];
+
+    public function getServiceLabel(string $service): string
+    {
+        return self::SERVICE_LABELS[$service] ?? $service;
+    }
+
     public function getClient()
     {
         return Auth::user()->client;
     }
 
-    public function getCurrentSubscription(): ?Subscription
+    /**
+     * Which of the billable services this client actually selected —
+     * `features === null` (unrestricted/legacy) is treated as "all of them",
+     * same rule Client::hasFeature()/Plan::forClient() already use.
+     */
+    public function getClientServices(): array
     {
         $client = $this->getClient();
 
         if (! $client) {
-            return null;
+            return [];
         }
 
-        return Subscription::where('client_id', $client->id)
-            ->where('status', 'active')
-            ->where('end_date', '>=', now()->startOfDay())
-            ->latest('end_date')
-            ->first();
+        if ($client->features === null) {
+            return self::BILLABLE_SERVICES;
+        }
+
+        return array_values(array_intersect(self::BILLABLE_SERVICES, $client->features));
+    }
+
+    public function getCurrentSubscription(string $service = 'chat-widget'): ?Subscription
+    {
+        return $this->getClient()?->currentSubscription($service);
+    }
+
+    /**
+     * One entry per service this client has an active (or trial) subscription
+     * for right now — the horizontal-scrolling "Your Active Plans" summary
+     * row is built from this. A service the client selected but never
+     * subscribed to (or let lapse) simply doesn't appear here.
+     *
+     * @return array<string, Subscription>
+     */
+    public function getActiveSubscriptions(): array
+    {
+        $subscriptions = [];
+
+        foreach ($this->getClientServices() as $service) {
+            $subscription = $this->getCurrentSubscription($service);
+
+            if ($subscription) {
+                $subscriptions[$service] = $subscription;
+            }
+        }
+
+        return $subscriptions;
     }
 
     public function getRecentSubscriptions()
@@ -81,9 +133,16 @@ class Billing extends Page
             ->get();
     }
 
-    public function getPlans()
+    /**
+     * Plans for one specific service — deliberately not the old mixed-services
+     * getPlans() (Plan::forClient() alone would return every service the
+     * client selected, all in one list), since chat-widget and
+     * marketing-automation plans need their own separate sections now that a
+     * client can be subscribed to both at once.
+     */
+    public function getPlans(string $service = 'chat-widget')
     {
-        return Plan::active()->forClient($this->getClient())->get();
+        return Plan::active()->forClient($this->getClient())->where('service', $service)->get();
     }
 
     /**
@@ -138,6 +197,61 @@ class Billing extends Page
     }
 
     /**
+     * Marketing Automation's own three usage bars, same shape as chat-widget's
+     * above — contacts/journeys are standing caps (not period-based, so
+     * "used" never resets), email sends are period-based like messages are.
+     *
+     * @return array{used: int, limit: ?int}
+     */
+    public function getContactUsage(): array
+    {
+        $client = $this->getClient();
+
+        if (! $client) {
+            return ['used' => 0, 'limit' => 0];
+        }
+
+        return [
+            'used' => $client->marketingContactsCount(),
+            'limit' => $client->marketingContactLimitForCurrentPlan(),
+        ];
+    }
+
+    /**
+     * @return array{used: int, limit: ?int}
+     */
+    public function getJourneyUsage(): array
+    {
+        $client = $this->getClient();
+
+        if (! $client) {
+            return ['used' => 0, 'limit' => 0];
+        }
+
+        return [
+            'used' => $client->activeJourneysCount(),
+            'limit' => $client->activeJourneyLimitForCurrentPlan(),
+        ];
+    }
+
+    /**
+     * @return array{used: int, limit: ?int}
+     */
+    public function getEmailUsage(): array
+    {
+        $client = $this->getClient();
+
+        if (! $client) {
+            return ['used' => 0, 'limit' => 0];
+        }
+
+        return [
+            'used' => $client->emailsSentInCurrentPeriod(),
+            'limit' => $client->emailSendLimitForCurrentPeriod(),
+        ];
+    }
+
+    /**
      * The Naira credit switching plans right now would carry over — the
      * larger of two mutually-exclusive components (a subscription either
      * still has remaining days, or it's already run its course, never
@@ -146,13 +260,16 @@ class Billing extends Page
      * with room to spare. ₦0 if there's nothing to credit, or it's the
      * free trial.
      */
-    public function getProratedCredit(): int
+    public function getProratedCredit(string $service = 'chat-widget'): int
     {
-        $dayBasedCredit = app(SubscriptionService::class)->calculateProratedCredit($this->getCurrentSubscription());
+        $dayBasedCredit = app(SubscriptionService::class)->calculateProratedCredit($this->getCurrentSubscription($service));
 
         $client = $this->getClient();
-        $messageCredit = $client
-            ? $this->calculateMessageProrationCredit($client, $client->mostRecentSubscription())
+        // Message proration is a chat-widget-specific concept (messages
+        // only count toward that service's limit) — other services have no
+        // equivalent to carry over yet.
+        $messageCredit = ($client && $service === 'chat-widget')
+            ? $this->calculateMessageProrationCredit($client, $client->mostRecentSubscription($service))
             : 0;
 
         return $dayBasedCredit + $messageCredit;
@@ -194,7 +311,7 @@ class Billing extends Page
     public function getSwitchConfirmationMessage(string $planSlug, string $cycle = 'monthly'): string
     {
         $planRecord = Plan::active()->forClient($this->getClient())->where('slug', $planSlug)->first();
-        $credit = $this->getProratedCredit();
+        $credit = $this->getProratedCredit($planRecord?->service ?? 'chat-widget');
 
         if (! $planRecord || $credit <= 0) {
             return "Switch to {$planRecord?->name}?";
@@ -216,15 +333,30 @@ class Billing extends Page
      * disclosure below, so it can no longer skip the modal the way it used
      * to when there was nothing plan-switch-specific to say.
      */
+    /**
+     * The service a plan slug belongs to, for the modal text below — looked
+     * up fresh each time rather than threaded through the button's
+     * arguments, since the slug alone is enough to resolve it.
+     */
+    private function serviceForPlanSlug(string $slug): string
+    {
+        return Plan::where('slug', $slug)->value('service') ?? 'chat-widget';
+    }
+
     public function subscribeAction(): Action
     {
         return Action::make('subscribe')
             ->requiresConfirmation()
-            ->modalHeading(fn (array $arguments): string => $this->getCurrentSubscription() ? 'Confirm plan change' : 'Confirm subscription')
+            ->modalHeading(function (array $arguments): string {
+                $service = $this->serviceForPlanSlug($arguments['plan'] ?? '');
+
+                return $this->getCurrentSubscription($service) ? 'Confirm plan change' : 'Confirm subscription';
+            })
             ->modalDescription(function (array $arguments): string {
                 $feeNote = 'Additional processing fees apply.';
+                $service = $this->serviceForPlanSlug($arguments['plan'] ?? '');
 
-                if ($this->getCurrentSubscription()) {
+                if ($this->getCurrentSubscription($service)) {
                     return $this->getSwitchConfirmationMessage($arguments['plan'] ?? '', $arguments['cycle'] ?? 'monthly').' '.$feeNote;
                 }
 
@@ -256,20 +388,24 @@ class Billing extends Page
 
         abort_unless($planRecord, 404);
 
+        $service = $planRecord->service ?? 'chat-widget';
+
         $price = $cycle === 'yearly' ? $planRecord->yearly_effective_price : $planRecord->effective_price;
 
-        $credit = $this->getProratedCredit();
+        $credit = $this->getProratedCredit($service);
         $finalCharge = max(0, $price - $credit);
 
         // Not currentSubscription() — by the time a client resubscribes,
         // the period being rolled over from has very often already expired
         // (that's usually *why* they're resubscribing), and currentSubscription()
-        // would no longer find it.
-        $previousSubscription = $client->mostRecentSubscription();
-        [$rolledOverAppointments, $rolledOverLeads] = $this->calculateRollover($client, $previousSubscription);
+        // would no longer find it. Scoped to this plan's own service, same
+        // reason getProratedCredit() above is.
+        $previousSubscription = $client->mostRecentSubscription($service);
+        [$rolledOverAppointments, $rolledOverLeads] = $this->calculateRollover($client, $previousSubscription, $service);
 
         $subscription = Subscription::create([
             'client_id' => $client->id,
+            'service' => $service,
             'plan_id' => $planRecord->id,
             'plan' => $planRecord->slug,
             'billing_cycle' => $cycle,
@@ -332,9 +468,12 @@ class Billing extends Page
      *
      * @return array{0: int, 1: int} [rolled_over_appointments, rolled_over_leads]
      */
-    private function calculateRollover(Client $client, ?Subscription $previous): array
+    private function calculateRollover(Client $client, ?Subscription $previous, string $service = 'chat-widget'): array
     {
-        if (! $previous || ! $previous->limit_reached_notified_at) {
+        // Appointments/leads are chat-widget-specific concepts — other
+        // services have their own limits (contacts/journeys/email sends)
+        // with no rollover behavior built for them.
+        if ($service !== 'chat-widget' || ! $previous || ! $previous->limit_reached_notified_at) {
             return [0, 0];
         }
 
@@ -380,8 +519,8 @@ class Billing extends Page
         return Action::make('cancel')
             ->requiresConfirmation()
             ->modalHeading('Cancel subscription?')
-            ->modalDescription(function (): string {
-                $subscription = $this->getCurrentSubscription();
+            ->modalDescription(function (array $arguments): string {
+                $subscription = $this->getCurrentSubscription($arguments['service'] ?? 'chat-widget');
 
                 if (! $subscription) {
                     return 'No active subscription to cancel.';
@@ -391,8 +530,8 @@ class Billing extends Page
                     ? 'Choose what happens next.'
                     : "You'll keep access until {$subscription->end_date->format('M j, Y')} — no refund for unused time, and it won't renew after that.";
             })
-            ->schema(function (): array {
-                $subscription = $this->getCurrentSubscription();
+            ->schema(function (array $arguments): array {
+                $subscription = $this->getCurrentSubscription($arguments['service'] ?? 'chat-widget');
                 $fields = [];
 
                 if ($this->isRefundEligible($subscription)) {
@@ -415,12 +554,12 @@ class Billing extends Page
             })
             ->modalSubmitActionLabel('Cancel subscription')
             ->color('danger')
-            ->action(fn (array $data) => $this->cancel($data['reason'] ?? null, $data['refund_choice'] ?? 'keep'));
+            ->action(fn (array $data, array $arguments) => $this->cancel($data['reason'] ?? null, $data['refund_choice'] ?? 'keep', $arguments['service'] ?? 'chat-widget'));
     }
 
-    public function cancel(?string $reason = null, string $refundChoice = 'keep'): void
+    public function cancel(?string $reason = null, string $refundChoice = 'keep', string $service = 'chat-widget'): void
     {
-        $subscription = $this->getCurrentSubscription();
+        $subscription = $this->getCurrentSubscription($service);
 
         if (! $subscription) {
             Notification::make()->title('No active subscription to cancel.')->danger()->send();

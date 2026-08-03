@@ -62,9 +62,9 @@ class MarketingJourneyForm
                                 ->label('Channel')
                                 ->options([
                                     'email' => 'Email — live',
-                                    'whatsapp' => 'WhatsApp — needs setup',
-                                    'sms' => 'SMS — needs setup',
-                                    'telegram' => 'Telegram — needs setup',
+                                    //'whatsapp' => 'WhatsApp — needs setup',
+                                    //ms' => 'SMS — needs setup',
+                                   //telegram' => 'Telegram — needs setup',
                                 ])
                                 ->default('email')
                                 ->required()

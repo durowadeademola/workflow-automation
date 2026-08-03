@@ -26,11 +26,11 @@ class MarketingJourneyResource extends Resource
 {
     protected static ?string $model = AutomationWorkflow::class;
 
-    protected static ?string $navigationLabel = 'Marketing Journeys';
+    protected static ?string $navigationLabel = 'Marketing Setup';
 
-    protected static ?string $modelLabel = 'Marketing Journey';
+    protected static ?string $modelLabel = 'Marketing Setup';
 
-    protected static ?string $pluralModelLabel = 'Marketing Journeys';
+    protected static ?string $pluralModelLabel = 'Marketing Setup';
 
     protected static ?int $navigationSort = 22;
 

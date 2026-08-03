@@ -349,11 +349,17 @@ class Client extends Model
      * unlike currentSubscription(), this still finds one that's already
      * expired. Used for anything that needs to look back at "the period
      * that just ended" (appointment/lead rollover, message proration
-     * credit) once the client is subscribing again after a gap.
+     * credit) once the client is subscribing again after a gap. Scoped by
+     * service for the same reason currentSubscription() is — a client with
+     * two concurrent services shouldn't have one service's rollover/credit
+     * calculated against the other's most recent subscription.
      */
-    public function mostRecentSubscription(): ?Subscription
+    public function mostRecentSubscription(string $service = 'chat-widget'): ?Subscription
     {
-        return $this->subscriptions()->latest('created_at')->first();
+        return $this->subscriptions()
+            ->where(fn ($q) => $this->scopeServiceOrLegacyNull($q, $service))
+            ->latest('created_at')
+            ->first();
     }
 
     /**
