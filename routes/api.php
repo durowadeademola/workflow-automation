@@ -5,6 +5,7 @@ use App\Http\Controllers\API\ClientRegistrationController;
 use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\DomainController;
 use App\Http\Controllers\API\LeadController;
+use App\Http\Controllers\API\NewsletterSubscriptionController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\WidgetAppointmentController;
 use App\Http\Controllers\API\WidgetChatController;
@@ -49,6 +50,7 @@ Route::middleware('throttle:30,1')->group(function () {
 
 Route::post('/leads', [LeadController::class, 'store'])->middleware('throttle:5,1')->name('leads.store');
 Route::post('/register', [ClientRegistrationController::class, 'store'])->middleware('throttle:5,1')->name('register.store');
+Route::post('/newsletter/subscribe', [NewsletterSubscriptionController::class, 'store'])->middleware('throttle:5,1')->name('newsletter.subscribe');
 
 // Server-to-server from Paystack. Authenticated via HMAC signature, not the webhook secret.
 Route::post('/paystack/webhook', [PaystackController::class, 'webhook'])->middleware('throttle:60,1')->name('paystack.webhook');

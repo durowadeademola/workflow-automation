@@ -16,3 +16,7 @@ Schedule::command('app:remind-expiring-subscriptions')->hourly();
 // whose own cron expression (trigger_config.cron) is due — new scheduled
 // workflows just need that config, not a new Schedule::command() entry here.
 Schedule::command('workflows:run-scheduled')->everyMinute()->withoutOverlapping();
+
+// Advances Marketing Journey enrollments and runs the abandoned-booking/
+// re-engagement scans — see AdvanceMarketingJourneys' own doc comment.
+Schedule::command('journeys:advance')->everyFiveMinutes()->withoutOverlapping();

@@ -30,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\WidgetConversation::observe(\App\Observers\WidgetConversationObserver::class);
         \App\Models\Client::observe(\App\Observers\ClientObserver::class);
         \App\Models\User::observe(\App\Observers\UserObserver::class);
+        \App\Models\Appointment::observe(\App\Observers\AppointmentObserver::class);
     }
 }

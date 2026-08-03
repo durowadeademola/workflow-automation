@@ -47,6 +47,15 @@ return [
         'generate_embeddings' => \App\Workflow\Steps\Crawler\GenerateEmbeddingsStep::class,
         'store_chunks' => \App\Workflow\Steps\Crawler\StoreChunksStep::class,
         'crawl_summary' => \App\Workflow\Steps\Crawler\CrawlSummaryStep::class,
+
+        //Blueflow Marketing Journey Steps — advanced by AdvanceMarketingJourneys
+        //(JourneyStepAdvancer), not by WorkflowExecutor. Only send_email is a
+        //real send today; the others gracefully no-op until real provider
+        //credentials exist (see config('services.whatsapp'|'sms'|'telegram')).
+        'send_email' => \App\Workflow\Steps\Marketing\SendEmailStep::class,
+        'send_whatsapp' => \App\Workflow\Steps\Marketing\SendWhatsAppStep::class,
+        'send_sms' => \App\Workflow\Steps\Marketing\SendSmsStep::class,
+        'send_telegram' => \App\Workflow\Steps\Marketing\SendTelegramStep::class,
     ],
 
 ];

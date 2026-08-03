@@ -61,4 +61,24 @@ return [
         'public_key' => env('PAYSTACK_PUBLIC_KEY'),
     ],
 
+    /*
+    | Marketing journey channels beyond email — no provider accounts exist
+    | for these yet. The corresponding Send*Step classes check for these
+    | credentials and gracefully no-op ("channel not configured") until
+    | they're actually filled in; no code change is needed at that point.
+    */
+    'whatsapp' => [
+        'token' => env('WHATSAPP_API_TOKEN'),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+    ],
+
+    'sms' => [
+        'api_key' => env('SMS_API_KEY'), // e.g. Termii or Twilio
+        'sender_id' => env('SMS_SENDER_ID'),
+    ],
+
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+    ],
+
 ];

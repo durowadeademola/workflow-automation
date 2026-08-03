@@ -15,8 +15,8 @@ const services = [
     },
     {
         title: "Marketing Automation",
-        description: "Run campaigns across email, WhatsApp, and phone that turn interest into paying customers.",
-        features: ["Campaign automation", "Segmentation", "A/B testing", "Analytics"],
+        description: "Multi-step customer journeys with behavior-based triggers — nurture leads, remind about appointments, and win back inactive customers automatically.",
+        features: ["Multi-step customer journeys", "Behavior-based triggers", "Personalization", "Multi-channel support"],
         href: "/services/marketing-automation",
         icon: Megaphone,
     },

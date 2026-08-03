@@ -1,47 +1,48 @@
 import { Head, Link } from "@inertiajs/react";
-import { Megaphone, Target, FlaskConical, BarChart3, Workflow, Send } from "lucide-react";
+import { Megaphone, Workflow, Zap, CalendarCheck, RefreshCw, UserCheck, Send } from "lucide-react";
 import Navbar from "@/Components/Navbar";
 import Footer from "@/Components/Footer";
 import IconTile from "@/Components/Icons/IconTile";
 import SectionIllustration from "@/Components/Icons/SectionIllustration";
+import Pricing from "@/Components/Pricing";
 
 const highlights = [
-    "Automated campaigns that reach customers by email, WhatsApp, or phone — whichever fits the moment",
-    "Segment your audience by behaviour, not just a static list, so every message is relevant",
-    "A/B test subject lines, content, and send times to keep improving results",
-    "One dashboard to see what's actually working — opens, clicks, and outcomes",
+    "Multi-step journeys — Welcome, Reminder, Testimonial, Offer — sent automatically over days, not all at once",
+    "Behavior-based triggers enroll customers automatically: appointment booked, booking abandoned, or gone quiet",
+    "Personalization pulled straight from your chat widget and customer data — name, reason for reaching out, appointment details",
+    "Built for email today, with WhatsApp, SMS, and Telegram support on the way",
 ];
 
 const features = [
-    { icon: Workflow, title: "Campaign Automation", description: "Build a sequence once — a welcome series, a re-engagement drip, a follow-up flow — and let it run automatically from then on." },
-    { icon: Target, title: "Segmentation", description: "Group contacts by what they've actually done — registered but didn't book, viewed pricing, went quiet — and speak to each group differently." },
-    { icon: FlaskConical, title: "A/B Testing", description: "Test two versions of a message and automatically learn which performs better, instead of guessing." },
-    { icon: BarChart3, title: "Analytics", description: "Track opens, clicks, and conversions per campaign, so you know exactly what's driving results." },
-    { icon: Send, title: "Channel-Flexible Delivery", description: "Runs on email, WhatsApp, or phone — whichever channel reaches your customers best. No separate subscription required to any single channel." },
-    { icon: Megaphone, title: "Built for Local Business", description: "Campaign templates and timing designed around how Nigerian businesses actually reach customers." },
+    { icon: Workflow, title: "Multi-Step Customer Journeys", description: "Build sequences like Welcome → Reminder → Testimonial → Offer, each step spaced out over hours or days, not sent all at once." },
+    { icon: Zap, title: "Behavior-Based Triggers", description: "Automatically enroll a customer the moment they book an appointment, abandon a booking, or go quiet for a while — no manual work." },
+    { icon: CalendarCheck, title: "Appointment & Event Reminders", description: "Built for clinics and service businesses — remind customers automatically ahead of their appointment." },
+    { icon: RefreshCw, title: "Re-engagement Journeys", description: "Win back customers who've gone quiet with an automatic re-engagement sequence." },
+    { icon: UserCheck, title: "Personalization", description: "Every message can include the customer's name, their reason for reaching out, or appointment details — pulled automatically, no manual merge needed." },
+    { icon: Send, title: "Multi-Channel Ready", description: "Built to run over email, WhatsApp, SMS, or Telegram." },
 ];
 
 const steps = [
-    { title: "Import or connect your contacts", description: "Bring in your existing customer list, or let it grow automatically from your chat widget's leads and registrations." },
-    { title: "Build your segments", description: "Group contacts by behaviour or status — qualified leads, past customers, no-shows — whatever matters to your business." },
-    { title: "Set up your campaigns", description: "Create automated sequences for the moments that matter — welcome, follow-up, re-engagement — once, and they keep running." },
-    { title: "Test, track, and improve", description: "Watch the analytics, A/B test what isn't working, and let each campaign get better over time." },
+    { title: "Build your journey", description: "Add steps like Welcome, Reminder, Testimonial, and Offer, each with its own wait time before the next one goes out." },
+    { title: "Choose what triggers it", description: "Enroll customers manually, or set a behavior trigger — appointment booked, abandoned booking, or inactivity." },
+    { title: "Personalize each message", description: "Use merge fields to include the customer's name and details automatically in every step." },
+    { title: "Let it run automatically", description: "Once it's live, the journey runs itself — no manual follow-up needed." },
 ];
 
 const metrics = [
-    { value: "24/7", label: "Campaigns Running" },
-    { value: "Auto", label: "Segmentation" },
-    { value: "A/B", label: "Continuous Testing" },
-    { value: "Live", label: "Performance Analytics" },
+    { value: "Auto", label: "Multi-Step Journeys" },
+    { value: "3", label: "Behavior Triggers" },
+    { value: "Live", label: "Personalization" },
+    { value: "Email", label: "Channel Live Today" },
 ];
 
-export default function MarketingAutomation() {
+export default function MarketingAutomation({ plans = [] }) {
     return (
         <>
             <Head title="Marketing Automation - Blueflow Automation">
                 <meta
                     name="description"
-                    content="Automated marketing campaigns across email, WhatsApp, and phone — with segmentation, A/B testing, and analytics built in. Built for Nigerian businesses."
+                    content="Automated multi-step customer journeys with behavior-based triggers and personalization — built for Nigerian businesses."
                 />
             </Head>
             <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -53,13 +54,13 @@ export default function MarketingAutomation() {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                                 <div>
                                     <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-5">
-                                        Turn Interest Into Customers, Automatically
+                                        Nurture Every Customer, Automatically
                                     </h2>
                                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
-                                        Most businesses either message everyone the same thing, or don't follow up
-                                        at all. Blueflow's Marketing Automation runs targeted campaigns automatically
-                                        — reaching the right customer, on the right channel, at the right moment —
-                                        so no interested lead gets forgotten.
+                                        Most businesses either message everyone the same thing once, or don't follow
+                                        up at all. Blueflow's Marketing Automation builds real customer journeys —
+                                        multi-step sequences that trigger automatically based on what a customer
+                                        actually does — so no interested lead or appointment ever gets forgotten.
                                     </p>
                                     <ul className="space-y-3">
                                         {highlights.map((h) => (
@@ -129,10 +130,14 @@ export default function MarketingAutomation() {
                         </div>
                     </section>
 
+                    {/* Pricing — scoped to marketing-automation plans specifically,
+                        not the chat-widget plans the homepage's #pricing shows. */}
+                    <Pricing plans={plans} />
+
                     {/* CTA */}
                     <section className="py-20 bg-gray-50 dark:bg-gray-800">
                         <div className="max-w-3xl mx-auto px-4 text-center">
-                            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4">Ready to Automate Your Campaigns?</h2>
+                            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4">Ready to Automate Your Customer Journeys?</h2>
                             <p className="text-gray-500 dark:text-gray-400 mb-8">
                                 Book a free demo and see how Marketing Automation can turn your leads into loyal customers.
                             </p>
@@ -140,8 +145,8 @@ export default function MarketingAutomation() {
                                 <Link href="/contact" className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">
                                     Schedule Free Demo
                                 </Link>
-                                <Link href="/#pricing" className="border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-all">
-                                    View Pricing
+                                <Link href="/register" className="border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold px-6 py-3 rounded-xl hover:border-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-all">
+                                    Get Started
                                 </Link>
                             </div>
                         </div>

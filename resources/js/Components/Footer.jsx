@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Link } from "@inertiajs/react";
+import axios from "axios";
 
 const footerLinks = {
     Services: [
@@ -71,10 +73,73 @@ const socialLinks = [
     },
 ];
 
+function NewsletterSignup() {
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [status, setStatus] = useState("idle"); // idle | submitting | success | error
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+        setStatus("submitting");
+
+        try {
+            await axios.post("/api/newsletter/subscribe", { name, email });
+            setStatus("success");
+            setName("");
+            setEmail("");
+        } catch {
+            setStatus("error");
+        }
+    }
+
+    return (
+        <div className="border-b border-gray-800 pb-10 mb-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div>
+                <h4 className="text-white font-semibold text-base mb-1">Subscribe to our newsletter</h4>
+                <p className="text-sm">Automation tips and product updates, straight to your inbox — no spam.</p>
+            </div>
+
+            {status === "success" ? (
+                <p className="text-sm text-blue-400 font-medium">You're subscribed — thanks!</p>
+            ) : (
+                <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row w-full max-w-xl gap-2">
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Your name (optional)"
+                        className="flex-1 min-w-0 rounded-lg bg-gray-800 border border-gray-700 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@company.com"
+                        className="flex-1 min-w-0 rounded-lg bg-gray-800 border border-gray-700 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    <button
+                        type="submit"
+                        disabled={status === "submitting"}
+                        className="shrink-0 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-60 px-5 py-2.5 text-sm font-semibold text-white transition-colors"
+                    >
+                        {status === "submitting" ? "Subscribing..." : "Subscribe"}
+                    </button>
+                </form>
+            )}
+            {status === "error" && (
+                <p className="text-sm text-red-400 -mt-4 lg:mt-0">Something went wrong — please try again.</p>
+            )}
+        </div>
+    );
+}
+
 export default function Footer() {
     return (
         <footer className="bg-gray-900 text-gray-400">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <NewsletterSignup />
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
                     {/* Brand col */}
                     <div className="lg:col-span-1">

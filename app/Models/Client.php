@@ -60,6 +60,7 @@ class Client extends Model
      */
     public const FEATURES = [
         'chat-widget' => 'Chat Widget',
+        'marketing-automation' => 'Marketing Automation',
         'whatsapp-automation' => 'WhatsApp Automation',
         'email-automation' => 'Email Automation',
         'payment-automation' => 'Payment Automation',
@@ -255,6 +256,11 @@ class Client extends Model
         return $this->hasMany(Appointment::class);
     }
 
+    public function automationWorkflows()
+    {
+        return $this->hasMany(AutomationWorkflow::class);
+    }
+
     public function kycSubmissions()
     {
         return $this->hasMany(KycSubmission::class);
@@ -282,7 +288,22 @@ class Client extends Model
      * period is caught immediately, without depending on a cron job having
      * already run to flip the status.
      */
-    public function hasActiveSubscription(): bool
+    /**
+     * `$service` defaults to 'chat-widget' so every existing call site (all
+     * of them implicitly chat-widget-related: messages, appointments,
+     * leads, FAQs, Billing) keeps compiling and behaving identically. A
+     * client can hold a second, independently-billed subscription for a
+     * different service (e.g. Marketing Automation) at the same time —
+     * without this scoping, this method would just return whichever active
+     * subscription has the furthest end_date, regardless of service, which
+     * would silently corrupt the OTHER service's own limit checks the
+     * moment a client has two concurrent subscriptions with different
+     * lengths. `orWhereNull('service')` keeps every pre-migration
+     * subscription row (created before the `service` column existed, back
+     * when chat-widget was the only sellable service) counting as
+     * chat-widget, exactly as it always has.
+     */
+    public function hasActiveSubscription(string $service = 'chat-widget'): bool
     {
         if ($this->bypass_plan_limits) {
             return true;
@@ -291,16 +312,36 @@ class Client extends Model
         return $this->subscriptions()
             ->where('status', 'active')
             ->where('end_date', '>=', now()->startOfDay())
+            ->where(fn ($q) => $this->scopeServiceOrLegacyNull($q, $service))
             ->exists();
     }
 
-    public function currentSubscription(): ?Subscription
+    public function currentSubscription(string $service = 'chat-widget'): ?Subscription
     {
         return $this->subscriptions()
             ->where('status', 'active')
             ->where('end_date', '>=', now()->startOfDay())
+            ->where(fn ($q) => $this->scopeServiceOrLegacyNull($q, $service))
             ->latest('end_date')
             ->first();
+    }
+
+    /**
+     * A pre-migration subscription row (service = null) was only ever
+     * chat-widget, back when that was the only sellable service — so the
+     * "treat null as a match" fallback must only kick in for chat-widget
+     * itself, never for a newer service like marketing-automation, or a
+     * legacy row would get double-counted as both.
+     */
+    private function scopeServiceOrLegacyNull($query, string $service)
+    {
+        $query->where('service', $service);
+
+        if ($service === 'chat-widget') {
+            $query->orWhereNull('service');
+        }
+
+        return $query;
     }
 
     /**
@@ -663,6 +704,175 @@ class Client extends Model
         }
 
         return $this->faqsUsedCount() >= $limit;
+    }
+
+    /**
+     * Marketing Automation's own service-scoped subscription/limit checks —
+     * completely independent of chat-widget's, since a client can hold both
+     * subscriptions at once (see currentSubscription()'s $service param).
+     */
+    public function marketingSubscription(): ?Subscription
+    {
+        return $this->currentSubscription('marketing-automation');
+    }
+
+    public function hasActiveMarketingSubscription(): bool
+    {
+        return $this->hasActiveSubscription('marketing-automation');
+    }
+
+    /**
+     * Standing cap on total contacts (Customer rows), not a per-period
+     * usage rate — same reasoning as the FAQ limit above.
+     */
+    public const TRIAL_MARKETING_CONTACT_LIMIT = 100;
+
+    public function marketingContactLimitForCurrentPlan(): ?int
+    {
+        $subscription = $this->marketingSubscription();
+
+        if (! $subscription) {
+            return 0;
+        }
+
+        if ($subscription->plan === 'trial') {
+            return self::TRIAL_MARKETING_CONTACT_LIMIT;
+        }
+
+        return $subscription->planRecord?->contact_limit;
+    }
+
+    public function marketingContactsCount(): int
+    {
+        return $this->customers()->count();
+    }
+
+    public function hasReachedMarketingContactLimit(): bool
+    {
+        if ($this->bypass_plan_limits) {
+            return false;
+        }
+
+        $limit = $this->marketingContactLimitForCurrentPlan();
+
+        if ($limit === null) {
+            return false;
+        }
+
+        return $this->marketingContactsCount() >= $limit;
+    }
+
+    /**
+     * Standing cap on how many journeys can be active at once (not a
+     * per-period rate) — mirrors the FAQ/contact limit shape.
+     */
+    public const TRIAL_JOURNEY_LIMIT = 3;
+
+    public function activeJourneyLimitForCurrentPlan(): ?int
+    {
+        $subscription = $this->marketingSubscription();
+
+        if (! $subscription) {
+            return 0;
+        }
+
+        if ($subscription->plan === 'trial') {
+            return self::TRIAL_JOURNEY_LIMIT;
+        }
+
+        return $subscription->planRecord?->journey_limit;
+    }
+
+    public function activeJourneysCount(): int
+    {
+        return $this->automationWorkflows()->where('is_active', true)->count();
+    }
+
+    public function hasReachedJourneyLimit(): bool
+    {
+        if ($this->bypass_plan_limits) {
+            return false;
+        }
+
+        $limit = $this->activeJourneyLimitForCurrentPlan();
+
+        if ($limit === null) {
+            return false;
+        }
+
+        return $this->activeJourneysCount() >= $limit;
+    }
+
+    /**
+     * Per-billing-period send volume, same shape as messageLimitForCurrentPlan()
+     * — counted from the current Marketing Automation subscription's own
+     * start_date, not the chat-widget subscription's.
+     */
+    public const TRIAL_EMAIL_SEND_LIMIT = 500;
+
+    public function emailSendLimitForCurrentPeriod(): ?int
+    {
+        $subscription = $this->marketingSubscription();
+
+        if (! $subscription) {
+            return 0;
+        }
+
+        if ($subscription->plan === 'trial') {
+            return self::TRIAL_EMAIL_SEND_LIMIT;
+        }
+
+        return $this->scaleLimitForBillingCycle($subscription->planRecord?->email_send_limit, $subscription);
+    }
+
+    public function emailsSentInCurrentPeriod(): int
+    {
+        $subscription = $this->marketingSubscription();
+
+        if (! $subscription || ! $subscription->start_date) {
+            return 0;
+        }
+
+        $journeySends = AutomationWorkflowEnrollmentSend::whereHas(
+            'enrollment',
+            fn ($q) => $q->where('client_id', $this->id)
+        )
+            ->where('channel', 'email')
+            ->where('status', 'sent')
+            ->where('created_at', '>=', $subscription->start_date);
+
+        // Newsletter broadcasts draw from the same email-sending capacity as
+        // journey steps — without this, a client could sidestep the plan's
+        // email_send_limit entirely by using Newsletters instead of Journeys.
+        $newsletterSends = NewsletterSend::whereHas(
+            'newsletter',
+            fn ($q) => $q->where('client_id', $this->id)
+        )
+            ->whereNotNull('sent_at')
+            ->where('created_at', '>=', $subscription->start_date);
+
+        if ($subscription->end_date) {
+            $endOfPeriod = $subscription->end_date->copy()->endOfDay();
+            $journeySends->where('created_at', '<=', $endOfPeriod);
+            $newsletterSends->where('created_at', '<=', $endOfPeriod);
+        }
+
+        return $journeySends->count() + $newsletterSends->count();
+    }
+
+    public function hasReachedEmailSendLimit(): bool
+    {
+        if ($this->bypass_plan_limits) {
+            return false;
+        }
+
+        $limit = $this->emailSendLimitForCurrentPeriod();
+
+        if ($limit === null) {
+            return false;
+        }
+
+        return $this->emailsSentInCurrentPeriod() >= $limit;
     }
 
     /**

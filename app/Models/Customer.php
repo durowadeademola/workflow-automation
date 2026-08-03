@@ -37,17 +37,31 @@ class Customer extends Model
         'lead_timeline',
         'qualified_at',
         'registered_at',
+        'subscribed_to_marketing',
+        'unsubscribed_at',
     ];
 
     protected $casts = [
         'registered_at' => 'datetime',
         'is_qualified_lead' => 'boolean',
         'qualified_at' => 'datetime',
+        'subscribed_to_marketing' => 'boolean',
+        'unsubscribed_at' => 'datetime',
     ];
 
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class, 'customer_id');
+    }
+
+    public function automationWorkflowEnrollments()
+    {
+        return $this->hasMany(AutomationWorkflowEnrollment::class, 'customer_id');
     }
 
     public function agent()

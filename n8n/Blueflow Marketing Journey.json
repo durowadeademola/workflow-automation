@@ -1,0 +1,426 @@
+{
+  "name": "Blueflow Marketing Journey",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "marketing-journey-enroll",
+        "responseMode": "onReceived",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "0d9d5f95-d634-4da4-be8a-cc8eb243ba9b",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        400
+      ],
+      "webhookId": "marketing-journey-enroll"
+    },
+    {
+      "parameters": {
+        "jsCode": "// One place to build every step's personalized copy, so the send nodes\n// below stay simple string references instead of repeating template logic.\nconst c = $json;\nconst name = c.name || 'there';\nconst business = c.businessName || 'us';\n\nreturn [{\n  json: {\n    ...c,\n    businessName: business,\n    welcomeSubject: `Welcome, ${name}!`,\n    welcomeHtml: `<p>Hi ${name},</p><p>Thanks for reaching out to ${business} — we're excited to help.</p>`,\n    reminderSubject: `Still thinking it over, ${name}?`,\n    reminderHtml: `<p>Hi ${name},</p><p>Just checking in — let us know if you have any questions about ${business}'s services.</p>`,\n    testimonialSubject: 'What our customers are saying',\n    testimonialHtml: `<p>Hi ${name},</p><p>Here's what a customer just like you had to say about ${business}...</p>`,\n    offerSubject: `A little something for you, ${name}`,\n    offerHtml: `<p>Hi ${name},</p><p>As a thank-you for your interest in ${business}, here's a special offer just for you.</p>`,\n  }\n}];"
+      },
+      "id": "b6d1e93e-230d-4daa-bbcf-0190998be834",
+      "name": "Personalize Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5c1e2a3b-4d5e-4f6a-8b9c-0d1e2f3a4b5c",
+              "leftValue": "={{ $json.subscribedToMarketing }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1eaed5ec-9893-4cbd-981c-ad330b48ae0a",
+      "name": "Still Subscribed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        400
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "d64b3ae2-c0ec-41c5-9f1d-528b954b2c48",
+      "name": "Stopped: Unsubscribed",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        720,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6d2e3b4c-5e6f-4a7b-9c0d-1e2f3a4b5c6d",
+              "leftValue": "={{ $json.channel }}",
+              "rightValue": "email",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b2c3d4e5-6f70-4a81-9b02-c3d4e5f6a7b8",
+      "name": "Channel: Email?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        400
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "89ecef93-8192-4e60-a6dd-88c160168d69",
+      "name": "Other Channel - Not Yet Configured",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        960,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "notifications@YOUR-BLUEFLOW-DOMAIN.example",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ $json.welcomeSubject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.welcomeHtml }}",
+        "options": {}
+      },
+      "id": "90657e4e-95c7-455b-914b-4400d4cce4ed",
+      "name": "Welcome Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 1,
+        "unit": "days"
+      },
+      "id": "8de5f10e-4a9e-40d0-9e9d-2c89f499baec",
+      "name": "Wait 1 Day",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "notifications@YOUR-BLUEFLOW-DOMAIN.example",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ $json.reminderSubject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.reminderHtml }}",
+        "options": {}
+      },
+      "id": "bebacf2a-ae1c-4643-812d-e14aa83bd2fb",
+      "name": "Reminder Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1440,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 2,
+        "unit": "days"
+      },
+      "id": "12e70556-b298-4ac1-8e3f-c0ad4f2845c0",
+      "name": "Wait 2 Days",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1680,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "notifications@YOUR-BLUEFLOW-DOMAIN.example",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ $json.testimonialSubject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.testimonialHtml }}",
+        "options": {}
+      },
+      "id": "7459c79c-3cc0-4df4-9f70-4b9230d0ef52",
+      "name": "Testimonial Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1920,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 2,
+        "unit": "days"
+      },
+      "id": "17bf7eeb-3d95-424d-812e-1f3a1f233e38",
+      "name": "Wait 2 Days (2)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2160,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "notifications@YOUR-BLUEFLOW-DOMAIN.example",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ $json.offerSubject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.offerHtml }}",
+        "options": {}
+      },
+      "id": "b39812fb-a0d7-4d3c-8bf1-d769a4f1b849",
+      "name": "Offer Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2400,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### Setup\n1. This webhook (`marketing-journey-enroll`) is meant to be called whenever a customer should start the journey — e.g. from your own booking/CRM system, a Zapier/Make step, or manually for testing. Send `{ \"name\": ..., \"email\": ..., \"channel\": \"email\", \"businessName\": ..., \"subscribedToMarketing\": true }`.\n2. Add SMTP credentials to each **Send Email** node (Welcome/Reminder/Testimonial/Offer) — click the node, choose or create SMTP credentials in n8n's credential manager.\n3. Replace `notifications@YOUR-BLUEFLOW-DOMAIN.example` in each Send Email node with your real sending address.\n4. This is the n8n-native equivalent of Blueflow's own Marketing Automation journey engine (`app/Workflow/JourneyStepAdvancer.php`) — same Welcome → wait → Reminder → wait → Testimonial → wait → Offer shape, just using n8n's built-in **Wait** node to pause between steps instead of a database-backed enrollment/clock.",
+        "height": 420,
+        "width": 460
+      },
+      "id": "14ab6331-0cee-4a59-810b-b5536a3caee8",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### Wait nodes\nEach **Wait** node pauses the whole execution in place (n8n persists it, no polling/cron needed) for the configured amount — 1 day after Welcome, 2 days after Reminder, 2 days after Testimonial. Adjust the `amount`/`unit` on each Wait node to match your own cadence.\n\nBecause days can pass between steps, consider re-checking `subscribedToMarketing` (e.g. an HTTP Request back to your own customer-lookup endpoint) before each send in a production version — this template only checks it once, right after enrollment.",
+        "height": 280,
+        "width": 460
+      },
+      "id": "0f2388ee-4545-4614-9226-5adafa84ee44",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### Multi-channel\nOnly Email is wired up for real here, matching what Blueflow's native engine actually supports today. To add WhatsApp/SMS/Telegram:\n1. Add another **Channel: X?** IF node (copy \"Channel: Email?\", change the comparison value).\n2. Replace this NoOp with the matching n8n node once you have real provider credentials — e.g. the **WhatsApp Business Cloud** node, a **Twilio** node for SMS, or the **Telegram** node.\n3. Until then this branch intentionally does nothing, the same way `SendWhatsAppStep`/`SendSmsStep`/`SendTelegramStep` report `channel_not_configured` in the native engine rather than pretending to send.",
+        "height": 300,
+        "width": 460
+      },
+      "id": "5b7cbf72-da89-43e0-b665-13a101b42d8a",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        700,
+        780
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Personalize Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Personalize Content": {
+      "main": [
+        [
+          {
+            "node": "Still Subscribed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Still Subscribed?": {
+      "main": [
+        [
+          {
+            "node": "Channel: Email?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stopped: Unsubscribed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Channel: Email?": {
+      "main": [
+        [
+          {
+            "node": "Welcome Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Other Channel - Not Yet Configured",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Welcome Email": {
+      "main": [
+        [
+          {
+            "node": "Wait 1 Day",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 1 Day": {
+      "main": [
+        [
+          {
+            "node": "Reminder Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reminder Email": {
+      "main": [
+        [
+          {
+            "node": "Wait 2 Days",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 2 Days": {
+      "main": [
+        [
+          {
+            "node": "Testimonial Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Testimonial Email": {
+      "main": [
+        [
+          {
+            "node": "Wait 2 Days (2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 2 Days (2)": {
+      "main": [
+        [
+          {
+            "node": "Offer Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "meta": {
+    "instanceId": "afbe08eb95075820bb512108fb325a94793b69514acce40eb65440bad4d50bb3"
+  },
+  "id": "MktJourneyBFA1",
+  "tags": []
+}

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\MarketingTrackingController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PaystackController;
 use App\Models\Plan;
 use App\Models\Review;
@@ -33,7 +35,25 @@ Route::get('/', function () {
 //services
 Route::get('/services', fn() => inertia('Services/Index'))->name('services');
 Route::get('/services/chat-widget', fn() => inertia('Services/ChatWidget'));
-Route::get('/services/marketing-automation', fn() => inertia('Services/MarketingAutomation'));
+Route::get('/services/marketing-automation', fn() => inertia('Services/MarketingAutomation', [
+    // Scoped to its own service — the homepage's #pricing section is
+    // hardcoded to chat-widget plans, which would be wrong here.
+    'plans' => Plan::active()
+        ->where('service', 'marketing-automation')
+        ->get(['id', 'name', 'slug', 'amount', 'promo_price', 'promo_ends_at', 'yearly_discount_percent', 'description', 'features', 'is_popular', 'contact_limit', 'journey_limit', 'email_send_limit']),
+]));
+// Marketing journey email tracking/unsubscribe — deliberately unauthenticated,
+// keyed only by each send's own unguessable tracking_token (see
+// MarketingTrackingController and App\Workflow\Steps\Marketing\SendEmailStep).
+Route::get('/marketing/open/{token}.png', [MarketingTrackingController::class, 'open'])->name('marketing.track.open');
+Route::get('/marketing/click/{token}', [MarketingTrackingController::class, 'click'])->name('marketing.track.click');
+Route::get('/marketing/unsubscribe/{token}', [MarketingTrackingController::class, 'unsubscribe'])->name('marketing.unsubscribe');
+
+// Newsletter unsubscribe — same unauthenticated, tracking_token-only pattern
+// as the marketing routes above, just resolving through NewsletterSend
+// instead (see NewsletterController).
+Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
+
 Route::get('/services/whatsapp-automation', fn() => inertia('Services/WhatsappAutomation'));
 Route::get('/services/crm-integration', fn() => inertia('Services/CRMIntegration'));
 Route::get('/services/email-automation', fn() => inertia('Services/EmailAutomation'));

@@ -11,6 +11,20 @@ const allPlansInclude = [
     "Nigerian payment options",
 ];
 
+// Each service's plans select a different subset of limit columns (chat-widget:
+// appointment/lead/faq; marketing-automation: contact/journey/email_send) — a
+// key that wasn't selected in the backing query is simply absent from the
+// plan object, not null, which is how a line here tells "not applicable to
+// this service" apart from "applicable, and unlimited".
+const LIMIT_LINES = [
+    { key: "appointment_limit", unit: "appointments/month" },
+    { key: "lead_limit", unit: "qualified leads/month" },
+    { key: "faq_limit", unit: "FAQs" },
+    { key: "contact_limit", unit: "contacts" },
+    { key: "journey_limit", unit: "active journeys" },
+    { key: "email_send_limit", unit: "emails/month" },
+];
+
 export default function Pricing({ plans = [] }) {
     const [headingRef, headingVisible] = useScrollAnimation(0.3);
     const [cardsRef, cardsVisible] = useScrollAnimation(0.1);
@@ -139,15 +153,14 @@ export default function Pricing({ plans = [] }) {
                                     </p>
                                 )}
 
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-                                    {plan.appointment_limit ? `${Number(plan.appointment_limit).toLocaleString("en-NG")} appointments/month` : "Unlimited appointments"}
-                                </p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-                                    {plan.lead_limit ? `${Number(plan.lead_limit).toLocaleString("en-NG")} qualified leads/month` : "Unlimited qualified leads"}
-                                </p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-6">
-                                    {plan.faq_limit ? `${Number(plan.faq_limit).toLocaleString("en-NG")} FAQs` : "Unlimited FAQs"}
-                                </p>
+                                {LIMIT_LINES.filter(({ key }) => key in plan).map(({ key, unit }, idx, arr) => (
+                                    <p
+                                        key={key}
+                                        className={`text-xs text-gray-500 dark:text-gray-400 ${idx === arr.length - 1 ? "mb-6" : "mb-1"}`}
+                                    >
+                                        {plan[key] ? `${Number(plan[key]).toLocaleString("en-NG")} ${unit}` : `Unlimited ${unit}`}
+                                    </p>
+                                ))}
 
                                 {plan.features?.length > 0 && (
                                     <ul className="space-y-3 mb-8 flex-1">
