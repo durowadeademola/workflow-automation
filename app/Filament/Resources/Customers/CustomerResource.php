@@ -29,7 +29,9 @@ class CustomerResource extends Resource
          * We check if the user exists, is a client or agent, and if their
          * associated client profile has the right type — OR they have the
          * chat-widget service, since every widget conversation creates a
-         * Customer record regardless of business type.
+         * Customer record regardless of business type — OR they have
+         * marketing-automation, which reuses this same table as its
+         * contact/audience list rather than duplicating one.
          */
         return $user
             && ($user->is_client || $user->is_agent)
@@ -42,6 +44,7 @@ class CustomerResource extends Resource
                     'ecommerce',
                 ])
                 || $user->client?->hasFeature('chat-widget')
+                || $user->client?->hasFeature('marketing-automation')
             );
     }
 

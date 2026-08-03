@@ -77,6 +77,18 @@ class CustomersTable
                         'success' => 'CLOSED',
                     ])
                     ->searchable(),
+                IconColumn::make('subscribed_to_marketing')
+                    ->label('Unsubscribed')
+                    ->boolean()
+                    // Inverted on purpose — a marketing-uninvolved client
+                    // shouldn't have to parse a double-negative column just
+                    // to see who opted out.
+                    ->getStateUsing(fn ($record) => ! $record->subscribed_to_marketing)
+                    ->trueIcon('heroicon-o-x-circle')
+                    ->falseIcon('heroicon-o-check-circle')
+                    ->trueColor('danger')
+                    ->falseColor('success')
+                    ->toggleable(),
             ])
             ->filters([
                 SelectFilter::make('platform')
@@ -87,6 +99,15 @@ class CustomersTable
                     ]),
                 TernaryFilter::make('is_qualified_lead')
                     ->label('Qualified lead?'),
+                TernaryFilter::make('subscribed_to_marketing')
+                    ->label('Unsubscribed from marketing?')
+                    ->trueLabel('Unsubscribed')
+                    ->falseLabel('Subscribed')
+                    ->placeholder('All')
+                    ->queries(
+                        true: fn ($query) => $query->where('subscribed_to_marketing', false),
+                        false: fn ($query) => $query->where('subscribed_to_marketing', true),
+                    ),
                 TrashedFilter::make(),
             ])
             ->recordActions([
