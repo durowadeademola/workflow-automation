@@ -95,7 +95,7 @@ function NewsletterSignup() {
     return (
         <div className="border-b border-gray-800 pb-10 mb-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
-                <h4 className="text-white font-semibold text-base mb-1">Subscribe to our newsletter</h4>
+                <h4 className="text-white font-semibold text-base mb-1">Subscribe to our Newsletter</h4>
                 <p className="text-sm">Automation tips and product updates, straight to your inbox — no spam.</p>
             </div>
 
@@ -107,7 +107,7 @@ function NewsletterSignup() {
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="Your name (optional)"
+                        placeholder="Name (optional)"
                         className="flex-1 min-w-0 rounded-lg bg-gray-800 border border-gray-700 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     <input
@@ -115,7 +115,7 @@ function NewsletterSignup() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="you@company.com"
+                        placeholder="Email (you@example.com)"
                         className="flex-1 min-w-0 rounded-lg bg-gray-800 border border-gray-700 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     <button

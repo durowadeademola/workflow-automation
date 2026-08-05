@@ -26,16 +26,20 @@ class SubscriptionInvoice extends Notification
     {
         $subscription = $this->subscription;
 
-        $pdf = Pdf::loadView('invoices.subscription', ['subscription' => $subscription])->output();
+        $invoicePdf = Pdf::loadView('invoices.subscription', ['subscription' => $subscription])->output();
+        $receiptPdf = Pdf::loadView('invoices.receipt', ['subscription' => $subscription])->output();
 
         return (new MailMessage)
             ->subject("Invoice for your {$subscription->serviceLabel()} {$subscription->name} subscription")
             ->greeting("Hi {$notifiable->name},")
             ->line("Thanks for your payment — your {$subscription->serviceLabel()} {$subscription->name} subscription is now active.")
             ->line('Amount paid: ₦'.number_format($subscription->amount))
-            ->line('Your invoice is attached for your records.')
+            ->line('Your invoice and payment receipt are attached for your records.')
             ->action('View Billing', url('/user/billing'))
-            ->attachData($pdf, "invoice-{$subscription->paystack_reference}.pdf", [
+            ->attachData($invoicePdf, "invoice-{$subscription->paystack_reference}.pdf", [
+                'mime' => 'application/pdf',
+            ])
+            ->attachData($receiptPdf, "receipt-{$subscription->paystack_reference}.pdf", [
                 'mime' => 'application/pdf',
             ]);
     }

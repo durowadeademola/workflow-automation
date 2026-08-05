@@ -40,6 +40,8 @@ class Client extends Model
         'working_hours_start',
         'working_hours_end',
         'timezone',
+        'is_terms_accepted',
+        'terms_accepted_at',
     ];
 
     protected $casts = [
@@ -51,6 +53,8 @@ class Client extends Model
         'bypass_plan_limits' => 'boolean',
         'working_hours_enabled' => 'boolean',
         'working_days' => 'array',
+        'is_terms_accepted' => 'boolean',
+        'terms_accepted_at' => 'datetime',
     ];
 
     /**

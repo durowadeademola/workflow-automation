@@ -464,6 +464,13 @@
                                 >
                                     Invoice
                                 </a>
+                                <a
+                                    href="{{ route('receipts.download', $sub) }}"
+                                    target="_blank"
+                                    class="text-[10px] font-semibold uppercase tracking-wide text-primary-600 hover:text-primary-700 hover:underline"
+                                >
+                                    Receipt
+                                </a>
                             @endif
                         </div>
                     </div>

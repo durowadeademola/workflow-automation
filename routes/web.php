@@ -83,3 +83,7 @@ Route::get('/billing/callback', [PaystackController::class, 'callback'])->name('
 Route::get('/billing/invoices/{subscription}', [InvoiceController::class, 'download'])
     ->middleware('auth')
     ->name('invoices.download');
+
+Route::get('/billing/receipts/{subscription}', [InvoiceController::class, 'downloadReceipt'])
+    ->middleware('auth')
+    ->name('receipts.download');

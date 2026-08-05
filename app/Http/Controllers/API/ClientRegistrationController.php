@@ -40,6 +40,8 @@ class ClientRegistrationController extends Controller
                 'type' => $validated['type'],
                 'features' => $validated['features'],
                 'status' => 'pending',
+                'is_terms_accepted' => true,
+                'terms_accepted_at' => now(),
             ]);
 
             $user = User::create([
