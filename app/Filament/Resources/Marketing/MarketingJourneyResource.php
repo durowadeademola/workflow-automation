@@ -10,6 +10,7 @@ use App\Filament\Resources\Marketing\Schemas\MarketingJourneyForm;
 use App\Filament\Resources\Marketing\Tables\MarketingJourneysTable;
 use App\Models\AutomationWorkflow;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -31,6 +32,8 @@ class MarketingJourneyResource extends Resource
     protected static ?string $modelLabel = 'Marketing Setup';
 
     protected static ?string $pluralModelLabel = 'Marketing Setup';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Marketing';
 
     protected static ?int $navigationSort = 22;
 

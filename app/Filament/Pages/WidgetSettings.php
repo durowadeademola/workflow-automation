@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\Client;
 use BackedEnum;
+use UnitEnum;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Repeater;
@@ -24,6 +25,8 @@ class WidgetSettings extends Page
     protected static string|BackedEnum|null $navigationIcon = Heroicon::PaintBrush;
 
     protected static ?string $navigationLabel = 'Widget Settings';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Chat Widget';
 
     protected static ?int $navigationSort = 20;
 

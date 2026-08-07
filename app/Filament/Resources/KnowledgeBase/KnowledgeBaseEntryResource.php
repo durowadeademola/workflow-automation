@@ -9,6 +9,7 @@ use App\Filament\Resources\KnowledgeBase\Schemas\KnowledgeBaseEntryForm;
 use App\Filament\Resources\KnowledgeBase\Tables\KnowledgeBaseEntriesTable;
 use App\Models\KnowledgeBaseEntry;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -20,6 +21,8 @@ class KnowledgeBaseEntryResource extends Resource
     protected static ?string $model = KnowledgeBaseEntry::class;
 
     protected static ?string $navigationLabel = 'Knowledge Base';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Chat Widget';
 
     protected static ?int $navigationSort = 21;
 

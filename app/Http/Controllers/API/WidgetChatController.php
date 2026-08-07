@@ -92,14 +92,14 @@ class WidgetChatController extends Controller
 
         if (! $client->widget_enabled) {
             return response()->json([
-                'reply' => "This assistant is currently unavailable. Please reach out to us directly and we'll get back to you.",
+                'reply' => "Our assistant is currently unavailable. Please reach out to us directly and we'll get back to you.",
                 'blocked' => true,
             ], 403);
         }
 
         if (! $client->hasActiveSubscription()) {
             return response()->json([
-                'reply' => "This assistant is currently unavailable. Please reach out to us directly and we'll get back to you.",
+                'reply' => "Our assistant is currently unavailable. Please reach out to us directly and we'll get back to you.",
                 'blocked' => true,
             ], 402);
         }
@@ -110,7 +110,7 @@ class WidgetChatController extends Controller
             Log::warning('Client has an active subscription but no webhook_url configured', ['client_id' => $client->id]);
 
             return response()->json([
-                'reply' => "This assistant is currently unavailable. Please reach out to us directly.",
+                'reply' => "Our assistant is currently unavailable. Please reach out to us directly.",
                 'blocked' => true,
             ], 502);
         }
@@ -119,7 +119,7 @@ class WidgetChatController extends Controller
             app(MessageLimitService::class)->notifyOnceIfLimitReached($client);
 
             return response()->json([
-                'reply' => "This assistant is currently unavailable. Please reach out to us directly.",
+                'reply' => "Our assistant is currently unavailable. Please reach out to us directly.",
                 'blocked' => true,
             ], 429);
         }

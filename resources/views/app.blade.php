@@ -45,12 +45,16 @@
     <body class="font-sans antialiased bg-gray-900">
         @inertia
 
-        {{-- Blueflow's own site uses client_id 4 ("Blueflow Automation
-             (Internal)") for its own chat widget — generated the exact
-             same way any other client's embed snippet is, straight from
-             their actual dashboard-configured Widget Settings, so this
-             never drifts out of sync with what's actually stored there
-             (agent name, quick replies, working hours, anything else). --}}
-        {!! \App\Models\Client::find(4)?->getWidgetEmbedSnippet() !!}
+        {{-- Blueflow's own site uses its own permanent internal Client
+             record ("Blueflow Automation (Internal)", type=internal) for
+             its own chat widget — generated the exact same way any other
+             client's embed snippet is, straight from their actual
+             dashboard-configured Widget Settings, so this never drifts out
+             of sync with what's actually stored there (agent name, quick
+             replies, working hours, anything else). Looked up by `type`
+             rather than a hardcoded id, since auto-increment ids aren't
+             guaranteed to match between environments (e.g. this record
+             could easily be a different id in production than locally). --}}
+        {!! \App\Models\Client::where('type', 'internal')->first()?->getWidgetEmbedSnippet() !!}
     </body>
 </html>

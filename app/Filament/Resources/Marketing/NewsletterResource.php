@@ -9,6 +9,7 @@ use App\Filament\Resources\Marketing\Schemas\NewsletterForm;
 use App\Filament\Resources\Marketing\Tables\NewslettersTable;
 use App\Models\Newsletter;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -30,6 +31,8 @@ class NewsletterResource extends Resource
     protected static ?string $model = Newsletter::class;
 
     protected static ?string $navigationLabel = 'Newsletters';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Marketing';
 
     protected static ?int $navigationSort = 23;
 

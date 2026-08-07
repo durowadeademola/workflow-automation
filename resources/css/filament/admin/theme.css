@@ -37,17 +37,19 @@ body {
     padding: 0.75rem;
 }
 
-.fi-sidebar-group + .fi-sidebar-group {
-    margin-top: 1.25rem;
+/* Filament's own gap-y-7 (28px) between nav "sections" (the run of
+   ungrouped items counts as one, each named group as another) reads as an
+   overly large gap once real groups exist alongside ungrouped items — this
+   is the single source of truth for that spacing now, replacing the old
+   .fi-sidebar-group + .fi-sidebar-group rule that used to stack on top of it. */
+.fi-sidebar-nav-groups {
+    gap: 0.75rem;
 }
 
 .fi-sidebar-group-label {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: rgb(148 163 184);
-    padding-inline: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgb(55 65 81);
 }
 
 .fi-sidebar-item-btn {
@@ -125,7 +127,7 @@ body {
 }
 
 :where(.dark, .dark *) .fi-sidebar-group-label {
-    color: rgb(148 163 184);
+    color: rgb(229 231 235);
 }
 
 :where(.dark, .dark *) .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover {
