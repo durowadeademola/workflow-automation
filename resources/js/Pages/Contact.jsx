@@ -90,7 +90,7 @@ export default function Contact() {
                         </div>
                         <div className="bg-blue-50 dark:bg-blue-900/30 rounded-2xl p-6 border border-blue-100 dark:border-blue-800/50">
                             <p className="text-sm text-blue-800 dark:text-blue-300">
-                                We typically respond within a few hours during business days (9am–6pm WAT).
+                                We typically respond within a few minutes (Mon-Sun 24/7).
                             </p>
                         </div>
                     </div>
