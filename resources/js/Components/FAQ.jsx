@@ -10,7 +10,7 @@ const faqs = [
     },
     {
         question: "Do I need any technical skills to use Blueflow?",
-        answer: "Not at all. Blueflow is designed to be simple for business owners and staff. Our interface is intuitive, and we provide full training for you and your team. If you can use WhatsApp, you can use Blueflow.",
+        answer: "Not at all. Blueflow is designed to be simple for business owners and staff. Our interface is intuitive, and we provide full training for you and your team.",
     },
     {
         question: "What happens if I need to cancel?",
@@ -18,7 +18,7 @@ const faqs = [
     },
     {
         question: "Can I integrate Blueflow with my existing systems?",
-        answer: "Our AI Chat Widget works seamlessly on any website today. We're also continuously expanding what Blueflow can automate — WhatsApp, Email, Payments, CRM, and internal workflows — so reach out and we'll walk you through exactly what's available for your specific setup.",
+        answer: "Yes. Blueflow integrates seamlessly with your existing systems whether it's with our Chat Widget or your Custom Workflows — so reach out and we'll walk you through exactly what's available for your specific setup.",
     },
     {
         question: "Is my data safe and secure?",
@@ -82,7 +82,7 @@ export default function FAQ() {
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
                         Frequently Asked Questions
                     </h2>
-                    <p className="text-gray-500 dark:text-gray-400">Got questions? We have got answers.</p>
+                    <p className="text-gray-500 dark:text-gray-400">Got questions? We've got your answers.</p>
                 </div>
 
                 <div ref={faqRef} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm px-6 divide-y divide-gray-100 dark:divide-gray-800 mb-10">
