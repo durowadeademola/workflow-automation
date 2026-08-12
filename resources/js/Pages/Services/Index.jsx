@@ -92,7 +92,7 @@ export default function Services() {
                                 )}
                                 {service.comingSoon && (
                                     <span className="absolute -top-3 left-6 bg-gray-400 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                                        Coming Soon
+                                        Not Available
                                     </span>
                                 )}
                                 {service.custom && (

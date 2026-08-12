@@ -222,7 +222,7 @@ export default function Register() {
                                                     {s.label}
                                                     {s.comingSoon && (
                                                         <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 bg-gray-200 dark:bg-gray-700 rounded-full px-1.5 py-0.5">
-                                                            Coming soon
+                                                            Not Available
                                                         </span>
                                                     )}
                                                 </span>

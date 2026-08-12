@@ -3,7 +3,9 @@
 namespace App\Filament\Resources\Subscriptions\Tables;
 
 use App\Models\User;
+use App\Notifications\RefundDelayed;
 use App\Notifications\RefundProcessed;
+use App\Notifications\RefundProcessingFailed;
 use App\Notifications\RefundRejected;
 use App\Services\PaystackService;
 use Filament\Actions\Action;
@@ -75,7 +77,7 @@ class SubscriptionsTable
                     ->colors([
                         'warning' => 'requested',
                         'success' => 'processed',
-                        'danger' => 'rejected',
+                        'danger' => ['rejected', 'failed'],
                     ]),
                 TextColumn::make('refund_amount')
                     ->label('Refund amount')
@@ -134,6 +136,7 @@ class SubscriptionsTable
                         'requested' => 'Requested',
                         'processed' => 'Processed',
                         'rejected' => 'Rejected',
+                        'failed' => 'Failed',
                     ]),
             ])
             ->defaultSort('created_at', 'desc')
@@ -142,7 +145,7 @@ class SubscriptionsTable
                     ->label('Process Refund')
                     ->icon('heroicon-o-banknotes')
                     ->color('success')
-                    ->visible(fn ($record) => $record->refund_status === 'requested')
+                    ->visible(fn ($record) => in_array($record->refund_status, ['requested', 'failed']))
                     ->requiresConfirmation()
                     ->modalDescription(fn ($record) => 'This will refund ₦'.number_format($record->refund_amount).' via Paystack to the client\'s original payment method. This cannot be undone.')
                     ->action(function ($record) {
@@ -169,6 +172,41 @@ class SubscriptionsTable
 
                             Notification::make()->title('Refund processed')->success()->send();
                         } catch (\Throwable $e) {
+                            // Paystack rejected the refund (most commonly:
+                            // not enough balance in Blueflow's Paystack
+                            // wallet to cover it — refunds draw from that
+                            // balance, never the settlement bank account
+                            // directly). The client already lost access the
+                            // moment they requested this refund, so if it
+                            // didn't actually go through, restore it —
+                            // exactly the same restoration "Reject Refund"
+                            // below does — rather than leaving them paying
+                            // for a failure that isn't theirs.
+                            $restoring = $record->refund_original_end_date && $record->refund_original_end_date->isFuture();
+
+                            $record->update([
+                                'refund_status' => 'failed',
+                                'refund_reviewed_at' => now(),
+                                'refund_rejection_reason' => $e->getMessage(),
+                                'cancelled_at' => $restoring ? null : $record->cancelled_at,
+                                'cancellation_reason' => $restoring ? null : $record->cancellation_reason,
+                                'end_date' => $restoring ? $record->refund_original_end_date : $record->end_date,
+                            ]);
+
+                            $recipients = User::where('client_id', $record->client_id)
+                                ->where(fn ($query) => $query->where('is_client', true)->orWhere('is_agent', true))
+                                ->get();
+
+                            if ($recipients->isNotEmpty()) {
+                                LaravelNotification::send($recipients, new RefundDelayed($record));
+                            }
+
+                            $admins = User::where('is_admin', true)->get();
+
+                            if ($admins->isNotEmpty()) {
+                                LaravelNotification::send($admins, new RefundProcessingFailed($record, $e->getMessage()));
+                            }
+
                             Notification::make()->title('Refund failed')->body($e->getMessage())->danger()->send();
                         }
                     }),
