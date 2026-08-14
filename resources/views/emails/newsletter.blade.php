@@ -16,6 +16,8 @@
         <p style="text-align:center; color:#9ca3af; font-size:12px; margin-top:20px;">
             You're receiving this newsletter from {{ $businessName }}.
             <a href="{{ $unsubscribeUrl }}" style="color:#6b7280;">Unsubscribe</a>
+            <br>
+            <a href="{{ route('privacy-policy') }}" style="color:#6b7280;">Privacy Policy</a> &middot; <a href="{{ route('terms-of-service') }}" style="color:#6b7280;">Terms of Service</a>
         </p>
     </div>
 </body>

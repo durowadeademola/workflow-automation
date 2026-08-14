@@ -27,6 +27,8 @@
 <x-slot:footer>
 <x-mail::footer>
 © {{ date('Y') }} {{ config('app.name') }}. {{ __('All rights reserved.') }}
+<br>
+<a href="{{ route('privacy-policy') }}">Privacy Policy</a> &middot; <a href="{{ route('terms-of-service') }}">Terms of Service</a>
 </x-mail::footer>
 </x-slot:footer>
 </x-mail::layout>
