@@ -18,16 +18,20 @@
                                 <span class="text-[10px] font-semibold uppercase tracking-wide text-amber-700 bg-amber-100 rounded-full px-2 py-0.5">Trial</span>
                             @elseif($sub->cancelled_at)
                                 <span class="text-[10px] font-semibold uppercase tracking-wide text-gray-600 bg-gray-100 rounded-full px-2 py-0.5">Cancelled</span>
+                            @elseif($sub->end_date && $sub->end_date->isPast())
+                                <span class="text-[10px] font-semibold uppercase tracking-wide text-amber-700 bg-amber-100 rounded-full px-2 py-0.5">Expiring</span>
                             @else
                                 <span class="text-[10px] font-semibold uppercase tracking-wide text-emerald-700 bg-emerald-100 rounded-full px-2 py-0.5">Active</span>
                             @endif
                         </div>
                         <h4 class="text-base font-bold text-gray-900 dark:text-gray-100">{{ $sub->name }}</h4>
-                        <p class="text-xs text-gray-500 mt-1">
+                        <p class="text-xs mt-1" @class(['text-amber-600 font-medium' => ! $sub->cancelled_at && $sub->end_date && $sub->end_date->isPast(), 'text-gray-500' => $sub->cancelled_at || ! $sub->end_date || ! $sub->end_date->isPast()])>
                             @if($sub->cancelled_at)
                                 Access until {{ $sub->end_date?->format('M j, Y') }}
+                            @elseif($sub->end_date && $sub->end_date->isPast())
+                                Expired {{ $sub->end_date->diffForHumans() }} — resubscribe today to keep access
                             @else
-                                Renews {{ $sub->end_date?->format('M j, Y') }} ({{ $sub->end_date?->diffForHumans() }})
+                                Expires {{ $sub->end_date?->format('M j, Y') }} ({{ $sub->end_date?->diffForHumans() }})
                             @endif
                         </p>
                         @if(! $sub->cancelled_at)
@@ -100,17 +104,22 @@
                             </span>
                         </div>
                     @elseif($current)
+                        @php $isExpiring = $current->end_date && $current->end_date->isPast(); @endphp
                         <div class="flex items-center justify-between flex-wrap gap-4">
                             <div>
-                                <p class="text-xs font-semibold uppercase tracking-wide text-emerald-600">Active Plan</p>
+                                <p @class(['text-xs font-semibold uppercase tracking-wide', 'text-amber-600' => $isExpiring, 'text-emerald-600' => ! $isExpiring])>{{ $isExpiring ? 'Expiring' : 'Active Plan' }}</p>
                                 <h4 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $current->name }}</h4>
-                                <p class="text-sm text-gray-500 mt-1">
-                                    Renews {{ $current->end_date?->format('M j, Y') }}
-                                    ({{ $current->end_date?->diffForHumans() }})
+                                <p @class(['text-sm mt-1', 'text-amber-600 font-medium' => $isExpiring, 'text-gray-500' => ! $isExpiring])>
+                                    @if($isExpiring)
+                                        Expired {{ $current->end_date->diffForHumans() }} — resubscribe today to keep access
+                                    @else
+                                        Expires {{ $current->end_date?->format('M j, Y') }}
+                                        ({{ $current->end_date?->diffForHumans() }})
+                                    @endif
                                 </p>
                             </div>
-                            <span class="text-xs font-semibold uppercase tracking-wide text-emerald-700 bg-emerald-100 rounded-full px-3 py-1">
-                                Active
+                            <span @class(['text-xs font-semibold uppercase tracking-wide rounded-full px-3 py-1', 'text-amber-700 bg-amber-100' => $isExpiring, 'text-emerald-700 bg-emerald-100' => ! $isExpiring])>
+                                {{ $isExpiring ? 'Expiring' : 'Active' }}
                             </span>
                         </div>
                     @else
