@@ -147,7 +147,7 @@ export default function Navbar() {
                             <ThemeToggle />
                             <Link
                                 href="/user/login"
-                                className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                                className="text-sm font-medium text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
                             >
                                 Log In
                             </Link>

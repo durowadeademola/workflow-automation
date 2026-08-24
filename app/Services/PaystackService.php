@@ -15,20 +15,12 @@ class PaystackService
 
     public function initializeTransaction(array $payload): array
     {
-        return Http::withToken($this->secretKey)
-            ->baseUrl('https://api.paystack.co')
-            ->post('/transaction/initialize', $payload)
-            ->throw()
-            ->json();
+        return Http::withToken($this->secretKey)->baseUrl('https://api.paystack.co')->post('/transaction/initialize', $payload)->throw()->json();
     }
 
     public function verifyTransaction(string $reference): array
     {
-        return Http::withToken($this->secretKey)
-            ->baseUrl('https://api.paystack.co')
-            ->get('/transaction/verify/'.rawurlencode($reference))
-            ->throw()
-            ->json();
+        return Http::withToken($this->secretKey)->baseUrl('https://api.paystack.co')->get('/transaction/verify/'.rawurlencode($reference))->throw()->json();
     }
 
     /**
@@ -45,11 +37,7 @@ class PaystackService
             $payload['amount'] = $amountInKobo;
         }
 
-        return Http::withToken($this->secretKey)
-            ->baseUrl('https://api.paystack.co')
-            ->post('/refund', $payload)
-            ->throw()
-            ->json();
+        return Http::withToken($this->secretKey)->baseUrl('https://api.paystack.co')->post('/refund', $payload)->throw()->json();
     }
 
     public function verifyWebhookSignature(string $rawPayload, ?string $signature): bool
