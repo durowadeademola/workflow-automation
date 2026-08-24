@@ -30,7 +30,7 @@ class SubscriptionInvoice extends Notification
         $receiptPdf = Pdf::loadView('invoices.receipt', ['subscription' => $subscription])->output();
 
         return (new MailMessage)
-            ->subject("Invoice for your {$subscription->serviceLabel()} {$subscription->name} subscription")
+            ->subject("Invoice and Receipt for your {$subscription->serviceLabel()} {$subscription->name} subscription")
             ->greeting("Hi {$notifiable->name},")
             ->line("Thanks for your payment — your {$subscription->serviceLabel()} {$subscription->name} subscription is now active.")
             ->line('Amount paid: ₦'.number_format($subscription->amount))

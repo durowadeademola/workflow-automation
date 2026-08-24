@@ -90,6 +90,11 @@ class Subscription extends Model
         return match ($this->service ?? 'chat-widget') {
             'chat-widget' => 'Chat Widget',
             'marketing-automation' => 'Marketing Automation',
+            'whatsapp-automation' => 'WhatsApp Automation',
+            'email-automation' => 'Email Automation',
+            'payment-automation' => 'Payment Automation',
+            'crm-integration' => 'CRM Integration',
+            'workflow-automation' => 'Workflow Automation',
             default => $this->service,
         };
     }

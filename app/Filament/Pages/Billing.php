@@ -267,24 +267,28 @@ class Billing extends Page
         $client = $this->getClient();
         // Message proration is a chat-widget-specific concept (messages
         // only count toward that service's limit) — other services have no
-        // equivalent to carry over yet.
+        // equivalent to carry over yet. Uses the same still-active lookup
+        // as the day-based credit above, since this only applies to early
+        // switches now too — see calculateMessageProrationCredit().
         $messageCredit = ($client && $service === 'chat-widget')
-            ? $this->calculateMessageProrationCredit($client, $client->mostRecentSubscription($service))
+            ? $this->calculateMessageProrationCredit($client, $this->getCurrentSubscription($service))
             : 0;
 
         return $dayBasedCredit + $messageCredit;
     }
 
     /**
-     * Unused message capacity from a subscription that already ran its
-     * full course becomes a credit on the next one — the message-quota
-     * equivalent of the day-based credit above, for a plan that used up
-     * all its time rather than being switched early (those two never
-     * overlap: calculateProratedCredit() already returns 0 once a
-     * subscription isn't still active). Skipped for trials (nothing was
-     * actually paid), unlimited plans (nothing to prorate), and anything
-     * already refunded (would double-count the unused-time compensation
-     * it already got).
+     * Unused message capacity only becomes a credit when a client switches
+     * plans early — the message-quota equivalent of the day-based credit
+     * above, for the same still-active subscription. A plan that simply ran
+     * its full course and is being renewed gets no credit for messages left
+     * unused: message-limit tiers are "pay for the capacity," same as any
+     * other SaaS usage tier, not a metered/pay-per-message plan — crediting
+     * light usage back on every ordinary renewal would quietly discount the
+     * clients using the product least, cycle after cycle. Skipped for
+     * trials (nothing was actually paid), unlimited plans (nothing to
+     * prorate), and anything already refunded (would double-count the
+     * unused-time compensation it already got).
      */
     private function calculateMessageProrationCredit(Client $client, ?Subscription $previous): int
     {
@@ -292,7 +296,7 @@ class Billing extends Page
             return 0;
         }
 
-        if (! $previous->end_date || $previous->end_date->isFuture()) {
+        if (! $previous->isCurrentlyActive()) {
             return 0;
         }
 

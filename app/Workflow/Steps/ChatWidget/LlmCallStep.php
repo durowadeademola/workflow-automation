@@ -34,16 +34,20 @@ class LlmCallStep implements StepHandler
     ];
 
     /**
-     * Groq and OpenRouter identify the same underlying model with different
-     * strings (e.g. "llama-3.3-70b-versatile" vs
-     * "meta-llama/llama-3.3-70b-instruct:free") — a fallback call can't just
-     * reuse the primary's model string. This is only consulted when a
-     * step's own config doesn't set an explicit fallback_provider/
-     * fallback_model, so any workflow can still override it.
+     * Groq and OpenRouter sometimes identify the same underlying model with
+     * different strings (e.g. Llama previously: "llama-3.3-70b-versatile" vs
+     * "meta-llama/llama-3.3-70b-instruct:free") — a fallback call can't
+     * always just reuse the primary's model string, hence a lookup table
+     * rather than a shared constant. GPT-OSS-120B happens to use the same
+     * "openai/gpt-oss-120b" slug on both providers, but the table is kept
+     * per-provider so a future model swap can reintroduce diverging strings
+     * without restructuring this. This is only consulted when a step's own
+     * config doesn't set an explicit fallback_provider/fallback_model, so
+     * any workflow can still override it.
      */
     private const DEFAULT_FALLBACKS = [
-        'groq' => ['provider' => 'openrouter', 'model' => 'meta-llama/llama-3.3-70b-instruct:free'],
-        'openrouter' => ['provider' => 'groq', 'model' => 'llama-3.3-70b-versatile'],
+        'groq' => ['provider' => 'openrouter', 'model' => 'openai/gpt-oss-120b'],
+        'openrouter' => ['provider' => 'groq', 'model' => 'openai/gpt-oss-120b'],
     ];
 
     public function execute(array $config, WorkflowContext $context): array
@@ -131,17 +135,31 @@ class LlmCallStep implements StepHandler
             throw new RuntimeException("Missing API key for LLM provider [{$provider}] — set it in .env / config/services.php.");
         }
 
+        $payload = [
+            'model' => $model,
+            'max_tokens' => $config['max_tokens'] ?? 512,
+            'temperature' => $config['temperature'] ?? 0.7,
+            'messages' => [
+                ['role' => 'system', 'content' => $config['system_prompt'] ?? ''],
+                ['role' => 'user', 'content' => $config['user_message'] ?? ''],
+            ],
+        ];
+
+        // Only sent when a step's config opts in — reasoning models (e.g.
+        // openai/gpt-oss-120b) spend part of max_tokens on an internal
+        // "reasoning" field before writing the visible reply, so a long
+        // reasoning pass can silently return empty content once max_tokens
+        // is hit. 'low' trims that risk for a chat-reply use case that
+        // doesn't need deep reasoning. Guarded by provider === 'groq' since
+        // that's the only endpoint this has been verified against — Groq
+        // and OpenRouter don't necessarily share this field's shape.
+        if ($provider === 'groq' && isset($config['reasoning_effort'])) {
+            $payload['reasoning_effort'] = $config['reasoning_effort'];
+        }
+
         $response = Http::timeout(30)
             ->withToken($apiKey)
-            ->post($endpoint, [
-                'model' => $model,
-                'max_tokens' => $config['max_tokens'] ?? 512,
-                'temperature' => $config['temperature'] ?? 0.7,
-                'messages' => [
-                    ['role' => 'system', 'content' => $config['system_prompt'] ?? ''],
-                    ['role' => 'user', 'content' => $config['user_message'] ?? ''],
-                ],
-            ]);
+            ->post($endpoint, $payload);
 
         if (! $response->successful()) {
             throw new RuntimeException("LLM call to [{$provider}] failed: " . $response->body());

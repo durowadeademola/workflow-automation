@@ -53,7 +53,7 @@ return new class extends Migration
                     // provider to "openrouter" + set OPENROUTER_API_KEY in
                     // .env for exact parity once you have that key).
                     'provider' => 'groq',
-                    'model' => 'llama-3.3-70b-versatile',
+                    'model' => 'openai/gpt-oss-120b',
                     'temperature' => 0.3,
                     'max_tokens' => 512,
                     'system_prompt' => '{{steps.prompt.systemPrompt}}',
