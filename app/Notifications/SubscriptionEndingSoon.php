@@ -32,7 +32,7 @@ class SubscriptionEndingSoon extends Notification
             ->line($isTrial
                 ? "Your 14-day free trial ends in {$daysLeft} days, on ".$this->subscription->end_date->format('l, F j, Y').'.'
                 : "Your {$this->subscription->name} subscription ends in {$daysLeft} days, on ".$this->subscription->end_date->format('l, F j, Y').'.')
-            ->line('Subscribe to a plan before then to keep your chat widget answering visitors without any interruption.')
+            ->line('Subscribe to a plan before then to keep your services running without any interruption.')
             ->action('View Billing', url('/user/billing'));
     }
 

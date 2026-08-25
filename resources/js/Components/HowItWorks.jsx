@@ -5,7 +5,7 @@ const steps = [
     {
         number: "01",
         title: "Create Your Account",
-        description: "Register your business and tell us which services you need — WhatsApp, chat widget, and more.",
+        description: "Register your business and tell us which services you need — Chat widget, Marketing Automation, and more.",
         duration: "2 minutes",
         outcome: "Account pending approval",
     },
@@ -19,7 +19,7 @@ const steps = [
     {
         number: "03",
         title: "Development & Setup",
-        description: "Our team builds and configures your automation system. We handle all the technical heavy lifting.",
+        description: "Our team builds and configures your automation system and notifies you when ready. We handle all the technical heavy lifting.",
         duration: "3-5 days",
         outcome: "Fully configured system",
     },

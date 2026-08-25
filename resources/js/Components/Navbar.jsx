@@ -42,7 +42,7 @@ function DropdownMenu({ items }) {
                         >
                             {item.label}
                             <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 rounded-full px-1.5 py-0.5">
-                                Soon
+                                N/A
                             </span>
                         </span>
                     ) : (
@@ -207,7 +207,7 @@ export default function Navbar() {
                                         >
                                             {sub.label}
                                             <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 rounded-full px-1.5 py-0.5">
-                                                Soon
+                                                N/A
                                             </span>
                                         </span>
                                     ) : (

@@ -100,7 +100,7 @@ class ClientObserver
     {
         $recipients = null;
 
-        foreach (['chat-widget', 'marketing-automation'] as $service) {
+        foreach (Client::SELF_REGISTRATION_FEATURES as $service) {
             if (! $client->hasFeature($service)) {
                 continue;
             }

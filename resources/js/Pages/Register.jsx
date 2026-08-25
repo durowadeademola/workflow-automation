@@ -105,7 +105,7 @@ export default function Register() {
                 subtitle={
                     plan
                         ? `You selected the ${plan} plan — create your account below, and you'll be able to subscribe as soon as you're approved.`
-                        : "Tell us about your business. Once approved, you'll get full access to your dashboard, chat widget, billing and more."
+                        : "Tell us about your business. Once approved, you'll get full access to your dashboard and start using our services."
                 }
             />
 
