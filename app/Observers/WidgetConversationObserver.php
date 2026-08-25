@@ -32,13 +32,18 @@ class WidgetConversationObserver
             return;
         }
 
-        // No active agent could be matched — let admins know so they can
-        // staff up or step in themselves, rather than the request going
-        // completely unnoticed.
-        $admins = User::where('is_admin', true)->get();
+        // No active agent could be matched — the business itself needs to
+        // know a customer is waiting for a human. For a client with no
+        // separate agent accounts (a single owner login is the common
+        // case), this is otherwise the ONLY notification path this handoff
+        // would ever get, since there's no assigned agent to tell. This is
+        // entirely the client's concern, not Blueflow's own admins'.
+        $clientUsers = User::where('client_id', $conversation->client_id)
+            ->where('is_client', true)
+            ->get();
 
-        if ($admins->isNotEmpty()) {
-            Notification::send($admins, new HandoffRequested($conversation));
+        if ($clientUsers->isNotEmpty()) {
+            Notification::send($clientUsers, new HandoffRequested($conversation));
         }
     }
 }

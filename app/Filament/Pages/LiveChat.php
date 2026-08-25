@@ -28,7 +28,11 @@ class LiveChat extends Page
     {
         $user = Auth::user();
 
-        return (bool) $user && $user->is_agent && $user->client?->hasFeature('chat-widget');
+        // is_client is included alongside is_agent so a business with no
+        // separate agent accounts — just a single owner login, the common
+        // case for small clients — can still open a handoff themselves
+        // instead of being notified about one they have no way to reach.
+        return (bool) $user && ($user->is_agent || $user->is_client) && $user->client?->hasFeature('chat-widget');
     }
 
     public function getConversations()
