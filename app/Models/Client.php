@@ -23,6 +23,8 @@ class Client extends Model
         'rejection_reason',
         'features',
         'webhook_url',
+        'website_url',
+        'crawl_paths',
         'workflow_engine',
         'widget_ready',
         'widget_ready_at',
@@ -46,6 +48,7 @@ class Client extends Model
 
     protected $casts = [
         'widget_quick_replies' => 'array',
+        'crawl_paths' => 'array',
         'features' => 'array',
         'widget_ready' => 'boolean',
         'widget_ready_at' => 'datetime',

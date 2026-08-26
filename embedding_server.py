@@ -18,17 +18,31 @@ def fetch_page():
     data = request.json
     url = data.get('url', '')
     client_id = data.get('clientId', '')
-    
+
     try:
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
         response = requests.get(url, headers=headers, timeout=15)
+        # requests.get() doesn't raise for HTTP error statuses on its own —
+        # without this check, a 404/500 error page's body comes back
+        # indistinguishable from a real page, silently poisoning whatever
+        # gets extracted from it downstream.
+        if not response.ok:
+            return jsonify({
+                'clientId': client_id,
+                'url': url,
+                'data': '',
+                'success': False,
+                'statusCode': response.status_code,
+                'error': f'HTTP {response.status_code}'
+            })
         return jsonify({
             'clientId': client_id,
             'url': url,
             'data': response.text,
-            'success': True
+            'success': True,
+            'statusCode': response.status_code
         })
     except Exception as e:
         return jsonify({

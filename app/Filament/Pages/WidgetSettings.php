@@ -2,13 +2,17 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\AutomationWorkflow;
 use App\Models\Client;
+use App\Workflow\WorkflowExecutor;
 use BackedEnum;
 use UnitEnum;
+use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
@@ -33,6 +37,8 @@ class WidgetSettings extends Page
     protected string $view = 'filament.pages.widget-settings';
 
     public ?array $data = [];
+
+    public ?array $lastCrawlSummary = null;
 
     public static function canAccess(): bool
     {
@@ -67,6 +73,12 @@ class WidgetSettings extends Page
                 // actually added — never the defaults, which aren't real,
                 // editable/removable rows here.
                 ['widget_quick_replies' => $client->widget_quick_replies ?? []],
+                // Not part of WIDGET_DEFAULTS above — these configure the
+                // RAG crawler, not the live widget's own appearance/behavior.
+                [
+                    'website_url' => $client->website_url,
+                    'crawl_paths' => $client->crawl_paths ?: ['/'],
+                ],
             ));
         }
     }
@@ -154,6 +166,23 @@ class WidgetSettings extends Page
                     ])
                     ->columns(2)
                     ->columnSpan('full'),
+
+                Section::make('Website content')
+                    ->description('Which pages the AI reads to answer questions about your business. Save your changes here, then use "Recrawl my site" below to (re)index them.')
+                    ->schema([
+                        TextInput::make('website_url')
+                            ->label('Website URL')
+                            ->url()
+                            ->maxLength(500)
+                            ->placeholder('https://yourbusiness.com')
+                            ->helperText('Your site\'s base address, with no trailing slash.'),
+                        TagsInput::make('crawl_paths')
+                            ->label('Pages to crawl')
+                            ->placeholder('/about')
+                            ->helperText('Paths on your site to read, e.g. /, /about, /pricing. Defaults to just the homepage (/).'),
+                    ])
+                    ->columns(2)
+                    ->columnSpan('full'),
             ]);
     }
 
@@ -170,6 +199,127 @@ class WidgetSettings extends Page
         $client->update($this->form->getState());
 
         Notification::make()->title('Widget settings saved.')->success()->send();
+    }
+
+    public function canRecrawl(): bool
+    {
+        return (bool) $this->getClient()?->usesNativeWorkflowEngine();
+    }
+
+    public function recrawlAction(): Action
+    {
+        return Action::make('recrawl')
+            ->label('Recrawl my site')
+            ->color('gray')
+            ->requiresConfirmation()
+            ->modalHeading('Recrawl your website?')
+            ->modalDescription('Re-reads every page below and replaces what the AI currently knows about your site with the fresh content. This can take a little while for several pages — you can keep using the dashboard while it runs.')
+            ->modalSubmitActionLabel('Recrawl now')
+            ->action(fn () => $this->recrawl());
+    }
+
+    /**
+     * Auto-opened from recrawl() (via mountAction) only when at least one
+     * page didn't cleanly index — a plain toast can't fit a per-page
+     * breakdown, and burying the reason in storage/logs/laravel.log means
+     * the client never actually finds out something needs attention.
+     */
+    public function recrawlResultsAction(): Action
+    {
+        return Action::make('recrawlResults')
+            ->label('Recrawl results')
+            ->modalHeading('Recrawl results')
+            ->modalDescription('Some pages had a problem — here\'s what happened for each one.')
+            ->modalContent(fn () => view('filament.pages.partials.crawl-results', [
+                'pageResults' => $this->lastCrawlSummary['pageResults'] ?? [],
+            ]))
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel('Close');
+    }
+
+    /**
+     * Runs the "website-crawler" workflow in-process against this client's
+     * own website_url/crawl_paths — the same AutomationWorkflow the native
+     * engine already had seeded (parameterized via {{trigger.clientId}} /
+     * {{trigger.websiteUrl}} / {{trigger.paths}}), just never actually
+     * invoked by anything until now. Runs synchronously rather than via the
+     * workflow's own /trigger webhook — this is already an authenticated
+     * in-app action, so there's no reason to round-trip through HTTP.
+     */
+    public function recrawl(): void
+    {
+        $client = $this->getClient();
+
+        if (! $client) {
+            Notification::make()->title('Your account is not linked to a business.')->danger()->send();
+
+            return;
+        }
+
+        if (blank($client->website_url)) {
+            Notification::make()->title('Add your website URL above first, then save.')->danger()->send();
+
+            return;
+        }
+
+        $workflow = AutomationWorkflow::where('slug', 'website-crawler')->first();
+
+        if (! $workflow) {
+            Notification::make()->title('Recrawl is not available right now — please try again shortly.')->danger()->send();
+
+            return;
+        }
+
+        $run = app(WorkflowExecutor::class)->run($workflow, [
+            'clientId' => $client->id,
+            'websiteUrl' => $client->website_url,
+            'paths' => $client->crawl_paths ?: ['/'],
+        ]);
+
+        if ($run->status !== 'completed') {
+            Notification::make()
+                ->title('Recrawl failed')
+                ->body($run->error ?: 'Something went wrong — please try again shortly.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        $summary = $run->context['steps']['summary'] ?? [];
+        $pageResults = $summary['pageResults'] ?? [];
+        $hasIssues = collect($pageResults)->contains(fn ($page) => $page['status'] !== 'indexed');
+
+        Notification::make()
+            ->title('Recrawl complete')
+            ->body(sprintf(
+                '%d page(s) read, %d chunk(s) indexed%s.',
+                $summary['pagesFetched'] ?? 0,
+                $summary['chunksStored'] ?? 0,
+                ($summary['chunksFailed'] ?? 0) > 0 ? ', '.$summary['chunksFailed'].' failed' : ''
+            ))
+            ->color($hasIssues ? 'warning' : 'success')
+            ->send();
+
+        // A toast alone doesn't explain WHICH page had a problem or WHY —
+        // exactly the gap that made a real fetch failure invisible until
+        // someone went digging through logs. Only pops up when something's
+        // actually worth a second look, so a clean recrawl stays a single
+        // unobtrusive toast.
+        //
+        // Dispatched as a browser event rather than calling mountAction()
+        // directly here: this method is itself already running inside
+        // Filament's own mountAction('recrawl') request-handling (that's
+        // how the button triggers it), and nesting a second mountAction()
+        // call inside that gets silently dropped once the outer action's
+        // response finishes — confirmed by reproducing the real click flow
+        // in a browser, not just calling recrawl() directly in a test.
+        // Dispatching an event lets the browser open the results modal in
+        // its own separate request, after the first one has fully closed.
+        if ($hasIssues) {
+            $this->lastCrawlSummary = $summary;
+            $this->dispatch('recrawl-finished');
+        }
     }
 
     public function getEmbedSnippet(): ?string

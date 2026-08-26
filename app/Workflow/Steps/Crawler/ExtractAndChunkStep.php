@@ -20,8 +20,15 @@ class ExtractAndChunkStep implements StepHandler
     {
         $pages = $context->get('steps.fetch.pages', []);
         $chunks = [];
+        $pageChunkCounts = [];
 
         foreach ($pages as $page) {
+            $pageChunkCounts[$page['url']] = 0;
+
+            if (! ($page['success'] ?? false)) {
+                continue;
+            }
+
             $text = $this->stripHtml($page['html'] ?? '');
 
             if (mb_strlen($text) < 50) {
@@ -43,13 +50,14 @@ class ExtractAndChunkStep implements StepHandler
                         'chunkIndex' => $chunkIndex,
                     ];
                     $chunkIndex++;
+                    $pageChunkCounts[$page['url']]++;
                 }
 
                 $start += self::CHUNK_SIZE - self::OVERLAP;
             }
         }
 
-        return ['chunks' => $chunks];
+        return ['chunks' => $chunks, 'pageChunkCounts' => $pageChunkCounts];
     }
 
     private function stripHtml(string $html): string

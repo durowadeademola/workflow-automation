@@ -1,4 +1,10 @@
 <x-filament-panels::page>
+    {{-- recrawl() dispatches this once it's found issues rather than
+         calling mountAction() directly — see the comment in
+         WidgetSettings::recrawl() for why nesting a mountAction() call
+         inside the recrawl action's own request handling doesn't work. --}}
+    <div x-data x-on:recrawl-finished.window="$wire.mountAction('recrawlResults')"></div>
+
     @if($this->isWidgetReady())
         <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 p-6 mb-6 flex items-center justify-between gap-4">
             <div>
@@ -34,7 +40,16 @@
             {{ $this->form }}
         </div>
 
-        <div class="flex justify-end">
+        <div class="flex justify-end gap-3">
+            @if($this->canRecrawl())
+                <x-filament::button
+                    type="button"
+                    color="gray"
+                    wire:click="mountAction('recrawl')"
+                >
+                    Recrawl my site
+                </x-filament::button>
+            @endif
             <x-filament::button type="submit" wire:target="save">
                 Save Changes
             </x-filament::button>
@@ -45,8 +60,30 @@
         <div
             x-data="{
                 copied: false,
-                copy() {
-                    navigator.clipboard.writeText($refs.snippet.innerText);
+                async copy() {
+                    const text = $refs.snippet.innerText;
+
+                    // navigator.clipboard only exists in a secure context
+                    // (HTTPS, or localhost) — plain HTTP, and any denied
+                    // clipboard permission even on HTTPS, both leave it
+                    // undefined/rejecting. Fall back to the old
+                    // select-and-execCommand approach, which works
+                    // regardless, rather than silently doing nothing.
+                    try {
+                        if (! navigator.clipboard) {
+                            throw new Error('Clipboard API unavailable');
+                        }
+                        await navigator.clipboard.writeText(text);
+                    } catch (e) {
+                        const range = document.createRange();
+                        range.selectNodeContents($refs.snippet);
+                        const selection = window.getSelection();
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                        document.execCommand('copy');
+                        selection.removeAllRanges();
+                    }
+
                     this.copied = true;
                     setTimeout(() => (this.copied = false), 2000);
                 },

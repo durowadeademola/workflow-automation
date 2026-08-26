@@ -41,11 +41,13 @@ class FetchPagesStep implements StepHandler
                     'url' => $fullUrl,
                     'html' => $data['data'] ?? '',
                     'success' => $data['success'] ?? false,
+                    'error' => $data['error'] ?? null,
+                    'statusCode' => $data['statusCode'] ?? null,
                 ];
             } catch (\Throwable $e) {
                 Log::warning('Crawler: fetch page failed', ['url' => $fullUrl, 'error' => $e->getMessage()]);
 
-                $pages[] = ['url' => $fullUrl, 'html' => '', 'success' => false];
+                $pages[] = ['url' => $fullUrl, 'html' => '', 'success' => false, 'error' => $e->getMessage()];
             }
         }
 
