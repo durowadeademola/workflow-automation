@@ -1,20 +1,54 @@
+# Secrets and credentials come from the .env file next to this compose file
+# (the same .env Laravel reads) — see the "Docker / production" block in
+# .env.example for the variables this file needs.
+
+x-laravel: &laravel
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: blueflow_app
+  working_dir: /var/www
+  volumes:
+    - .:/var/www
+  networks:
+    - app-network
+  restart: unless-stopped
+
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    <<: *laravel
     container_name: laravel_app
-    working_dir: /var/www
-    volumes:
-      - .:/var/www
-    networks:
-      - app-network
+    depends_on:
+      - db
     expose:
       - "9000" # only accessible to Nginx
+
+  # Queue worker and scheduler share the app image but skip the entrypoint's
+  # composer/npm build (the app container owns that, and running it from three
+  # containers at once on the same bind mount would race).
+  queue:
+    <<: *laravel
+    container_name: laravel_queue
+    entrypoint: ["php", "artisan"]
+    # Longest job runtime; DB_QUEUE_RETRY_AFTER must stay above it or a slow job gets run twice.
+    command: ["queue:work", "--tries=3", "--timeout=300", "--sleep=3", "--max-time=3600"]
+    depends_on:
+      - app
+      - db
+
+  scheduler:
+    <<: *laravel
+    container_name: laravel_scheduler
+    entrypoint: ["php", "artisan"]
+    command: ["schedule:work"]
+    depends_on:
+      - app
+      - db
 
   web:
     image: nginx:alpine
     container_name: laravel_nginx
+    restart: unless-stopped
     ports:
       - "80:80" # host port 80 → Nginx
       - "443:443"
@@ -39,24 +73,30 @@ services:
   db:
     image: mysql:8
     container_name: laravel_db
-    restart: always
+    restart: unless-stopped
+    # Sized for an 8GB server. Raise the buffer pool to 1G-2G on 12GB+.
+    command:
+      - --innodb-buffer-pool-size=512M
+      - --performance-schema=OFF
+      - --max-connections=100
     environment:
-      MYSQL_DATABASE: blueflow
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: secret123
-      MYSQL_ROOT_PASSWORD: 256ddyu66@190
+      MYSQL_DATABASE: ${DB_DATABASE:?set DB_DATABASE in .env}
+      MYSQL_USER: ${DB_USERNAME:?set DB_USERNAME in .env}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?set DB_ROOT_PASSWORD in .env}
     volumes:
       - mysql_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+    # Not published to the host — only reachable from containers on app-network.
+    # For a GUI client, use an SSH tunnel: ssh -L 3306:<db container ip>:3306 ...
+    expose:
+      - "3306"
     networks:
       - app-network
 
   n8n:
     image: n8nio/n8n
     container_name: n8n
-    depends_on:
-      - embedding 
+    restart: unless-stopped
     networks:
       - app-network
     expose:
@@ -64,23 +104,27 @@ services:
     volumes:
       - ./n8n_data:/home/node/.n8n
     environment:
-      - N8N_ENCRYPTION_KEY=MrnGwqXZMm8UilxiLU0lWGIV7Sx/nG/J
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:?set N8N_ENCRYPTION_KEY in .env}
       - N8N_HOST=n8n.blueflowautomation.com
       - N8N_PROTOCOL=https
       - WEBHOOK_URL=https://n8n.blueflowautomation.com/
       - N8N_EDITOR_BASE_URL=https://n8n.blueflowautomation.com
       - GENERIC_TIMEZONE=Africa/Lagos
 
+  # Optional — off by default so the stack fits a 4GB server. Without it, chat
+  # replies lack website knowledge (RAG returns nothing) and crawling fails, in
+  # both the native engine and n8n. Enable with COMPOSE_PROFILES=embedding in .env.
   embedding:
+    profiles: ["embedding"]
     build:
       context: .
       dockerfile: Dockerfile.embedding
     container_name: embedding_server
-    restart: always
+    restart: unless-stopped
     expose:
       - "5000"
     volumes:
-      - ./.env:/app/.env
+      - ./.env:/app/.env:ro
     networks:
       - app-network
 

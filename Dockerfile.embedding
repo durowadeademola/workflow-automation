@@ -6,19 +6,26 @@ RUN apt-get update && apt-get install -y \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-COPY embedding_server.py .
-COPY .env .
+# CPU-only torch first, so sentence-transformers doesn't pull the ~2GB CUDA
+# build (the VPS has no GPU).
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 
 RUN pip install --no-cache-dir \
     flask \
     sentence-transformers \
     requests \
     gunicorn \
-    python-dotenv \
-    os
+    python-dotenv
 
 RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')"
 
+COPY embedding_server.py .
+
+# .env is mounted at runtime by docker-compose, never baked into the image.
+
 EXPOSE 5000
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "embedding_server:app"]
+# Each worker process loads its own copy of the model, so scale with threads
+# rather than processes to keep RAM down. One worker suits an 8GB server; bump
+# to -w 2 on 12GB+.
+CMD ["gunicorn", "-w", "1", "--threads", "8", "--timeout", "120", "-b", "0.0.0.0:5000", "embedding_server:app"]
