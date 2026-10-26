@@ -3,10 +3,13 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Client;
+use App\Filament\Widgets\Concerns\StyledLineChart;
 use Filament\Widgets\ChartWidget;
 
 class ClientsChart extends ChartWidget
 {
+    use StyledLineChart;
+
     protected static bool $isLazy = false;
 
     // See AdminStats — Filament's default 5s auto-poll on chart widgets was
@@ -35,11 +38,10 @@ class ClientsChart extends ChartWidget
 
         return [
             'datasets' => [
-                [
+                $this->styleDataset([
                     'label' => 'Active clients',
                     'data' => $data->values(),
-                    'fill' => 'start',
-                ],
+                ], '#2563eb'),
             ],
             'labels' => $data->keys(),
         ];
@@ -52,15 +54,6 @@ class ClientsChart extends ChartWidget
 
     protected function getOptions(): array
     {
-        return [
-            'scales' => [
-                'y' => [
-                    'ticks' => [
-                        'stepSize' => 1,
-                        'precision' => 0,
-                    ],
-                ],
-            ],
-        ];
+        return $this->styledOptions();
     }
 }

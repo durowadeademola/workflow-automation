@@ -3,10 +3,13 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Appointment;
+use App\Filament\Widgets\Concerns\StyledLineChart;
 use Filament\Widgets\ChartWidget;
 
 class OrdersChart extends ChartWidget
 {
+    use StyledLineChart;
+
     protected static bool $isLazy = false;
 
     // See AdminStats — Filament's default 5s auto-poll on chart widgets was
@@ -38,13 +41,10 @@ class OrdersChart extends ChartWidget
 
         return [
             'datasets' => [
-                [
+                $this->styleDataset([
                     'label' => "Appointments Booked in {$year}",
                     'data' => $data->values(),
-                    'borderColor' => '#3b82f6',
-                    'fill' => 'start',
-                    'tension' => 0.3,
-                ],
+                ], '#2563eb'),
             ],
             'labels' => $data->keys(),
         ];
@@ -57,15 +57,6 @@ class OrdersChart extends ChartWidget
 
     protected function getOptions(): array
     {
-        return [
-            'scales' => [
-                'y' => [
-                    'ticks' => [
-                        'stepSize' => 1,
-                        'precision' => 0,
-                    ],
-                ],
-            ],
-        ];
+        return $this->styledOptions();
     }
 }

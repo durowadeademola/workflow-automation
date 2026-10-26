@@ -35,6 +35,17 @@ class Dashboard extends BaseDashboard
         return 'Welcome back, '.Str::before($name, ' ');
     }
 
+    public function getSubheading(): ?string
+    {
+        return 'Here\'s what\'s happening today.';
+    }
+
+    // Hook for the gradient greeting in theme.css (.bf-dashboard).
+    public function getPageClasses(): array
+    {
+        return ['bf-dashboard'];
+    }
+
     public function getWidgets(): array
     {
         return [

@@ -75,6 +75,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->colors([
                 'primary' => Color::Blue,
+                'gray' => Color::Slate,
             ])
             ->navigationGroups([
                 NavigationGroup::make('Chat Widget')->icon(Heroicon::ChatBubbleLeftRight),
@@ -87,12 +88,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->brandName('Blueflow')
-            // Plain "Blueflow" wordmark (picks up .fi-logo's own font-bold
-            // text-xl styling automatically) rather than the marketing
-            // site's "BA" badge — just linked back to the marketing
-            // homepage, the standard way an auth/panel screen offers a way
-            // back out without adding a full nav.
-            ->brandLogo(new HtmlString('<a href="/">Blueflow</a>'))
+            // Plain "Blueflow" wordmark (styled by .bf-brand in theme.css),
+            // linked back to the marketing homepage the standard way an
+            // auth/panel screen offers a way back out.
+            ->brandLogo(new HtmlString('<a href="/" class="bf-brand">Blueflow</a>'))
+            ->brandLogoHeight('2rem')
             ->widgets([])
             ->darkMode()
             ->defaultThemeMode(ThemeMode::Light)
