@@ -82,7 +82,7 @@ class Client extends Model
      * more services ship. Admins can still assign any FEATURES slug to a
      * client manually via ClientForm.
      */
-    public const SELF_REGISTRATION_FEATURES = ['chat-widget', 'marketing-automation'];
+    public const SELF_REGISTRATION_FEATURES = ['chat-widget'];
 
     /**
      * `null` means this client predates the feature-selection system (or an

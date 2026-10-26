@@ -10,18 +10,18 @@ const services = [
         popular: true,
     },
     {
-        title: "Marketing Automation",
-        description: "Multi-step customer journeys that nurture leads, remind about appointments, and win back inactive customers automatically",
-        features: ["Multi-step customer journeys", "Behavior-based triggers", "Personalization", "Multi-channel support"],
-        href: "/services/marketing-automation",
-        isNew: true,
-    },
-    {
         title: "Workflow Automation",
         description: "Connect your tools and automate repetitive business processes",
         features: ["Multi-tool integration", "Custom workflows", "Data processing", "Scheduling"],
         href: "/services/workflow-automation",
         custom: true,
+    },
+    {
+        title: "Marketing Automation",
+        description: "Multi-step customer journeys that nurture leads, remind about appointments, and win back inactive customers automatically",
+        features: ["Multi-step customer journeys", "Behavior-based triggers", "Personalization", "Multi-channel support"],
+        href: "/services/marketing-automation",
+        comingSoon: true,
     },
     {
         title: "WhatsApp Automation",

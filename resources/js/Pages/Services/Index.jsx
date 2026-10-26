@@ -14,19 +14,20 @@ const services = [
         icon: MessageSquareText,
     },
     {
-        title: "Marketing Automation",
-        description: "Multi-step customer journeys with behavior-based triggers — nurture leads, remind about appointments, and win back inactive customers automatically.",
-        features: ["Multi-step customer journeys", "Behavior-based triggers", "Personalization", "Multi-channel support"],
-        href: "/services/marketing-automation",
-        icon: Megaphone,
-    },
-    {
         title: "Workflow Automation",
         description: "Connect your tools and automate repetitive business processes end-to-end.",
         features: ["100+ app integrations", "Visual builder", "Approval workflows", "Data sync"],
         href: "/services/workflow-automation",
         icon: Workflow,
         custom: true,
+    },
+    {
+        title: "Marketing Automation",
+        description: "Multi-step customer journeys with behavior-based triggers — nurture leads, remind about appointments, and win back inactive customers automatically.",
+        features: ["Multi-step customer journeys", "Behavior-based triggers", "Personalization", "Multi-channel support"],
+        href: "/services/marketing-automation",
+        icon: Megaphone,
+        comingSoon: true,
     },
     {
         title: "WhatsApp Automation",

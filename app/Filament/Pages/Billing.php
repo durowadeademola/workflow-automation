@@ -54,7 +54,7 @@ class Billing extends Page
      * for the data model/admin tooling ahead of time, not because billing
      * for them exists yet).
      */
-    private const BILLABLE_SERVICES = ['chat-widget', 'marketing-automation'];
+    private const BILLABLE_SERVICES = ['chat-widget'];
 
     private const SERVICE_LABELS = [
         'chat-widget' => 'Chat Widget',
