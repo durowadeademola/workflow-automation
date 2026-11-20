@@ -103,7 +103,7 @@ export default function Services() {
                                 )}
 
                                 <IconTile icon={service.icon} color="blue" size="lg" className="mb-4" />
-                                <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-2">{service.title}</h3>
+                                <h3 className="font-display font-semibold text-gray-900 dark:text-white text-lg mb-2">{service.title}</h3>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{service.description}</p>
 
                                 <ul className="space-y-2 mb-6 flex-1">
@@ -141,7 +141,7 @@ export default function Services() {
             {/* Bottom CTA */}
             <section className="py-16 bg-blue-600">
                 <div className="max-w-3xl mx-auto px-4 text-center">
-                    <h2 className="text-2xl font-extrabold text-white mb-3">Not sure which service you need?</h2>
+                    <h2 className="font-display text-2xl font-semibold tracking-[-0.01em] text-white mb-3">Not sure which service you need?</h2>
                     <p className="text-blue-100 text-sm mb-6">
                         Book a free call and we'll recommend exactly what will have the biggest impact on your business.
                     </p>

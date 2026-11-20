@@ -63,7 +63,7 @@ export default function TrustSignals() {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+                    <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white mb-4">
                         Why Nigerian Businesses Trust Us
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
@@ -83,7 +83,7 @@ export default function TrustSignals() {
                             }}
                         >
                             <IconTile icon={item.icon} color="blue" size="md" className="mb-3" />
-                            <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-2">{item.title}</h3>
+                            <h3 className="font-display font-semibold text-gray-900 dark:text-white text-sm mb-2">{item.title}</h3>
                             <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{item.description}</p>
                         </div>
                     ))}

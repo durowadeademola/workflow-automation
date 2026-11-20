@@ -1,17 +1,17 @@
 <x-filament-panels::page>
     <div wire:poll.5s="$refresh" class="grid grid-cols-1 lg:grid-cols-3 gap-6" style="min-height: 60vh;">
         {{-- Conversation list --}}
-        <div class="lg:col-span-1 bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
-            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Conversations</h3>
+        <div class="lg:col-span-1 bg-[var(--bf-surface)] rounded-[var(--bf-radius)] border border-[var(--bf-border)] overflow-hidden">
+            <div class="px-4 py-3 border-b border-[var(--bf-border)]">
+                <h3 class="bf-font-display text-sm font-semibold text-gray-700 dark:text-gray-200">Conversations</h3>
             </div>
-            <div class="divide-y divide-gray-100 dark:divide-gray-800" style="max-height: 65vh; overflow-y: auto;">
+            <div class="divide-y divide-[var(--bf-border)]" style="max-height: 65vh; overflow-y: auto;">
                 @forelse($this->getConversations() as $conversation)
                     <button
                         wire:click="selectConversation({{ $conversation->id }})"
                         @class([
                             'w-full text-left px-4 py-3 transition-colors',
-                            'bg-primary-50 dark:bg-primary-500/10' => $selectedConversationId === $conversation->id,
+                            'bg-[rgb(31_111_168_/_0.08)] dark:bg-[rgb(128_192_233_/_0.12)]' => $selectedConversationId === $conversation->id,
                             'hover:bg-gray-50 dark:hover:bg-gray-800' => $selectedConversationId !== $conversation->id,
                         ])
                     >
@@ -34,7 +34,7 @@
                         </p>
                         <p class="text-[11px] mt-1">
                             @if($conversation->agent_id === auth()->id())
-                                <span class="text-primary-600 font-semibold">Assigned to you</span>
+                                <span class="text-[#1f6fa8] dark:text-[#80c0e9] font-semibold">Assigned to you</span>
                             @elseif($conversation->agent)
                                 <span class="text-gray-400">Assigned to {{ $conversation->agent->name }}</span>
                             @else
@@ -51,7 +51,7 @@
         </div>
 
         {{-- Thread --}}
-        <div class="lg:col-span-2 bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 flex flex-col overflow-hidden">
+        <div class="lg:col-span-2 bg-[var(--bf-surface)] rounded-[var(--bf-radius)] border border-[var(--bf-border)] flex flex-col overflow-hidden">
             @php($conversation = $this->getSelectedConversation())
 
             @if(! $conversation)
@@ -59,9 +59,9 @@
                     Select a conversation to view and reply.
                 </div>
             @else
-                <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                <div class="px-4 py-3 border-b border-[var(--bf-border)] flex items-center justify-between">
                     <div>
-                        <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-100">
+                        <h3 class="bf-font-display text-sm font-semibold text-gray-800 dark:text-gray-100">
                             {{ $conversation->visitor_name ?: 'Website Visitor #' . $conversation->id }}
                         </h3>
                         <p class="text-xs text-gray-400">{{ $conversation->client?->name }}</p>
@@ -70,7 +70,7 @@
                         @if($conversation->status !== 'closed')
                             <button
                                 wire:click="mountAction('returnToAI')"
-                                class="text-xs font-semibold text-gray-500 hover:text-primary-600 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-1.5 transition-colors"
+                                class="text-xs font-semibold text-gray-500 hover:text-[#1f6fa8] dark:hover:text-[#80c0e9] border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-1.5 transition-colors"
                             >
                                 Return to AI
                             </button>
@@ -84,13 +84,13 @@
                     </div>
                 </div>
 
-                <div class="flex-1 flex flex-col space-y-1.5 p-2 bg-white dark:bg-[#111827] overflow-y-auto" style="max-height: 38vh;">
+                <div class="flex-1 flex flex-col space-y-1.5 p-2 bg-[var(--bf-surface)] overflow-y-auto" style="max-height: 38vh;">
                     @forelse($conversation->messages()->orderBy('id')->get() as $msg)
                         <div class="flex w-full {{ $msg->sender_type === 'visitor' ? 'justify-start' : 'justify-end' }}">
                             <div @class([
                                 'max-w-[60%] px-2 py-1 rounded-lg shadow-sm text-[11px] leading-snug',
                                 'bg-white text-gray-800 border border-gray-200 rounded-tl-none' => $msg->sender_type === 'visitor',
-                                'bg-primary-600 text-white rounded-tr-none' => $msg->sender_type === 'agent',
+                                'bg-[#1f6fa8] text-white rounded-tr-none' => $msg->sender_type === 'agent',
                                 'bg-gray-200 text-gray-600 rounded-tr-none' => $msg->sender_type === 'ai',
                             ])>
                                 @if($msg->sender_type !== 'visitor')<span class="block text-[8px] font-semibold uppercase tracking-wide opacity-70 mb-0.5">{{ $msg->sender_name ?: ($msg->sender_type === 'ai' ? 'AI Assistant' : 'Agent') }}</span>@endif<span class="whitespace-pre-wrap">{{ $msg->content }}</span><span class="block text-[8px] opacity-60 mt-0.5">{{ $msg->created_at->format('g:i A') }}</span>
@@ -104,16 +104,16 @@
                 </div>
 
                 @if(! in_array($conversation->status, ['closed', 'returned_to_ai']))
-                    <form wire:submit.prevent="sendReply" class="p-4 border-t border-gray-100 dark:border-gray-800 flex items-center gap-3">
+                    <form wire:submit.prevent="sendReply" class="p-4 border-t border-[var(--bf-border)] flex items-center gap-3">
                         <input
                             type="text"
                             wire:model="replyContent"
                             placeholder="Type your reply..."
-                            class="flex-1 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            class="flex-1 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a9bd1]"
                         />
                         <button
                             type="submit"
-                            class="bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-xl px-5 py-2.5 transition-colors"
+                            class="bg-[#1f6fa8] hover:bg-[#1b5a88] text-white text-sm font-semibold rounded-xl px-5 py-2.5 transition-colors"
                         >
                             Send
                         </button>
@@ -122,7 +122,7 @@
                         <p class="px-4 pb-3 text-xs text-danger-600">{{ $message }}</p>
                     @enderror
                 @else
-                    <div class="p-4 border-t border-gray-100 dark:border-gray-800 text-center text-xs text-gray-400">
+                    <div class="p-4 border-t border-[var(--bf-border)] text-center text-xs text-gray-400">
                         {{ $conversation->status === 'returned_to_ai' ? 'This conversation was handed back to the AI.' : 'This conversation is closed.' }}
                     </div>
                 @endif

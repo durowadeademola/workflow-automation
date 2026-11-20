@@ -35,12 +35,12 @@ export default function About() {
             <PageHero
                 badge="About Blueflow"
                 title="We Help Nigerian Businesses Automate the Busywork"
-                subtitle="Blueflow Automation is a Nigerian automation agency based in Benin City. We build AI-powered WhatsApp assistants, CRM integrations, and custom workflow automation for businesses across Nigeria."
+                subtitle="Blueflow Automation is a Nigerian automation agency based in Benin City. We build Agentic AI-powered WhatsApp assistants, CRM integrations, and custom workflow automation for businesses across Nigeria."
             />
 
             <section className="py-20 bg-white dark:bg-gray-900">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-5">Our Story</h2>
+                    <h2 className="font-display text-2xl font-semibold tracking-[-0.01em] text-gray-900 dark:text-white mb-5">Our Story</h2>
                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                         Blueflow Automation started with a simple observation: most Nigerian businesses lose money
                         every day to missed calls, slow follow-ups, and manual work that a well-configured system
@@ -53,12 +53,12 @@ export default function About() {
 
             <section className="py-20 bg-gray-50 dark:bg-gray-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white text-center mb-14">What We Believe</h2>
+                    <h2 className="font-display text-2xl font-semibold tracking-[-0.01em] text-gray-900 dark:text-white text-center mb-14">What We Believe</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         {values.map((v) => (
                             <div key={v.title} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm">
                                 <IconTile icon={v.icon} color="blue" size="lg" className="mb-4" />
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">{v.title}</h3>
+                                <h3 className="font-display font-semibold text-gray-900 dark:text-white mb-2">{v.title}</h3>
                                 <p className="text-sm text-gray-500 dark:text-gray-400">{v.description}</p>
                             </div>
                         ))}
@@ -68,7 +68,7 @@ export default function About() {
 
             <section className="py-20 bg-white dark:bg-gray-900">
                 <div className="max-w-3xl mx-auto px-4 text-center">
-                    <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">Want to Work With Us?</h2>
+                    <h2 className="font-display text-2xl font-semibold tracking-[-0.01em] text-gray-900 dark:text-white mb-4">Want to Work With Us?</h2>
                     <p className="text-gray-500 dark:text-gray-400 mb-8">
                         Tell us about your business and what you'd like to automate — we'll take it from there.
                     </p>

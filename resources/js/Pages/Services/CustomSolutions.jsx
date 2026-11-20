@@ -15,7 +15,7 @@ const highlights = [
 const features = [
     { icon: Blocks, title: "Bespoke Development", description: "When off-the-shelf solutions don't fit, we build exactly what you need — custom logic, custom integrations, custom interfaces." },
     { icon: Plug, title: "Legacy System Integration", description: "Already running on older software? We connect your existing systems to modern automation tools without replacing what works." },
-    { icon: BrainCircuit, title: "AI-Powered Features", description: "Add AI capabilities to your operations — document processing, intelligent routing, predictive analytics, or custom chatbots." },
+    { icon: BrainCircuit, title: "Agentic AI-Powered Features", description: "Add AI capabilities to your operations — document processing, intelligent routing, predictive analytics, or custom chatbots." },
     { icon: Smartphone, title: "Custom Dashboards", description: "Purpose-built reporting dashboards that show the exact metrics your leadership team needs — nothing more, nothing less." },
     { icon: ShieldCheck, title: "Enterprise-Grade Security", description: "Custom solutions built with data privacy and security at the core — especially important for healthcare, finance, and legal businesses." },
     { icon: RefreshCw, title: "Ongoing Iteration", description: "Your business evolves — your automation should too. We provide continuous support, improvements, and new feature rollouts." },
@@ -52,7 +52,7 @@ export default function CustomSolutions() {
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                                 <div>
-                                    <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-5">
+                                    <h2 className="font-display text-3xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white mb-5">
                                         Your Business Is Unique. Your Automation Should Be Too.
                                     </h2>
                                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
@@ -83,12 +83,12 @@ export default function CustomSolutions() {
                     {/* Features */}
                     <section className="py-20 bg-gray-50 dark:bg-gray-800">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white text-center mb-14">What We Can Build</h2>
+                            <h2 className="font-display text-3xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white text-center mb-14">What We Can Build</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {features.map((f) => (
                                     <div key={f.title} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
                                         <IconTile icon={f.icon} color="blue" size="md" className="mb-3" />
-                                        <h3 className="font-bold text-gray-900 dark:text-white mb-2">{f.title}</h3>
+                                        <h3 className="font-display font-semibold text-gray-900 dark:text-white mb-2">{f.title}</h3>
                                         <p className="text-sm text-gray-500 dark:text-gray-400">{f.description}</p>
                                     </div>
                                 ))}
@@ -99,15 +99,15 @@ export default function CustomSolutions() {
                     {/* How it works */}
                     <section className="py-20 bg-white dark:bg-gray-900">
                         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white text-center mb-14">How It Works</h2>
+                            <h2 className="font-display text-3xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white text-center mb-14">How It Works</h2>
                             <div className="space-y-6">
                                 {steps.map((step, i) => (
                                     <div key={step.title} className="flex items-start gap-5">
-                                        <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0">
+                                        <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-display font-semibold tabular-nums text-sm flex-shrink-0">
                                             {i + 1}
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-gray-900 dark:text-white mb-1">{step.title}</h3>
+                                            <h3 className="font-display font-semibold text-gray-900 dark:text-white mb-1">{step.title}</h3>
                                             <p className="text-sm text-gray-500 dark:text-gray-400">{step.description}</p>
                                         </div>
                                     </div>
@@ -122,7 +122,7 @@ export default function CustomSolutions() {
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                                 {metrics.map((m) => (
                                     <div key={m.label} className="text-center">
-                                        <p className="text-3xl font-extrabold text-white mb-1">{m.value}</p>
+                                        <p className="font-display text-3xl font-semibold tabular-nums text-white mb-1">{m.value}</p>
                                         <p className="text-xs text-blue-100">{m.label}</p>
                                     </div>
                                 ))}
@@ -133,7 +133,7 @@ export default function CustomSolutions() {
                     {/* CTA */}
                     <section className="py-20 bg-white dark:bg-gray-900">
                         <div className="max-w-3xl mx-auto px-4 text-center">
-                            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4">Have a Complex Problem to Solve?</h2>
+                            <h2 className="font-display text-3xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white mb-4">Have a Complex Problem to Solve?</h2>
                             <p className="text-gray-500 dark:text-gray-400 mb-4">
                                 Tell us what you're trying to automate. If it's possible, we'll build it —
                                 and give you a clear scope and timeline before any work begins.

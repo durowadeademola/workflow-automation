@@ -6,12 +6,12 @@
     {{-- Your Active Plans — one card per service currently subscribed to, horizontal-scrolling since the count grows as more services get billing --}}
     @if(count($activeSubscriptions) > 0)
         <div class="mb-6">
-            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">Your Active Plans</h3>
+            <h3 class="bf-font-display text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">Your Active Plans</h3>
             <div class="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1">
                 @foreach($activeSubscriptions as $service => $sub)
-                    <div class="shrink-0 w-72 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-[#111827] p-5">
+                    <div class="shrink-0 w-72 rounded-[var(--bf-radius)] border border-[var(--bf-border)] bg-[var(--bf-surface)] p-5">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[10px] font-semibold uppercase tracking-wide text-primary-700 bg-primary-100 rounded-full px-2 py-0.5">
+                            <span class="text-[10px] font-semibold uppercase tracking-wide text-[#1f6fa8] bg-[rgb(31_111_168_/_0.1)] rounded-full px-2 py-0.5">
                                 {{ $this->getServiceLabel($service) }}
                             </span>
                             @if($sub->plan === 'trial')
@@ -24,7 +24,7 @@
                                 <span class="text-[10px] font-semibold uppercase tracking-wide text-emerald-700 bg-emerald-100 rounded-full px-2 py-0.5">Active</span>
                             @endif
                         </div>
-                        <h4 class="text-base font-bold text-gray-900 dark:text-gray-100">{{ $sub->name }}</h4>
+                        <h4 class="bf-font-display text-base font-semibold text-gray-900 dark:text-gray-100">{{ $sub->name }}</h4>
                         <p class="text-xs mt-1" @class(['text-amber-600 font-medium' => ! $sub->cancelled_at && $sub->end_date && $sub->end_date->isPast(), 'text-gray-500' => $sub->cancelled_at || ! $sub->end_date || ! $sub->end_date->isPast()])>
                             @if($sub->cancelled_at)
                                 Access until {{ $sub->end_date?->format('M j, Y') }}
@@ -56,7 +56,7 @@
                 type="button"
                 @click="cycle = cycle === 'monthly' ? 'yearly' : 'monthly'"
                 class="relative w-11 h-6 rounded-full transition-colors"
-                :class="cycle === 'yearly' ? 'bg-primary-600' : 'bg-gray-200 dark:bg-gray-700'"
+                :class="cycle === 'yearly' ? 'bg-[#1f6fa8]' : 'bg-gray-200 dark:bg-gray-700'"
                 aria-label="Toggle yearly billing"
             >
                 <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform" :class="cycle === 'yearly' ? 'translate-x-5' : 'translate-x-0'"></span>
@@ -71,15 +71,15 @@
             @endphp
 
             <div class="mb-10">
-                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">{{ $this->getServiceLabel($service) }}</h3>
+                <h3 class="bf-font-display text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">{{ $this->getServiceLabel($service) }}</h3>
 
                 {{-- Current status + usage — only chat-widget has message/appointment/lead usage tracked today --}}
-                <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 p-6 mb-4">
+                <div class="rounded-[var(--bf-radius)] border border-[var(--bf-border)] bg-[var(--bf-surface)] p-6 mb-4">
                     @if($current && $current->cancelled_at)
                         <div class="flex items-center justify-between flex-wrap gap-4">
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Cancelled</p>
-                                <h4 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $current->name }}</h4>
+                                <h4 class="bf-font-display text-lg font-semibold text-gray-900 dark:text-gray-100">{{ $current->name }}</h4>
                                 <p class="text-sm text-gray-500 mt-1">
                                     Access stays on until {{ $current->end_date?->format('M j, Y') }}
                                     ({{ $current->end_date?->diffForHumans() }}), then won't renew. Subscribe to any plan below to resume.
@@ -93,7 +93,7 @@
                         <div class="flex items-center justify-between flex-wrap gap-4">
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-wide text-amber-600">Free Trial</p>
-                                <h4 class="text-lg font-bold text-gray-900 dark:text-gray-100">14-day trial</h4>
+                                <h4 class="bf-font-display text-lg font-semibold text-gray-900 dark:text-gray-100">14-day trial</h4>
                                 <p class="text-sm text-gray-500 mt-1">
                                     Ends {{ $current->end_date?->format('M j, Y') }}
                                     ({{ $current->end_date?->diffForHumans() }}) — subscribe below to keep it running after that.
@@ -108,7 +108,7 @@
                         <div class="flex items-center justify-between flex-wrap gap-4">
                             <div>
                                 <p @class(['text-xs font-semibold uppercase tracking-wide', 'text-amber-600' => $isExpiring, 'text-emerald-600' => ! $isExpiring])>{{ $isExpiring ? 'Expiring' : 'Active Plan' }}</p>
-                                <h4 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $current->name }}</h4>
+                                <h4 class="bf-font-display text-lg font-semibold text-gray-900 dark:text-gray-100">{{ $current->name }}</h4>
                                 <p @class(['text-sm mt-1', 'text-amber-600 font-medium' => $isExpiring, 'text-gray-500' => ! $isExpiring])>
                                     @if($isExpiring)
                                         Expired {{ $current->end_date->diffForHumans() }} — resubscribe today to keep access
@@ -135,7 +135,7 @@
                             $usage = $this->getMessageUsage();
                             $percent = $usage['limit'] ? min(100, (int) round($usage['used'] / $usage['limit'] * 100)) : 0;
                         @endphp
-                        <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                        <div class="mt-4 pt-4 border-t border-[var(--bf-border)]">
                             <div class="flex items-center justify-between text-xs mb-1.5">
                                 <span class="font-medium text-gray-600 dark:text-gray-300">Messages this billing period</span>
                                 <span class="text-gray-500">
@@ -143,9 +143,9 @@
                                 </span>
                             </div>
                             @if($usage['limit'])
-                                <div class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                                <div class="w-full h-1.5 rounded-full bg-[var(--bf-border)] overflow-hidden">
                                     <div
-                                        class="h-full rounded-full {{ $percent >= 100 ? 'bg-danger-500' : ($percent >= 80 ? 'bg-amber-500' : 'bg-primary-500') }}"
+                                        class="h-full rounded-full {{ $percent >= 100 ? 'bg-danger-500' : ($percent >= 80 ? 'bg-amber-500' : 'bg-[#4a9bd1]') }}"
                                         style="width: {{ $percent }}%"
                                     ></div>
                                 </div>
@@ -161,7 +161,7 @@
                             $apptUsage = $this->getAppointmentUsage();
                             $apptPercent = $apptUsage['limit'] ? min(100, (int) round($apptUsage['used'] / $apptUsage['limit'] * 100)) : 0;
                         @endphp
-                        <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                        <div class="mt-4 pt-4 border-t border-[var(--bf-border)]">
                             <div class="flex items-center justify-between text-xs mb-1.5">
                                 <span class="font-medium text-gray-600 dark:text-gray-300">Appointments this billing period</span>
                                 <span class="text-gray-500">
@@ -169,9 +169,9 @@
                                 </span>
                             </div>
                             @if($apptUsage['limit'])
-                                <div class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                                <div class="w-full h-1.5 rounded-full bg-[var(--bf-border)] overflow-hidden">
                                     <div
-                                        class="h-full rounded-full {{ $apptPercent >= 100 ? 'bg-danger-500' : ($apptPercent >= 80 ? 'bg-amber-500' : 'bg-primary-500') }}"
+                                        class="h-full rounded-full {{ $apptPercent >= 100 ? 'bg-danger-500' : ($apptPercent >= 80 ? 'bg-amber-500' : 'bg-[#4a9bd1]') }}"
                                         style="width: {{ $apptPercent }}%"
                                     ></div>
                                 </div>
@@ -187,7 +187,7 @@
                             $leadUsage = $this->getLeadUsage();
                             $leadPercent = $leadUsage['limit'] ? min(100, (int) round($leadUsage['used'] / $leadUsage['limit'] * 100)) : 0;
                         @endphp
-                        <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                        <div class="mt-4 pt-4 border-t border-[var(--bf-border)]">
                             <div class="flex items-center justify-between text-xs mb-1.5">
                                 <span class="font-medium text-gray-600 dark:text-gray-300">Qualified leads this billing period</span>
                                 <span class="text-gray-500">
@@ -195,9 +195,9 @@
                                 </span>
                             </div>
                             @if($leadUsage['limit'])
-                                <div class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                                <div class="w-full h-1.5 rounded-full bg-[var(--bf-border)] overflow-hidden">
                                     <div
-                                        class="h-full rounded-full {{ $leadPercent >= 100 ? 'bg-danger-500' : ($leadPercent >= 80 ? 'bg-amber-500' : 'bg-primary-500') }}"
+                                        class="h-full rounded-full {{ $leadPercent >= 100 ? 'bg-danger-500' : ($leadPercent >= 80 ? 'bg-amber-500' : 'bg-[#4a9bd1]') }}"
                                         style="width: {{ $leadPercent }}%"
                                     ></div>
                                 </div>
@@ -213,7 +213,7 @@
                             $contactUsage = $this->getContactUsage();
                             $contactPercent = $contactUsage['limit'] ? min(100, (int) round($contactUsage['used'] / $contactUsage['limit'] * 100)) : 0;
                         @endphp
-                        <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                        <div class="mt-4 pt-4 border-t border-[var(--bf-border)]">
                             <div class="flex items-center justify-between text-xs mb-1.5">
                                 <span class="font-medium text-gray-600 dark:text-gray-300">Contacts</span>
                                 <span class="text-gray-500">
@@ -221,9 +221,9 @@
                                 </span>
                             </div>
                             @if($contactUsage['limit'])
-                                <div class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                                <div class="w-full h-1.5 rounded-full bg-[var(--bf-border)] overflow-hidden">
                                     <div
-                                        class="h-full rounded-full {{ $contactPercent >= 100 ? 'bg-danger-500' : ($contactPercent >= 80 ? 'bg-amber-500' : 'bg-primary-500') }}"
+                                        class="h-full rounded-full {{ $contactPercent >= 100 ? 'bg-danger-500' : ($contactPercent >= 80 ? 'bg-amber-500' : 'bg-[#4a9bd1]') }}"
                                         style="width: {{ $contactPercent }}%"
                                     ></div>
                                 </div>
@@ -239,7 +239,7 @@
                             $journeyUsage = $this->getJourneyUsage();
                             $journeyPercent = $journeyUsage['limit'] ? min(100, (int) round($journeyUsage['used'] / $journeyUsage['limit'] * 100)) : 0;
                         @endphp
-                        <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                        <div class="mt-4 pt-4 border-t border-[var(--bf-border)]">
                             <div class="flex items-center justify-between text-xs mb-1.5">
                                 <span class="font-medium text-gray-600 dark:text-gray-300">Active journeys</span>
                                 <span class="text-gray-500">
@@ -247,9 +247,9 @@
                                 </span>
                             </div>
                             @if($journeyUsage['limit'])
-                                <div class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                                <div class="w-full h-1.5 rounded-full bg-[var(--bf-border)] overflow-hidden">
                                     <div
-                                        class="h-full rounded-full {{ $journeyPercent >= 100 ? 'bg-danger-500' : ($journeyPercent >= 80 ? 'bg-amber-500' : 'bg-primary-500') }}"
+                                        class="h-full rounded-full {{ $journeyPercent >= 100 ? 'bg-danger-500' : ($journeyPercent >= 80 ? 'bg-amber-500' : 'bg-[#4a9bd1]') }}"
                                         style="width: {{ $journeyPercent }}%"
                                     ></div>
                                 </div>
@@ -265,7 +265,7 @@
                             $emailUsage = $this->getEmailUsage();
                             $emailPercent = $emailUsage['limit'] ? min(100, (int) round($emailUsage['used'] / $emailUsage['limit'] * 100)) : 0;
                         @endphp
-                        <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                        <div class="mt-4 pt-4 border-t border-[var(--bf-border)]">
                             <div class="flex items-center justify-between text-xs mb-1.5">
                                 <span class="font-medium text-gray-600 dark:text-gray-300">Emails this billing period</span>
                                 <span class="text-gray-500">
@@ -273,9 +273,9 @@
                                 </span>
                             </div>
                             @if($emailUsage['limit'])
-                                <div class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                                <div class="w-full h-1.5 rounded-full bg-[var(--bf-border)] overflow-hidden">
                                     <div
-                                        class="h-full rounded-full {{ $emailPercent >= 100 ? 'bg-danger-500' : ($emailPercent >= 80 ? 'bg-amber-500' : 'bg-primary-500') }}"
+                                        class="h-full rounded-full {{ $emailPercent >= 100 ? 'bg-danger-500' : ($emailPercent >= 80 ? 'bg-amber-500' : 'bg-[#4a9bd1]') }}"
                                         style="width: {{ $emailPercent }}%"
                                     ></div>
                                 </div>
@@ -297,9 +297,9 @@
                             $isCurrentYearly = $current && $current->plan === $plan->slug && $current->billing_cycle === 'yearly';
                         @endphp
                         <div @class([
-                            'rounded-2xl border p-6 bg-white dark:bg-[#111827] flex flex-col',
-                            'border-primary-500 ring-2 ring-primary-500' => $plan->is_popular,
-                            'border-gray-100 dark:border-gray-800' => ! $plan->is_popular,
+                            'rounded-[var(--bf-radius)] border p-6 bg-[var(--bf-surface)] flex flex-col',
+                            'border-[#1f6fa8] ring-2 ring-[#1f6fa8]' => $plan->is_popular,
+                            'border-[var(--bf-border)]' => ! $plan->is_popular,
                         ])>
                             <span class="text-[10px] font-semibold uppercase tracking-wide text-gray-500 bg-gray-100 dark:bg-gray-800 dark:text-gray-400 rounded-full px-2 py-0.5 w-fit mb-3">
                                 {{ $this->getServiceLabel($service) }}
@@ -307,7 +307,7 @@
 
                             <div class="flex items-center gap-2 flex-wrap mb-3">
                                 @if($plan->is_popular)
-                                    <span class="text-[10px] font-semibold uppercase tracking-wide text-primary-700 bg-primary-100 rounded-full px-2 py-0.5 w-fit">
+                                    <span class="text-[10px] font-semibold uppercase tracking-wide text-[#1f6fa8] bg-[rgb(31_111_168_/_0.1)] rounded-full px-2 py-0.5 w-fit">
                                         Most Popular
                                     </span>
                                 @endif
@@ -322,7 +322,7 @@
                                     </span>
                                 @endif
                             </div>
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $plan->name }}</h3>
+                            <h3 class="bf-font-display text-lg font-semibold text-gray-900 dark:text-gray-100">{{ $plan->name }}</h3>
                             @if($plan->description)
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $plan->description }}</p>
                             @endif

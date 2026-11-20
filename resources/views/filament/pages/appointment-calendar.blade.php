@@ -1,5 +1,5 @@
 <x-filament-panels::page>
-    <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 p-6">
+    <div class="rounded-[var(--bf-radius)] border border-[var(--bf-border)] bg-[var(--bf-surface)] p-6">
         <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
             <div class="flex items-center gap-3">
                 <a
@@ -10,7 +10,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                 </a>
-                <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 w-40 text-center">
+                <h2 class="bf-font-display text-lg font-semibold text-gray-900 dark:text-gray-100 w-40 text-center">
                     {{ $this->getCurrentMonth()->format('F Y') }}
                 </h2>
                 <a
@@ -25,7 +25,7 @@
 
             <a
                 href="{{ \App\Filament\Resources\Appointments\AppointmentResource::getUrl('index') }}"
-                class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 hover:text-primary-700"
+                class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1f6fa8] hover:text-[#1b5a88] dark:text-[#80c0e9] dark:hover:text-[#97cbee]"
             >
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -34,23 +34,23 @@
             </a>
         </div>
 
-        <div class="grid grid-cols-7 gap-px bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+        <div class="grid grid-cols-7 gap-px bg-[var(--bf-border)] rounded-lg overflow-hidden text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
             @foreach (['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as $label)
-                <div class="bg-white dark:bg-[#111827] px-2 py-2 text-center">{{ $label }}</div>
+                <div class="bg-[var(--bf-surface)] px-2 py-2 text-center">{{ $label }}</div>
             @endforeach
         </div>
 
-        <div class="grid grid-cols-7 gap-px bg-gray-100 dark:bg-gray-800 border-x border-b border-gray-100 dark:border-gray-800 rounded-b-lg overflow-hidden">
+        <div class="grid grid-cols-7 gap-px bg-[var(--bf-border)] border-x border-b border-[var(--bf-border)] rounded-b-lg overflow-hidden">
             @foreach ($this->getCalendarDays() as $day)
                 <div @class([
-                    'bg-white dark:bg-[#111827] min-h-[100px] p-2 align-top',
+                    'bg-[var(--bf-surface)] min-h-[100px] p-2 align-top',
                     'bg-gray-50/60 dark:bg-gray-800/40' => ! $day['inMonth'],
                 ])>
                     <div @class([
                         'text-xs font-semibold mb-1.5',
                         'text-gray-800 dark:text-gray-200' => $day['inMonth'],
                         'text-gray-300 dark:text-gray-600' => ! $day['inMonth'],
-                        'inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary-600 text-white' => $day['date']->isToday(),
+                        'inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#1f6fa8] dark:bg-[#80c0e9] text-white dark:text-[#0a1622]' => $day['date']->isToday(),
                     ])>
                         {{ $day['date']->day }}
                     </div>

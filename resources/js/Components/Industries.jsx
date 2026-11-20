@@ -100,10 +100,10 @@ function MetricCard({ value, suffix, label, note, trigger }) {
 
     return (
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-10 text-center max-w-xs w-full">
-            <p className="text-6xl font-extrabold text-blue-600 mb-2">
+            <p className="font-display text-6xl font-semibold tabular-nums text-blue-600 mb-2">
                 {count}{suffix}
             </p>
-            <p className="text-xl font-bold text-gray-900 dark:text-white mb-3">{label}</p>
+            <p className="font-display text-xl font-semibold text-gray-900 dark:text-white mb-3">{label}</p>
             <p className="text-sm text-gray-500 dark:text-gray-400">{note}</p>
         </div>
     );
@@ -128,7 +128,7 @@ export default function Industries() {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+                    <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white mb-4">
                         Built for Your Industry
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
@@ -171,7 +171,7 @@ export default function Industries() {
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
                         <div>
-                            <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-3">{industry.title}</h3>
+                            <h3 className="font-display text-2xl font-semibold tracking-[-0.01em] text-gray-900 dark:text-white mb-3">{industry.title}</h3>
                             <p className="text-gray-600 dark:text-gray-300 mb-6">{industry.description}</p>
                             <h4 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
                                 What You Get:

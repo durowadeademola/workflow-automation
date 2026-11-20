@@ -18,7 +18,7 @@ function ResultMetric({ value, prefix, suffix, label, isDecimal, delay, trigger 
                 transition: `opacity 0.5s ease ${delay}ms, transform 0.5s ease ${delay}ms`,
             }}
         >
-            <p className="text-2xl font-extrabold text-blue-600 mb-1">
+            <p className="font-display text-2xl font-semibold tabular-nums text-blue-600 mb-1">
                 {prefix}{display}{suffix}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
@@ -46,7 +46,7 @@ export default function CaseStudies() {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+                    <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white mb-4">
                         Success Stories
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">

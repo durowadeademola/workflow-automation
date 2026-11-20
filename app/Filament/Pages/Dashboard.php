@@ -2,62 +2,297 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\AdminStats;
-use App\Filament\Widgets\AgentStats;
-use App\Filament\Widgets\ClientsChart;
-use App\Filament\Widgets\ClientStats;
-use App\Filament\Widgets\CustomersChart;
-use App\Filament\Widgets\OrdersChart;
-use App\Filament\Widgets\RecentAppointments;
-use App\Filament\Widgets\RecentMessages;
-use App\Filament\Widgets\SubscriptionsChart;
+use App\Models\Appointment;
+use App\Models\Client;
+use App\Models\Customer;
+use App\Models\Lead;
+use App\Models\Message;
+use App\Models\Subscription;
+use App\Models\User;
+use App\Models\WidgetConversation;
+use App\Models\WidgetMessage;
 use BackedEnum;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
+/**
+ * Custom dashboard (resources/views/filament/pages/custom-dashboard.blade.php) built to match
+ * gradebook-portal's React admin dashboard: a dark hero band, a bordered KPI strip, and a quiet
+ * two-column panel grid — rather than Filament's default stack of stat/chart widgets (still kept
+ * in app/Filament/Widgets, just unused, in case they're wanted back).
+ *
+ * A user here only ever holds one of is_admin/is_client/is_agent (unlike gradebook, where one
+ * person can hold several roles at once), so exactly one role's section renders.
+ */
 class Dashboard extends BaseDashboard
 {
     protected static BackedEnum|string|null $navigationIcon = Heroicon::Home;
 
-    // Only the on-page heading changes — getTitle() (the browser tab's
-    // <title>) is left as Filament's default "Dashboard", since
-    // getHeading() would otherwise just fall back to it.
+    protected string $view = 'filament.pages.custom-dashboard';
+
+    // The greeting now lives inside the dashboard's own hero band (see the Blade view), not
+    // Filament's own page header — returning blank/null for both suppresses that header
+    // entirely (vendor/filament/filament/resources/views/components/page/index.blade.php only
+    // renders it when heading, subheading, breadcrumbs or header actions are non-empty).
     public function getHeading(): string
     {
-        $name = Auth::user()?->name;
-
-        if (blank($name)) {
-            return parent::getHeading();
-        }
-
-        return 'Welcome back, '.Str::before($name, ' ');
+        return '';
     }
 
     public function getSubheading(): ?string
     {
-        return 'Here\'s what\'s happening today.';
+        return null;
     }
 
-    // Hook for the gradient greeting in theme.css (.bf-dashboard).
-    public function getPageClasses(): array
+    // Livewire only auto-exposes PUBLIC PROPERTIES to the rendered view (not a getViewData()-style
+    // method — that's a plain Blade convention, not something Livewire looks for), so the role data
+    // is computed once here, in the standard mount() lifecycle hook, into this one property.
+    public array $dashboard = [];
+
+    public function mount(): void
     {
-        return ['bf-dashboard'];
+        /** @var User|null $user */
+        $user = Auth::user();
+        $firstName = filled($user?->name) ? Str::before($user->name, ' ') : 'there';
+
+        if ($user?->is_admin) {
+            $this->dashboard = ['role' => 'admin', 'firstName' => $firstName] + $this->adminData();
+        } elseif ($user?->is_client) {
+            $this->dashboard = ['role' => 'client', 'firstName' => $firstName] + $this->clientData($user);
+        } elseif ($user?->is_agent) {
+            $this->dashboard = ['role' => 'agent', 'firstName' => $firstName] + $this->agentData($user);
+        } else {
+            $this->dashboard = ['role' => null, 'firstName' => $firstName];
+        }
     }
 
-    public function getWidgets(): array
+    /** @return array<string, mixed> */
+    private function adminData(): array
     {
+        $pendingApprovals = Client::where('status', 'pending')->count();
+        $activeClients = Client::where('status', 'active')->count();
+
+        $activeSubscriptions = Subscription::where('status', 'active')
+            ->where('end_date', '>=', now())
+            ->count();
+
+        $mrr = (float) Subscription::where('status', 'active')
+            ->where('end_date', '>=', now())
+            ->sum('amount');
+
+        $newLeads = Lead::where('created_at', '>=', now()->subDays(7))->count();
+
+        $expiringSoon = Subscription::where('status', 'active')
+            ->where('end_date', '>=', now())
+            ->where('end_date', '<=', now()->addDays(7))
+            ->count();
+
+        $finding = ($pendingApprovals > 0 || $expiringSoon > 0)
+            ? "{$pendingApprovals} ".Str::plural('business', $pendingApprovals).' waiting to be approved, '
+                ."{$expiringSoon} ".Str::plural('subscription', $expiringSoon).' expiring within 7 days.'
+            : 'Nothing needs your attention right now.';
+
+        $expiringSubscriptions = Subscription::with('client')
+            ->where('status', 'active')
+            ->where('end_date', '>=', now())
+            ->where('end_date', '<=', now()->addDays(7))
+            ->orderBy('end_date')
+            ->limit(8)
+            ->get();
+
+        $recentClients = Client::orderByDesc('created_at')->limit(8)->get();
+        $recentLeads = Lead::orderByDesc('created_at')->limit(5)->get();
+
         return [
-            AdminStats::class,
-            ClientStats::class,
-            AgentStats::class,
-            ClientsChart::class,
-            SubscriptionsChart::class,
-            CustomersChart::class,
-            OrdersChart::class,
-            RecentMessages::class,
-            RecentAppointments::class,
+            'finding' => $finding,
+            'mrr' => $mrr,
+            'kpis' => [
+                ['label' => 'Pending approvals', 'value' => $pendingApprovals, 'desc' => $pendingApprovals > 0 ? 'Businesses waiting to be let in' : 'All caught up'],
+                ['label' => 'Active clients', 'value' => $activeClients, 'desc' => 'Approved and able to log in'],
+                ['label' => 'Active subscriptions', 'value' => $activeSubscriptions, 'desc' => 'Currently paid up'],
+                ['label' => 'MRR', 'value' => '₦'.number_format($mrr), 'desc' => 'From active subscriptions'],
+                ['label' => 'New leads', 'value' => $newLeads, 'desc' => 'In the last 7 days'],
+                ['label' => 'Expiring soon', 'value' => $expiringSoon, 'desc' => $expiringSoon > 0 ? 'Within 7 days' : 'Nothing ending soon'],
+            ],
+            'subscriptionSplit' => ['active' => $activeSubscriptions, 'expiringSoon' => $expiringSoon],
+            'expiringSubscriptions' => $expiringSubscriptions,
+            'recentClients' => $recentClients,
+            'recentLeads' => $recentLeads,
+            'actions' => [
+                ['label' => 'Review clients', 'url' => '/admin/clients', 'primary' => $pendingApprovals > 0],
+                ['label' => 'Subscriptions', 'url' => '/admin/subscriptions', 'primary' => false],
+                ['label' => 'Leads', 'url' => '/admin/leads', 'primary' => false],
+            ],
         ];
+    }
+
+    /** @return array<string, mixed> */
+    private function clientData(User $user): array
+    {
+        $clientId = $user->client_id;
+        $client = Client::find($clientId);
+
+        $messagesUsed = $client?->messagesUsedInCurrentPeriod() ?? 0;
+        $messageLimit = $client?->messageLimitForCurrentPlan();
+        $messagePercent = $messageLimit ? min(100, (int) round($messagesUsed / $messageLimit * 100)) : 0;
+
+        $messagesToday = Message::where('client_id', $clientId)->whereDate('created_at', today())->count();
+        $totalCustomers = Customer::where('client_id', $clientId)->count();
+        $qualifiedLeads = Customer::where('client_id', $clientId)->where('is_qualified_lead', true)->count();
+        $appointmentsBooked = Appointment::where('client_id', $clientId)->count();
+
+        $finding = "{$messagesToday} ".Str::plural('message', $messagesToday).' today across all channels.'
+            .($messageLimit ? " {$messagePercent}% of this period's plan limit used." : '');
+
+        $recentMessages = Message::with('customer')
+            ->where('client_id', $clientId)
+            ->select('messages.*')
+            ->whereIn('id', function ($query) use ($clientId) {
+                $query->selectRaw('MAX(id)')->from('messages')->where('client_id', $clientId)->groupBy('customer_id');
+            })
+            ->latest()
+            ->limit(8)
+            ->get();
+
+        $upcomingAppointments = Appointment::where('client_id', $clientId)
+            ->where('status', '!=', 'cancelled')
+            ->where('scheduled_at', '>=', now())
+            ->orderBy('scheduled_at')
+            ->limit(8)
+            ->get();
+
+        return [
+            'finding' => $finding,
+            'subscriptionSummary' => $this->clientSubscriptionSummary($client),
+            'kpis' => [
+                ['label' => 'Customers', 'value' => $totalCustomers, 'desc' => 'Total customers'],
+                ['label' => 'Appointments booked', 'value' => $appointmentsBooked, 'desc' => 'Total appointments'],
+                ['label' => 'Leads qualified', 'value' => $qualifiedLeads, 'desc' => 'Total qualified leads'],
+                ['label' => 'Messages today', 'value' => $messagesToday, 'desc' => 'Across all channels'],
+                ['label' => 'Messages this period', 'value' => $messageLimit ? "{$messagesUsed} / {$messageLimit}" : (string) $messagesUsed, 'desc' => $messageLimit ? "{$messagePercent}% of plan limit used" : 'Unlimited on your plan'],
+            ],
+            'qualifiedRate' => $totalCustomers > 0 ? (int) round($qualifiedLeads / $totalCustomers * 100) : 0,
+            'totalCustomers' => $totalCustomers,
+            'qualifiedLeads' => $qualifiedLeads,
+            'recentMessages' => $recentMessages,
+            'upcomingAppointments' => $upcomingAppointments,
+            'actions' => [
+                ['label' => 'Customers', 'url' => '/user/customers', 'primary' => true],
+                ['label' => 'Appointments', 'url' => '/user/appointments', 'primary' => false],
+                ['label' => 'Billing', 'url' => '/user/billing', 'primary' => false],
+            ],
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    private function agentData(User $user): array
+    {
+        $clientId = $user->client_id;
+
+        $waiting = WidgetConversation::where('client_id', $clientId)->where('status', 'waiting')->count();
+        $active = WidgetConversation::where('client_id', $clientId)->where('status', 'active')->count();
+        $resolvedToday = WidgetConversation::where('client_id', $clientId)
+            ->where('status', 'closed')
+            ->whereDate('updated_at', today())
+            ->count();
+
+        $appointmentsBooked = Appointment::where('client_id', $clientId)->count();
+        $totalCustomers = Customer::where('client_id', $clientId)->count();
+        $qualifiedLeads = Customer::where('client_id', $clientId)->where('is_qualified_lead', true)->count();
+
+        // sender_name is only ever set for a genuine agent reply (see LiveChat::sendReply());
+        // auto-inserted system messages leave it null, so this doesn't inflate the count.
+        $messagesHandledToday = WidgetMessage::whereHas('conversation', fn ($query) => $query->where('client_id', $clientId))
+            ->where('sender_type', 'agent')
+            ->whereNotNull('sender_name')
+            ->whereDate('created_at', today())
+            ->count();
+
+        $finding = $waiting > 0
+            ? "{$waiting} ".Str::plural('visitor', $waiting).' waiting for a reply.'
+            : 'Nothing waiting for you right now.';
+
+        $waitingConversations = WidgetConversation::where('client_id', $clientId)
+            ->where('status', 'waiting')
+            ->orderBy('waiting_since')
+            ->limit(8)
+            ->get();
+
+        $upcomingAppointments = Appointment::where('client_id', $clientId)
+            ->where('status', '!=', 'cancelled')
+            ->where('scheduled_at', '>=', now())
+            ->orderBy('scheduled_at')
+            ->limit(8)
+            ->get();
+
+        return [
+            'finding' => $finding,
+            'resolvedToday' => $resolvedToday,
+            'messagesHandledToday' => $messagesHandledToday,
+            'kpis' => [
+                ['label' => 'Waiting for a reply', 'value' => $waiting, 'desc' => $waiting > 0 ? 'Visitors asked for a human' : 'Nothing waiting'],
+                ['label' => 'Active conversations', 'value' => $active, 'desc' => 'Currently being handled'],
+                ['label' => 'Resolved today', 'value' => $resolvedToday, 'desc' => 'Conversations closed today'],
+                ['label' => 'Appointments booked', 'value' => $appointmentsBooked, 'desc' => 'Total appointments'],
+                ['label' => 'Leads qualified', 'value' => $qualifiedLeads, 'desc' => 'Total qualified leads'],
+                ['label' => 'Messages handled today', 'value' => $messagesHandledToday, 'desc' => 'Agent replies sent today'],
+            ],
+            'conversationSplit' => ['waiting' => $waiting, 'active' => $active, 'resolvedToday' => $resolvedToday],
+            'waitingConversations' => $waitingConversations,
+            'upcomingAppointments' => $upcomingAppointments,
+            'qualifiedRate' => $totalCustomers > 0 ? (int) round($qualifiedLeads / $totalCustomers * 100) : 0,
+            'totalCustomers' => $totalCustomers,
+            'qualifiedLeads' => $qualifiedLeads,
+            'actions' => [
+                ['label' => 'Live chat', 'url' => '/user/live-chat', 'primary' => $waiting > 0],
+                ['label' => 'Appointments', 'url' => '/user/appointments', 'primary' => false],
+                ['label' => 'Customers', 'url' => '/user/customers', 'primary' => false],
+            ],
+        ];
+    }
+
+    /**
+     * Mirrors ClientStats::getSubscriptionStats() — one line per service the client currently
+     * has (or last had) an active subscription for.
+     *
+     * @return array{status: 'none'|'active'|'expiring', lines: array<int, string>}
+     */
+    private function clientSubscriptionSummary(?Client $client): array
+    {
+        $none = ['status' => 'none', 'lines' => ['No active plan']];
+
+        if (! $client) {
+            return $none;
+        }
+
+        $services = $client->features === null
+            ? Client::SELF_REGISTRATION_FEATURES
+            : array_values(array_intersect(Client::SELF_REGISTRATION_FEATURES, $client->features));
+
+        $lines = [];
+        $anyExpiring = false;
+
+        foreach ($services as $service) {
+            $subscription = $client->currentSubscription($service);
+
+            if (! $subscription) {
+                continue;
+            }
+
+            $isExpiring = $subscription->end_date && $subscription->end_date->isPast();
+            $anyExpiring = $anyExpiring || $isExpiring;
+
+            $lines[] = $subscription->serviceLabel().' ('.$subscription->name.'): '.($isExpiring
+                ? 'expired '.$subscription->end_date->diffForHumans()
+                : 'expires '.$subscription->end_date->diffForHumans());
+        }
+
+        if (empty($lines)) {
+            return $none;
+        }
+
+        return ['status' => $anyExpiring ? 'expiring' : 'active', 'lines' => $lines];
     }
 }

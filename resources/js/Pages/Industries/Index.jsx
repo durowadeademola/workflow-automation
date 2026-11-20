@@ -69,7 +69,7 @@ export default function IndustriesIndex() {
                                 className="relative bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 flex flex-col"
                             >
                                 <IconTile icon={industry.icon} color="blue" size="lg" className="mb-4" />
-                                <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-2">{industry.title}</h3>
+                                <h3 className="font-display font-semibold text-gray-900 dark:text-white text-lg mb-2">{industry.title}</h3>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{industry.description}</p>
 
                                 <ul className="space-y-2 mb-6 flex-1">
@@ -100,7 +100,7 @@ export default function IndustriesIndex() {
 
             <section className="py-16 bg-blue-600">
                 <div className="max-w-3xl mx-auto px-4 text-center">
-                    <h2 className="text-2xl font-extrabold text-white mb-3">Don't see your industry?</h2>
+                    <h2 className="font-display text-2xl font-semibold tracking-[-0.01em] text-white mb-3">Don't see your industry?</h2>
                     <p className="text-blue-100 text-sm mb-6">
                         We've automated processes for all kinds of businesses. Tell us what you need and we'll show you what's possible.
                     </p>

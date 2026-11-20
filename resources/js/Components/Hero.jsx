@@ -21,7 +21,7 @@ function StatCard({ value, suffix, label, isDecimal, delay, trigger }) {
                 transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
             }}
         >
-            <p className="text-3xl font-extrabold text-blue-600 mb-1">
+            <p className="font-display text-3xl font-semibold tabular-nums text-blue-600 mb-1">
                 {display}{suffix}
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{label}</p>
@@ -52,7 +52,7 @@ export default function Hero() {
                                 transform: isVisible ? "translateY(0)" : "translateY(32px)",
                                 transition: "opacity 0.6s ease 100ms, transform 0.6s ease 100ms",
                             }}
-                            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight mb-6"
+                            className="font-display text-4xl sm:text-5xl lg:text-6xl font-medium tracking-[-0.02em] text-gray-900 dark:text-white leading-tight mb-6"
                         >
                             Automate Everything.{" "}
                             <span className="text-blue-600">Grow Faster.</span>
@@ -67,7 +67,7 @@ export default function Hero() {
                             }}
                             className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0"
                         >
-                            Transform your business operations with AI-powered automation.
+                            Transform your business operations with Agentic AI-powered automation.
                             Save time, reduce costs, and scale effortlessly.
                         </p>
 

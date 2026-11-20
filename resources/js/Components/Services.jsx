@@ -63,7 +63,7 @@ export default function Services() {
                     }}
                 >
                     <p className="text-blue-600 font-semibold text-sm uppercase tracking-widest mb-3">Our Services</p>
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+                    <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white mb-4">
                         Complete Business Automation Suite
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
@@ -106,7 +106,7 @@ export default function Services() {
                                     New
                                 </span>
                             )}
-                            <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-2">{service.title}</h3>
+                            <h3 className="font-display font-semibold text-gray-900 dark:text-white text-lg mb-2">{service.title}</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{service.description}</p>
                             <ul className="space-y-2 mb-6 flex-1">
                                 {service.features.map((f) => (

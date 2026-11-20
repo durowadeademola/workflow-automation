@@ -44,7 +44,7 @@ export default function Solutions() {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+                    <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white mb-4">
                         Blueflow Automates Everything
                     </h2>
                 </div>
@@ -63,7 +63,7 @@ export default function Solutions() {
                             <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                                 <item.icon className="w-5 h-5" strokeWidth={2.25} />
                             </div>
-                            <h3 className="font-bold text-gray-900 dark:text-white mb-2 text-base leading-snug">
+                            <h3 className="font-display font-semibold text-gray-900 dark:text-white mb-2 text-base leading-snug">
                                 {item.title}
                             </h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{item.description}</p>

@@ -26,7 +26,7 @@ function AnimatedResult({ value, label, highlight, trigger }) {
             <p className={`text-xs font-medium mb-1 ${highlight ? "text-blue-100" : "text-gray-500 dark:text-gray-400"}`}>
                 {label}
             </p>
-            <p className={`text-2xl font-extrabold ${highlight ? "text-white" : "text-gray-900 dark:text-white"}`}>
+            <p className={`font-display text-2xl font-semibold tabular-nums ${highlight ? "text-white" : "text-gray-900 dark:text-white"}`}>
                 {displayValue}
             </p>
         </div>
@@ -74,7 +74,7 @@ export default function ROICalculator() {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+                    <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white mb-4">
                         Calculate Your ROI
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
@@ -93,7 +93,7 @@ export default function ROICalculator() {
                 >
                     {/* Inputs */}
                     <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-6">Your Business Numbers</h3>
+                        <h3 className="font-display font-semibold text-gray-900 dark:text-white text-lg mb-6">Your Business Numbers</h3>
                         <div className="space-y-6">
                             <div>
                                 <label className="text-sm font-medium text-gray-700 dark:text-gray-200 flex justify-between mb-1">
@@ -164,7 +164,7 @@ export default function ROICalculator() {
 
                     {/* Results */}
                     <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-6">Your Potential Savings</h3>
+                        <h3 className="font-display font-semibold text-gray-900 dark:text-white text-lg mb-6">Your Potential Savings</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                             {[
                                 { label: "Monthly Savings", value: results.monthlySavings, highlight: true },

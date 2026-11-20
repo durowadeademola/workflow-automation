@@ -116,7 +116,7 @@ export default function Register() {
                             <div className="w-14 h-14 mx-auto mb-4 bg-emerald-100 dark:bg-emerald-900/40 rounded-2xl flex items-center justify-center">
                                 <CircleCheckBig className="w-7 h-7 text-emerald-600 dark:text-emerald-400" strokeWidth={1.75} />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Account created!</h3>
+                            <h3 className="font-display text-xl font-semibold tracking-[-0.01em] text-gray-900 dark:text-white mb-2">Account created!</h3>
                             <p className="text-gray-600 dark:text-gray-300">
                                 Your business is pending approval. We'll email you as soon as an admin approves your
                                 account — you'll then be able to{" "}

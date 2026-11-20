@@ -66,7 +66,7 @@ export default function Contact() {
                     {/* Contact info */}
                     <div className="lg:col-span-1 space-y-6">
                         <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
-                            <h3 className="font-bold text-gray-900 dark:text-white mb-4">Prefer to reach out directly?</h3>
+                            <h3 className="font-display font-semibold text-gray-900 dark:text-white mb-4">Prefer to reach out directly?</h3>
                             <div className="space-y-3 text-sm">
                                 <a href="mailto:hello@blueflowautomation.com" className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
                                     <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -102,7 +102,7 @@ export default function Contact() {
                                 <div className="w-14 h-14 mx-auto mb-4 bg-emerald-100 dark:bg-emerald-900/60 rounded-2xl flex items-center justify-center">
                                     <CircleCheckBig className="w-7 h-7 text-emerald-600 dark:text-emerald-400" strokeWidth={1.75} />
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Thanks, {form.name.split(" ")[0]}!</h3>
+                                <h3 className="font-display text-xl font-semibold tracking-[-0.01em] text-gray-900 dark:text-white mb-2">Thanks, {form.name.split(" ")[0]}!</h3>
                                 <p className="text-gray-600 dark:text-gray-300">
                                     We've received your message and will get back to you shortly. In the meantime,
                                     feel free to{" "}

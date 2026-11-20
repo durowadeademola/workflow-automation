@@ -6,9 +6,9 @@
     <div x-data x-on:recrawl-finished.window="$wire.mountAction('recrawlResults')"></div>
 
     @if($this->isWidgetReady())
-        <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 p-6 mb-6 flex items-center justify-between gap-4">
+        <div class="rounded-[var(--bf-radius)] border border-[var(--bf-border)] bg-[var(--bf-surface)] p-6 mb-6 flex items-center justify-between gap-4">
             <div>
-                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Widget Status</h3>
+                <h3 class="bf-font-display text-sm font-semibold text-gray-700 dark:text-gray-200">Widget Status</h3>
                 <p class="text-xs text-gray-400 mt-0.5">
                     {{ $this->isWidgetEnabled()
                         ? 'Your assistant is live and answering visitors right now.'
@@ -36,7 +36,7 @@
     @endif
 
     <form wire:submit="save" class="space-y-6">
-        <div class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 p-6">
+        <div class="rounded-[var(--bf-radius)] border border-[var(--bf-border)] bg-[var(--bf-surface)] p-6">
             {{ $this->form }}
         </div>
 
@@ -88,17 +88,17 @@
                     setTimeout(() => (this.copied = false), 2000);
                 },
             }"
-            class="bg-white dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden mt-6"
+            class="rounded-[var(--bf-radius)] border border-[var(--bf-border)] bg-[var(--bf-surface)] overflow-hidden mt-6"
         >
-            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between gap-4">
+            <div class="px-4 py-3 border-b border-[var(--bf-border)] flex items-center justify-between gap-4">
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Your Embed Code</h3>
+                    <h3 class="bf-font-display text-sm font-semibold text-gray-700 dark:text-gray-200">Your Embed Code</h3>
                     <p class="text-xs text-gray-400 mt-0.5">Paste this just before the closing <code>&lt;/body&gt;</code> tag on your website. Save your changes above first.</p>
                 </div>
                 <button
                     type="button"
                     @click="copy()"
-                    class="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-lg bg-primary-600 hover:bg-primary-700 text-white transition-colors"
+                    class="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#1f6fa8] hover:bg-[#1b5a88] text-white transition-colors"
                 >
                     <span x-show="!copied">Copy code</span>
                     <span x-show="copied" x-cloak>Copied!</span>

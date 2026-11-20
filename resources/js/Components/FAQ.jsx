@@ -79,7 +79,7 @@ export default function FAQ() {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+                    <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white mb-4">
                         Frequently Asked Questions
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400">Got questions? We've got your answers.</p>
@@ -104,7 +104,7 @@ export default function FAQ() {
                         transition: "opacity 0.6s ease 500ms, transform 0.6s ease 500ms",
                     }}
                 >
-                    <h3 className="font-bold text-gray-900 dark:text-white mb-2">Still have questions?</h3>
+                    <h3 className="font-display font-semibold text-gray-900 dark:text-white mb-2">Still have questions?</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
                         We are here to help. Talk to our team and get answers in minutes, not days.
                     </p>

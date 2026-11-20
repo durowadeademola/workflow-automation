@@ -95,7 +95,7 @@ function NewsletterSignup() {
     return (
         <div className="border-b border-gray-800 pb-10 mb-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
-                <h4 className="text-white font-semibold text-base mb-1">Subscribe to our Newsletter</h4>
+                <h4 className="font-display text-white font-semibold text-base mb-1">Subscribe to our Newsletter</h4>
                 <p className="text-sm">Automation tips and product updates, straight to your inbox — no spam.</p>
             </div>
 
@@ -147,10 +147,10 @@ export default function Footer() {
                             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                                 <span className="text-white font-bold text-sm">BA</span>
                             </div>
-                            <span className="font-bold text-white text-base">Blueflow Automation</span>
+                            <span className="font-display font-semibold tracking-[-0.01em] text-white text-base">Blueflow Automation</span>
                         </Link>
                         <p className="text-sm leading-relaxed mb-6">
-                            AI-powered automation for Nigerian businesses. Automate everything, grow faster.
+                            Agentic AI-powered automation for Nigerian businesses. Automate everything, grow faster.
                         </p>
                         <div className="space-y-2 text-sm">
                             <a href="mailto:hello@blueflowautomation.com" className="flex items-center gap-2 hover:text-blue-400 transition-colors">
@@ -187,7 +187,7 @@ export default function Footer() {
                     {/* Link cols */}
                     {Object.entries(footerLinks).map(([title, links]) => (
                         <div key={title}>
-                            <h4 className="text-white font-semibold text-sm mb-4">{title}</h4>
+                            <h4 className="font-display text-white font-semibold text-sm mb-4">{title}</h4>
                             <ul className="space-y-2.5">
                                 {links.map((link) => (
                                     <li key={link.href}>

@@ -25,7 +25,7 @@ export default function CTABanner({ ctaReview = null }) {
                         transform: isVisible ? "translateY(0)" : "translateY(30px)",
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
-                    className="text-3xl sm:text-4xl font-extrabold text-white mb-4"
+                    className="font-display text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-white mb-4"
                 >
                     Ready to Automate Your Business?
                 </h2>
@@ -58,7 +58,7 @@ export default function CTABanner({ ctaReview = null }) {
                                 transition: `opacity 0.5s ease ${200 + i * 100}ms, transform 0.5s ease ${200 + i * 100}ms`,
                             }}
                         >
-                            <p className="text-3xl font-extrabold text-white">{b.value}</p>
+                            <p className="font-display text-3xl font-semibold tabular-nums text-white">{b.value}</p>
                             <p className="text-xs text-blue-200 font-medium">{b.label}</p>
                         </div>
                     ))}

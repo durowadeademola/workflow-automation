@@ -41,7 +41,7 @@ export default function PainPoints() {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+                    <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white mb-4">
                         Running a Business Shouldn't Be This Hard
                     </h2>
                 </div>
@@ -58,7 +58,7 @@ export default function PainPoints() {
                             }}
                         >
                             <IconTile icon={item.icon} color="red" size="lg" className="mb-4" />
-                            <h3 className="font-bold text-gray-900 dark:text-white mb-2 text-base leading-snug">
+                            <h3 className="font-display font-semibold text-gray-900 dark:text-white mb-2 text-base leading-snug">
                                 {item.title}
                             </h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400">{item.description}</p>

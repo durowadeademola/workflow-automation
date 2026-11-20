@@ -10,7 +10,7 @@ export default function PageHero({ badge, title, subtitle }) {
                         {badge}
                     </span>
                 )}
-                <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight mb-5">
+                <h1 className="font-display text-4xl sm:text-5xl font-medium tracking-[-0.02em] text-gray-900 dark:text-white leading-tight mb-5">
                     {title}
                 </h1>
                 {subtitle && (

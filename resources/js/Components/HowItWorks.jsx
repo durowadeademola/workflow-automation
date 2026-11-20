@@ -59,7 +59,7 @@ function StepRow({ step, idx }) {
         >
             {/* Card */}
             <div className="flex-1 bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow w-full">
-                <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-2">{step.title}</h3>
+                <h3 className="font-display font-semibold text-gray-900 dark:text-white text-lg mb-2">{step.title}</h3>
                 <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">{step.description}</p>
                 <div className="flex items-center gap-4 text-xs">
                     <span className="flex items-center gap-1.5 text-gray-400 dark:text-gray-500">
@@ -78,7 +78,7 @@ function StepRow({ step, idx }) {
             </div>
 
             {/* Step number badge */}
-            <div className="flex-shrink-0 w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center font-extrabold text-lg shadow-lg shadow-blue-200 z-10">
+            <div className="flex-shrink-0 w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center font-display font-semibold tabular-nums text-lg shadow-lg shadow-blue-200 z-10">
                 {step.number}
             </div>
 
@@ -104,7 +104,7 @@ export default function HowItWorks() {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+                    <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white mb-4">
                         How It Works
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
@@ -133,7 +133,7 @@ export default function HowItWorks() {
                         transition: "opacity 0.7s ease, transform 0.7s ease",
                     }}
                 >
-                    <h3 className="text-2xl font-extrabold mb-3">Ready to Get Started?</h3>
+                    <h3 className="font-display text-2xl font-semibold tracking-[-0.01em] mb-3">Ready to Get Started?</h3>
                     <p className="text-blue-100 mb-8 max-w-lg mx-auto">
                         Create your account in a couple of minutes. No commitment, no sales pressure.
                         Just honest advice on how automation can help your business.

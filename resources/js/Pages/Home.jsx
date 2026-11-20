@@ -21,7 +21,7 @@ export default function Home({ plans, reviews, ctaReview }) {
             <Head title="Blueflow Automation - AI Automation for Nigerian Businesses">
                 <meta
                     name="description"
-                    content="Transform your business operations with AI-powered automation. Save time, reduce costs, and scale effortlessly. Built for Nigerian businesses."
+                    content="Transform your business operations with Agentic AI-powered automation. Save time, reduce costs, and scale effortlessly. Built for Nigerian businesses."
                 />
             </Head>
 

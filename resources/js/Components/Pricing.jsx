@@ -44,7 +44,7 @@ export default function Pricing({ plans = [] }) {
                         transition: "opacity 0.6s ease, transform 0.6s ease",
                     }}
                 >
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+                    <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-gray-900 dark:text-white mb-4">
                         Simple, Transparent Pricing
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
@@ -108,7 +108,7 @@ export default function Pricing({ plans = [] }) {
                                 )}
 
                                 <div className="mb-6">
-                                    <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mb-1">{plan.name}</h3>
+                                    <h3 className="font-display text-xl font-semibold tracking-[-0.01em] text-gray-900 dark:text-white mb-1">{plan.name}</h3>
                                     {plan.description && (
                                         <p className="text-sm text-gray-500 dark:text-gray-400">{plan.description}</p>
                                     )}
@@ -121,12 +121,12 @@ export default function Pricing({ plans = [] }) {
                                                 <span className="text-lg text-gray-400 dark:text-gray-500 line-through mr-2">
                                                     ₦{Number(plan.yearly_regular_price).toLocaleString("en-NG")}
                                                 </span>
-                                                <span className="text-4xl font-extrabold text-red-600">
+                                                <span className="font-display text-4xl font-semibold tabular-nums text-red-600">
                                                     ₦{Number(plan.yearly_effective_price).toLocaleString("en-NG")}
                                                 </span>
                                             </>
                                         ) : (
-                                            <span className="text-4xl font-extrabold text-gray-900 dark:text-white">
+                                            <span className="font-display text-4xl font-semibold tabular-nums text-gray-900 dark:text-white">
                                                 ₦{Number(plan.yearly_effective_price).toLocaleString("en-NG")}
                                             </span>
                                         )
@@ -135,12 +135,12 @@ export default function Pricing({ plans = [] }) {
                                             <span className="text-lg text-gray-400 dark:text-gray-500 line-through mr-2">
                                                 ₦{Number(plan.amount).toLocaleString("en-NG")}
                                             </span>
-                                            <span className="text-4xl font-extrabold text-red-600">
+                                            <span className="font-display text-4xl font-semibold tabular-nums text-red-600">
                                                 ₦{Number(plan.promo_price).toLocaleString("en-NG")}
                                             </span>
                                         </>
                                     ) : (
-                                        <span className="text-4xl font-extrabold text-gray-900 dark:text-white">
+                                        <span className="font-display text-4xl font-semibold tabular-nums text-gray-900 dark:text-white">
                                             ₦{Number(plan.amount).toLocaleString("en-NG")}
                                         </span>
                                     )}
