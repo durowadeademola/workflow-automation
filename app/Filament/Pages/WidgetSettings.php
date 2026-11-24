@@ -6,7 +6,6 @@ use App\Models\AutomationWorkflow;
 use App\Models\Client;
 use App\Workflow\WorkflowExecutor;
 use BackedEnum;
-use UnitEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\ColorPicker;
@@ -29,8 +28,6 @@ class WidgetSettings extends Page
     protected static string|BackedEnum|null $navigationIcon = Heroicon::PaintBrush;
 
     protected static ?string $navigationLabel = 'Widget Settings';
-
-    protected static string|UnitEnum|null $navigationGroup = 'Chat Widget';
 
     protected static ?int $navigationSort = 20;
 

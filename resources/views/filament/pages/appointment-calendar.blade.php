@@ -10,7 +10,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                 </a>
-                <h2 class="bf-font-display text-lg font-semibold text-gray-900 dark:text-gray-100 w-40 text-center">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 w-40 text-center">
                     {{ $this->getCurrentMonth()->format('F Y') }}
                 </h2>
                 <a

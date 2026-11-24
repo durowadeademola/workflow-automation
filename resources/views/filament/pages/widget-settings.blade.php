@@ -8,7 +8,7 @@
     @if($this->isWidgetReady())
         <div class="rounded-[var(--bf-radius)] border border-[var(--bf-border)] bg-[var(--bf-surface)] p-6 mb-6 flex items-center justify-between gap-4">
             <div>
-                <h3 class="bf-font-display text-sm font-semibold text-gray-700 dark:text-gray-200">Widget Status</h3>
+                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Widget Status</h3>
                 <p class="text-xs text-gray-400 mt-0.5">
                     {{ $this->isWidgetEnabled()
                         ? 'Your assistant is live and answering visitors right now.'
@@ -92,7 +92,7 @@
         >
             <div class="px-4 py-3 border-b border-[var(--bf-border)] flex items-center justify-between gap-4">
                 <div>
-                    <h3 class="bf-font-display text-sm font-semibold text-gray-700 dark:text-gray-200">Your Embed Code</h3>
+                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Your Embed Code</h3>
                     <p class="text-xs text-gray-400 mt-0.5">Paste this just before the closing <code>&lt;/body&gt;</code> tag on your website. Save your changes above first.</p>
                 </div>
                 <button

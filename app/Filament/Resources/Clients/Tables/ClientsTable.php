@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Clients\Tables;
 
 use App\Filament\Exports\ClientExporter;
+use App\Filament\Tables\Columns\PersonColumn;
 use App\Models\User;
 use App\Notifications\ClientRejected;
 use App\Notifications\WidgetReady;
@@ -32,10 +33,8 @@ class ClientsTable
                     ->exporter(ClientExporter::class),
             ])
             ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('email')
-                    ->searchable(),
+                PersonColumn::make('name', fn ($record) => $record->email)
+                    ->searchable(['name', 'email']),
                 TextColumn::make('telephone'),
                 BadgeColumn::make('type')
                     ->colors(['danger']),

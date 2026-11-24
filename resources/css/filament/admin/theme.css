@@ -18,9 +18,11 @@
 @source '../../../../resources/views/filament/**/*';
 @source '../../../../app/Providers/Filament/**/*';
 
-/* Slightly more compact UI density across the panel. */
+/* Everything below is unlayered, so it wins over Filament's own styles (which
+   live in CSS cascade layers) without needing !important or extra specificity. */
+
 html {
-    font-size: 13px;
+    font-size: 14px;
 }
 
 body {
@@ -36,43 +38,40 @@ body {
     height: calc(var(--vh, 1vh) * 100);
 }
 
-/* ── Design tokens: one place for the card surface, border and elevation so
-     sections, tables, stats, charts and modals all read as the same family.
-     The border is drawn as the first box-shadow layer (replacing Filament's
-     ring-1 utility, which is also a box-shadow and would otherwise be wiped
-     out by any shadow set here). Palette and shadow values match the
-     Gradebook design tokens (design/claude-design-export, gb-tokens.css). ── */
+/* ── Design tokens. A near-monochrome look: a pale blue-grey canvas, white
+     cards with a hairline border, slate text, and navy (the panel's primary
+     colour) as the only strong accent. The border is drawn as the first
+     box-shadow layer, replacing Filament's ring-1 utility (also a box-shadow). ── */
 :root {
+    --bf-canvas: #eceff4;
     --bf-surface: #ffffff;
-    --bf-canvas: #f5f6f8;
-    --bf-border: #e3e5ea;
-    --bf-divider: #e3e5ea;
-    --bf-card-shadow: 0 0 0 1px var(--bf-border), 0 1px 2px rgba(16, 24, 40, .05), 0 6px 16px -4px rgba(16, 24, 40, .10);
-    --bf-radius: 0.75rem;
+    --bf-surface-muted: #f1f4f8;
+    --bf-border: #e2e6ec;
+    --bf-text: #0f172a;
+    --bf-text-muted: #64748b;
+    --bf-input-border: #cfd5de;
+    --bf-focus: #1e2a4a;
+    --bf-card-shadow: 0 0 0 1px var(--bf-border), 0 1px 2px rgb(15 23 42 / 0.04);
+    --bf-radius: 0.875rem;
     --bf-heading-font: 'Clash Display', var(--font-family, ui-sans-serif), system-ui, sans-serif;
-    --bf-brand-gradient: linear-gradient(135deg, #1f6fa8 0%, #4a9bd1 100%);
-
-    /* Dashboard hero band (resources/views/filament/pages/custom-dashboard.blade.php). */
-    --bf-band-base: #0d1b29;
-    --bf-band-fg: #f5f7fa;
-    --bf-band-fg-muted: rgba(245, 247, 250, 0.7);
-    --bf-band-line: rgba(245, 247, 250, 0.14);
-    --bf-band-glass: rgba(245, 247, 250, 0.07);
 }
 
 :where(.dark, .dark *) {
-    --bf-surface: #14161b;
     --bf-canvas: #0d0f13;
+    --bf-surface: #15181e;
+    --bf-surface-muted: #1d2129;
     --bf-border: #262a31;
-    --bf-divider: #262a31;
-    --bf-card-shadow: 0 0 0 1px var(--bf-border), 0 8px 20px -6px rgb(0 0 0 / 0.6);
+    --bf-text: #f1f5f9;
+    --bf-text-muted: #94a3b8;
+    --bf-input-border: #333944;
+    --bf-focus: #cbd5e1;
+    --bf-card-shadow: 0 0 0 1px var(--bf-border);
 }
 
-/* Reusable display-font hook for one-off headings in custom Blade views (e.g. the dashboard's hero
-   band) — plain CSS rather than a Tailwind `font-display` utility, since this theme.css entry
-   doesn't register that utility the way the frontend's app.css @theme block does. */
-.bf-font-display {
-    font-family: var(--bf-heading-font);
+/* ── Page canvas ── */
+.fi-body,
+.fi-layout {
+    background-color: var(--bf-canvas);
 }
 
 /* ── Wordmark (see brandLogo() in the panel providers) ── */
@@ -83,131 +82,171 @@ body {
     font-weight: 600;
     font-size: 1.35rem;
     letter-spacing: -0.02em;
-    color: rgb(15 23 42);
+    color: var(--bf-text);
 }
 
-:where(.dark, .dark *) .bf-brand {
-    color: #ffffff;
-}
-
-/* ── Headings: Clash Display for page titles and card headings gives the
-     panel some character while body text stays on Filament's Inter. ── */
-.fi-header-heading,
-.fi-simple-header-heading,
-.fi-section-header-heading,
-.fi-ta-header-heading,
-.fi-modal-heading {
-    font-family: var(--bf-heading-font);
-    letter-spacing: -0.02em;
-}
-
-.fi-header-heading {
-    font-weight: 600;
-}
-
-.fi-header-subheading {
-    margin-top: 0.25rem;
-    color: rgb(100 116 139);
-}
-
-/* ── Page canvas: soft neutral with a faint brand glow in the top corner. ── */
-.fi-layout {
-    background:
-        radial-gradient(900px 420px at 100% -10%, rgb(74 155 209 / 0.05), transparent 70%),
-        radial-gradient(900px 420px at 15% -10%, rgb(31 111 168 / 0.07), transparent 70%),
-        var(--bf-canvas);
-    background-attachment: fixed;
-}
-
-/* ── Sidebar: light, attached to the edge, with an accent bar on the active
-     item instead of a plain tinted block. ── */
+/* ── Sidebar: a white card floating on the canvas (desktop), flat drawer on
+     mobile. No group headings — navigation is one flat list, with a hairline
+     after the first item (Dashboard) to set it apart. ── */
 .fi-sidebar {
     background-color: var(--bf-surface);
-    border-inline-end: 1px solid var(--bf-divider);
-    box-shadow: none;
 }
 
-.fi-sidebar-header {
-    border-block-end: 1px solid var(--bf-divider);
+@media (min-width: 1024px) {
+    .fi-body:not(.fi-body-has-top-navigation) .fi-sidebar {
+        top: 0.75rem;
+        height: calc(100dvh - 1.5rem);
+        margin: 0.75rem 0 0.75rem 0.75rem;
+        border-radius: var(--bf-radius);
+        background-color: var(--bf-surface);
+        box-shadow: var(--bf-card-shadow);
+    }
+}
+
+:not(.fi-body-has-topbar) .fi-sidebar-header {
+    padding-inline: 1rem;
 }
 
 .fi-sidebar-nav {
-    padding: 0.875rem 0.75rem;
+    padding: 0.75rem;
 }
 
-/* Filament's own gap-y-7 (28px) between nav "sections" (the run of
-   ungrouped items counts as one, each named group as another) reads as an
-   overly large gap once real groups exist alongside ungrouped items — this
-   is the single source of truth for that spacing now. */
 .fi-sidebar-nav-groups {
-    gap: 1rem;
+    gap: 0;
 }
 
-.fi-sidebar-group-label {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgb(100 116 139);
+.fi-sidebar-group-items {
+    gap: 0.125rem;
+}
+
+.fi-sidebar-nav-groups > .fi-sidebar-group:first-child .fi-sidebar-item:first-child {
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--bf-border);
 }
 
 .fi-sidebar-item-btn {
-    position: relative;
-    border-radius: 0.625rem;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    border-radius: 0.5rem;
+    padding: 0.55rem 0.75rem;
+}
+
+.fi-sidebar-item-label {
+    font-size: 1.02rem;
+    font-weight: 500;
+    color: #334155;
 }
 
 .fi-sidebar-item-icon {
-    color: rgb(148 163 184);
-    transition: color 0.15s ease;
+    color: var(--bf-text-muted);
 }
 
 .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover {
-    background-color: rgb(241 245 249);
-}
-
-.fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover .fi-sidebar-item-icon {
-    color: rgb(71 85 105);
+    background-color: var(--bf-surface-muted);
 }
 
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
-    background: linear-gradient(90deg, rgb(31 111 168 / 0.1), rgb(31 111 168 / 0.03));
-    color: rgb(27 90 136);
-    font-weight: 600;
+    background-color: var(--bf-surface-muted);
 }
 
-.fi-sidebar-item.fi-active > .fi-sidebar-item-btn::before {
-    content: '';
-    position: absolute;
-    inset-inline-start: 0;
-    top: 0.5rem;
-    bottom: 0.5rem;
-    width: 3px;
-    border-radius: 9999px;
-    background: var(--bf-brand-gradient);
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-label {
+    font-weight: 600;
+    color: var(--bf-text);
 }
 
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-icon {
-    color: rgb(31 111 168);
+    color: var(--bf-text);
 }
 
 .fi-sidebar-footer {
-    border-block-start: 1px solid var(--bf-divider);
+    border-top: 1px solid var(--bf-border);
 }
 
-/* ── Topbar: frosted glass so content scrolls softly underneath. ── */
-.fi-topbar {
-    background-color: rgb(255 255 255 / 0.78);
-    backdrop-filter: saturate(180%) blur(12px);
-    -webkit-backdrop-filter: saturate(180%) blur(12px);
-    box-shadow: 0 1px 0 var(--bf-divider);
+/* ── Notifications bell, pinned top-right of the content (there's no
+     topbar — see content-topbar.blade.php). ── */
+.bf-content-topbar {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1.25rem;
 }
 
-/* ── Cards: sections (incl. chart widgets), tables, stats and modals share
-     the same surface, radius and layered elevation. ── */
+/* ── Page header: large display-font title, muted summary line, and plain
+     white outlined buttons on the right. ── */
+.fi-header-heading,
+.fi-simple-header-heading {
+    font-family: var(--bf-heading-font);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--bf-text);
+}
+
+.fi-header-heading {
+    font-size: 2.4rem;
+    line-height: 1.15;
+}
+
+.fi-header-subheading {
+    margin-top: 0.5rem;
+    font-size: 1.07rem;
+    color: var(--bf-text-muted);
+}
+
+/* ── Tabs: plain text with a dark underline on the active one, sitting on a
+     hairline — no pill container. ── */
+.fi-tabs,
+.fi-tabs:not(.fi-contained) {
+    margin-inline: 0;
+    gap: 0.5rem;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    border-bottom: 1px solid var(--bf-border);
+}
+
+.fi-tabs.fi-contained {
+    padding-inline: 1rem;
+}
+
+.fi-tabs.fi-vertical {
+    border-bottom: 0;
+}
+
+.fi-tabs-item,
+.fi-tabs-item.fi-active,
+.fi-tabs-item:hover,
+.fi-tabs-item:focus-visible {
+    background: transparent;
+}
+
+.fi-tabs:not(.fi-vertical) .fi-tabs-item {
+    margin-bottom: -1px;
+    padding: 0.8rem 1rem;
+    border-radius: 0;
+    border-bottom: 2px solid transparent;
+}
+
+.fi-tabs-item .fi-tabs-item-label {
+    font-size: 1.07rem;
+    font-weight: 500;
+    color: #475569;
+}
+
+.fi-tabs-item:hover .fi-tabs-item-label {
+    color: var(--bf-text);
+}
+
+.fi-tabs:not(.fi-vertical) .fi-tabs-item.fi-active {
+    border-bottom-color: var(--bf-text);
+}
+
+.fi-tabs-item.fi-active .fi-tabs-item-label,
+.fi-tabs-item.fi-active .fi-icon {
+    color: var(--bf-text);
+}
+
+/* ── Cards: sections (incl. chart widgets) and tables share one surface. ── */
 .fi-section:not(.fi-section-not-contained):not(.fi-aside):not(.fi-secondary),
-.fi-ta-ctn,
-.fi-wi-stats-overview-stat {
+.fi-ta-ctn {
     background-color: var(--bf-surface);
     border-radius: var(--bf-radius);
     box-shadow: var(--bf-card-shadow);
@@ -220,262 +259,691 @@ body {
 }
 
 .fi-section-header {
-    border-color: var(--bf-divider);
+    border-color: var(--bf-border);
 }
 
-.fi-section-header-heading {
+.fi-section-header-heading,
+.fi-ta-header-heading {
+    font-size: 1.15rem;
     font-weight: 600;
-}
-
-.fi-modal-window,
-.fi-modal-header,
-.fi-modal-footer {
-    background-color: var(--bf-surface);
+    color: var(--bf-text);
 }
 
 .fi-modal-window {
-    border-radius: 0.75rem;
+    border-radius: var(--bf-radius);
+    background-color: var(--bf-surface);
     box-shadow: 0 0 0 1px var(--bf-border), 0 24px 64px -12px rgb(15 23 42 / 0.3);
 }
 
 .fi-dropdown-panel {
-    border-radius: 0.75rem;
+    border-radius: 0.625rem;
     box-shadow: 0 0 0 1px var(--bf-border), 0 12px 32px -8px rgb(15 23 42 / 0.18);
 }
 
-/* ── Stat cards: icon in a neutral chip and bigger numbers. ── */
-.fi-wi-stats-overview-stat {
-    position: relative;
+/* ── Stats: one joined strip instead of separate cards. The grid itself is
+     the card; each stat draws a hairline on its left and top edge, and the
+     strip's overflow clips the ones on the outer edge, so the dividers come
+     out right however many columns the row wraps into. ── */
+.fi-wi-stats-overview .fi-section-content {
+    gap: 0;
     overflow: hidden;
+    background-color: var(--bf-surface);
+    border-radius: var(--bf-radius);
+    box-shadow: var(--bf-card-shadow);
 }
 
-.fi-wi-stats-overview-stat-label-ctn {
-    align-items: center;
+.fi-wi-stats-overview-stat {
+    padding: 1.5rem 1.6rem;
+    border-radius: 0;
+    background-color: transparent;
+    box-shadow: -1px 0 0 var(--bf-border), 0 -1px 0 var(--bf-border);
 }
 
 .fi-wi-stats-overview-stat-label-ctn > .fi-icon {
-    box-sizing: content-box;
-    padding: 0.45rem;
-    border-radius: 0.625rem;
-    color: rgb(71 85 105);
-    background-color: rgb(15 23 42 / 0.05);
-}
-
-/* Chip picks up the card's status colour from its description line. */
-.fi-wi-stats-overview-stat:has(.fi-wi-stats-overview-stat-description.fi-color-warning) .fi-wi-stats-overview-stat-label-ctn > .fi-icon {
-    color: rgb(217 119 6);
-    background-color: rgb(245 158 11 / 0.12);
-}
-
-.fi-wi-stats-overview-stat:has(.fi-wi-stats-overview-stat-description.fi-color-success) .fi-wi-stats-overview-stat-label-ctn > .fi-icon {
-    color: rgb(5 150 105);
-    background-color: rgb(16 185 129 / 0.12);
-}
-
-.fi-wi-stats-overview-stat:has(.fi-wi-stats-overview-stat-description.fi-color-danger) .fi-wi-stats-overview-stat-label-ctn > .fi-icon {
-    color: rgb(220 38 38);
-    background-color: rgb(239 68 68 / 0.12);
+    display: none;
 }
 
 .fi-wi-stats-overview-stat-label {
-    font-weight: 600;
-    color: rgb(71 85 105);
+    font-size: 1.07rem;
+    font-weight: 400;
+    color: #475569;
 }
 
 .fi-wi-stats-overview-stat-value {
-    font-family: var(--bf-heading-font);
-    font-size: 2rem;
+    font-size: 2.25rem;
     font-weight: 600;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--bf-text);
 }
 
-/* ── Tables: tinted header row with small caps labels, gentle row hover. ── */
-.fi-ta-header-cell {
-    background-color: rgb(248 250 252);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
+/* The note under the number stays grey; a warning/danger stat colours the
+   number itself instead, so attention reads at a glance. */
+.fi-wi-stats-overview-stat-description,
+.fi-wi-stats-overview-stat-description.fi-color {
+    color: var(--bf-text-muted);
+}
+
+.fi-wi-stats-overview-stat-description .fi-icon {
+    display: none;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-wi-stats-overview-stat-description.fi-color-warning) .fi-wi-stats-overview-stat-value {
+    color: #b45309;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-wi-stats-overview-stat-description.fi-color-danger) .fi-wi-stats-overview-stat-value {
+    color: #b91c1c;
+}
+
+/* ── Dashboard (custom-dashboard.blade.php): the same joined KPI strip as
+     the stat widgets above, and plain panels in the same family as tables. ── */
+.bf-kpis {
+    overflow: hidden;
+    background-color: var(--bf-surface);
+    border-radius: var(--bf-radius);
+    box-shadow: var(--bf-card-shadow);
+}
+
+.bf-kpi {
+    padding: 1.5rem 1.6rem;
+    box-shadow: -1px 0 0 var(--bf-border), 0 -1px 0 var(--bf-border);
+}
+
+.bf-kpi-label {
+    margin: 0;
+    font-size: 1.07rem;
+    color: #475569;
+}
+
+.bf-kpi-value {
+    margin: 0.4rem 0 0;
+    font-size: 2.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    color: var(--bf-text);
+}
+
+.bf-kpi-value-warning {
+    color: #b45309;
+}
+
+.bf-kpi-desc {
+    margin: 0.4rem 0 0;
+    overflow: hidden;
+    font-size: 0.93rem;
     white-space: nowrap;
-    color: rgb(100 116 139);
+    text-overflow: ellipsis;
+    color: var(--bf-text-muted);
 }
 
-.fi-ta-row {
-    transition: background-color 0.12s ease;
+.bf-panel {
+    padding: 0.5rem 1.6rem 0.75rem;
+    background-color: var(--bf-surface);
+    border-radius: var(--bf-radius);
+    box-shadow: var(--bf-card-shadow);
 }
 
-.fi-ta-row:hover {
-    background-color: rgb(31 111 168 / 0.03);
+.bf-panel-header {
+    padding: 1rem 0 0.9rem;
+    border-bottom: 1px solid var(--bf-border);
 }
 
-/* ── Badges: full pills. ── */
+.bf-panel-title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--bf-text);
+}
+
+.bf-panel-desc {
+    margin: 0.2rem 0 0;
+    font-size: 0.93rem;
+    color: var(--bf-text-muted);
+}
+
+.bf-panel-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-width: 0;
+    padding: 0.85rem 0;
+}
+
+.bf-panel-row + .bf-panel-row {
+    border-top: 1px solid var(--bf-border);
+}
+
+.bf-panel-row .bf-person {
+    min-width: 0;
+}
+
+.bf-panel-row .bf-person-name,
+.bf-panel-row .bf-person-subline {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.bf-panel-body {
+    padding: 1rem 0 0.5rem;
+}
+
+.bf-panel-empty {
+    margin: 0;
+    padding: 1rem 0 0.5rem;
+    color: var(--bf-text-muted);
+}
+
+.bf-panel-text {
+    color: var(--bf-text);
+}
+
+.bf-panel-meta {
+    font-size: 0.93rem;
+    white-space: nowrap;
+    color: var(--bf-text-muted);
+}
+
+.bf-panel-link {
+    font-weight: 500;
+    color: var(--bf-text);
+}
+
+.bf-panel-link:hover {
+    text-decoration: underline;
+}
+
+.bf-panel-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bf-panel-table th {
+    padding: 0.85rem 0 0.6rem;
+    font-size: 0.98rem;
+    font-weight: 500;
+    text-align: start;
+    color: #475569;
+    border-bottom: 1px solid var(--bf-border);
+}
+
+.bf-panel-table td {
+    padding: 0.85rem 0;
+    color: var(--bf-text);
+}
+
+.bf-panel-table tr + tr td {
+    border-top: 1px solid var(--bf-border);
+}
+
+.bf-panel-table .text-right {
+    text-align: end;
+}
+
+.bf-gauge-value {
+    font-size: 1.15rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--bf-text);
+}
+
+:where(.dark, .dark *) .bf-kpi-label,
+:where(.dark, .dark *) .bf-panel-table th {
+    color: #cbd5e1;
+}
+
+:where(.dark, .dark *) .bf-kpi-value-warning {
+    color: #fbbf24;
+}
+
+/* ── Tables: no header tint or caps, hairline row dividers, and row actions
+     as plain text links (icons hidden; destructive ones muted grey). ── */
+.fi-ta-ctn .fi-ta-header,
+.fi-ta-ctn .fi-ta-header-toolbar {
+    border-bottom: 0;
+}
+
+.fi-ta-ctn .fi-ta-header {
+    padding-top: 1.4rem;
+    padding-bottom: 0.25rem;
+}
+
+.fi-ta-content {
+    padding-inline: 0.5rem;
+}
+
+.fi-ta-header-cell {
+    background-color: transparent;
+    font-size: 0.98rem;
+    font-weight: 500;
+    color: #475569;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--bf-border);
+}
+
+.fi-ta-table > tbody {
+    border-color: var(--bf-border);
+}
+
+.fi-ta-table > tbody > tr {
+    border-color: var(--bf-border);
+}
+
+.fi-ta-row .fi-ta-actions .fi-link {
+    font-size: 1.02rem;
+    font-weight: 500;
+    color: var(--bf-text);
+}
+
+.fi-ta-row .fi-ta-actions .fi-link.fi-color-danger {
+    color: var(--bf-text-muted);
+}
+
+.fi-ta-row .fi-ta-actions .fi-link .fi-icon {
+    display: none;
+}
+
+.fi-ta-row .fi-ta-actions .fi-link:hover {
+    text-decoration: underline;
+}
+
+/* Name cell with an initials avatar (App\Filament\Tables\Columns\PersonColumn). */
+.bf-person {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.bf-person-avatar {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    background-color: var(--bf-surface-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #334155;
+}
+
+.bf-person-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.bf-person-name {
+    font-size: 1.07rem;
+    font-weight: 500;
+    color: var(--bf-text);
+}
+
+.bf-person-subline {
+    font-size: 0.93rem;
+    color: var(--bf-text-muted);
+}
+
+:where(.dark, .dark *) .bf-person-avatar {
+    color: #cbd5e1;
+}
+
+/* ── Badges: soft pills with no outline. ── */
 .fi-badge {
     border-radius: 9999px;
+    font-weight: 500;
+    box-shadow: none;
+}
+
+/* ── Buttons and inputs ── */
+.fi-btn {
+    border-radius: 0.5rem;
     font-weight: 600;
 }
 
-/* ── Buttons: filled primary buttons get a subtle sheen and a coloured
-     shadow; everything else keeps Filament's look. ── */
-.fi-btn {
-    border-radius: 0.625rem;
-    transition: transform 0.12s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-}
-
-.fi-btn.fi-color-primary:not(.fi-outlined) {
-    background-image: linear-gradient(180deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0));
-    box-shadow: 0 1px 2px rgb(31 111 168 / 0.25), 0 4px 12px -4px rgb(31 111 168 / 0.5);
-}
-
-.fi-btn.fi-color-primary:not(.fi-outlined):hover {
-    box-shadow: 0 1px 2px rgb(31 111 168 / 0.3), 0 8px 18px -6px rgb(31 111 168 / 0.6);
-}
-
-.fi-btn:active {
-    transform: translateY(1px);
-}
-
-/* ── Form fields across the panel: slightly rounder. ── */
+/* Form fields everywhere (create/edit forms, modals, table search, filters,
+   login): taller, larger text, and a solid hairline border instead of
+   Filament's faint ring. The border is a box-shadow, so the navy focus ring
+   and the red invalid ring below replace it without any layout shift. */
 .fi-input-wrp {
-    border-radius: 0.625rem;
+    border-radius: 0.5rem;
+    background-color: var(--bf-surface);
+    box-shadow: 0 0 0 1px var(--bf-input-border);
 }
 
-/* ── Dark mode equivalents of the light-only colours above, following
-     Filament's own gray-900/gray-950 + white/5 conventions. ── */
-:where(.dark, .dark *) .fi-header-subheading {
-    color: rgb(148 163 184);
+.fi-input-wrp:not(.fi-disabled):focus-within {
+    box-shadow: 0 0 0 2px var(--bf-focus);
 }
 
-:where(.dark, .dark *) .fi-layout {
-    background:
-        radial-gradient(900px 420px at 100% -10%, rgb(128 192 233 / 0.08), transparent 70%),
-        radial-gradient(900px 420px at 15% -10%, rgb(128 192 233 / 0.12), transparent 70%),
-        var(--bf-canvas);
-    background-attachment: fixed;
+.fi-input-wrp.fi-invalid,
+.fi-input-wrp.fi-invalid:not(.fi-disabled):focus-within {
+    box-shadow: 0 0 0 1px #dc2626;
 }
 
-:where(.dark, .dark *) .fi-sidebar-group-label {
-    color: rgb(148 163 184);
+.fi-input-wrp.fi-disabled {
+    background-color: var(--bf-surface-muted);
 }
 
-:where(.dark, .dark *) .fi-sidebar-item-icon {
-    color: rgb(100 116 139);
+input.fi-input,
+select.fi-select-input,
+.fi-select-input .fi-select-input-btn,
+.fi-fo-textarea textarea,
+.fi-fo-date-time-picker .fi-fo-date-time-picker-display-text-input {
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    font-size: 1.07rem;
+    line-height: 1.5rem;
 }
 
-:where(.dark, .dark *) .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover {
-    background-color: rgb(255 255 255 / 0.05);
+input.fi-input:not(.fi-input-has-inline-prefix),
+.fi-fo-textarea textarea,
+.fi-fo-date-time-picker .fi-fo-date-time-picker-display-text-input {
+    padding-inline-start: 0.9rem;
 }
 
-:where(.dark, .dark *) .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover .fi-sidebar-item-icon {
-    color: rgb(203 213 225);
+input.fi-input:not(.fi-input-has-inline-suffix),
+.fi-fo-textarea textarea {
+    padding-inline-end: 0.9rem;
 }
 
-:where(.dark, .dark *) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
-    background: linear-gradient(90deg, rgb(128 192 233 / 0.16), rgb(128 192 233 / 0.04));
-    color: rgb(151 203 238);
+select.fi-select-input:not(.fi-select-input-has-inline-prefix),
+.fi-select-input .fi-select-input-btn {
+    padding-inline-start: 0.9rem;
 }
 
-:where(.dark, .dark *) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-icon {
-    color: rgb(128 192 233);
+.fi-select-input .fi-select-input-btn {
+    min-height: 2.9rem;
 }
 
-:where(.dark, .dark *) .fi-topbar {
-    background-color: rgb(17 24 39 / 0.78);
+.fi-fo-field-label-content {
+    font-size: 1.02rem;
+    font-weight: 500;
+    color: #334155;
 }
 
-:where(.dark, .dark *) .fi-wi-stats-overview-stat-label {
-    color: rgb(203 213 225);
+:where(.dark, .dark *) .fi-fo-field-label-content {
+    color: #e2e8f0;
 }
 
-:where(.dark, .dark *) .fi-wi-stats-overview-stat-label-ctn > .fi-icon {
-    color: rgb(203 213 225);
-    background-color: rgb(255 255 255 / 0.06);
-}
-
+/* ── Dark mode: Filament's gray-900/gray-950 shell already follows the
+     tokens above; these cover the colours set directly. ── */
+:where(.dark, .dark *) .fi-sidebar-item-label,
+:where(.dark, .dark *) .fi-tabs-item .fi-tabs-item-label,
+:where(.dark, .dark *) .fi-wi-stats-overview-stat-label,
 :where(.dark, .dark *) .fi-ta-header-cell {
-    background-color: rgb(255 255 255 / 0.03);
-    color: rgb(148 163 184);
+    color: #cbd5e1;
 }
 
-:where(.dark, .dark *) .fi-ta-row:hover {
-    background-color: rgb(255 255 255 / 0.03);
+/* Navy primary buttons would sink into the dark canvas, so they invert to
+   light-on-dark instead. */
+:where(.dark, .dark *) .fi-btn.fi-color-primary:not(.fi-outlined) {
+    background-color: #f1f5f9;
+    color: #0f172a;
+}
+
+:where(.dark, .dark *) .fi-btn.fi-color-primary:not(.fi-outlined):hover {
+    background-color: #ffffff;
+}
+
+:where(.dark, .dark *) .fi-btn.fi-color-primary:not(.fi-outlined) .fi-icon {
+    color: #0f172a;
+}
+
+:where(.dark, .dark *) .fi-wi-stats-overview-stat:has(.fi-wi-stats-overview-stat-description.fi-color-warning) .fi-wi-stats-overview-stat-value {
+    color: #fbbf24;
+}
+
+:where(.dark, .dark *) .fi-wi-stats-overview-stat:has(.fi-wi-stats-overview-stat-description.fi-color-danger) .fi-wi-stats-overview-stat-value {
+    color: #f87171;
 }
 
 :where(.dark, .dark *) .fi-modal-window {
     box-shadow: 0 0 0 1px var(--bf-border), 0 24px 64px -12px rgb(0 0 0 / 0.7);
 }
 
-/* ── Login/auth pages: soft blue gradient background instead of
-     Filament's default flat gray. ── */
+/* ── Login/auth pages: split screen with a fixed palette (the same in light
+     and dark mode). Left: the form straight on the page, no card, with the
+     logo pinned to the top-left corner. Right (lg and up): an indigo panel
+     with an app screenshot peeking in (auth-aside.blade.php).
+
+     All colours come from the variables below. The earlier dark-navy version
+     used: bg #0a1636, text #ffffff, field #1c2a4f, label #94a0bd,
+     muted #7f93c9, link #4d7cff, error #f87171, button #13286a,
+     button-hover #1a3485. ── */
 .fi-simple-layout {
-    background:
-        radial-gradient(700px 500px at 10% 10%, rgb(31 111 168 / 0.12), transparent 70%),
-        radial-gradient(700px 500px at 90% 90%, rgb(74 155 209 / 0.08), transparent 70%),
-        linear-gradient(135deg, #f0f7fd 0%, #ffffff 50%, #f0f7fd 100%);
+    --bf-auth-bg: #ffffff;
+    --bf-auth-text: #0f172a;
+    --bf-auth-panel: #2c3a8f;
+    --bf-auth-field: #f1f4f8;
+    --bf-auth-label: #475569;
+    --bf-auth-muted: #64748b;
+    --bf-auth-link: #1d4ed8;
+    --bf-auth-error: #dc2626;
+    --bf-auth-button: #1e2a4a;
+    --bf-auth-button-hover: #2a3a63;
+
+    background-color: var(--bf-auth-bg);
+    color: var(--bf-auth-text);
 }
 
-:where(.dark, .dark *) .fi-simple-layout {
-    background:
-        radial-gradient(700px 500px at 10% 10%, rgb(31 111 168 / 0.18), transparent 70%),
-        radial-gradient(700px 500px at 90% 90%, rgb(74 155 209 / 0.12), transparent 70%),
-        linear-gradient(135deg, #0f1a33 0%, #111827 50%, #0f1a33 100%);
-}
-
-/* The auth card: elevated on the gradient background. */
-.fi-simple-main {
+.fi-simple-main-ctn {
     position: relative;
-    overflow: hidden;
-    border-radius: 0.75rem;
-    box-shadow: 0 0 0 1px var(--bf-border), 0 24px 60px -16px rgb(15 23 42 / 0.22);
 }
 
-.fi-simple-header .bf-brand {
-    font-size: 1.5rem;
-}
-
-/* ── Login/auth form fields: same visual style as the frontend's
-     Register.jsx form — solid gray border + rounded-xl + blue focus ring —
-     instead of Filament's default subtle ring-only look. Scoped to
-     .fi-simple-main so only auth pages are affected, not the rest of the
-     panel's forms. ── */
-.fi-simple-main .fi-input-wrp {
-    border-radius: 0.75rem;
-    border: 1px solid #e3e5ea;
+.fi-simple-main {
+    margin-block: 6rem 3rem;
+    padding: 0 1.5rem;
+    max-width: 30rem;
+    background: transparent;
+    border-radius: 0;
     box-shadow: none;
-    background-color: #ffffff;
 }
 
-.fi-simple-main .fi-input-wrp:focus-within {
-    border-color: transparent;
-    box-shadow: 0 0 0 2px #1f6fa8;
+/* Logo pinned to the top-left of the form half rather than above the heading. */
+.fi-simple-header .fi-logo {
+    position: absolute;
+    top: 2.25rem;
+    left: 2.5rem;
+    margin: 0;
 }
 
-.fi-simple-main .fi-input {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 0.625rem;
-    padding-bottom: 0.625rem;
+.fi-simple-layout .bf-brand {
+    font-size: 1.75rem;
+    color: var(--bf-auth-text);
 }
 
-.fi-simple-main .fi-fo-field-label-content {
-    color: rgb(55 65 81);
+.fi-simple-header {
+    align-items: flex-start;
+}
+
+.fi-simple-header-heading,
+.fi-simple-header-subheading {
+    text-align: start;
+}
+
+.fi-simple-header-heading {
+    font-size: 2.4rem;
+    line-height: 1.15;
+    color: var(--bf-auth-text);
+}
+
+.fi-simple-header-subheading {
+    margin-top: 0.6rem;
+    font-size: 1.15rem;
+    color: var(--bf-auth-muted);
+}
+
+/* Fields: filled, borderless, white text. */
+.fi-simple-layout .fi-fo-field-label-content {
+    font-weight: 400;
+    color: var(--bf-auth-label);
+}
+
+.fi-simple-layout .fi-input-wrp {
+    border-radius: 0.6rem;
+    background-color: var(--bf-auth-field);
+    box-shadow: none;
+}
+
+.fi-simple-layout .fi-input-wrp:not(.fi-disabled):focus-within {
+    box-shadow: 0 0 0 2px var(--bf-auth-link);
+}
+
+.fi-simple-layout .fi-input-wrp.fi-invalid,
+.fi-simple-layout .fi-input-wrp.fi-invalid:not(.fi-disabled):focus-within {
+    box-shadow: 0 0 0 1px var(--bf-auth-error);
+}
+
+.fi-simple-layout input.fi-input {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+    font-size: 1.15rem;
+    color: var(--bf-auth-text);
+}
+
+.fi-simple-layout input.fi-input::placeholder {
+    color: var(--bf-auth-muted);
+}
+
+/* Browser autofill would otherwise paint the field white/yellow. */
+.fi-simple-layout input.fi-input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 100px var(--bf-auth-field) inset;
+    -webkit-text-fill-color: var(--bf-auth-text);
+    caret-color: var(--bf-auth-text);
+}
+
+.fi-simple-layout .fi-input-wrp .fi-icon-btn,
+.fi-simple-layout .fi-input-wrp .fi-icon {
+    color: var(--bf-auth-label);
+}
+
+.fi-simple-layout .fi-checkbox-input {
+    background-color: var(--bf-auth-field);
+}
+
+.fi-simple-layout .fi-link {
+    color: var(--bf-auth-link);
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+}
+
+.fi-simple-layout .fi-fo-field-wrp-error-message,
+.fi-simple-layout .fi-fo-field-error-message {
+    color: var(--bf-auth-error);
+}
+
+/* Full-width navy submit button (white text in both palettes). */
+.fi-simple-layout .fi-btn.fi-color-primary:not(.fi-outlined) {
+    background-color: var(--bf-auth-button);
+    color: #ffffff;
+}
+
+.fi-simple-layout .fi-btn.fi-color-primary:not(.fi-outlined):hover {
+    background-color: var(--bf-auth-button-hover);
+}
+
+.fi-simple-layout .fi-btn.fi-color-primary:not(.fi-outlined) .fi-icon {
+    color: #ffffff;
 }
 
 .fi-simple-main button[type='submit'].fi-btn {
     width: 100%;
-    border-radius: 0.75rem;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
+    margin-top: 0.5rem;
+    border-radius: 0.6rem;
+    padding-top: 0.95rem;
+    padding-bottom: 0.95rem;
+    font-size: 1.15rem;
+}
+
+/* "Need an account? Register" under the login form (auth-register-link.blade.php). */
+.bf-auth-register {
+    margin: 0;
+    text-align: center;
+    font-size: 1.05rem;
+    color: var(--bf-auth-muted);
+}
+
+.bf-auth-register-link {
     font-weight: 600;
+    color: var(--bf-auth-link);
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
 }
 
-:where(.dark, .dark *) .fi-simple-main .fi-input-wrp {
-    border-color: #374151;
-    background-color: #1f2937;
+/* ── Right panel ── */
+.bf-auth-aside {
+    display: none;
 }
 
-:where(.dark, .dark *) .fi-simple-main .fi-fo-field-label-content {
-    color: rgb(229 231 235);
+@media (min-width: 1024px) {
+    .fi-simple-layout {
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    .fi-simple-main-ctn {
+        flex: 0 0 45%;
+        width: auto;
+    }
+
+    .bf-auth-aside {
+        position: relative;
+        display: flex;
+        align-items: center;
+        flex: 1 1 55%;
+        min-height: 100dvh;
+        overflow: hidden;
+        background:
+            radial-gradient(640px 460px at 85% 8%, rgb(255 255 255 / 0.10), transparent 70%),
+            radial-gradient(560px 420px at 8% 96%, rgb(96 165 250 / 0.20), transparent 70%),
+            var(--bf-auth-panel);
+    }
+}
+
+/* The screenshot: framed by a thick white border with a rounded top-left
+   corner, always reaching the bottom edge and running off the right (cover
+   crops from the right, so the left of the image always shows). */
+.bf-auth-aside-shot {
+    position: absolute;
+    top: 2.5rem;
+    left: 18%;
+    width: 1250px;
+    height: calc(100% - 2.5rem);
+    max-width: none;
+    object-fit: cover;
+    object-position: left top;
+    border: 0.6rem solid #ffffff;
+    border-right: 0;
+    border-bottom: 0;
+    border-top-left-radius: 2.5rem;
+}
+
+.bf-auth-aside-copy {
+    max-width: 44rem;
+    padding: 4rem 5rem;
+}
+
+.bf-auth-aside-title {
+    margin: 0;
+    font-family: var(--bf-heading-font);
+    font-size: 2.6rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+}
+
+.bf-auth-aside-text {
+    margin: 1rem 0 0;
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: rgb(255 255 255 / 0.75);
 }
 
 /* Mobile drawer */

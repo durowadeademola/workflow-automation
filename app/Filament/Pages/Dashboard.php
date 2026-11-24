@@ -12,19 +12,20 @@ use App\Models\User;
 use App\Models\WidgetConversation;
 use App\Models\WidgetMessage;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 /**
- * Custom dashboard (resources/views/filament/pages/custom-dashboard.blade.php) built to match
- * gradebook-portal's React admin dashboard: a dark hero band, a bordered KPI strip, and a quiet
- * two-column panel grid — rather than Filament's default stack of stat/chart widgets (still kept
- * in app/Filament/Widgets, just unused, in case they're wanted back).
+ * Custom dashboard (resources/views/filament/pages/custom-dashboard.blade.php): Filament's own page
+ * header carries the greeting, the one-line finding and the shortcut buttons, followed by a joined
+ * KPI strip and a two-column grid of plain panels — rather than Filament's default stack of
+ * stat/chart widgets (still kept in app/Filament/Widgets, just unused, in case they're wanted back).
  *
- * A user here only ever holds one of is_admin/is_client/is_agent (unlike gradebook, where one
- * person can hold several roles at once), so exactly one role's section renders.
+ * A user here only ever holds one of is_admin/is_client/is_agent, so exactly one role's section
+ * renders.
  */
 class Dashboard extends BaseDashboard
 {
@@ -32,18 +33,28 @@ class Dashboard extends BaseDashboard
 
     protected string $view = 'filament.pages.custom-dashboard';
 
-    // The greeting now lives inside the dashboard's own hero band (see the Blade view), not
-    // Filament's own page header — returning blank/null for both suppresses that header
-    // entirely (vendor/filament/filament/resources/views/components/page/index.blade.php only
-    // renders it when heading, subheading, breadcrumbs or header actions are non-empty).
     public function getHeading(): string
     {
-        return '';
+        $hour = now()->hour;
+        $greeting = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
+
+        return $greeting.', '.($this->dashboard['firstName'] ?? 'there');
     }
 
     public function getSubheading(): ?string
     {
-        return null;
+        return $this->dashboard['finding'] ?? 'Here\'s what\'s happening today.';
+    }
+
+    // Header actions are cached after mount(), so $this->dashboard is already filled in here.
+    protected function getHeaderActions(): array
+    {
+        return collect($this->dashboard['actions'] ?? [])
+            ->map(fn (array $link, int $index): Action => Action::make("dashboardLink{$index}")
+                ->label($link['label'])
+                ->url($link['url'])
+                ->color($link['primary'] ? 'primary' : 'gray'))
+            ->all();
     }
 
     // Livewire only auto-exposes PUBLIC PROPERTIES to the rendered view (not a getViewData()-style
@@ -109,12 +120,12 @@ class Dashboard extends BaseDashboard
             'finding' => $finding,
             'mrr' => $mrr,
             'kpis' => [
-                ['label' => 'Pending approvals', 'value' => $pendingApprovals, 'desc' => $pendingApprovals > 0 ? 'Businesses waiting to be let in' : 'All caught up'],
+                ['label' => 'Pending approvals', 'value' => $pendingApprovals, 'desc' => $pendingApprovals > 0 ? 'Businesses waiting to be let in' : 'All caught up', 'tone' => $pendingApprovals > 0 ? 'warning' : null],
                 ['label' => 'Active clients', 'value' => $activeClients, 'desc' => 'Approved and able to log in'],
                 ['label' => 'Active subscriptions', 'value' => $activeSubscriptions, 'desc' => 'Currently paid up'],
                 ['label' => 'MRR', 'value' => '₦'.number_format($mrr), 'desc' => 'From active subscriptions'],
                 ['label' => 'New leads', 'value' => $newLeads, 'desc' => 'In the last 7 days'],
-                ['label' => 'Expiring soon', 'value' => $expiringSoon, 'desc' => $expiringSoon > 0 ? 'Within 7 days' : 'Nothing ending soon'],
+                ['label' => 'Expiring soon', 'value' => $expiringSoon, 'desc' => $expiringSoon > 0 ? 'Within 7 days' : 'Nothing ending soon', 'tone' => $expiringSoon > 0 ? 'warning' : null],
             ],
             'subscriptionSplit' => ['active' => $activeSubscriptions, 'expiringSoon' => $expiringSoon],
             'expiringSubscriptions' => $expiringSubscriptions,
@@ -232,7 +243,7 @@ class Dashboard extends BaseDashboard
             'resolvedToday' => $resolvedToday,
             'messagesHandledToday' => $messagesHandledToday,
             'kpis' => [
-                ['label' => 'Waiting for a reply', 'value' => $waiting, 'desc' => $waiting > 0 ? 'Visitors asked for a human' : 'Nothing waiting'],
+                ['label' => 'Waiting for a reply', 'value' => $waiting, 'desc' => $waiting > 0 ? 'Visitors asked for a human' : 'Nothing waiting', 'tone' => $waiting > 0 ? 'warning' : null],
                 ['label' => 'Active conversations', 'value' => $active, 'desc' => 'Currently being handled'],
                 ['label' => 'Resolved today', 'value' => $resolvedToday, 'desc' => 'Conversations closed today'],
                 ['label' => 'Appointments booked', 'value' => $appointmentsBooked, 'desc' => 'Total appointments'],

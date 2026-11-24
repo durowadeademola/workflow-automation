@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Customers\Tables;
 
 use App\Filament\Exports\CustomerExporter;
 use App\Filament\Imports\CustomerImporter;
+use App\Filament\Tables\Columns\PersonColumn;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -34,13 +35,11 @@ class CustomersTable
                     ->exporter(CustomerExporter::class),
             ])
             ->columns([
-                TextColumn::make('display_name')
-                    ->label('Name / ID')
-                    ->formatStateUsing(fn (string $state, $record): string => "{$state} (#{$record->id})")
-                    ->searchable(query: fn ($query, $search) => $query->orWhere('name', 'like', "%{$search}%")),
-                TextColumn::make('email')
-                    ->placeholder('—')
-                    ->searchable(),
+                PersonColumn::make('display_name', fn ($record) => $record->email ?: "Customer #{$record->id}")
+                    ->label('Customer')
+                    ->searchable(query: fn ($query, $search) => $query
+                        ->orWhere('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")),
                 TextColumn::make('phone')
                     ->label('Telephone')
                     ->placeholder('—')

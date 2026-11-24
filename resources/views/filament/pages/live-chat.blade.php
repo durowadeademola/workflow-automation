@@ -3,7 +3,7 @@
         {{-- Conversation list --}}
         <div class="lg:col-span-1 bg-[var(--bf-surface)] rounded-[var(--bf-radius)] border border-[var(--bf-border)] overflow-hidden">
             <div class="px-4 py-3 border-b border-[var(--bf-border)]">
-                <h3 class="bf-font-display text-sm font-semibold text-gray-700 dark:text-gray-200">Conversations</h3>
+                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Conversations</h3>
             </div>
             <div class="divide-y divide-[var(--bf-border)]" style="max-height: 65vh; overflow-y: auto;">
                 @forelse($this->getConversations() as $conversation)
@@ -61,7 +61,7 @@
             @else
                 <div class="px-4 py-3 border-b border-[var(--bf-border)] flex items-center justify-between">
                     <div>
-                        <h3 class="bf-font-display text-sm font-semibold text-gray-800 dark:text-gray-100">
+                        <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-100">
                             {{ $conversation->visitor_name ?: 'Website Visitor #' . $conversation->id }}
                         </h3>
                         <p class="text-xs text-gray-400">{{ $conversation->client?->name }}</p>

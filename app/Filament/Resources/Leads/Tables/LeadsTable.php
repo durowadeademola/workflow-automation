@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Leads\Tables;
 
+use App\Filament\Tables\Columns\PersonColumn;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -16,14 +17,12 @@ class LeadsTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->searchable()
+                PersonColumn::make('name', fn ($record) => $record->email)
+                    ->searchable(['name', 'email'])
                     ->sortable(),
                 TextColumn::make('business_name')
                     ->label('Business')
                     ->placeholder('—')
-                    ->searchable(),
-                TextColumn::make('email')
                     ->searchable(),
                 TextColumn::make('phone')
                     ->placeholder('—')

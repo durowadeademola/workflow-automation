@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Agents\Tables;
 
 use App\Filament\Exports\AgentExporter;
+use App\Filament\Tables\Columns\PersonColumn;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -27,11 +28,8 @@ class AgentsTable
                     ->placeholder('—')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('email')
-                    ->label('Email')
-                    ->searchable(),
+                PersonColumn::make('name', fn ($record) => $record->email)
+                    ->searchable(['name', 'email']),
                 TextColumn::make('telephone')
                     ->label('Telephone'),
                 BadgeColumn::make('status')

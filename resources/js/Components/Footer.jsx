@@ -150,7 +150,7 @@ export default function Footer() {
                             <span className="font-display font-semibold tracking-[-0.01em] text-white text-base">Blueflow Automation</span>
                         </Link>
                         <p className="text-sm leading-relaxed mb-6">
-                            Agentic AI-powered automation for Nigerian businesses. Automate everything, grow faster.
+                            Agentic AI-powered Automation for Nigerian businesses. Automate everything, grow faster.
                         </p>
                         <div className="space-y-2 text-sm">
                             <a href="mailto:hello@blueflowautomation.com" className="flex items-center gap-2 hover:text-blue-400 transition-colors">

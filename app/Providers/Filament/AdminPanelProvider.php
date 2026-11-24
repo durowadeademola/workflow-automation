@@ -5,18 +5,19 @@ namespace App\Providers\Filament;
 use Filament\Actions\Action;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Auth\MultiFactor\Email\EmailAuthentication;
+use Filament\Enums\DatabaseNotificationsPosition;
 use Filament\Enums\ThemeMode;
 use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use App\Filament\Auth\Login;
 use App\Filament\Pages\Dashboard;
-use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Support\Icons\Heroicon;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -30,13 +31,15 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->databaseNotifications()
+            // Not rendered by Filament itself (there's no topbar) — the
+            // CONTENT_START hook below pins the bell top-right instead.
+            ->databaseNotifications(position: DatabaseNotificationsPosition::Topbar)
             ->default()
             ->id('admin')
             ->path('admin')
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->favicon(asset('favicon-32x32.png'))
-            ->login()
+            ->login(Login::class)
             ->passwordReset()
             ->profile()
             // Optional, per-user — isRequired defaults to false, so login
@@ -73,13 +76,11 @@ class AdminPanelProvider extends PanelProvider
                         return redirect(Filament::getLoginUrl());
                     }),
             ])
+            // Near-monochrome palette: navy is the only strong colour, used
+            // for primary buttons, links and focus rings.
             ->colors([
-                'primary' => Color::Blue,
+                'primary' => Color::hex('#1e2a4a'),
                 'gray' => Color::Slate,
-            ])
-            ->navigationGroups([
-                NavigationGroup::make('Chat Widget')->icon(Heroicon::ChatBubbleLeftRight),
-                NavigationGroup::make('Marketing')->icon(Heroicon::Megaphone),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -111,6 +112,23 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->sidebarCollapsibleOnDesktop();
+            ->sidebarCollapsibleOnDesktop()
+            // No topbar: the sidebar is a floating card holding the collapse
+            // button and the user menu (Filament moves it there by default
+            // once the topbar is off).
+            ->topbar(false)
+            ->renderHook(
+                PanelsRenderHook::CONTENT_START,
+                fn (): string => view('filament.components.content-topbar')->render(),
+            )
+            // Right half of the split login/auth screens (the form is the left half).
+            ->renderHook(
+                PanelsRenderHook::SIMPLE_LAYOUT_END,
+                fn (): string => view('filament.components.auth-aside')->render(),
+            )
+            ->renderHook(
+                PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
+                fn (): string => view('filament.components.auth-register-link')->render(),
+            );
     }
 }

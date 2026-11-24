@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Users\Tables;
 
 use App\Filament\Exports\UserExporter;
+use App\Filament\Tables\Columns\PersonColumn;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -36,11 +37,8 @@ class UsersTable
                     ->placeholder('—')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('email')
-                    ->label('Email address')
-                    ->searchable(),
+                PersonColumn::make('name', fn ($record) => $record->email)
+                    ->searchable(['name', 'email']),
                 IconColumn::make('is_admin')
                     ->label('Admin')
                     ->boolean(),
