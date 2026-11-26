@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ]);
     $middleware->alias([
         'webhook.secret' => \App\Http\Middleware\VerifyWebhookSecret::class,
-        'workflow-studio.auth' => \App\Http\Middleware\EnsureWorkflowStudioAuthenticated::class,
+        'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
     ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

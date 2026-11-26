@@ -13,8 +13,10 @@ async function request(path, options = {}) {
         body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
     });
 
+    // Session expired (401) or CSRF token stale (419): reloading lets the
+    // admin panel send the user through its own login and back here.
     if (res.status === 401 || res.status === 419) {
-        window.location.href = '/workflow-studio/login';
+        window.location.reload();
         return null;
     }
 
@@ -37,7 +39,7 @@ export const api = {
     getWorkflow: (id) => request(`/workflows/${id}`),
     updateWorkflow: (id, payload) => request(`/workflows/${id}`, { method: 'PUT', body: payload }),
     deleteWorkflow: (id) => request(`/workflows/${id}`, { method: 'DELETE' }),
-    testRun: (id, payload) => request(`/workflows/${id}/test-run`, { method: 'POST', body: payload }),
+    testRun: (id, triggerPayload) => request(`/workflows/${id}/test-run`, { method: 'POST', body: { trigger_payload: triggerPayload } }),
     stepTypes: () => request('/step-types'),
     createStep: (workflowId, payload) => request(`/workflows/${workflowId}/steps`, { method: 'POST', body: payload }),
     updateStep: (id, payload) => request(`/steps/${id}`, { method: 'PUT', body: payload }),

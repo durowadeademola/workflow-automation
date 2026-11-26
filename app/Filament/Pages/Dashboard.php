@@ -31,6 +31,9 @@ class Dashboard extends BaseDashboard
 {
     protected static BackedEnum|string|null $navigationIcon = Heroicon::Home;
 
+    // First in the menu, with Workflow Studio (-2) directly under it.
+    protected static ?int $navigationSort = -3;
+
     protected string $view = 'filament.pages.custom-dashboard';
 
     public function getHeading(): string

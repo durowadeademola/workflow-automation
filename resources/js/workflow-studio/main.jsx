@@ -4,4 +4,8 @@ import './style.css';
 import App from './App.jsx';
 
 const container = document.getElementById('workflow-studio-root');
-createRoot(container).render(<App />);
+
+if (container && !container.dataset.mounted) {
+    container.dataset.mounted = 'true';
+    createRoot(container).render(<App />);
+}

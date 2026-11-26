@@ -13,7 +13,7 @@ class WorkflowController extends Controller
 {
     public function index()
     {
-        return AutomationWorkflow::withCount('runs')
+        return AutomationWorkflow::withCount(['runs', 'steps'])
             ->orderByDesc('id')
             ->get();
     }
@@ -34,9 +34,16 @@ class WorkflowController extends Controller
         return response()->json($workflow, 201);
     }
 
+    /**
+     * The workflow with its steps, plus what the builder's stats strip shows: step/run counts and
+     * the most recent run's status and time.
+     */
     public function show(AutomationWorkflow $workflow)
     {
-        return $workflow->load('steps');
+        $workflow->load('steps')->loadCount(['runs', 'steps']);
+        $workflow->setAttribute('latest_run', $workflow->runs()->latest('id')->first(['id', 'status', 'created_at']));
+
+        return $workflow;
     }
 
     public function update(Request $request, AutomationWorkflow $workflow)

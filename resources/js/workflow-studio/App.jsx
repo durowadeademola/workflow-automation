@@ -1,79 +1,107 @@
-import { useEffect, useState, useCallback } from 'react';
-import { ReactFlowProvider } from '@xyflow/react';
+import { useCallback, useEffect, useState } from 'react';
 import { api } from './api.js';
-import WorkflowSidebar from './components/WorkflowSidebar.jsx';
-import FlowCanvas from './components/FlowCanvas.jsx';
-import StepEditorPanel from './components/StepEditorPanel.jsx';
+import WorkflowList from './components/WorkflowList.jsx';
+import BuilderCard from './components/BuilderCard.jsx';
 import WorkflowPanel from './components/WorkflowPanel.jsx';
+import StepPanel from './components/StepPanel.jsx';
 
 export default function App() {
     const [workflows, setWorkflows] = useState([]);
     const [stepTypes, setStepTypes] = useState([]);
-    const [selectedWorkflow, setSelectedWorkflow] = useState(null);
+    const [workflow, setWorkflow] = useState(null);
     const [steps, setSteps] = useState([]);
+    // A step id, 'trigger' (the trigger node), or null (nothing selected).
     const [selectedStepId, setSelectedStepId] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        api.listWorkflows().then(setWorkflows).catch((e) => setError(e.message));
-        api.stepTypes().then(setStepTypes).catch((e) => setError(e.message));
+    const fail = (e) => setError(e.message);
+
+    const openWorkflow = useCallback(async (id) => {
+        setSelectedStepId(null);
+        try {
+            const full = await api.getWorkflow(id);
+            setWorkflow(full);
+            setSteps(full.steps ?? []);
+        } catch (e) {
+            fail(e);
+        }
     }, []);
 
-    const selectWorkflow = useCallback((workflow) => {
-        setSelectedStepId(null);
-        api.getWorkflow(workflow.id)
-            .then((full) => {
-                setSelectedWorkflow(full);
-                setSteps(full.steps ?? []);
+    useEffect(() => {
+        Promise.all([api.listWorkflows(), api.stepTypes()])
+            .then(([list, types]) => {
+                setWorkflows(list ?? []);
+                setStepTypes(types ?? []);
+                if (list?.length) openWorkflow(list[0].id);
             })
-            .catch((e) => setError(e.message));
-    }, []);
+            .catch(fail)
+            .finally(() => setLoading(false));
+    }, [openWorkflow]);
+
+    // Keeps the list's step/run counts in line with the open workflow.
+    const syncListCounts = (id, patch) => setWorkflows((prev) => prev.map((w) => (w.id === id ? { ...w, ...patch } : w)));
 
     async function handleCreateWorkflow(payload) {
         try {
-            const workflow = await api.createWorkflow(payload);
-            setWorkflows((prev) => [workflow, ...prev]);
-            selectWorkflow(workflow);
+            const created = await api.createWorkflow(payload);
+            setWorkflows((prev) => [{ ...created, steps_count: 0, runs_count: 0 }, ...prev]);
+            openWorkflow(created.id);
+            return true;
         } catch (e) {
-            setError(e.message);
+            fail(e);
+            return false;
         }
     }
 
     async function handleSaveWorkflow(id, payload) {
         try {
             const updated = await api.updateWorkflow(id, payload);
-            setSelectedWorkflow((prev) => ({ ...prev, ...updated }));
-            setWorkflows((prev) => prev.map((w) => (w.id === id ? { ...w, ...updated } : w)));
+            setWorkflow((prev) => ({ ...prev, ...updated }));
+            syncListCounts(id, updated);
         } catch (e) {
-            setError(e.message);
+            fail(e);
         }
     }
 
     async function handleDeleteWorkflow(id) {
-        if (! confirm('Delete this workflow and all its steps/run history? This cannot be undone.')) return;
+        if (!confirm('Delete this workflow and all its steps and run history? This cannot be undone.')) return;
 
         try {
             await api.deleteWorkflow(id);
-            setWorkflows((prev) => prev.filter((w) => w.id !== id));
-            setSelectedWorkflow(null);
+            const remaining = workflows.filter((w) => w.id !== id);
+            setWorkflows(remaining);
+            setWorkflow(null);
             setSteps([]);
+            if (remaining.length) openWorkflow(remaining[0].id);
         } catch (e) {
-            setError(e.message);
+            fail(e);
         }
     }
 
+    async function handleTestRun(id, payload) {
+        const run = await api.testRun(id, payload);
+        // Pick up the new run in the stats strip and the list.
+        const fresh = await api.getWorkflow(id);
+        setWorkflow((prev) => ({ ...prev, runs_count: fresh.runs_count, latest_run: fresh.latest_run }));
+        syncListCounts(id, { runs_count: fresh.runs_count });
+        return run;
+    }
+
     async function handleAddStep(type) {
-        if (! selectedWorkflow) return;
+        if (!workflow) return;
 
         try {
-            const step = await api.createStep(selectedWorkflow.id, {
-                key: `${type}_${steps.length + 1}`,
-                type,
-                config: {},
-            });
+            const existing = new Set(steps.map((s) => s.key));
+            let n = steps.length + 1;
+            while (existing.has(`${type}_${n}`)) n += 1;
+
+            const step = await api.createStep(workflow.id, { key: `${type}_${n}`, type, config: {} });
             setSteps((prev) => [...prev, step]);
+            syncListCounts(workflow.id, { steps_count: steps.length + 1 });
+            setSelectedStepId(step.id);
         } catch (e) {
-            setError(e.message);
+            fail(e);
         }
     }
 
@@ -82,23 +110,24 @@ export default function App() {
             const updated = await api.updateStep(id, payload);
             setSteps((prev) => prev.map((s) => (s.id === id ? updated : s)));
         } catch (e) {
-            setError(e.message);
+            fail(e);
         }
     }
 
     async function handleDeleteStep(id) {
-        if (! confirm('Delete this step?')) return;
+        if (!confirm('Delete this step?')) return;
 
         try {
             await api.deleteStep(id);
             setSteps((prev) => prev.filter((s) => s.id !== id));
+            syncListCounts(workflow.id, { steps_count: steps.length - 1 });
             if (selectedStepId === id) setSelectedStepId(null);
         } catch (e) {
-            setError(e.message);
+            fail(e);
         }
     }
 
-    async function handleReorderStep(id, direction) {
+    async function handleMoveStep(id, direction) {
         const sorted = [...steps].sort((a, b) => a.order - b.order);
         const index = sorted.findIndex((s) => s.id === id);
         const swapWith = index + direction;
@@ -106,94 +135,107 @@ export default function App() {
         if (swapWith < 0 || swapWith >= sorted.length) return;
 
         [sorted[index], sorted[swapWith]] = [sorted[swapWith], sorted[index]];
-        const order = sorted.map((s) => s.id);
 
         try {
-            const updated = await api.reorderSteps(selectedWorkflow.id, order);
+            const updated = await api.reorderSteps(workflow.id, sorted.map((s) => s.id));
             setSteps(updated.steps ?? []);
         } catch (e) {
-            setError(e.message);
+            fail(e);
         }
     }
 
-    async function handleNodeMoved(id, position) {
+    // After a drag: persists every step whose position changed (all of them,
+    // the first time a flow is arranged by hand).
+    const handleArrange = useCallback(async (placed) => {
+        const current = new Map(steps.map((s) => [s.id, s.canvas_position]));
+        const changed = placed.filter(({ id, position }) => {
+            const saved = current.get(id);
+            return !saved || saved.x !== position.x || saved.y !== position.y;
+        });
+
         try {
-            const updated = await api.updateStep(id, { canvas_position: position });
-            setSteps((prev) => prev.map((s) => (s.id === id ? updated : s)));
+            const updated = await Promise.all(changed.map(({ id, position }) => api.updateStep(id, { canvas_position: position })));
+            const byId = new Map(updated.map((s) => [s.id, s]));
+            setSteps((prev) => prev.map((s) => byId.get(s.id) ?? s));
         } catch (e) {
-            setError(e.message);
+            fail(e);
+        }
+    }, [steps]);
+
+    // Clears every hand-placed position so the canvas falls back to the
+    // automatic left-to-right layout.
+    async function handleAutoArrange() {
+        try {
+            const placed = steps.filter((s) => s.canvas_position);
+            const updated = await Promise.all(placed.map((s) => api.updateStep(s.id, { canvas_position: null })));
+            const byId = new Map(updated.map((s) => [s.id, s]));
+            setSteps((prev) => prev.map((s) => byId.get(s.id) ?? s));
+        } catch (e) {
+            fail(e);
         }
     }
 
-    function handleLogout() {
-        const url = document.querySelector('meta[name="logout-url"]')?.content;
-        const token = document.querySelector('meta[name="csrf-token"]')?.content;
-
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = url;
-        form.innerHTML = `<input type="hidden" name="_token" value="${token}">`;
-        document.body.appendChild(form);
-        form.submit();
-    }
-
-    const selectedStep = steps.find((s) => s.id === selectedStepId) ?? null;
+    const sortedSteps = [...steps].sort((a, b) => a.order - b.order);
+    const selectedStep = typeof selectedStepId === 'number' ? steps.find((s) => s.id === selectedStepId) : null;
 
     return (
-        <div className="ws-app">
-            <div className="ws-header">
-                <h1>Workflow Studio {selectedWorkflow ? `— ${selectedWorkflow.name}` : ''}</h1>
-                <button className="ws-btn secondary" onClick={handleLogout}>Log out</button>
-            </div>
+        <div className="ws-root">
+            {error && (
+                <div className="ws-error ws-error-banner">
+                    <span>{error}</span>
+                    <button type="button" className="ws-btn ws-btn-secondary ws-btn-sm" onClick={() => setError('')}>Dismiss</button>
+                </div>
+            )}
 
-            {error && <div className="ws-error" style={{ margin: 12 }}>{error}</div>}
-
-            <div className="ws-body">
-                <WorkflowSidebar
+            <div className="ws-layout">
+                <WorkflowList
                     workflows={workflows}
-                    selectedWorkflow={selectedWorkflow}
-                    onSelectWorkflow={selectWorkflow}
-                    onCreateWorkflow={handleCreateWorkflow}
-                    steps={steps}
-                    selectedStepId={selectedStepId}
-                    onSelectStep={setSelectedStepId}
-                    onDeleteStep={handleDeleteStep}
-                    onReorderStep={handleReorderStep}
-                    stepTypes={stepTypes}
-                    onAddStep={handleAddStep}
+                    selectedId={workflow?.id}
+                    onSelect={(w) => openWorkflow(w.id)}
+                    onCreate={handleCreateWorkflow}
                 />
 
-                <div className="ws-canvas">
-                    {selectedWorkflow ? (
-                        <ReactFlowProvider>
-                            <FlowCanvas
-                                steps={steps}
-                                selectedStepId={selectedStepId}
-                                onSelectStep={setSelectedStepId}
-                                onDeselect={() => setSelectedStepId(null)}
-                                onNodeMoved={handleNodeMoved}
-                            />
-                        </ReactFlowProvider>
-                    ) : (
-                        <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
-                            Select or create a workflow to start building.
-                        </div>
-                    )}
-                </div>
+                {workflow ? (
+                    <>
+                        <BuilderCard
+                            workflow={workflow}
+                            steps={steps}
+                            stepTypes={stepTypes}
+                            selectedStepId={selectedStepId}
+                            onSelectStep={setSelectedStepId}
+                            onSelectTrigger={() => setSelectedStepId('trigger')}
+                            onDeselect={() => setSelectedStepId(null)}
+                            onArrange={handleArrange}
+                            onAddStep={handleAddStep}
+                            onAutoArrange={handleAutoArrange}
+                        />
 
-                {selectedWorkflow && (
-                    <div className="ws-panel">
-                        {selectedStep ? (
-                            <StepEditorPanel step={selectedStep} onSave={handleSaveStep} onDelete={handleDeleteStep} />
-                        ) : (
-                            <WorkflowPanel
-                                workflow={selectedWorkflow}
-                                onSave={handleSaveWorkflow}
-                                onDelete={handleDeleteWorkflow}
-                                onTestRun={api.testRun}
-                            />
-                        )}
-                    </div>
+                        <div className="ws-side">
+                            {selectedStep ? (
+                                <StepPanel
+                                    step={selectedStep}
+                                    position={sortedSteps.findIndex((s) => s.id === selectedStep.id) + 1}
+                                    total={sortedSteps.length}
+                                    stepTypes={stepTypes}
+                                    onSave={handleSaveStep}
+                                    onDelete={handleDeleteStep}
+                                    onMove={handleMoveStep}
+                                    onClose={() => setSelectedStepId(null)}
+                                />
+                            ) : (
+                                <WorkflowPanel
+                                    workflow={workflow}
+                                    onSave={handleSaveWorkflow}
+                                    onDelete={handleDeleteWorkflow}
+                                    onTestRun={handleTestRun}
+                                />
+                            )}
+                        </div>
+                    </>
+                ) : (
+                    <section className="ws-card ws-placeholder">
+                        <p>{loading ? 'Loading workflows…' : 'Create a workflow on the left to start building.'}</p>
+                    </section>
                 )}
             </div>
         </div>

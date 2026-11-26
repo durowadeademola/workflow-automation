@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Play } from 'lucide-react';
 
 export default function WorkflowPanel({ workflow, onSave, onDelete, onTestRun }) {
     const [name, setName] = useState(workflow.name);
@@ -59,8 +60,7 @@ export default function WorkflowPanel({ workflow, onSave, onDelete, onTestRun })
         setResult(null);
 
         try {
-            const run = await onTestRun(workflow.id, parsedPayload);
-            setResult(run);
+            setResult(await onTestRun(workflow.id, parsedPayload));
         } catch (e) {
             setRunError(e.message);
         } finally {
@@ -69,63 +69,80 @@ export default function WorkflowPanel({ workflow, onSave, onDelete, onTestRun })
     }
 
     return (
-        <div>
-            <div className="ws-section-title">Workflow settings</div>
+        <>
+            <section className="ws-card">
+                <header className="ws-card-header">
+                    <h3 className="ws-card-title">Workflow settings</h3>
+                    <p className="ws-card-desc">Click a step on the canvas to edit it instead.</p>
+                </header>
 
-            {error && <div className="ws-error">{error}</div>}
+                <div className="ws-form">
+                    {error && <div className="ws-error">{error}</div>}
 
-            <div className="ws-field">
-                <label>Name</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-            </div>
-            <div className="ws-field">
-                <label>Slug</label>
-                <input type="text" value={slug} onChange={(e) => setSlug(e.target.value)} />
-            </div>
-            <div className="ws-field">
-                <label>Trigger type</label>
-                <select value={triggerType} onChange={(e) => setTriggerType(e.target.value)}>
-                    <option value="manual">manual</option>
-                    <option value="webhook">webhook</option>
-                    <option value="scheduled">scheduled</option>
-                    <option value="model_event">model_event</option>
-                </select>
-            </div>
-            <div className="ws-field">
-                <label>Trigger config (JSON) — e.g. {'{"cron": "*/15 * * * *"}'} for scheduled</label>
-                <textarea value={triggerConfig} onChange={(e) => setTriggerConfig(e.target.value)} style={{ minHeight: 70 }} />
-            </div>
-            <div className="ws-field">
-                <label>
-                    <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} style={{ width: 'auto', marginRight: 6 }} />
-                    Active
-                </label>
-            </div>
+                    <label className="ws-field">
+                        <span>Name</span>
+                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                    </label>
+                    <label className="ws-field">
+                        <span>Slug</span>
+                        <input type="text" value={slug} onChange={(e) => setSlug(e.target.value)} />
+                    </label>
+                    <label className="ws-field">
+                        <span>Trigger</span>
+                        <select value={triggerType} onChange={(e) => setTriggerType(e.target.value)}>
+                            <option value="manual">Manual</option>
+                            <option value="webhook">Webhook</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="model_event">Model event</option>
+                        </select>
+                    </label>
+                    <label className="ws-field">
+                        <span>Trigger config (JSON), e.g. {'{"cron": "*/15 * * * *"}'} for scheduled</span>
+                        <textarea value={triggerConfig} onChange={(e) => setTriggerConfig(e.target.value)} rows={4} />
+                    </label>
+                    <label className="ws-check">
+                        <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
+                        <span>Live (runs on its trigger)</span>
+                    </label>
 
-            <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-                <button className="ws-btn" onClick={handleSave}>Save workflow</button>
-                <button className="ws-btn danger" onClick={() => onDelete(workflow.id)}>Delete</button>
-            </div>
-
-            <div className="ws-section-title">Test run</div>
-
-            {runError && <div className="ws-error">{runError}</div>}
-
-            <div className="ws-field">
-                <label>Trigger payload (JSON)</label>
-                <textarea value={payload} onChange={(e) => setPayload(e.target.value)} style={{ minHeight: 90 }} />
-            </div>
-
-            <button className="ws-btn" disabled={running} onClick={handleTestRun}>
-                {running ? 'Running...' : 'Run now'}
-            </button>
-
-            {result && (
-                <div style={{ marginTop: 12 }}>
-                    <div className="ws-section-title">Result — {result.status}</div>
-                    <div className="ws-run-log">{JSON.stringify(result.context?.steps ?? result, null, 2)}</div>
+                    <div className="ws-actions">
+                        <button type="button" className="ws-btn ws-btn-primary" onClick={handleSave}>Save workflow</button>
+                        <button type="button" className="ws-btn ws-btn-link-danger" onClick={() => onDelete(workflow.id)}>Delete</button>
+                    </div>
                 </div>
-            )}
-        </div>
+            </section>
+
+            <section className="ws-card">
+                <header className="ws-card-header">
+                    <h3 className="ws-card-title">Test run</h3>
+                    <p className="ws-card-desc">A real run: any action steps really happen.</p>
+                </header>
+
+                <div className="ws-form">
+                    {runError && <div className="ws-error">{runError}</div>}
+
+                    <label className="ws-field">
+                        <span>Trigger payload (JSON)</span>
+                        <textarea value={payload} onChange={(e) => setPayload(e.target.value)} rows={5} />
+                    </label>
+
+                    <div className="ws-actions">
+                        <button type="button" className="ws-btn ws-btn-primary" disabled={running} onClick={handleTestRun}>
+                            <Play size={14} /> {running ? 'Running…' : 'Run now'}
+                        </button>
+                    </div>
+
+                    {result && (
+                        <div className="ws-result">
+                            <p className="ws-result-title">
+                                Result
+                                <span className={`ws-pill ${result.status === 'completed' ? 'ws-pill-green' : 'ws-pill-red'}`}>{result.status}</span>
+                            </p>
+                            <pre className="ws-code">{JSON.stringify(result.context?.steps ?? result, null, 2)}</pre>
+                        </div>
+                    )}
+                </div>
+            </section>
+        </>
     );
 }
