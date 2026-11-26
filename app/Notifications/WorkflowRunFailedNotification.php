@@ -36,7 +36,7 @@ class WorkflowRunFailedNotification extends Notification
             ->greeting("Hi {$notifiable->name},")
             ->line("Run #{$this->run->id} of the \"{$workflow->name}\" workflow failed and gave up after exhausting its retries.")
             ->line($this->run->error ?? 'No error message was recorded.')
-            ->action('Inspect this run', url('/workflow-studio'))
+            ->action('Inspect this run', url('/admin/workflow-studio'))
             ->line('Check `php artisan workflows:runs ' . $workflow->slug . " --run={$this->run->id}` for the full step-by-step detail.");
     }
 
@@ -54,8 +54,8 @@ class WorkflowRunFailedNotification extends Notification
             ->actions([
                 Action::make('view')
                     ->button()
-                    ->url('/workflow-studio')
-                    ->label('Open Workflow Studio'),
+                    ->url('/admin/workflow-studio')
+                    ->label('Open workflow studio'),
             ])
             ->getDatabaseMessage();
     }

@@ -145,12 +145,12 @@ export default function Navbar() {
                         {/* Desktop Auth Buttons */}
                         <div className="hidden md:flex items-center gap-3">
                             <ThemeToggle />
-                            <Link
+                            <a
                                 href="/user/login"
                                 className="text-sm font-medium text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
                             >
                                 Log In
-                            </Link>
+                            </a>
                             <Link href="/register"
                                 className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                             >
@@ -225,13 +225,13 @@ export default function Navbar() {
                         )
                     )}
                     <div className="pt-3 flex flex-col gap-2">
-                        <Link
+                        <a
                             href="/user/login"
                             className="block text-center py-2 text-sm font-medium text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
                             onClick={() => setMobileOpen(false)}
                         >
                             Log in
-                        </Link>
+                        </a>
                         <Link
                             href="/register"
                             className="block text-center py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700"

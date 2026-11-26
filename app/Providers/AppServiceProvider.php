@@ -14,7 +14,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Custom icons for the admin panels, from resources/svg — usable anywhere
+        // Filament takes an icon name, as "bf-{file name}" (e.g. bf-workflow).
+        $this->callAfterResolving(\BladeUI\Icons\Factory::class, function (\BladeUI\Icons\Factory $factory) {
+            $factory->add('bf', ['path' => resource_path('svg'), 'prefix' => 'bf']);
+        });
     }
 
     /**

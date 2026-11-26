@@ -725,8 +725,8 @@ select.fi-select-input:not(.fi-select-input-has-inline-prefix),
     --bf-auth-muted: #64748b;
     --bf-auth-link: #1d4ed8;
     --bf-auth-error: #dc2626;
-    --bf-auth-button: #1e2a4a;
-    --bf-auth-button-hover: #2a3a63;
+    --bf-auth-button: var(--bf-auth-panel);
+    --bf-auth-button-hover: #3646a8;
 
     background-color: var(--bf-auth-bg);
     color: var(--bf-auth-text);

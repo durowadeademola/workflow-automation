@@ -15,7 +15,7 @@
         <div class="bf-auth-aside-copy">
             <p class="bf-auth-aside-title">Automate everything. Grow faster.</p>
             <p class="bf-auth-aside-text">
-                Agentic AI automation for your business — save time, reduce costs, and scale effortlessly.
+                Agentic AI Automation for your business — save time, reduce costs, and scale effortlessly.
             </p>
         </div>
     @endif

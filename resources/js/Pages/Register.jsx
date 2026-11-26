@@ -120,9 +120,9 @@ export default function Register() {
                             <p className="text-gray-600 dark:text-gray-300">
                                 Your business is pending approval. We'll email you as soon as an admin approves your
                                 account — you'll then be able to{" "}
-                                <Link href="/user/login" className="text-blue-700 dark:text-blue-400 font-semibold hover:underline">
+                                <a href="/user/login" className="text-blue-700 dark:text-blue-400 font-semibold hover:underline">
                                     log in
-                                </Link>{" "}
+                                </a>{" "}
                                 and set up your chat widget and subscription.
                             </p>
                         </div>
@@ -326,9 +326,9 @@ export default function Register() {
 
                             <p className="text-center text-xs text-gray-400 dark:text-gray-500">
                                 Already registered?{" "}
-                                <Link href="/user/login" className="text-blue-700 dark:text-blue-400 font-semibold hover:underline">
+                                <a href="/user/login" className="text-blue-700 dark:text-blue-400 font-semibold hover:underline">
                                     Log in
-                                </Link>
+                                </a>
                             </p>
                         </form>
                     )}
